@@ -21,6 +21,8 @@ class stream_processor
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
 public:
+  using value_type = char;
+
   stream_processor() = default;
   stream_processor(InputIterator begin, Sentinel end);
   stream_processor(stream_processor const&) = default;
@@ -30,7 +32,7 @@ public:
   stream_processor& operator=(stream_processor const&) = default;
   stream_processor& operator=(stream_processor&&) = default;
 
-  std::uint8_t next_char() const;
+  value_type next_char() const;
   bool eof() const;
 
   template <typename T, typename U>
@@ -86,7 +88,7 @@ void stream_processor<InputIterator, Sentinel>::_encode_next_values() const
 }
 
 template <typename InputIterator, typename Sentinel>
-std::uint8_t stream_processor<InputIterator, Sentinel>::next_char() const
+auto stream_processor<InputIterator, Sentinel>::next_char() const -> value_type
 {
   if (!eof() && _last_encoded_index == 4)
     _last_encoded_index = 0;

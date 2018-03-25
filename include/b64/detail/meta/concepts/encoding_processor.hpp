@@ -14,7 +14,8 @@
 //   requires CopyAssignable<T>;
 //   requires Destructible<T>;
 //   requires Swappable<T>;
-//   { processor.next_char() } -> std::uint8_t;
+//   typename T::value_type;
+//   { processor.next_char() } -> typename T::value_type;
 //   { processor.eof() } -> bool;
 // }
 
@@ -28,23 +29,27 @@ struct is_encoding_processor : std::false_type
 };
 
 template <typename T>
-using next_char_t = decltype(std::declval<std::add_const_t<T>>().next_char());
+using next_char_t = decltype(std::declval<T const&>().next_char());
 
 template <typename T>
-using eof_t = decltype(std::declval<std::add_const_t<T>>().eof());
+using eof_t = decltype(std::declval<T const&>().eof());
+
+template <typename T>
+using value_type_t = typename T::value_type;
 
 template <typename T>
 struct has_next_char_method
-  : std::integral_constant<
-        bool,
-        std::is_same<std::uint8_t, detected_t<next_char_t, T>>::value>
+    : std::integral_constant<bool,
+                             std::is_convertible<detected_t<next_char_t, T>,
+                                                 typename T::value_type>::value>
 {
 };
 
 template <typename T>
 struct has_eof_method
-  : std::integral_constant<bool,
-                           std::is_same<bool, detected_t<eof_t, T>>::value>
+    : std::integral_constant<
+          bool,
+          std::is_convertible<detected_t<eof_t, T>, bool>::value>
 {
 };
 
@@ -56,8 +61,10 @@ struct is_encoding_processor<
         std::is_default_constructible<T>::value &&
         std::is_copy_constructible<T>::value &&
         std::is_copy_assignable<T>::value && std::is_destructible<T>::value &&
+        std::is_integral<detail::detected_t<value_type_t, T>>::value &&
+        !std::is_same<detail::detected_t<value_type_t, T>, bool>::value &&
         has_eof_method<T>::value && has_next_char_method<T>::value>>
-  : std::true_type
+    : std::true_type
 {
 };
 }

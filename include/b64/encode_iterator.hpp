@@ -15,7 +15,7 @@ class encoding_iterator
 {
 public:
   // TODO different value_type depending on EncodingProcess 
-  using value_type = char;
+  using value_type = typename EncodingProcessor::value_type;
 
   using reference = value_type const&;
   using const_reference = value_type const&;
@@ -46,8 +46,8 @@ public:
 
 private:
   EncodingProcessor _encoding_processor;
-  // FIXME put that in EncodingProcessor
-  char mutable _last_read{0};
+  value_type mutable _last_read{0};
+  // uint8_t mask instead of two bools
   bool mutable _read{false};
   bool mutable _end{true};
 };
@@ -58,34 +58,6 @@ encoding_iterator<T, U>::encoding_iterator(T const& encoding_processor)
 {
 }
 
-// template <typename T, typename U>
-// void encoding_iterator<T, U>::_encode_next_values() const
-// {
-//   assert(_last_encoded_index == 0);
-//
-//   std::bitset<24> bits;
-//   int i = 0;
-//   for (; i < 3; ++i)
-//   {
-//     if (_current_it == _end)
-//       break;
-//     auto byte = static_cast<uint8_t>(*_current_it);
-//     bits |= (byte << (16 - (8 * i)));
-//     ++_current_it;
-//   }
-//
-//   for (int j = 0; j < i + 1; ++j)
-//   {
-//     auto shift = (18 - (6 * j));
-//     auto mask = ((std::bitset<24>(0xFFFFFF) >> 18) << shift);
-//     auto l = bits & mask;
-//     l >>= shift;
-//     auto index = static_cast<uint8_t>(l.to_ulong());
-//     _last_encoded[j] = alphabet[index];
-//   }
-//   std::fill(std::next(_last_encoded.begin(), i + 1), _last_encoded.end(), '=');
-// }
-//
 template <typename T, typename U>
 auto encoding_iterator<T, U>::operator*() const -> reference
 {
@@ -131,8 +103,7 @@ bool operator==(encoding_iterator<T, U> const& lhs,
 
 template <typename T, typename U>
 bool operator!=(encoding_iterator<T, U> const& lhs,
-                encoding_iterator<T, U> const& rhs) noexcept(noexcept(lhs ==
-                                                                      rhs))
+                encoding_iterator<T, U> const& rhs)
 {
   return !(lhs == rhs);
 }
