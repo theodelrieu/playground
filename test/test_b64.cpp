@@ -49,8 +49,8 @@ TEST_CASE("b64 encode", "[b64]")
   SECTION("huge file")
   {
     // FIXME give to add_test the path, try to find in CMake how to download test files
-    std::ifstream random_data("/Users/theo/Projects/b64iterator/test/data/random_data");
-    std::ifstream b64_random_data("/Users/theo/Projects/b64iterator/test/data/random_data.b64");
+    std::ifstream random_data("/home/theo/Projects/playground/test/data/random_data");
+    std::ifstream b64_random_data("/home/theo/Projects/playground/test/data/random_data.b64");
 
     b64::stream_processor<std::istreambuf_iterator<char>> pr{
         std::istreambuf_iterator<char>(random_data),

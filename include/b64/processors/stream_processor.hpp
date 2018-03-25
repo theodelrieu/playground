@@ -34,12 +34,8 @@ public:
   bool eof() const;
 
   template <typename T, typename U>
-  friend bool operator==(
-      stream_processor<T, U> const&,
-      stream_processor<T, U> const& rhs) noexcept(noexcept(std::declval<T>() ==
-                                                           std::declval<T>()) &&
-                                                  noexcept(std::declval<U>() ==
-                                                           std::declval<U>()));
+  friend bool operator==(stream_processor<T, U> const&,
+                         stream_processor<T, U> const& rhs);
 
 private:
   void _encode_next_values() const;
@@ -107,11 +103,7 @@ bool stream_processor<InputIterator, Sentinel>::eof() const
 
 template <typename InputIterator, typename Sentinel>
 bool operator==(stream_processor<InputIterator, Sentinel> const& lhs,
-                stream_processor<InputIterator, Sentinel> const&
-                    rhs) noexcept(noexcept(std::declval<InputIterator>() ==
-                                           std::declval<InputIterator>()) &&
-                                  noexcept(std::declval<Sentinel>() ==
-                                           std::declval<Sentinel>()))
+                stream_processor<InputIterator, Sentinel> const& rhs)
 {
   if (lhs._last_encoded_index == 4 &&
       lhs._last_encoded_index == rhs._last_encoded_index)
@@ -120,5 +112,12 @@ bool operator==(stream_processor<InputIterator, Sentinel> const& lhs,
   }
   return lhs._current_it == rhs._current_it && lhs._end == rhs._end &&
          lhs._last_encoded_index == rhs._last_encoded_index;
+}
+
+template <typename InputIterator, typename Sentinel>
+bool operator!=(stream_processor<InputIterator, Sentinel> const& lhs,
+                stream_processor<InputIterator, Sentinel> const& rhs)
+{
+  return !(lhs == rhs);
 }
 }

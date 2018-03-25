@@ -41,10 +41,8 @@ public:
   encoding_iterator operator++(int);
 
   template <typename T, typename U>
-  friend bool operator==(
-      encoding_iterator<T, U> const&,
-      encoding_iterator<T, U> const&) noexcept(noexcept(std::declval<T>() ==
-                                                        std::declval<T>()));
+  friend bool operator==(encoding_iterator<T, U> const&,
+                         encoding_iterator<T, U> const&);
 
 private:
   EncodingProcessor _encoding_processor;
@@ -123,9 +121,7 @@ auto encoding_iterator<T, U>::operator++(int) -> encoding_iterator
 
 template <typename T, typename U>
 bool operator==(encoding_iterator<T, U> const& lhs,
-                encoding_iterator<T, U> const&
-                    rhs) noexcept(noexcept(lhs._encoding_processor ==
-                                           rhs._encoding_processor))
+                encoding_iterator<T, U> const& rhs)
 {
   if (lhs._end || rhs._end)
     return lhs._end == rhs._end;
