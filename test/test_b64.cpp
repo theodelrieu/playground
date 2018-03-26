@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <fstream>
-#include <iostream>
+#include <vector>
 
 #include <catch.hpp>
 
@@ -8,6 +8,8 @@
 #include <b64/processors/stream_processor.hpp>
 
 using namespace std::string_literals;
+
+extern std::vector<std::string> testFilePaths;
 
 TEST_CASE("b64 encode", "[b64]")
 {
@@ -48,9 +50,10 @@ TEST_CASE("b64 encode", "[b64]")
 
   SECTION("huge file")
   {
+    REQUIRE(testFilePaths.size() == 2);
     // FIXME give to add_test the path, try to find in CMake how to download test files
-    std::ifstream random_data("/home/theo/Projects/playground/test/data/random_data");
-    std::ifstream b64_random_data("/home/theo/Projects/playground/test/data/random_data.b64");
+    std::ifstream random_data(testFilePaths[0]);
+    std::ifstream b64_random_data(testFilePaths[1]);
 
     b64::stream_processor<std::istreambuf_iterator<char>> pr{
         std::istreambuf_iterator<char>(random_data),
