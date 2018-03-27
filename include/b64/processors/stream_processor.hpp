@@ -5,12 +5,16 @@
 #include <cassert>
 #include <cstdint>
 
+#include <b64/detail/meta/concepts/input_source.hpp>
+
 namespace b64
 {
 // TODO ns processors
 // TODO fix name
 // TODO sfinae InputIterator
-template <typename InputIterator, typename Sentinel = InputIterator>
+template <typename InputSource,
+          typename =
+              std::enable_if_t<detail::is_input_source<InputSource>::value>>
 class stream_processor
 {
   static constexpr char const alphabet[] = {
@@ -21,10 +25,11 @@ class stream_processor
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
 public:
-  using value_type = char;
+  using input_source = InputSource;
+  using value_type = typename InputSource::value_type;
 
   stream_processor() = default;
-  stream_processor(InputIterator begin, Sentinel end);
+  stream_processor(InputSource const& source);
   stream_processor(stream_processor const&) = default;
   stream_processor(stream_processor&&) = default;
   ~stream_processor() = default;
@@ -42,25 +47,24 @@ public:
 private:
   void _encode_next_values() const;
 
-  InputIterator mutable _current_it;
-  Sentinel _end;
+  InputSource _source;
   // FIXME should be value_type, char
   std::array<std::uint8_t, 4> mutable _last_encoded;
   int mutable _last_encoded_index{4};
 };
 
-template <typename InputIterator, typename Sentinel>
-char const stream_processor<InputIterator, Sentinel>::alphabet[];
+template <typename InputSource, typename SFINAE>
+char const stream_processor<InputSource, SFINAE>::alphabet[];
 
-template <typename InputIterator, typename Sentinel>
-stream_processor<InputIterator, Sentinel>::stream_processor(InputIterator begin,
-                                                            Sentinel end)
-  : _current_it(begin), _end(end), _last_encoded_index(0)
+template <typename InputSource, typename SFINAE>
+stream_processor<InputSource, SFINAE>::stream_processor(
+    InputSource const& source)
+  : _source(source), _last_encoded_index(0)
 {
 }
 
-template <typename InputIterator, typename Sentinel>
-void stream_processor<InputIterator, Sentinel>::_encode_next_values() const
+template <typename InputSource, typename SFINAE>
+void stream_processor<InputSource, SFINAE>::_encode_next_values() const
 {
   assert(_last_encoded_index == 0);
 
@@ -68,11 +72,11 @@ void stream_processor<InputIterator, Sentinel>::_encode_next_values() const
   int i = 0;
   for (; i < 3; ++i)
   {
-    if (_current_it == _end)
+    if (_source.eof())
       break;
-    auto byte = static_cast<uint8_t>(*_current_it);
+    // FIXME require 1 byte value_type
+    auto byte = static_cast<uint8_t>(_source.next_char());
     bits |= (byte << (16 - (8 * i)));
-    ++_current_it;
   }
 
   for (int j = 0; j < i + 1; ++j)
@@ -87,8 +91,8 @@ void stream_processor<InputIterator, Sentinel>::_encode_next_values() const
   std::fill(std::next(_last_encoded.begin(), i + 1), _last_encoded.end(), '=');
 }
 
-template <typename InputIterator, typename Sentinel>
-auto stream_processor<InputIterator, Sentinel>::next_char() const -> value_type
+template <typename InputSource, typename SFINAE>
+auto stream_processor<InputSource, SFINAE>::next_char() const -> value_type
 {
   if (!eof() && _last_encoded_index == 4)
     _last_encoded_index = 0;
@@ -97,28 +101,28 @@ auto stream_processor<InputIterator, Sentinel>::next_char() const -> value_type
   return _last_encoded[_last_encoded_index++];
 }
 
-template <typename InputIterator, typename Sentinel>
-bool stream_processor<InputIterator, Sentinel>::eof() const
+template <typename InputSource, typename SFINAE>
+bool stream_processor<InputSource, SFINAE>::eof() const
 {
-  return _current_it == _end && _last_encoded_index == 4;
+  return _last_encoded_index == 4 && _source.eof();
 }
 
-template <typename InputIterator, typename Sentinel>
-bool operator==(stream_processor<InputIterator, Sentinel> const& lhs,
-                stream_processor<InputIterator, Sentinel> const& rhs)
+template <typename InputSource, typename SFINAE>
+bool operator==(stream_processor<InputSource, SFINAE> const& lhs,
+                stream_processor<InputSource, SFINAE> const& rhs)
 {
   if (lhs._last_encoded_index == 4 &&
       lhs._last_encoded_index == rhs._last_encoded_index)
   {
     return true;
   }
-  return lhs._current_it == rhs._current_it && lhs._end == rhs._end &&
+  return lhs._source == rhs._source &&
          lhs._last_encoded_index == rhs._last_encoded_index;
 }
 
-template <typename InputIterator, typename Sentinel>
-bool operator!=(stream_processor<InputIterator, Sentinel> const& lhs,
-                stream_processor<InputIterator, Sentinel> const& rhs)
+template <typename InputSource, typename SFINAE>
+bool operator!=(stream_processor<InputSource, SFINAE> const& lhs,
+                stream_processor<InputSource, SFINAE> const& rhs)
 {
   return !(lhs == rhs);
 }

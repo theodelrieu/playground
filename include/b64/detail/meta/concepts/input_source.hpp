@@ -7,7 +7,7 @@
 #include <b64/detail/meta/concepts/swappable.hpp>
 #include <b64/detail/meta/detected.hpp>
 
-// concept EncodingProcessor = requires(T const& processor) {
+// concept InputSource = requires(T const& source) {
 //   requires EqualityComparable<T>;
 //   requires DefaultConstructible<T>;
 //   requires CopyConstructible<T>;
@@ -24,7 +24,7 @@ namespace b64
 namespace detail
 {
 template <typename T, typename = void>
-struct is_encoding_processor : std::false_type
+struct is_input_source : std::false_type
 {
 };
 
@@ -33,9 +33,6 @@ using next_char_t = decltype(std::declval<T const&>().next_char());
 
 template <typename T>
 using eof_t = decltype(std::declval<T const&>().eof());
-
-template <typename T>
-using value_type_t = typename T::value_type;
 
 template <typename T>
 struct has_next_char_method
@@ -54,15 +51,13 @@ struct has_eof_method
 };
 
 template <typename T>
-struct is_encoding_processor<
+struct is_input_source<
     T,
     std::enable_if_t<
         is_equality_comparable<T>::value && is_swappable<T>::value &&
         std::is_default_constructible<T>::value &&
         std::is_copy_constructible<T>::value &&
         std::is_copy_assignable<T>::value && std::is_destructible<T>::value &&
-        std::is_integral<detail::detected_t<value_type_t, T>>::value &&
-        !std::is_same<detail::detected_t<value_type_t, T>, bool>::value &&
         has_eof_method<T>::value && has_next_char_method<T>::value>>
     : std::true_type
 {
