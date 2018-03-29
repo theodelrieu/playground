@@ -98,6 +98,18 @@ TEST_CASE("input_source_iterator")
                                  test_stream_input_source>::iterator_category,
                              std::input_iterator_tag>::value,
                 "");
+  SECTION("range-base for loop support")
+  {
+    auto const text = "abcd"s;
+    test_input_source<std::string> input(text.begin(), text.end());
+
+    b64::input_source_iterator<decltype(input)> it(input);
+
+    std::string output;
+    for (auto const& elem : it)
+      output.push_back(elem);
+    CHECK(text == output);
+  }
 }
 
 TEST_CASE("b64 encode", "[b64]")

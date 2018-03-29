@@ -46,6 +46,21 @@ private:
   bool mutable _end{true};
 };
 
+// Range-base for loop support
+
+template <typename InputSource>
+input_source_iterator<InputSource> begin(input_source_iterator<InputSource> it)
+{
+  return it;
+}
+
+template <typename InputSource>
+input_source_iterator<InputSource> end(input_source_iterator<InputSource> const&)
+{
+  return input_source_iterator<InputSource>{};
+}
+
+// TODO put that in impl files
 template <typename T, typename U>
 input_source_iterator<T, U>::input_source_iterator(T const& encoding_source)
   : _source(encoding_source), _end(false)
