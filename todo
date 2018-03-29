@@ -1,0 +1,9 @@
+IterableInputSource? requires { using std::begin; using std::end; begin(iis) -> Iterator; end(iis) -> Iterator; }
+a bit like Swappable
+
+If not, default iterator to input_source_iterator.
+Then input_source_iterator for every IterableInputSource that has an input_iterator.
+
+For different iterator categories, adapt each one.
+
+Maybe a SeekableInputSource which would promote the default iterator to be a BidirectionalIterator?
