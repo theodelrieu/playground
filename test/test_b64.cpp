@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <fstream>
+#include <iterator>
+#include <type_traits>
 #include <vector>
 
 #include <catch.hpp>
@@ -88,6 +90,14 @@ bool operator!=(test_input_source<T> const& lhs,
 {
   return !(lhs == rhs);
 }
+}
+
+TEST_CASE("input_source_iterator")
+{
+  static_assert(std::is_same<b64::input_source_iterator<
+                                 test_stream_input_source>::iterator_category,
+                             std::input_iterator_tag>::value,
+                "");
 }
 
 TEST_CASE("b64 encode", "[b64]")

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <b64/detail/meta/concepts/input_processor.hpp>
+#include <b64/detail/meta/concepts/input_source.hpp>
 
 #include <ios>
 #include <iterator>
@@ -8,13 +8,13 @@
 
 namespace b64
 {
-template <typename InputProcessor,
-          typename = std::enable_if_t<
-              detail::is_input_processor<InputProcessor>::value>>
+template <typename InputSource,
+          typename =
+              std::enable_if_t<detail::is_input_source<InputSource>::value>>
 class input_source_iterator
 {
 public:
-  using value_type = typename InputProcessor::value_type;
+  using value_type = typename InputSource::value_type;
 
   using reference = value_type const&;
   using const_reference = value_type const&;
@@ -26,7 +26,7 @@ public:
   using difference_type = std::streamoff;
 
   input_source_iterator() = default;
-  input_source_iterator(InputProcessor const&);
+  input_source_iterator(InputSource const&);
 
   reference operator*() const;
   pointer operator->() const;
@@ -39,7 +39,7 @@ public:
                          input_source_iterator<T, U> const&);
 
 private:
-  InputProcessor _processor;
+  InputSource _source;
   value_type mutable _last_read{0};
   // TODO uint8_t mask instead of two bools
   bool mutable _read{false};
@@ -47,8 +47,8 @@ private:
 };
 
 template <typename T, typename U>
-input_source_iterator<T, U>::input_source_iterator(T const& encoding_processor)
-  : _processor(encoding_processor), _end(false)
+input_source_iterator<T, U>::input_source_iterator(T const& encoding_source)
+  : _source(encoding_source), _end(false)
 {
 }
 
@@ -57,7 +57,7 @@ auto input_source_iterator<T, U>::operator*() const -> reference
 {
   if (!_read)
   {
-    _last_read = _processor.next_char();
+    _last_read = _source.next_char();
     _read = true;
   }
   return _last_read;
@@ -73,7 +73,7 @@ template <typename T, typename U>
 auto input_source_iterator<T, U>::operator++() -> input_source_iterator&
 {
   _read = false;
-  _end = _processor.eof();
+  _end = _source.eof();
   return *this;
 }
 
@@ -91,7 +91,7 @@ bool operator==(input_source_iterator<T, U> const& lhs,
 {
   if (lhs._end || rhs._end)
     return lhs._end == rhs._end;
-  return lhs._processor == rhs._processor && lhs._last_read == rhs._last_read;
+  return lhs._source == rhs._source && lhs._last_read == rhs._last_read;
 }
 
 template <typename T, typename U>
