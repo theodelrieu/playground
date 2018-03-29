@@ -11,10 +11,9 @@ namespace b64
 template <typename InputProcessor,
           typename = std::enable_if_t<
               detail::is_input_processor<InputProcessor>::value>>
-class encoding_iterator
+class input_source_iterator
 {
 public:
-  // TODO different value_type depending on EncodingProcess
   using value_type = typename InputProcessor::value_type;
 
   using reference = value_type const&;
@@ -26,39 +25,35 @@ public:
   using iterator_category = std::input_iterator_tag;
   using difference_type = std::streamoff;
 
-  encoding_iterator() = default;
-  encoding_iterator(InputProcessor const&);
-  encoding_iterator(encoding_iterator const&) = default;
-  encoding_iterator(encoding_iterator&&) = default;
-  encoding_iterator& operator=(encoding_iterator const&) = default;
-  encoding_iterator& operator=(encoding_iterator&&) = default;
+  input_source_iterator() = default;
+  input_source_iterator(InputProcessor const&);
 
   reference operator*() const;
   pointer operator->() const;
 
-  encoding_iterator& operator++();
-  encoding_iterator operator++(int);
+  input_source_iterator& operator++();
+  input_source_iterator operator++(int);
 
   template <typename T, typename U>
-  friend bool operator==(encoding_iterator<T, U> const&,
-                         encoding_iterator<T, U> const&);
+  friend bool operator==(input_source_iterator<T, U> const&,
+                         input_source_iterator<T, U> const&);
 
 private:
   InputProcessor _processor;
   value_type mutable _last_read{0};
-  // uint8_t mask instead of two bools
+  // TODO uint8_t mask instead of two bools
   bool mutable _read{false};
   bool mutable _end{true};
 };
 
 template <typename T, typename U>
-encoding_iterator<T, U>::encoding_iterator(T const& encoding_processor)
+input_source_iterator<T, U>::input_source_iterator(T const& encoding_processor)
   : _processor(encoding_processor), _end(false)
 {
 }
 
 template <typename T, typename U>
-auto encoding_iterator<T, U>::operator*() const -> reference
+auto input_source_iterator<T, U>::operator*() const -> reference
 {
   if (!_read)
   {
@@ -69,13 +64,13 @@ auto encoding_iterator<T, U>::operator*() const -> reference
 }
 
 template <typename T, typename U>
-auto encoding_iterator<T, U>::operator-> () const -> pointer
+auto input_source_iterator<T, U>::operator-> () const -> pointer
 {
   return std::addressof(**this);
 }
 
 template <typename T, typename U>
-auto encoding_iterator<T, U>::operator++() -> encoding_iterator&
+auto input_source_iterator<T, U>::operator++() -> input_source_iterator&
 {
   _read = false;
   _end = _processor.eof();
@@ -83,7 +78,7 @@ auto encoding_iterator<T, U>::operator++() -> encoding_iterator&
 }
 
 template <typename T, typename U>
-auto encoding_iterator<T, U>::operator++(int) -> encoding_iterator
+auto input_source_iterator<T, U>::operator++(int) -> input_source_iterator
 {
   auto ret = *this;
   ++(*this);
@@ -91,8 +86,8 @@ auto encoding_iterator<T, U>::operator++(int) -> encoding_iterator
 }
 
 template <typename T, typename U>
-bool operator==(encoding_iterator<T, U> const& lhs,
-                encoding_iterator<T, U> const& rhs)
+bool operator==(input_source_iterator<T, U> const& lhs,
+                input_source_iterator<T, U> const& rhs)
 {
   if (lhs._end || rhs._end)
     return lhs._end == rhs._end;
@@ -100,9 +95,9 @@ bool operator==(encoding_iterator<T, U> const& lhs,
 }
 
 template <typename T, typename U>
-bool operator!=(encoding_iterator<T, U> const& lhs,
-                encoding_iterator<T, U> const& rhs)
+bool operator!=(input_source_iterator<T, U> const& lhs,
+                input_source_iterator<T, U> const& rhs)
 {
   return !(lhs == rhs);
 }
-}
+} // namespace b64

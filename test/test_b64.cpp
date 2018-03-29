@@ -4,7 +4,7 @@
 
 #include <catch.hpp>
 
-#include <b64/encode_iterator.hpp>
+#include <b64/input_source_iterator.hpp>
 #include <b64/processors/stream_processor.hpp>
 
 using namespace std::string_literals;
@@ -97,7 +97,7 @@ TEST_CASE("b64 encode", "[b64]")
     auto const text = "abcd"s;
     test_input_source<std::string> input(text.begin(), text.end());
     b64::stream_processor<decltype(input)> pr(input);
-    b64::encoding_iterator<decltype(pr)> it(pr);
+    b64::input_source_iterator<decltype(pr)> it(pr);
     decltype(it) end;
 
     std::string s(it, end);
@@ -109,7 +109,7 @@ TEST_CASE("b64 encode", "[b64]")
     auto const text = "abcde"s;
     test_input_source<std::string> input(text.begin(), text.end());
     b64::stream_processor<decltype(input)> pr(input);
-    b64::encoding_iterator<decltype(pr)> it(pr);
+    b64::input_source_iterator<decltype(pr)> it(pr);
     decltype(it) end;
 
     std::string s(it, end);
@@ -121,7 +121,7 @@ TEST_CASE("b64 encode", "[b64]")
     auto const text = "abcdef"s;
     test_input_source<std::string> input(text.begin(), text.end());
     b64::stream_processor<decltype(input)> pr(input);
-    b64::encoding_iterator<decltype(pr)> it(pr);
+    b64::input_source_iterator<decltype(pr)> it(pr);
     decltype(it) end;
 
     std::string s(it, end);
@@ -136,7 +136,7 @@ TEST_CASE("b64 encode", "[b64]")
 
     test_stream_input_source input{std::istreambuf_iterator<char>(random_data)};
     b64::stream_processor<decltype(input)> pr(input);
-    b64::encoding_iterator<decltype(pr)> it(pr);
+    b64::input_source_iterator<decltype(pr)> it(pr);
     decltype(it) end;
 
     std::istreambuf_iterator<char> expectedB64It(b64_random_data);
