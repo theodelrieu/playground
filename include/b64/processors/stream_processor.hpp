@@ -25,17 +25,10 @@ class stream_processor
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
 public:
-  using input_source = InputSource;
   using value_type = typename InputSource::value_type;
 
   stream_processor() = default;
   stream_processor(InputSource const& source);
-  stream_processor(stream_processor const&) = default;
-  stream_processor(stream_processor&&) = default;
-  ~stream_processor() = default;
-
-  stream_processor& operator=(stream_processor const&) = default;
-  stream_processor& operator=(stream_processor&&) = default;
 
   value_type next_char() const;
   bool eof() const;
