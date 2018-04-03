@@ -3,67 +3,89 @@
 #include <type_traits>
 
 #include <b64/detail/meta/concepts/iterator.hpp>
+#include <b64/detail/meta/concepts/sentinel.hpp>
 #include <b64/detail/meta/detected.hpp>
 
-// concept Iterable = requires(T a) {
-//  requires { using std::begin; begin(a) } -> Iterator
+// concept Iterable = requires(T& a) {
+//  requires { begin(a) } -> Iterator
+//  requires { end(a) } -> Sentinel<Iterator>
 // }
 namespace b64
 {
 namespace detail
 {
+namespace detail2
+{
+using std::begin;
+using std::end;
+
+#define CAN_CALL_STD_FUNC_IMPL(name)                             \
+  template <typename T>                                          \
+  struct can_call_##name##_impl                                  \
+  {                                                              \
+    template <typename U>                                        \
+    static auto check(int)                                       \
+        -> decltype(name(std::declval<T&>()), std::true_type()); \
+                                                                 \
+    template <typename>                                          \
+    static std::false_type check(...);                           \
+                                                                 \
+    using type = decltype(check<T>(0));                          \
+  }
+
+CAN_CALL_STD_FUNC_IMPL(begin);
+CAN_CALL_STD_FUNC_IMPL(end);
+
 template <typename T>
-struct is_valid_iterator_traits : std::false_type
+struct can_call_begin : can_call_begin_impl<T>::type
 {
 };
 
 template <typename T>
-struct is_valid_iterator_traits<std::iterator_traits<T>>
+struct can_call_end : can_call_end_impl<T>::type
 {
-private:
-  using traits = std::iterator_traits<T>;
+};
+}
 
+namespace detail3
+{
+  // TODO put that in a detail call_std stuff, move stuff from swappable too
+struct tag
+{
+};
+
+template <class T>
+tag swap(T&, T&);
+
+template <typename T>
+struct would_call_std_swap_impl
+{
   template <typename U>
-  using value_type_t = typename U::value_type;
+  static auto check(int) -> std::integral_constant<
+      bool,
+      std::is_same<decltype(swap(std::declval<U&>(), std::declval<U&>())),
+                   tag>::value>;
 
-  template <typename U>
-  using difference_type_t = typename U::difference_type;
+  template <typename>
+  static std::false_type check(...);
 
-  template <typename U>
-  using pointer_t = typename U::pointer;
-
-  template <typename U>
-  using reference_t = typename U::reference;
-
-  template <typename U>
-  using iterator_category_t = typename U::iterator_category;
-
-public:
-  static constexpr auto value =
-      is_detected<value_type_t, traits>::value &&
-      is_detected<difference_type_t, traits>::value &&
-      is_detected<pointer_t, traits>::value &&
-      is_detected<iterator_category_t, traits>::value &&
-      is_detected<reference_t, traits>::value;
+  using type = decltype(check<T>(0));
 };
 
 template <typename T>
-using dereference_t = decltype(*std::declval<T&>());
+struct would_call_std_swap : would_call_std_swap_impl<T>::type
+{
+};
+}
 
+// This mess is required since std::swap only got SFINAE-correctness in C++17
 template <typename T>
-using increment_t = decltype(++std::declval<T&>());
-
-template <typename T>
-struct is_iterator
-  : std::integral_constant<
-        bool,
-        std::is_default_constructible<T>::value &&
-            std::is_copy_constructible<T>::value &&
-            std::is_copy_assignable<T>::value &&
-            std::is_destructible<T>::value && is_swappable<T>::value &&
-            is_valid_iterator_traits<std::iterator_traits<T>>::value &&
-            is_detected<dereference_t, T>::value &&
-            is_detected_exact<T&, increment_t, T>::value>
+struct is_swappable
+  : std::integral_constant<bool,
+                           detail2::can_call_swap<T>::value &&
+                               (!detail3::would_call_std_swap<T>::value ||
+                                (std::is_move_assignable<T>::value &&
+                                 std::is_move_constructible<T>::value))>
 {
 };
 }
