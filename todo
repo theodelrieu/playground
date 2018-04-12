@@ -1,9 +1,26 @@
-IterableInputSource? requires { using std::begin; using std::end; begin(iis) -> Iterator; end(iis) -> Iterator; }
-a bit like Swappable
+class BasicCodec<Encoder, Decoder>
 
-If not, default iterator to input_source_iterator.
-Then input_source_iterator for every IterableInputSource that has an input_iterator.
+func encode<T>(Iterable);
+func encode<T>(Iterator, Sentinel);
+func decode<T>(Iterable);
+func decode<T>(Iterator, Sentinel);
 
-For different iterator categories, adapt each one.
+-> class Encoder -> Iterable;
+-> class Decoder -> Iterable;
 
-Maybe a SeekableInputSource which would promote the default iterator to be a BidirectionalIterator?
+
+Un Decoder qui veut tout copier pour aller plus vite retourne un iterator different que celui de son input source
+Il utilise un adapteur Iterable qui prend un Iterable 
+
+Dans un premier temps, ecrire tous les iterateurs a la main.
+Ensuite CRTP.
+
+Pas la peine de contraindre Encoder <=> Decoder.
+
+Responsabilite du programmeur de s'assurer que les 2 implementent le meme algo.
+
+Le use-case pour en remplacer un par un autre ? Speed ? Differents iterateurs ?
+
+
+codec variant:
+Detail d'implem, ex: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
