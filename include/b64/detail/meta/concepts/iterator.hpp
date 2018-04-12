@@ -3,6 +3,7 @@
 #include <iterator>
 #include <type_traits>
 
+#include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/meta/concepts/swappable.hpp>
 #include <b64/detail/meta/detected.hpp>
 
@@ -21,21 +22,6 @@ struct is_valid_iterator_traits<std::iterator_traits<T>>
 {
 private:
   using traits = std::iterator_traits<T>;
-
-  template <typename U>
-  using value_type_t = typename U::value_type;
-
-  template <typename U>
-  using difference_type_t = typename U::difference_type;
-
-  template <typename U>
-  using pointer_t = typename U::pointer;
-
-  template <typename U>
-  using reference_t = typename U::reference;
-
-  template <typename U>
-  using iterator_category_t = typename U::iterator_category;
 
 public:
   static constexpr auto value =

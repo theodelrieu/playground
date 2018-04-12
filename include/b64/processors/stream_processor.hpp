@@ -5,6 +5,8 @@
 #include <cassert>
 #include <cstdint>
 
+#include <b64/tags.hpp>
+
 #include <b64/detail/meta/concepts/input_source.hpp>
 
 namespace b64
@@ -26,6 +28,8 @@ class stream_processor
 
 public:
   using value_type = typename InputSource::value_type;
+
+  using category = input_tag;
 
   stream_processor() = default;
   stream_processor(InputSource const& source);

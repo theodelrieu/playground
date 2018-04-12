@@ -3,18 +3,25 @@
 #include <cstdint>
 #include <type_traits>
 
+#include <b64/detail/meta/concepts/derived_from.hpp>
 #include <b64/detail/meta/concepts/equality_comparable.hpp>
 #include <b64/detail/meta/concepts/swappable.hpp>
 #include <b64/detail/meta/detected.hpp>
 
+#include <b64/detail/meta/aliases.hpp>
+
+#include <b64/tags.hpp>
+
 // concept InputSource = requires(T const& source) {
+//   typename T::value_type;
+//   typename T::category;
 //   requires EqualityComparable<T>;
 //   requires DefaultConstructible<T>;
 //   requires CopyConstructible<T>;
 //   requires CopyAssignable<T>;
 //   requires Destructible<T>;
 //   requires Swappable<T>;
-//   typename T::value_type;
+//   requires DerivedFrom<typename T::category, b64::input_tag>;
 //   { processor.next_char() } -> typename T::value_type;
 //   { processor.eof() } -> bool;
 // }
@@ -27,12 +34,6 @@ template <typename T, typename = void>
 struct is_input_source : std::false_type
 {
 };
-
-template <typename T>
-using next_char_t = decltype(std::declval<T const&>().next_char());
-
-template <typename T>
-using eof_t = decltype(std::declval<T const&>().eof());
 
 template <typename T>
 struct has_next_char_method
@@ -58,8 +59,9 @@ struct is_input_source<
         std::is_default_constructible<T>::value &&
         std::is_copy_constructible<T>::value &&
         std::is_copy_assignable<T>::value && std::is_destructible<T>::value &&
+        is_derived_from<detected_t<category_t, T>, input_tag>::value &&
         has_eof_method<T>::value && has_next_char_method<T>::value>>
-    : std::true_type
+  : std::true_type
 {
 };
 }

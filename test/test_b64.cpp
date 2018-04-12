@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include <b64/input_source_iterator.hpp>
+#include <b64/tags.hpp>
 #include <b64/processors/stream_processor.hpp>
 
 using namespace std::string_literals;
@@ -18,6 +19,7 @@ namespace
 template <typename T>
 struct test_input_source{
   using value_type = typename T::value_type;
+  using category = b64::input_tag;
 
   using iterator = typename T::const_iterator;
   test_input_source() = default;
@@ -43,6 +45,7 @@ struct test_input_source{
 struct test_stream_input_source
 {
   using value_type = char;
+  using category = b64::input_tag;
 
   using iterator = std::istreambuf_iterator<char>; 
   test_stream_input_source() = default;
