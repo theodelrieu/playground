@@ -15,7 +15,7 @@ namespace b64
 {
 namespace detail
 {
-template <typename Processor>
+template <typename Encoder>
 class input_source_iterator
 {
 public:
@@ -31,7 +31,7 @@ public:
   using difference_type = std::streamoff;
 
   input_source_iterator() = default;
-  input_source_iterator(Processor const&);
+  input_source_iterator(Encoder const&);
 
   reference operator*() const;
   pointer operator->() const;
@@ -44,7 +44,7 @@ public:
                          input_source_iterator<T> const&);
 
 private:
-  Processor _source;
+  Encoder _source;
   value_type mutable _last_read{0};
   // TODO uint8_t mask instead of two bools
   bool mutable _read{false};
@@ -60,7 +60,8 @@ input_source_iterator<InputSource> begin(input_source_iterator<InputSource> it)
 }
 
 template <typename InputSource>
-input_source_iterator<InputSource> end(input_source_iterator<InputSource> const&)
+input_source_iterator<InputSource> end(
+    input_source_iterator<InputSource> const&)
 {
   return input_source_iterator<InputSource>{};
 }
@@ -120,17 +121,26 @@ bool operator!=(input_source_iterator<T> const& lhs,
 {
   return !(lhs == rhs);
 }
-}
-// TODO ns processors
-// TODO fix name
-// TODO iterator category specialization
-template <typename Iterable,
-          typename = std::enable_if_t<detail::is_iterable<Iterable>::value>>
-class stream_processor
-{
-  using Iterator = typename detail2::result_of_begin<Iterable const&>::type;
-  using Sentinel = typename detail2::result_of_end<Iterable const&>::type;
 
+template <typename T>
+struct is_byte_integral
+    : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
+{
+};
+}
+
+namespace encoders
+{
+// TODO iterator category specialization
+template <typename Iterator,
+          typename Sentinel = Iterator,
+          typename =
+              std::enable_if_t<detail::is_iterator<Iterator>::value &&
+                               detail::is_sentinel<Sentinel, Iterator>::value &&
+                               detail::is_byte_integral<detail::value_type_t<
+                                   std::iterator_traits<Iterator>>>::value>>
+class base64_stream_encoder
+{
   static constexpr char const alphabet[] = {
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
@@ -139,54 +149,50 @@ class stream_processor
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
 public:
-  using value_type = detail::value_type_t<std::iterator_traits<Iterator>>;
+  using value_type = char;
 
-  stream_processor() = default;
-  stream_processor(Iterable const&);
+  base64_stream_encoder() = default;
+  base64_stream_encoder(Iterator const&, Sentinel const&);
 
   value_type next_char() const;
   bool eof() const;
 
   auto begin() const
   {
-    return detail::input_source_iterator<stream_processor>{*this};
+    return detail::input_source_iterator<base64_stream_encoder>{*this};
   }
 
   auto end() const
   {
-    return detail::input_source_iterator<stream_processor>{};
+    return detail::input_source_iterator<base64_stream_encoder>{};
   }
 
-  template <typename T, typename U>
-  friend bool operator==(stream_processor<T, U> const&,
-                         stream_processor<T, U> const& rhs);
+  template <typename T, typename U, typename V>
+  friend bool operator==(base64_stream_encoder<T, U, V> const&,
+                         base64_stream_encoder<T, U, V> const&);
 
 private:
   void _encode_next_values() const;
 
   Iterator mutable _current_it{};
   Sentinel _end{};
-  // FIXME should be value_type, char
-  std::array<std::uint8_t, 4> mutable _last_encoded;
+  std::array<char, 4> mutable _last_encoded;
   int mutable _last_encoded_index{4};
 };
 
-template <typename Iterable, typename SFINAE>
-char const stream_processor<Iterable, SFINAE>::alphabet[];
+template <typename Iterator, typename Sentinel, typename SFINAE>
+char const base64_stream_encoder<Iterator, Sentinel, SFINAE>::alphabet[];
 
-template <typename Iterable, typename SFINAE>
-stream_processor<Iterable, SFINAE>::stream_processor(Iterable const& input)
-  : _last_encoded_index(0)
+template <typename Iterator, typename Sentinel, typename SFINAE>
+base64_stream_encoder<Iterator, Sentinel, SFINAE>::base64_stream_encoder(
+    Iterator const& begin, Sentinel const& end)
+  : _current_it(begin), _end(end), _last_encoded_index(0)
 {
-  using std::begin;
-  using std::end;
-
-  _current_it = begin(input);
-  _end = end(input);
 }
 
-template <typename Iterable, typename SFINAE>
-void stream_processor<Iterable, SFINAE>::_encode_next_values() const
+template <typename Iterator, typename Sentinel, typename SFINAE>
+void base64_stream_encoder<Iterator, Sentinel, SFINAE>::_encode_next_values()
+    const
 {
   assert(_last_encoded_index == 0);
 
@@ -196,8 +202,7 @@ void stream_processor<Iterable, SFINAE>::_encode_next_values() const
   {
     if (_current_it == _end)
       break;
-    // FIXME require 1 byte value_type
-    auto byte = static_cast<uint8_t>(*_current_it);
+    auto byte = static_cast<std::uint8_t>(*_current_it);
     ++_current_it;
     bits |= (byte << (16 - (8 * i)));
   }
@@ -208,14 +213,15 @@ void stream_processor<Iterable, SFINAE>::_encode_next_values() const
     auto mask = ((std::bitset<24>(0xFFFFFF) >> 18) << shift);
     auto l = bits & mask;
     l >>= shift;
-    auto index = static_cast<uint8_t>(l.to_ulong());
+    auto index = static_cast<std::uint8_t>(l.to_ulong());
     _last_encoded[j] = alphabet[index];
   }
   std::fill(std::next(_last_encoded.begin(), i + 1), _last_encoded.end(), '=');
 }
 
-template <typename Iterable, typename SFINAE>
-auto stream_processor<Iterable, SFINAE>::next_char() const -> value_type
+template <typename Iterator, typename Sentinel, typename SFINAE>
+auto base64_stream_encoder<Iterator, Sentinel, SFINAE>::next_char() const
+    -> value_type
 {
   if (!eof() && _last_encoded_index == 4)
     _last_encoded_index = 0;
@@ -224,15 +230,15 @@ auto stream_processor<Iterable, SFINAE>::next_char() const -> value_type
   return _last_encoded[_last_encoded_index++];
 }
 
-template <typename Iterable, typename SFINAE>
-bool stream_processor<Iterable, SFINAE>::eof() const
+template <typename Iterator, typename Sentinel, typename SFINAE>
+bool base64_stream_encoder<Iterator, Sentinel, SFINAE>::eof() const
 {
   return _last_encoded_index == 4 && _current_it == _end;
 }
 
-template <typename Iterable, typename SFINAE>
-bool operator==(stream_processor<Iterable, SFINAE> const& lhs,
-                stream_processor<Iterable, SFINAE> const& rhs)
+template <typename Iterator, typename Sentinel, typename SFINAE>
+bool operator==(base64_stream_encoder<Iterator, Sentinel, SFINAE> const& lhs,
+                base64_stream_encoder<Iterator, Sentinel, SFINAE> const& rhs)
 {
   if (lhs._last_encoded_index == 4 &&
       lhs._last_encoded_index == rhs._last_encoded_index)
@@ -243,10 +249,11 @@ bool operator==(stream_processor<Iterable, SFINAE> const& lhs,
          lhs._last_encoded_index == rhs._last_encoded_index;
 }
 
-template <typename Iterable, typename SFINAE>
-bool operator!=(stream_processor<Iterable, SFINAE> const& lhs,
-                stream_processor<Iterable, SFINAE> const& rhs)
+template <typename Iterator, typename Sentinel, typename SFINAE>
+bool operator!=(base64_stream_encoder<Iterator, Sentinel, SFINAE> const& lhs,
+                base64_stream_encoder<Iterator, Sentinel, SFINAE> const& rhs)
 {
   return !(lhs == rhs);
+}
 }
 }
