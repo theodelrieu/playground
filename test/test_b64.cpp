@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <iostream>
+#include <chrono>
 #include <fstream>
 #include <iterator>
 #include <type_traits>
@@ -74,8 +76,39 @@ TEST_CASE("b64 encode", "[b64]")
     stream_iterable_adapter input{random_data};
     b64::encoders::base64_stream_encoder<decltype(input.begin())> pr(
         input.begin(), input.end());
+    // std::istreambuf_iterator<char> expectedB64It(b64_random_data);
+    // std::istreambuf_iterator<char> expectedEnd;
+    auto p = std::chrono::steady_clock::now();
+    std::vector<char> b64v(pr.begin(), pr.end());
+    auto p2 = std::chrono::steady_clock::now();
+    std::cout
+        << "Conversion took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(p2 - p).count()
+        << "ms" << std::endl;
+    // CHECK(std::equal(expectedB64It, expectedEnd, pr.begin(), pr.end()));
+  }
+
+  SECTION("huge file contiguous")
+  {
+    REQUIRE(testFilePaths.size() == 2);
+    std::ifstream random_data(testFilePaths[0]);
+    std::ifstream b64_random_data(testFilePaths[1]);
+    stream_iterable_adapter input{random_data};
+    std::vector<std::uint8_t> v(input.begin(), input.end());
+    b64::encoders::base64_stream_encoder<decltype(v.begin())> pr(v.begin(),
+                                                                 v.end());
+
     std::istreambuf_iterator<char> expectedB64It(b64_random_data);
     std::istreambuf_iterator<char> expectedEnd;
-    CHECK(std::equal(expectedB64It, expectedEnd, pr.begin(), pr.end()));
+    std::vector<char> expected(expectedB64It, expectedEnd);
+
+    auto p = std::chrono::steady_clock::now();
+    std::vector<char> b64v(pr.begin(), pr.end());
+    auto p2 = std::chrono::steady_clock::now();
+    std::cout
+        << "Conversion took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(p2 - p).count()
+        << "ms" << std::endl;
+    CHECK(b64v == expected);
   }
 }
