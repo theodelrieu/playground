@@ -24,3 +24,5 @@ Le use-case pour en remplacer un par un autre ? Speed ? Differents iterateurs ?
 
 codec variant:
 Detail d'implem, ex: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
+
+concepts randomaccessiterator ...

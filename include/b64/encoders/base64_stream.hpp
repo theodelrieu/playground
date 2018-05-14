@@ -44,9 +44,10 @@ class base64_stream_encoder
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
+  // FIXME the minimum level is forward, since multipass guarantee is on
   using iterator = detail::adaptive_iterator<
       base64_stream_encoder,
-      typename std::iterator_traits<UnderlyingIterator>::iterator_category>;
+      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>>;
 
 public:
   using value_type = char;
@@ -70,6 +71,8 @@ public:
     // avoid encoding values twice
     base64_stream_encoder enc{_end, _end};
     enc._begin = _begin;
+    // FIXME sentinel != iterator!!
+    // TODO require that a default constructed encoder => begin() == end()
     enc._current_it = enc._end;
     enc._last_encoded_index = 4;
     return {enc};

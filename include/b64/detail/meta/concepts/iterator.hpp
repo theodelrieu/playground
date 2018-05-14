@@ -42,8 +42,7 @@ template <typename T>
 struct is_iterator
   : std::integral_constant<
         bool,
-        std::is_default_constructible<T>::value &&
-            std::is_copy_constructible<T>::value &&
+        std::is_copy_constructible<T>::value &&
             std::is_copy_assignable<T>::value &&
             std::is_destructible<T>::value && is_swappable<T>::value &&
             is_valid_iterator_traits<std::iterator_traits<T>>::value &&

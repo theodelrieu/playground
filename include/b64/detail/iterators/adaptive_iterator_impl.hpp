@@ -159,7 +159,7 @@ template <typename Encoder>
 auto adaptive_random_access_iterator<Encoder>::operator--()
     -> adaptive_random_access_iterator<Encoder>&
 {
-  base::operator++();
+  base::operator--();
   return *this;
 }
 
@@ -188,7 +188,7 @@ auto adaptive_random_access_iterator<Encoder>::operator-=(difference_type n)
 }
 
 template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator+(difference_type n)
+auto adaptive_random_access_iterator<Encoder>::operator+(difference_type n) const
     -> adaptive_random_access_iterator<Encoder>
 {
   auto it = *this;
@@ -196,7 +196,7 @@ auto adaptive_random_access_iterator<Encoder>::operator+(difference_type n)
 }
 
 template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n)
+auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n) const
     -> adaptive_random_access_iterator<Encoder>
 {
   auto it = *this;
@@ -204,9 +204,9 @@ auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n)
 }
 
 template <typename Encoder>
-auto operator+(
+adaptive_random_access_iterator<Encoder> operator+(
     typename adaptive_random_access_iterator<Encoder>::difference_type n,
-    adaptive_random_access_iterator<Encoder>& it)
+    adaptive_random_access_iterator<Encoder> const& it)
 {
   auto tmp = it;
   return tmp += n;
@@ -220,8 +220,8 @@ auto adaptive_random_access_iterator<Encoder>::operator-(
 }
 
 template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator[](difference_type n) const
-    -> const_reference
+auto adaptive_random_access_iterator<Encoder>::operator[](
+    difference_type n) const -> value_type
 {
   return *(*this + n);
 }
@@ -230,7 +230,7 @@ template <typename Encoder>
 bool operator<(adaptive_random_access_iterator<Encoder> const& lhs,
                adaptive_random_access_iterator<Encoder> const& rhs) noexcept
 {
-  return lhs.pos() < rhs.pos();
+  return lhs._encoder.pos() < rhs._encoder.pos();
 }
 
 template <typename Encoder>

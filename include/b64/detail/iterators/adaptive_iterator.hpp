@@ -34,6 +34,9 @@ public:
   using value_type = typename Encoder::value_type;
   using difference_type = typename Encoder::difference_type;
 
+  // FIXME for that, maybe SFINAE on .get() return type (reference or not)
+  // value_type const& is required for ForwardIterators, not Input
+  // (e.g. istreambuf_iterator::reference == value_type)
   using reference = value_type const&;
   using const_reference = value_type const&;
 
@@ -150,12 +153,13 @@ public:
   adaptive_iterator& operator+=(difference_type);
   adaptive_iterator& operator-=(difference_type);
 
-  adaptive_iterator operator+(difference_type);
-  adaptive_iterator operator-(difference_type);
+  adaptive_iterator operator+(difference_type) const;
+  adaptive_iterator operator-(difference_type) const;
 
   difference_type operator-(adaptive_iterator const&);
 
-  const_reference operator[](difference_type) const;
+  // FIXME c.f. comment for operator*
+  value_type operator[](difference_type) const;
 
   template <typename T>
   friend bool operator==(adaptive_random_access_iterator<T> const&,
@@ -165,6 +169,23 @@ public:
   friend bool operator<(adaptive_random_access_iterator<T> const&,
                         adaptive_random_access_iterator<T> const&) noexcept;
 };
+
+template <typename Encoder>
+adaptive_random_access_iterator<Encoder> operator+(
+    typename adaptive_random_access_iterator<Encoder>::difference_type n,
+    adaptive_random_access_iterator<Encoder> const& it);
+
+template <typename T>
+bool operator>(adaptive_random_access_iterator<T> const&,
+               adaptive_random_access_iterator<T> const&) noexcept;
+
+template <typename T>
+bool operator>=(adaptive_random_access_iterator<T> const&,
+                adaptive_random_access_iterator<T> const&) noexcept;
+
+template <typename T>
+bool operator>=(adaptive_random_access_iterator<T> const&,
+                adaptive_random_access_iterator<T> const&) noexcept;
 }
 }
 
