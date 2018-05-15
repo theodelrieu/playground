@@ -23,6 +23,8 @@ Le use-case pour en remplacer un par un autre ? Speed ? Differents iterateurs ?
 
 
 codec variant:
-Detail d'implem, ex: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
+Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
+
+replace 4 with npos or smth like that
 
 concepts randomaccessiterator ...

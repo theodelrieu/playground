@@ -169,28 +169,37 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_seek_forward(
     difference_type n)
 {
   assert(n > 0);
-  auto max_increment = (_last_encoded_index + n) / 4;
-  if (max_increment > 0)
+  auto const res = std::ldiv(_last_encoded_index + n, 4);
+  auto const max_increment = res.quot;
+  if (max_increment == 0)
+    _last_encoded_index += n;
+  else
   {
-    if (max_increment > 1)
-      max_increment--;
-    std::advance(_current_it, (max_increment - 1) * 3);
-    if (_current_it != _end)
+    // if _last_encoded_index + n is a multiple of 4, it could reach the end.
+    // However, we cannot know that before we increment the iterator.
+    // In this specific case, perform 2 _encode_next_values() and test for
+    // _current_it == _end each time.
+    auto const min_increment =
+        (max_increment > 1 ? max_increment - (res.rem == 0 ? 2 : 1) : 0);
+    std::advance(_current_it, min_increment * 3);
+    if (_current_it == _end)
+      _last_encoded_index = 4;
+    else
     {
+      // Must encode values here, even if we'll reach the end.
+      // This is because we cannot assume the underlying iterator category
+      // here. So going backwards is not an option.
       _encode_next_values();
       _last_encoded_index = (_last_encoded_index + (n % 4)) % 4;
-      return;
+      if (max_increment - min_increment == 2)
+      {
+        if (_current_it != _end)
+          _encode_next_values();
+        else if (_last_encoded_index == 0)
+          _last_encoded_index = 4;
+      }
     }
   }
-
-  _last_encoded_index += n % 4;
-  if (_current_it == _end)
-  {
-    if (_last_encoded_index == 0)
-      _last_encoded_index = 4;
-  }
-  else if (_last_encoded_index >= 4)
-    _last_encoded_index %= 4;
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -221,6 +230,7 @@ bool operator==(
   {
     return true;
   }
+  // FIXME Sentinel does not have == in concept!!
   return std::tie(
              lhs._begin, lhs._current_it, lhs._end, lhs._last_encoded_index) ==
          std::tie(

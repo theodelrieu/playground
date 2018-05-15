@@ -192,7 +192,8 @@ auto adaptive_random_access_iterator<Encoder>::operator+(difference_type n) cons
     -> adaptive_random_access_iterator<Encoder>
 {
   auto it = *this;
-  return it += n;
+  it += n;
+  return it;
 }
 
 template <typename Encoder>
@@ -200,7 +201,8 @@ auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n) cons
     -> adaptive_random_access_iterator<Encoder>
 {
   auto it = *this;
-  return it -= n;
+  it -= n;
+  return it;
 }
 
 template <typename Encoder>
@@ -209,7 +211,8 @@ adaptive_random_access_iterator<Encoder> operator+(
     adaptive_random_access_iterator<Encoder> const& it)
 {
   auto tmp = it;
-  return tmp += n;
+  tmp += n;
+  return tmp;
 }
 
 template <typename Encoder>
