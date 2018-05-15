@@ -206,7 +206,27 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     _seek_backward(difference_type n)
 {
-  // TODO
+  assert(n < 0);
+  _last_encoded_index += n;
+  if (_last_encoded_index >= 0)
+    return;
+
+  auto res = std::ldiv(_last_encoded_index, 4);
+  _last_encoded_index = (4 + res.rem) % 4;
+  // first we have to reset the underlying iterator so that 
+  // distance(begin, current) % 3 == 0
+  if (_current_it == _end)
+  {
+    auto const nb_read =
+        3 - std::count(_last_encoded.begin() + 2, _last_encoded.end(), '=');
+    std::advance(_current_it, -nb_read);
+    if (res.quot == 0 && res.rem)
+      res.quot = -1;
+    else if (res.quot && res.rem)
+      res.quot--;
+  }
+  std::advance(_current_it, res.quot * 3);
+  _encode_next_values();
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>

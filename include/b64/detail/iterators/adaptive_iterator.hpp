@@ -11,6 +11,8 @@ namespace detail
 template <typename Encoder, typename IteratorTag>
 class adaptive_iterator;
 
+// TODO single class, enable_if on iterator tag on methods. 
+// TODO SeekableEncoder, RandomAccessEncoder
 template <typename Encoder>
 using adaptive_input_iterator =
     adaptive_iterator<Encoder, std::input_iterator_tag>;

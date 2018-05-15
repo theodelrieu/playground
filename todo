@@ -27,4 +27,6 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 
 replace 4 with npos or smth like that
 
+sized sentinel
+
 concepts randomaccessiterator ...

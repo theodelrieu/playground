@@ -8,6 +8,7 @@
 
 #include <catch.hpp>
 
+#include <b64/detail/meta/concepts/derived_from.hpp>
 #include <b64/encoders/base64_stream.hpp>
 
 using namespace std::string_literals;
@@ -36,6 +37,55 @@ struct stream_iterable_adapter
 
   std::istream& _is;
 };
+
+template <typename Encoder>
+void bidirectional_tests(Encoder const& enc, std::string const& b64_text)
+{
+  REQUIRE(b64_text.size() == 36);
+
+  auto begin = enc.begin();
+  auto const end = enc.end();
+
+  static_assert(
+      detail::is_derived_from<
+          typename std::iterator_traits<decltype(begin)>::iterator_category,
+          std::bidirectional_iterator_tag>::value,
+      "");
+
+  SECTION("Seek forward")
+  {
+    auto copy_it = begin;
+
+    CHECK(*std::next(begin, 4) == b64_text[4]);
+    CHECK(*(copy_it++) == b64_text[0]);
+    CHECK(*std::next(begin, 20) == b64_text[20]);
+    ++copy_it;
+    CHECK(*copy_it == b64_text[2]);
+    CHECK(*std::next(begin, 35) == b64_text.back());
+    CHECK(std::next(begin, 36) == end);
+
+    for (auto i = 0; i < b64_text.size(); ++i)
+      CHECK(*std::next(begin, i) == b64_text[i]);
+  }
+
+  SECTION("Seek backward")
+  {
+    auto copy_it = std::next(begin, 35);
+
+    CHECK(*copy_it == b64_text.back());
+    CHECK(*(copy_it--) == b64_text.back());
+    CHECK(*copy_it == b64_text[34]);
+    CHECK(*std::prev(copy_it, 5) == b64_text[29]);
+    CHECK(*std::prev(copy_it, 10) == b64_text[24]);
+    std::advance(copy_it, -34);
+    CHECK(copy_it == begin);
+    CHECK(*copy_it == b64_text.front());
+
+    auto copy_end = std::next(begin, 36);
+    for (auto i = 0; i < b64_text.size(); ++i)
+      CHECK(*std::prev(copy_end, b64_text.size() - i) == b64_text[i]);
+  }
+}
 }
 
 TEST_CASE("b64 stream", "[encoding][base64]")
@@ -86,32 +136,39 @@ TEST_CASE("b64 stream", "[encoding][base64]")
 
   SECTION("Iterators")
   {
-    auto const text = "abcdefghijklmnopqrstuvwxyz"s;
-    auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
-
-    encoders::base64_stream_encoder<std::string::const_iterator> enc(
-        text.begin(), text.end());
-
-    auto begin = enc.begin();
-    auto const end = enc.end();
-
-    static_assert(
-        std::is_same<
-            std::random_access_iterator_tag,
-            std::iterator_traits<decltype(begin)>::iterator_category>::value,
-        "");
-
-    SECTION("Seek forward")
+    SECTION("One byte padding")
     {
-      auto copy_it = begin;
+      auto const text = "abcdefghijklmnopqrstuvwxyz"s;
+      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
 
-      CHECK(*(begin + 4) == 'Z'); 
-      CHECK(*(copy_it++) == 'Y'); 
-      CHECK(*(begin + 20) == 'c');
-      ++copy_it;
-      CHECK(*copy_it == 'J');
-      CHECK(*(begin + 35) == '=');
-      CHECK(begin + 36 == end);
+      encoders::base64_stream_encoder<std::string::const_iterator> enc(
+          text.begin(), text.end());
+
+      bidirectional_tests(enc, b64_text);
+    }
+
+    SECTION("Two byte padding")
+    {
+      auto const text = "abcdefghijklmnopqrstuvwxy"s;
+      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
+
+      encoders::base64_stream_encoder<std::string::const_iterator> enc(
+          text.begin(), text.end());
+
+      bidirectional_tests(enc, b64_text);
+    }
+
+    SECTION("No byte padding")
+    {
+      auto const text = "abcdefghijklmnopqrstuvwxyza"s;
+      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
+
+      encoders::base64_stream_encoder<std::string::const_iterator> enc(
+          text.begin(), text.end());
+
+      bidirectional_tests(enc, b64_text);
     }
   }
+
+  // TODO test with sentinel once adaptive_iterator is refactored
 }
