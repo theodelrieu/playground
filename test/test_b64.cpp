@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <list>
 #include <type_traits>
 #include <vector>
 
@@ -141,10 +142,21 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       auto const text = "abcdefghijklmnopqrstuvwxyz"s;
       auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
 
-      encoders::base64_stream_encoder<std::string::const_iterator> enc(
-          text.begin(), text.end());
+      SECTION("Random access")
+      {
+        encoders::base64_stream_encoder<std::string::const_iterator> enc(
+            text.begin(), text.end());
 
-      bidirectional_tests(enc, b64_text);
+        bidirectional_tests(enc, b64_text);
+      }
+
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
     }
 
     SECTION("Two byte padding")
@@ -152,10 +164,22 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       auto const text = "abcdefghijklmnopqrstuvwxy"s;
       auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
 
-      encoders::base64_stream_encoder<std::string::const_iterator> enc(
-          text.begin(), text.end());
+      SECTION("Random access")
+      {
+        encoders::base64_stream_encoder<std::string::const_iterator> enc(
+            text.begin(), text.end());
 
-      bidirectional_tests(enc, b64_text);
+        bidirectional_tests(enc, b64_text);
+      }
+
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
     }
 
     SECTION("No byte padding")
@@ -163,10 +187,22 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       auto const text = "abcdefghijklmnopqrstuvwxyza"s;
       auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
 
-      encoders::base64_stream_encoder<std::string::const_iterator> enc(
-          text.begin(), text.end());
+      SECTION("Random access")
+      {
+        encoders::base64_stream_encoder<std::string::const_iterator> enc(
+            text.begin(), text.end());
 
-      bidirectional_tests(enc, b64_text);
+        bidirectional_tests(enc, b64_text);
+      }
+
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
     }
   }
 
