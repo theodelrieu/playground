@@ -2,50 +2,36 @@
 
 #include <iterator>
 #include <type_traits>
-#include <vector>
+
+#include <b64/detail/meta/concepts/derived_from.hpp>
 
 namespace b64
 {
 namespace detail
 {
+template <typename T>
+using is_bidirectional_tag =
+    is_derived_from<T, std::bidirectional_iterator_tag>;
+
+template <typename T>
+using is_random_access_tag =
+    is_derived_from<T, std::random_access_iterator_tag>;
+
 template <typename Encoder, typename IteratorTag>
-class adaptive_iterator;
-
-// TODO single class, enable_if on iterator tag on methods. 
-// TODO SeekableEncoder, RandomAccessEncoder
-template <typename Encoder>
-using adaptive_input_iterator =
-    adaptive_iterator<Encoder, std::input_iterator_tag>;
-
-template <typename Encoder>
-using adaptive_forward_iterator =
-    adaptive_iterator<Encoder, std::forward_iterator_tag>;
-
-template <typename Encoder>
-using adaptive_bidirectional_iterator =
-    adaptive_iterator<Encoder, std::bidirectional_iterator_tag>;
-
-template <typename Encoder>
-using adaptive_random_access_iterator =
-    adaptive_iterator<Encoder, std::random_access_iterator_tag>;
-
-template <typename Encoder>
-class adaptive_iterator<Encoder, std::input_iterator_tag>
+class adaptive_iterator
 {
 public:
   using value_type = typename Encoder::value_type;
   using difference_type = typename Encoder::difference_type;
 
-  // FIXME for that, maybe SFINAE on .get() return type (reference or not)
-  // value_type const& is required for ForwardIterators, not Input
-  // (e.g. istreambuf_iterator::reference == value_type)
+  // FIXME add stuff to encoder concept, + SFINAE
   using reference = value_type const&;
-  using const_reference = value_type const&;
+  using const_reference = reference;
 
   using pointer = value_type const*;
-  using const_pointer = value_type const*;
+  using const_pointer = pointer;
 
-  using iterator_category = std::input_iterator_tag;
+  using iterator_category = IteratorTag;
 
   adaptive_iterator() = default;
   adaptive_iterator(Encoder const&);
@@ -56,138 +42,78 @@ public:
   adaptive_iterator& operator++();
   adaptive_iterator operator++(int);
 
-  template <typename T>
-  friend bool operator==(adaptive_input_iterator<T> const&,
-                         adaptive_input_iterator<T> const&) noexcept;
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_bidirectional_tag<Tag>::value>>
+  adaptive_iterator& operator--();
 
-protected:
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_bidirectional_tag<Tag>::value>>
+  adaptive_iterator operator--(int);
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  adaptive_iterator& operator+=(difference_type);
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  adaptive_iterator& operator-=(difference_type);
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  adaptive_iterator operator+(difference_type) const;
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  adaptive_iterator operator-(difference_type) const;
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  auto operator-(adaptive_iterator const&) const -> difference_type;
+
+  template <typename Tag = IteratorTag,
+            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  reference operator[](difference_type) const;
+
+  template <typename T, typename Tag>
+  friend bool operator==(adaptive_iterator<T, Tag> const&,
+                         adaptive_iterator<T, Tag> const&) noexcept;
+
+  template <typename T>
+  friend bool operator<(
+      adaptive_iterator<T, std::random_access_iterator_tag> const&,
+      adaptive_iterator<T, std::random_access_iterator_tag> const&) noexcept;
+
+private:
   Encoder _encoder;
 };
 
-template <typename Encoder>
-class adaptive_iterator<Encoder, std::forward_iterator_tag>
-    : protected adaptive_input_iterator<Encoder>
-{
-  using base = adaptive_input_iterator<Encoder>;
+template <typename Encoder, typename Tag>
+bool operator!=(adaptive_iterator<Encoder, Tag> const&,
+                adaptive_iterator<Encoder, Tag> const&) noexcept;
 
-public:
-  using typename base::value_type;
-  using typename base::reference;
-  using typename base::const_reference;
-  using typename base::pointer;
-  using typename base::const_pointer;
-  using typename base::difference_type;
-
-  using iterator_category = std::forward_iterator_tag;
-
-  using base::base;
-
-  using base::operator*;
-  using base::operator->;
-
-  adaptive_iterator& operator++();
-  adaptive_iterator operator++(int);
-
-  template <typename T>
-  friend bool operator==(adaptive_forward_iterator<T> const&,
-                         adaptive_forward_iterator<T> const&) noexcept;
-};
+template <typename Encoder, typename Tag>
+adaptive_iterator<Encoder, std::random_access_iterator_tag> operator+(
+    typename adaptive_iterator<Encoder, std::random_access_iterator_tag>::
+        difference_type,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& it);
 
 template <typename Encoder>
-class adaptive_iterator<Encoder, std::bidirectional_iterator_tag>
-    : protected adaptive_forward_iterator<Encoder>
-{
-  using base = adaptive_forward_iterator<Encoder>;
-
-public:
-  using typename base::value_type;
-  using typename base::reference;
-  using typename base::const_reference;
-  using typename base::pointer;
-  using typename base::const_pointer;
-  using typename base::difference_type;
-
-  using iterator_category = std::bidirectional_iterator_tag;
-
-  using base::base;
-
-  using base::operator*;
-  using base::operator->;
-
-  adaptive_iterator& operator++();
-  adaptive_iterator operator++(int);
-
-  adaptive_iterator& operator--();
-  adaptive_iterator operator--(int);
-
-  template <typename T>
-  friend bool operator==(adaptive_bidirectional_iterator<T> const&,
-                         adaptive_bidirectional_iterator<T> const&) noexcept;
-};
+bool operator>(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Encoder,
+                      std::random_access_iterator_tag> const&) noexcept;
 
 template <typename Encoder>
-class adaptive_iterator<Encoder, std::random_access_iterator_tag>
-    : protected adaptive_bidirectional_iterator<Encoder>
-{
-  using base = adaptive_bidirectional_iterator<Encoder>;
-
-public:
-  using typename base::value_type;
-  using typename base::reference;
-  using typename base::const_reference;
-  using typename base::pointer;
-  using typename base::const_pointer;
-  using typename base::difference_type;
-
-  using iterator_category = std::random_access_iterator_tag;
-
-  using base::base;
-
-  using base::operator*;
-  using base::operator->;
-
-  adaptive_iterator& operator++();
-  adaptive_iterator operator++(int);
-
-  adaptive_iterator& operator--();
-  adaptive_iterator operator--(int);
-
-  adaptive_iterator& operator+=(difference_type);
-  adaptive_iterator& operator-=(difference_type);
-
-  adaptive_iterator operator+(difference_type) const;
-  adaptive_iterator operator-(difference_type) const;
-
-  difference_type operator-(adaptive_iterator const&);
-
-  // FIXME c.f. comment for operator*
-  value_type operator[](difference_type) const;
-
-  template <typename T>
-  friend bool operator==(adaptive_random_access_iterator<T> const&,
-                         adaptive_random_access_iterator<T> const&) noexcept;
-
-  template <typename T>
-  friend bool operator<(adaptive_random_access_iterator<T> const&,
-                        adaptive_random_access_iterator<T> const&) noexcept;
-};
+bool operator>=(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Encoder,
+                      std::random_access_iterator_tag> const&) noexcept;
 
 template <typename Encoder>
-adaptive_random_access_iterator<Encoder> operator+(
-    typename adaptive_random_access_iterator<Encoder>::difference_type n,
-    adaptive_random_access_iterator<Encoder> const& it);
-
-template <typename T>
-bool operator>(adaptive_random_access_iterator<T> const&,
-               adaptive_random_access_iterator<T> const&) noexcept;
-
-template <typename T>
-bool operator>=(adaptive_random_access_iterator<T> const&,
-                adaptive_random_access_iterator<T> const&) noexcept;
-
-template <typename T>
-bool operator>=(adaptive_random_access_iterator<T> const&,
-                adaptive_random_access_iterator<T> const&) noexcept;
+bool operator<=(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Encoder,
+                      std::random_access_iterator_tag> const&) noexcept;
 }
 }
 

@@ -5,200 +5,105 @@ namespace b64
 namespace detail
 {
 // input iterator
-template <typename Encoder>
-adaptive_input_iterator<Encoder>::adaptive_iterator(Encoder const& e)
+template <typename Encoder, typename Tag>
+adaptive_iterator<Encoder, Tag>::adaptive_iterator(Encoder const& e)
   : _encoder(e)
 {
 }
 
-template <typename Encoder>
-auto adaptive_input_iterator<Encoder>::operator*() const -> reference
+template <typename Encoder, typename Tag>
+auto adaptive_iterator<Encoder, Tag>::operator*() const -> reference
 {
   return _encoder.get();
 }
 
-template <typename Encoder>
-auto adaptive_input_iterator<Encoder>::operator->() const -> pointer
+template <typename Encoder, typename Tag>
+auto adaptive_iterator<Encoder, Tag>::operator-> () const -> pointer
 {
   return std::addressof(**this);
 }
 
-template <typename Encoder>
-auto adaptive_input_iterator<Encoder>::operator++()
-    -> adaptive_input_iterator<Encoder>&
+template <typename Encoder, typename Tag>
+auto adaptive_iterator<Encoder, Tag>::operator++()
+    -> adaptive_iterator<Encoder, Tag>&
 {
   _encoder.seek(1);
   return *this;
 }
 
-template <typename Encoder>
-auto adaptive_input_iterator<Encoder>::operator++(int)
-    -> adaptive_input_iterator<Encoder>
+template <typename Encoder, typename Tag>
+auto adaptive_iterator<Encoder, Tag>::operator++(int)
+    -> adaptive_iterator<Encoder, Tag>
 {
   auto ret = *this;
   ++(*this);
   return ret;
 }
 
-template <typename Encoder>
-bool operator==(adaptive_input_iterator<Encoder> const& lhs,
-                adaptive_input_iterator<Encoder> const& rhs) noexcept
+template <typename Encoder, typename Tag>
+bool operator==(adaptive_iterator<Encoder, Tag> const& lhs,
+                adaptive_iterator<Encoder, Tag> const& rhs) noexcept
 {
   return lhs._encoder == rhs._encoder;
 }
 
-template <typename Encoder>
-bool operator!=(adaptive_input_iterator<Encoder> const& lhs,
-                adaptive_input_iterator<Encoder> const& rhs) noexcept
+template <typename Encoder, typename Tag>
+bool operator!=(adaptive_iterator<Encoder, Tag> const& lhs,
+                adaptive_iterator<Encoder, Tag> const& rhs) noexcept
 {
   return !(lhs == rhs);
 }
 
-// forward iterator
-template <typename Encoder>
-auto adaptive_forward_iterator<Encoder>::operator++()
-    -> adaptive_forward_iterator<Encoder>&
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator--()
+    -> adaptive_iterator<Encoder, Tag>&
 {
-  base::operator++();
+  _encoder.seek(-1);
   return *this;
 }
 
-template <typename Encoder>
-auto adaptive_forward_iterator<Encoder>::operator++(int)
-    -> adaptive_forward_iterator<Encoder>
-{
-  auto ret = *this;
-  ++(*this);
-  return ret;
-}
-
-template <typename Encoder>
-bool operator==(adaptive_forward_iterator<Encoder> const& lhs,
-                adaptive_forward_iterator<Encoder> const& rhs) noexcept
-{
-  return lhs._encoder == rhs._encoder;
-}
-
-template <typename Encoder>
-bool operator!=(adaptive_forward_iterator<Encoder> const& lhs,
-                adaptive_forward_iterator<Encoder> const& rhs) noexcept
-{
-  return !(lhs == rhs);
-}
-
-// bidirectional iterator
-template <typename Encoder>
-auto adaptive_bidirectional_iterator<Encoder>::operator++()
-    -> adaptive_bidirectional_iterator<Encoder>&
-{
-  base::operator++();
-  return *this;
-}
-
-template <typename Encoder>
-auto adaptive_bidirectional_iterator<Encoder>::operator++(int)
-    -> adaptive_bidirectional_iterator<Encoder>
-{
-  auto ret = *this;
-  ++(*this);
-  return ret;
-}
-
-template <typename Encoder>
-auto adaptive_bidirectional_iterator<Encoder>::operator--()
-    -> adaptive_bidirectional_iterator<Encoder>&
-{
-  // for some reason base:: has to be specified...
-  base::_encoder.seek(-1);
-  return *this;
-}
-
-
-template <typename Encoder>
-auto adaptive_bidirectional_iterator<Encoder>::operator--(int)
-    -> adaptive_bidirectional_iterator<Encoder>
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator--(int)
+    -> adaptive_iterator<Encoder, Tag>
 {
   auto ret = *this;
   --(*this);
   return ret;
 }
 
-template <typename Encoder>
-bool operator==(adaptive_bidirectional_iterator<Encoder> const& lhs,
-                adaptive_bidirectional_iterator<Encoder> const& rhs) noexcept
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator+=(difference_type n)
+    -> adaptive_iterator<Encoder, Tag>&
 {
-  return lhs._encoder == rhs._encoder;
-}
-
-template <typename Encoder>
-bool operator!=(adaptive_bidirectional_iterator<Encoder> const& lhs,
-                adaptive_bidirectional_iterator<Encoder> const& rhs) noexcept
-{
-  return !(lhs == rhs);
-}
-
-// random-access iterator
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator++()
-    -> adaptive_random_access_iterator<Encoder>&
-{
-  base::operator++();
+  _encoder.seek(n);
   return *this;
 }
 
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator++(int)
-    -> adaptive_random_access_iterator<Encoder>
-{
-  auto ret = *this;
-  ++(*this);
-  return ret;
-}
-
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator--()
-    -> adaptive_random_access_iterator<Encoder>&
-{
-  base::operator--();
-  return *this;
-}
-
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator--(int)
-    -> adaptive_random_access_iterator<Encoder>
-{
-  auto ret = *this;
-  --(*this);
-  return ret;
-}
-
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator+=(difference_type n)
-    -> adaptive_random_access_iterator<Encoder>&
-{
-  base::_encoder.seek(n);
-  return *this;
-}
-
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator-=(difference_type n)
-    -> adaptive_random_access_iterator<Encoder>&
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator-=(difference_type n)
+    -> adaptive_iterator<Encoder, Tag>&
 {
   return *this += -n;
 }
 
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator+(difference_type n) const
-    -> adaptive_random_access_iterator<Encoder>
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator+(difference_type n) const
+    -> adaptive_iterator<Encoder, Tag>
 {
   auto it = *this;
   it += n;
   return it;
 }
 
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n) const
-    -> adaptive_random_access_iterator<Encoder>
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator-(difference_type n) const
+    -> adaptive_iterator<Encoder, Tag>
 {
   auto it = *this;
   it -= n;
@@ -206,69 +111,67 @@ auto adaptive_random_access_iterator<Encoder>::operator-(difference_type n) cons
 }
 
 template <typename Encoder>
-adaptive_random_access_iterator<Encoder> operator+(
-    typename adaptive_random_access_iterator<Encoder>::difference_type n,
-    adaptive_random_access_iterator<Encoder> const& it)
+adaptive_iterator<Encoder, std::random_access_iterator_tag> operator+(
+    typename adaptive_iterator<Encoder,
+                               std::random_access_iterator_tag>::difference_type
+        n,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& it)
 {
   auto tmp = it;
   tmp += n;
   return tmp;
 }
 
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator-(
-    adaptive_random_access_iterator<Encoder> const& it) -> difference_type
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator-(
+    adaptive_iterator<Encoder, Tag> const& it) const -> difference_type
 {
-  return base::_encoder.pos() - it._encoder.pos();
+  return _encoder.pos() - it._encoder.pos();
 }
 
-template <typename Encoder>
-auto adaptive_random_access_iterator<Encoder>::operator[](
-    difference_type n) const -> value_type
+template <typename Encoder, typename Tag>
+template <typename T, typename>
+auto adaptive_iterator<Encoder, Tag>::operator[](difference_type n) const
+    -> reference
 {
   return *(*this + n);
 }
 
 template <typename Encoder>
-bool operator<(adaptive_random_access_iterator<Encoder> const& lhs,
-               adaptive_random_access_iterator<Encoder> const& rhs) noexcept
+bool operator<(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& lhs,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&
+        rhs) noexcept
 {
   return lhs._encoder.pos() < rhs._encoder.pos();
 }
 
 template <typename Encoder>
-bool operator>(adaptive_random_access_iterator<Encoder> const& lhs,
-               adaptive_random_access_iterator<Encoder> const& rhs) noexcept
+bool operator>(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& lhs,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&
+        rhs) noexcept
 {
   return rhs < lhs;
 }
 
 template <typename Encoder>
-bool operator>=(adaptive_random_access_iterator<Encoder> const& lhs,
-                adaptive_random_access_iterator<Encoder> const& rhs) noexcept
+bool operator>=(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& lhs,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&
+        rhs) noexcept
 {
   return !(lhs < rhs);
 }
 
 template <typename Encoder>
-bool operator<=(adaptive_random_access_iterator<Encoder> const& lhs,
-                adaptive_random_access_iterator<Encoder> const& rhs) noexcept
+bool operator<=(
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& lhs,
+    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&
+        rhs) noexcept
 {
   return !(lhs > rhs);
-}
-
-template <typename Encoder>
-bool operator==(adaptive_random_access_iterator<Encoder> const& lhs,
-                adaptive_random_access_iterator<Encoder> const& rhs) noexcept
-{
-  return lhs._encoder == rhs._encoder;
-}
-
-template <typename Encoder>
-bool operator!=(adaptive_random_access_iterator<Encoder> const& lhs,
-                adaptive_random_access_iterator<Encoder> const& rhs) noexcept
-{
-  return !(lhs == rhs);
 }
 }
 }

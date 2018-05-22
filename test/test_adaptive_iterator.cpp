@@ -30,10 +30,9 @@ class noop_encoder
   using difference_type = typename underlying_iterator_traits::difference_type;
   using value_type = typename underlying_iterator_traits::value_type;
 
-  friend detail::adaptive_input_iterator<noop_encoder>;
-  friend detail::adaptive_forward_iterator<noop_encoder>;
-  friend detail::adaptive_bidirectional_iterator<noop_encoder>;
-  friend detail::adaptive_random_access_iterator<noop_encoder>;
+  friend detail::adaptive_iterator<
+      noop_encoder,
+      detail::iterator_category_t<underlying_iterator_traits>>;
 
 public:
   noop_encoder() = default;
