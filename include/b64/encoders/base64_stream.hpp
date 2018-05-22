@@ -47,7 +47,6 @@ class base64_stream_encoder
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
-  // FIXME the minimum level is forward, since multipass guarantee is on
   using iterator = detail::adaptive_iterator<
       base64_stream_encoder,
       detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>>;
@@ -70,15 +69,13 @@ public:
 
   iterator end() const
   {
-    // hack to trick the constructor
-    // avoid encoding values twice
-    base64_stream_encoder enc{_end, _end};
+    // hack to trick the constructor, avoid encoding values twice
+    // _last_encoded_index == nullopt
+    base64_stream_encoder enc;
     enc._begin = _begin;
-    // FIXME sentinel != iterator!!
-    // TODO require that a default constructed encoder => begin() == end()
-    enc._current_it = enc._end;
-    enc._last_encoded_index = nonstd::nullopt;
-    return {enc};
+    enc._current_it = _begin;
+    enc._end = _end;
+    return {std::move(enc)};
   }
 
   template <typename T, typename U, typename V>
@@ -157,11 +154,11 @@ std::size_t base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos()
 {
   // this function only gets called by adaptive_random_access_iterators
   // still using std::distance to avoid compiler errors on inferior iterators.
-  if (_begin == _end)
-    return 0;
   auto dist = std::distance(_begin, _current_it);
-  assert(dist % 3 == 0 || (_current_it == _end));
-  if (_current_it != _end)
+  // FIXME SFINAE this method and use SizedSentinel.
+  if (!_last_encoded_index)
+    dist = std::distance(_begin, _end);
+  if (_current_it != _end && _last_encoded_index)
     dist -= 3;
   auto const res = std::lldiv(dist, 3);
   return (res.quot + std::min(res.rem, 1ll)) * 4;
