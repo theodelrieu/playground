@@ -3,7 +3,8 @@
 #include <type_traits>
 
 // concept EqualityComparableWith:
-// TODO link Range TS cppreference, try to understand what the hell is ranges::CommonReference
+// TODO link Range TS cppreference, try to understand what the hell is
+// ranges::CommonReference
 namespace b64
 {
 namespace detail
