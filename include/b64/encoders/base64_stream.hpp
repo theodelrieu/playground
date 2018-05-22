@@ -8,8 +8,11 @@
 #include <cstdlib>
 #include <tuple>
 
+#include <optional.hpp>
+
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
+#include <b64/detail/wrap_integer.hpp>
 
 #include <b64/detail/meta/concepts/iterable.hpp>
 #include <b64/detail/meta/concepts/iterator.hpp>
@@ -74,7 +77,7 @@ public:
     // FIXME sentinel != iterator!!
     // TODO require that a default constructed encoder => begin() == end()
     enc._current_it = enc._end;
-    enc._last_encoded_index = 4;
+    enc._last_encoded_index = nonstd::nullopt;
     return {enc};
   }
 
@@ -92,7 +95,7 @@ private:
   UnderlyingIterator _current_it{};
   Sentinel _end{};
   std::array<char, 4> _last_encoded;
-  int _last_encoded_index{4};
+  nonstd::optional<detail::wrap_integer<0, 3>> _last_encoded_index;
 };
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -108,7 +111,7 @@ base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
 {
   if (_current_it != _end)
   {
-    _last_encoded_index = 0;
+    _last_encoded_index.emplace(0);
     _encode_next_values();
   }
 }
@@ -145,7 +148,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type const&
 {
-  return _last_encoded[_last_encoded_index];
+  return _last_encoded[*_last_encoded_index];
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -169,10 +172,10 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_seek_forward(
     difference_type n)
 {
   assert(n > 0);
-  auto const res = std::ldiv(_last_encoded_index + n, 4);
+  auto const res = std::ldiv(*_last_encoded_index + n, 4);
   auto const max_increment = res.quot;
   if (max_increment == 0)
-    _last_encoded_index += n;
+    *_last_encoded_index += n;
   else
   {
     // if _last_encoded_index + n is a multiple of 4, it could reach the end.
@@ -183,20 +186,20 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_seek_forward(
         (max_increment > 1 ? max_increment - (res.rem == 0 ? 2 : 1) : 0);
     std::advance(_current_it, min_increment * 3);
     if (_current_it == _end)
-      _last_encoded_index = 4;
+      _last_encoded_index = nonstd::nullopt;
     else
     {
       // Must encode values here, even if we'll reach the end.
       // This is because we cannot assume the underlying iterator category
       // here. So going backwards is not an option.
       _encode_next_values();
-      _last_encoded_index = (_last_encoded_index + (n % 4)) % 4;
+      *_last_encoded_index += n;
       if (max_increment - min_increment == 2)
       {
         if (_current_it != _end)
           _encode_next_values();
         else if (_last_encoded_index == 0)
-          _last_encoded_index = 4;
+          _last_encoded_index = nonstd::nullopt;
       }
     }
   }
@@ -207,12 +210,12 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     _seek_backward(difference_type n)
 {
   assert(n < 0);
-  _last_encoded_index += n;
-  if (_last_encoded_index >= 0)
+  auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
+  _last_encoded_index.emplace(idx);
+  if (idx >= 0)
     return;
 
-  auto res = std::ldiv(_last_encoded_index, 4);
-  _last_encoded_index = (4 + res.rem) % 4;
+  auto res = std::ldiv(idx, 4);
   if (_current_it == _end)
   {
     // we have to reset the underlying iterator so that
@@ -244,17 +247,13 @@ bool operator==(
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
 {
-  // 4 can only be obtained by being at the end of encoding stream
-  if (lhs._last_encoded_index == 4 &&
+  if (!lhs._last_encoded_index &&
       lhs._last_encoded_index == rhs._last_encoded_index)
   {
     return true;
   }
-  // FIXME Sentinel does not have == in concept!!
-  return std::tie(
-             lhs._begin, lhs._current_it, lhs._end, lhs._last_encoded_index) ==
-         std::tie(
-             rhs._begin, rhs._current_it, rhs._end, rhs._last_encoded_index);
+  return std::tie(lhs._begin, lhs._current_it, lhs._last_encoded_index) ==
+         std::tie(rhs._begin, rhs._current_it, rhs._last_encoded_index);
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>

@@ -8,9 +8,9 @@ add_executable(test_b64 test_b64.cpp $<TARGET_OBJECTS:catch_main>)
 add_executable(test_adaptive_iterator test_adaptive_iterator.cpp $<TARGET_OBJECTS:catch_main>)
 add_executable(test_wrap_integer test_wrap_integer.cpp $<TARGET_OBJECTS:catch_main>)
 
-target_link_libraries(test_b64 b64 CONAN_PKG::catch2)
-target_link_libraries(test_adaptive_iterator b64 CONAN_PKG::catch2)
-target_link_libraries(test_wrap_integer b64 CONAN_PKG::catch2)
+target_link_libraries(test_b64 b64 CONAN_PKG::catch2 CONAN_PKG::optional-lite)
+target_link_libraries(test_adaptive_iterator b64 CONAN_PKG::catch2 CONAN_PKG::optional-lite)
+target_link_libraries(test_wrap_integer b64 CONAN_PKG::catch2 CONAN_PKG::optional-lite)
 # TODO function/macro
 
 include(ExternalData)
