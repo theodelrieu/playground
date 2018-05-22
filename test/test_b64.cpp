@@ -10,6 +10,7 @@
 #include <catch.hpp>
 
 #include <b64/detail/meta/concepts/derived_from.hpp>
+#include <b64/detail/meta/concepts/random_access_iterator.hpp>
 #include <b64/encoders/base64_stream.hpp>
 
 using namespace std::string_literals;
@@ -98,6 +99,11 @@ TEST_CASE("b64 stream", "[encoding][base64]")
         text.begin(), text.end());
 
     std::string s(enc.begin(), enc.end());
+    static_assert(detail::is_random_access_iterator<decltype(s.begin())>::value,
+                  "");
+
+    static_assert(detail::is_random_access_iterator<decltype(enc.begin())>::value,
+                  "");
     CHECK(s == "YWJjZA==");
   }
 

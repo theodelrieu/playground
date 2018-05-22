@@ -21,13 +21,45 @@ using reference_t = typename T::reference;
 template <typename T>
 using iterator_category_t = typename T::iterator_category;
 
-template <typename T>
-using next_char_t = decltype(std::declval<T const&>().next_char());
+template <typename T, typename U>
+using substraction_t = decltype(std::declval<T>() - std::declval<U>());
+
+template <typename T, typename U>
+using addition_t = decltype(std::declval<T>() + std::declval<U>());
+
+template <typename T, typename U>
+using addition_assignment_t = decltype(std::declval<T>() += std::declval<U>());
+
+template <typename T, typename U>
+using array_subscript_t = decltype(std::declval<T>()[std::declval<U>()]);
+
+template <typename T, typename U>
+using substraction_assignment_t =
+    decltype(std::declval<T>() -= std::declval<U>());
 
 template <typename T>
-using eof_t = decltype(std::declval<T const&>().eof());
+using post_increment_t = decltype(std::declval<T>()++);
 
 template <typename T>
-using category_t = typename T::category;
+using pre_increment_t = decltype(++std::declval<T>());
+
+template <typename T>
+using post_decrement_t = decltype(std::declval<T>()--);
+
+template <typename T>
+using pre_decrement_t = decltype(--std::declval<T>());
+
+template <typename T, typename U>
+using less_than_t = decltype(std::declval<T>() < std::declval<U>());
+
+template <typename T, typename U>
+using less_or_equal_than_t = decltype(std::declval<T>() <= std::declval<U>());
+
+template <typename T, typename U>
+using greater_than_t = decltype(std::declval<T>() > std::declval<U>());
+
+template <typename T, typename U>
+using greater_or_equal_than_t =
+    decltype(std::declval<T>() >= std::declval<U>());
 }
 }
