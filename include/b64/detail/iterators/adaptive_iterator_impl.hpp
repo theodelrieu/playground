@@ -27,7 +27,7 @@ template <typename Encoder, typename Tag>
 auto adaptive_iterator<Encoder, Tag>::operator++()
     -> adaptive_iterator<Encoder, Tag>&
 {
-  _encoder.seek(1);
+  _encoder.seek_forward(1);
   return *this;
 }
 
@@ -59,7 +59,7 @@ template <typename T, typename>
 auto adaptive_iterator<Encoder, Tag>::operator--()
     -> adaptive_iterator<Encoder, Tag>&
 {
-  _encoder.seek(-1);
+  _encoder.seek_backward(-1);
   return *this;
 }
 
@@ -78,7 +78,10 @@ template <typename T, typename>
 auto adaptive_iterator<Encoder, Tag>::operator+=(difference_type n)
     -> adaptive_iterator<Encoder, Tag>&
 {
-  _encoder.seek(n);
+  if (n > 0)
+    _encoder.seek_forward(n);
+  else if (n < 0)
+    _encoder.seek_backward(n);
   return *this;
 }
 

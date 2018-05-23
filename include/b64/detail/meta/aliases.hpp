@@ -61,5 +61,12 @@ using greater_than_t = decltype(std::declval<T>() > std::declval<U>());
 template <typename T, typename U>
 using greater_or_equal_than_t =
     decltype(std::declval<T>() >= std::declval<U>());
+
+template <typename T>
+using get_function_t = decltype(std::declval<T>().get());
+
+template <typename T, typename... Args>
+using seek_forward_function_t =
+    decltype(std::declval<T>().seek_forward(std::declval<Args>()...));
 }
 }

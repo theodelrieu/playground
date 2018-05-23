@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include <b64/detail/meta/concepts/derived_from.hpp>
+#include <b64/detail/meta/concepts/encoder.hpp>
 
 namespace b64
 {

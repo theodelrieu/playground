@@ -27,14 +27,15 @@ class noop_encoder
       noop_encoder,
       detail::iterator_category_t<underlying_iterator_traits>>;
 
-  using difference_type = typename underlying_iterator_traits::difference_type;
-  using value_type = typename underlying_iterator_traits::value_type;
 
   friend detail::adaptive_iterator<
       noop_encoder,
       detail::iterator_category_t<underlying_iterator_traits>>;
 
 public:
+  using difference_type = typename underlying_iterator_traits::difference_type;
+  using value_type = typename underlying_iterator_traits::value_type;
+
   noop_encoder() = default;
   noop_encoder(UnderlyingIterator it, Sentinel end)
     : _begin(it), _current_it(it), _end(end)
@@ -54,7 +55,12 @@ public:
     return {enc};
   }
 
-  void seek(difference_type n)
+  void seek_backward(difference_type n)
+  {
+    std::advance(_current_it, n);
+  }
+
+  void seek_forward(difference_type n)
   {
     std::advance(_current_it, n);
   }
@@ -127,8 +133,6 @@ void input_iterator_checks(InputIterator current, Sentinel end)
   CHECK(std::distance(current, end) == 24);
 }
 
-template <typename T>
-struct S;
 template <typename ForwardIterator, typename Sentinel>
 void forward_iterator_checks(ForwardIterator current, Sentinel end)
 {

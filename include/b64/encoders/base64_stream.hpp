@@ -60,7 +60,8 @@ public:
 
   value_type const& get() const;
   std::size_t pos() const noexcept;
-  void seek(difference_type);
+  void seek_forward(difference_type);
+  void seek_backward(difference_type);
 
   iterator begin() const
   {
@@ -84,9 +85,6 @@ public:
 
 private:
   void _encode_next_values();
-
-  void _seek_forward(difference_type);
-  void _seek_backward(difference_type);
 
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};
@@ -165,7 +163,7 @@ std::size_t base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos()
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_seek_forward(
+void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
     difference_type n)
 {
   assert(n > 0);
@@ -204,7 +202,7 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_seek_forward(
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-    _seek_backward(difference_type n)
+    seek_backward(difference_type n)
 {
   assert(n < 0);
   auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
@@ -227,16 +225,6 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     res.quot--;
   std::advance(_current_it, res.quot * 3);
   _encode_next_values();
-}
-
-template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek(
-    difference_type n)
-{
-  if (n > 0)
-    _seek_forward(n);
-  else if (n < 0)
-    _seek_backward(n);
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
