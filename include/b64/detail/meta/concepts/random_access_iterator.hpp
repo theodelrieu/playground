@@ -36,14 +36,11 @@ public:
       is_detected_exact<T, substraction_t, T const, difference_type>::value &&
       is_detected_exact<T&, substraction_assignment_t, T, difference_type>::
           value &&
-      is_detected_exact<reference_t<std::iterator_traits<T>>,
-                        array_subscript_t,
-                        T,
-                        difference_type>::value &&
-      is_detected_exact<reference_t<std::iterator_traits<T const>>,
-                        array_subscript_t,
-                        T const,
-                        difference_type>::value;
+      std::is_convertible<
+          detected_t<array_subscript_t, T const, difference_type>,
+          reference_t<std::iterator_traits<T>>>::value &&
+      std::is_convertible<detected_t<array_subscript_t, T, difference_type>,
+                          reference_t<std::iterator_traits<T>>>::value;
 };
 }
 }

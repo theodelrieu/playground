@@ -25,7 +25,7 @@ public:
   using difference_type = typename Encoder::difference_type;
 
   // FIXME add stuff to encoder concept, + SFINAE
-  using reference = value_type const&;
+  using reference = decltype(std::declval<Encoder const&>().get());
   using const_reference = reference;
 
   using pointer = value_type const*;
@@ -72,7 +72,7 @@ public:
 
   template <typename Tag = IteratorTag,
             typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
-  reference operator[](difference_type) const;
+  value_type operator[](difference_type) const;
 
   template <typename T, typename Tag>
   friend bool operator==(adaptive_iterator<T, Tag> const&,

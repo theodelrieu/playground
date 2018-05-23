@@ -127,6 +127,8 @@ void input_iterator_checks(InputIterator current, Sentinel end)
   CHECK(std::distance(current, end) == 24);
 }
 
+template <typename T>
+struct S;
 template <typename ForwardIterator, typename Sentinel>
 void forward_iterator_checks(ForwardIterator current, Sentinel end)
 {

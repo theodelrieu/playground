@@ -133,7 +133,7 @@ auto adaptive_iterator<Encoder, Tag>::operator-(
 template <typename Encoder, typename Tag>
 template <typename T, typename>
 auto adaptive_iterator<Encoder, Tag>::operator[](difference_type n) const
-    -> reference
+    -> value_type
 {
   return *(*this + n);
 }
