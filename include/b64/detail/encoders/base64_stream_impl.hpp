@@ -43,7 +43,9 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
   // _last_encoded_index == nullopt
   base64_stream_encoder enc;
   enc._begin = _begin;
-  enc._current_it = _begin;
+  // hack for pos(): let _current_it value initialized
+  // pos is only available on RandomAccessIterator.
+  // Which means that a value initalized iterator is a valid sentinel.
   enc._end = _end;
   return {std::move(enc)};
 }
@@ -92,11 +94,21 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
   static_assert(detail::is_sized_sentinel<UnderlyingIterator, Sentinel>::value,
                 "");
 
-  auto dist = _current_it - _begin;
-  if (!_last_encoded_index)
+  auto dist = difference_type{};
+
+  // c.f. hack explanation in end().
+  if (_current_it == UnderlyingIterator{} || _current_it == _end ||
+      !_last_encoded_index)
+  {
     dist = _end - _begin;
-  if (_current_it != _end && _last_encoded_index)
-    dist -= 3;
+  }
+  else
+  {
+    dist = _current_it - _begin;
+    // FIXME clean this code...
+    if (_current_it != _end && dist > 0)
+      dist -= 3;
+  }
   auto const res = std::lldiv(dist, 3);
   return (res.quot + std::min(res.rem, 1ll)) * 4;
 }
@@ -172,11 +184,12 @@ bool operator==(
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
 {
-  if (!lhs._last_encoded_index &&
-      lhs._last_encoded_index == rhs._last_encoded_index)
-  {
-    return true;
-  }
+  if (!lhs._last_encoded_index || !rhs._last_encoded_index)
+    return lhs._last_encoded_index == rhs._last_encoded_index;
+  // c.f. hack explanation in end()
+  auto const sentinel_value = UnderlyingIterator{};
+  if (lhs._current_it == sentinel_value || rhs._current_it == sentinel_value)
+    return lhs._current_it == rhs._current_it;
   return std::tie(lhs._begin, lhs._current_it, lhs._last_encoded_index) ==
          std::tie(rhs._begin, rhs._current_it, rhs._last_encoded_index);
 }

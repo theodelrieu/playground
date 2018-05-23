@@ -241,5 +241,25 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     }
   }
 
+  SECTION("Inception")
+  {
+    auto const text = "abcde"s;
+    auto const b64_text = "YWJjZGU="s;
+    auto const final_b64_text = "WVdKalpHVT0="s;
+
+    encoder<std::string::const_iterator> first_enc(text.begin(), text.end());
+    encoder<decltype(first_enc.begin())> second_enc(first_enc.begin(), first_enc.end());
+
+    std::string s1(first_enc.begin(), first_enc.end());
+    CHECK(s1 == b64_text);
+
+    auto it = second_enc.begin();
+    auto end = second_enc.end();
+    auto dist = end - it;
+
+    std::string s2(second_enc.begin(), second_enc.end());
+    CHECK(s2 == final_b64_text);
+  }
+
   // TODO test with sentinel once adaptive_iterator is refactored
 }
