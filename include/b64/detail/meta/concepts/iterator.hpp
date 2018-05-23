@@ -4,7 +4,7 @@
 #include <type_traits>
 
 #include <b64/detail/meta/aliases.hpp>
-#include <b64/detail/meta/concepts/swappable.hpp>
+#include <b64/detail/meta/concepts/semiregular.hpp>
 #include <b64/detail/meta/detected.hpp>
 
 // concept Iterator: http://en.cppreference.com/w/cpp/concept/Iterator
@@ -36,18 +36,13 @@ template <typename T>
 using dereference_t = decltype(*std::declval<T&>());
 
 template <typename T>
-using increment_t = decltype(++std::declval<T&>());
-
-template <typename T>
 struct is_iterator
-  : std::integral_constant<
-        bool,
-        std::is_copy_constructible<T>::value &&
-            std::is_copy_assignable<T>::value &&
-            std::is_destructible<T>::value && is_swappable<T>::value &&
-            is_valid_iterator_traits<std::iterator_traits<T>>::value &&
-            is_detected<dereference_t, T>::value &&
-            is_detected_exact<T&, increment_t, T>::value>
+    : std::integral_constant<
+          bool,
+          is_semiregular<T>::value &&
+              is_valid_iterator_traits<std::iterator_traits<T>>::value &&
+              is_detected<dereference_t, T&>::value &&
+              is_detected_exact<T&, pre_increment_t, T&>::value>
 {
 };
 }

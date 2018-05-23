@@ -82,6 +82,7 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
+template <typename, typename>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
     noexcept -> difference_type
 {
@@ -136,6 +137,7 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
+template <typename, typename>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     seek_backward(difference_type n)
 {

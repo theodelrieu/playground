@@ -55,7 +55,7 @@ bool operator!=(adaptive_iterator<Encoder, Tag> const& lhs,
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator--()
     -> adaptive_iterator<Encoder, Tag>&
 {
@@ -64,7 +64,7 @@ auto adaptive_iterator<Encoder, Tag>::operator--()
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator--(int)
     -> adaptive_iterator<Encoder, Tag>
 {
@@ -74,7 +74,7 @@ auto adaptive_iterator<Encoder, Tag>::operator--(int)
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator+=(difference_type n)
     -> adaptive_iterator<Encoder, Tag>&
 {
@@ -86,7 +86,7 @@ auto adaptive_iterator<Encoder, Tag>::operator+=(difference_type n)
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator-=(difference_type n)
     -> adaptive_iterator<Encoder, Tag>&
 {
@@ -94,7 +94,7 @@ auto adaptive_iterator<Encoder, Tag>::operator-=(difference_type n)
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator+(difference_type n) const
     -> adaptive_iterator<Encoder, Tag>
 {
@@ -104,7 +104,7 @@ auto adaptive_iterator<Encoder, Tag>::operator+(difference_type n) const
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator-(difference_type n) const
     -> adaptive_iterator<Encoder, Tag>
 {
@@ -126,7 +126,7 @@ adaptive_iterator<Encoder, std::random_access_iterator_tag> operator+(
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator-(
     adaptive_iterator<Encoder, Tag> const& it) const -> difference_type
 {
@@ -134,7 +134,7 @@ auto adaptive_iterator<Encoder, Tag>::operator-(
 }
 
 template <typename Encoder, typename Tag>
-template <typename T, typename>
+template <typename, typename>
 auto adaptive_iterator<Encoder, Tag>::operator[](difference_type n) const
     -> value_type
 {

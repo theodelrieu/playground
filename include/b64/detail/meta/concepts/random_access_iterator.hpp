@@ -21,7 +21,8 @@ template <typename T>
 struct is_random_access_iterator<
     T,
     std::enable_if_t<is_bidirectional_iterator<T>::value &&
-                     is_derived_from<detected_t<iterator_category_t, T>,
+                     is_derived_from<detected_t<iterator_category_t,
+                                                std::iterator_traits<T>>,
                                      std::random_access_iterator_tag>::value>>
 {
 private:
@@ -30,11 +31,12 @@ private:
 public:
   static auto constexpr value =
       is_strict_totally_ordered<T>::value && is_sized_sentinel<T, T>::value &&
-      is_detected_exact<T&, addition_assignment_t, T, difference_type>::value &&
+      is_detected_exact<T&, addition_assignment_t, T&, difference_type>::
+          value &&
       is_detected_exact<T, addition_t, T const, difference_type>::value &&
       is_detected_exact<T, addition_t, difference_type, T const>::value &&
       is_detected_exact<T, substraction_t, T const, difference_type>::value &&
-      is_detected_exact<T&, substraction_assignment_t, T, difference_type>::
+      is_detected_exact<T&, substraction_assignment_t, T&, difference_type>::
           value &&
       std::is_convertible<
           detected_t<array_subscript_t, T const, difference_type>,

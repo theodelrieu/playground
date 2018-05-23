@@ -8,11 +8,10 @@
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/wrap_integer.hpp>
 
-#include <b64/detail/meta/concepts/bidirectional_encoder.hpp>
-#include <b64/detail/meta/concepts/encoder.hpp>
+#include <b64/detail/meta/concepts/bidirectional_iterator.hpp>
 #include <b64/detail/meta/concepts/iterable.hpp>
 #include <b64/detail/meta/concepts/iterator.hpp>
-#include <b64/detail/meta/concepts/random_access_encoder.hpp>
+#include <b64/detail/meta/concepts/random_access_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
 
 namespace b64
@@ -58,12 +57,20 @@ public:
   base64_stream_encoder(UnderlyingIterator const&, Sentinel const&);
 
   value_type const& get() const;
-  difference_type pos() const noexcept;
   void seek_forward(difference_type);
-  void seek_backward(difference_type);
 
   iterator begin() const;
   iterator end() const;
+
+  template <
+      typename T = UnderlyingIterator,
+      typename = std::enable_if_t<detail::is_bidirectional_iterator<T>::value>>
+  void seek_backward(difference_type);
+
+  template <
+      typename T = UnderlyingIterator,
+      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
+  auto pos() const noexcept -> difference_type;
 
   template <typename T, typename U, typename V>
   friend bool operator==(base64_stream_encoder<T, U, V> const&,
@@ -82,15 +89,3 @@ private:
 }
 
 #include <b64/detail/encoders/base64_stream_impl.hpp>
-
-static_assert(
-    b64::detail::is_encoder<b64::encoders::base64_stream_encoder<char*>>::value,
-    "");
-
-static_assert(b64::detail::is_bidirectional_encoder<
-                  b64::encoders::base64_stream_encoder<char*>>::value,
-              "");
-
-static_assert(b64::detail::is_random_access_encoder<
-                  b64::encoders::base64_stream_encoder<char*>>::value,
-              "");

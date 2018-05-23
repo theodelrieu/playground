@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <chrono>
+#include <forward_list>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -9,7 +10,10 @@
 
 #include <catch.hpp>
 
+#include <b64/detail/meta/concepts/bidirectional_encoder.hpp>
 #include <b64/detail/meta/concepts/derived_from.hpp>
+#include <b64/detail/meta/concepts/encoder.hpp>
+#include <b64/detail/meta/concepts/random_access_encoder.hpp>
 #include <b64/detail/meta/concepts/random_access_iterator.hpp>
 #include <b64/encoders/base64_stream.hpp>
 
@@ -20,6 +24,31 @@ extern std::vector<std::string> testFilePaths;
 
 namespace
 {
+template <typename Iterator, typename Sentinel = Iterator>
+using encoder = encoders::base64_stream_encoder<Iterator, Sentinel>;
+
+static_assert(detail::is_encoder<encoder<char*>>::value, "");
+static_assert(detail::is_bidirectional_encoder<encoder<char*>>::value, "");
+static_assert(detail::is_random_access_encoder<encoder<char*>>::value, "");
+
+static_assert(!detail::is_random_access_encoder<
+                  encoder<std::list<char>::iterator>>::value,
+              "");
+static_assert(
+    detail::is_bidirectional_encoder<encoder<std::list<char>::iterator>>::value,
+    "");
+static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
+              "");
+
+static_assert(!detail::is_random_access_encoder<
+                  encoder<std::forward_list<char>::iterator>>::value,
+              "");
+static_assert(!detail::is_bidirectional_encoder<
+                  encoder<std::forward_list<char>::iterator>>::value,
+              "");
+static_assert(
+    detail::is_encoder<encoder<std::forward_list<char>::iterator>>::value, "");
+
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
 {
