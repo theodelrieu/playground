@@ -19,6 +19,12 @@ template <typename T>
 using reference_t = typename T::reference;
 
 template <typename T>
+using underlying_iterator_t = typename T::underlying_iterator;
+
+template <typename T>
+using underlying_sentinel_t = typename T::underlying_sentinel;
+
+template <typename T>
 using iterator_category_t = typename T::iterator_category;
 
 template <typename T, typename U>

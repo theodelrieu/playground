@@ -21,12 +21,15 @@ namespace
 template <typename UnderlyingIterator, typename Sentinel = UnderlyingIterator>
 class noop_encoder
 {
+public:
   using underlying_iterator = UnderlyingIterator;
+  using underlying_sentinel = Sentinel;
+
+private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
   using iterator = detail::adaptive_iterator<
       noop_encoder,
       detail::iterator_category_t<underlying_iterator_traits>>;
-
 
   friend detail::adaptive_iterator<
       noop_encoder,

@@ -40,12 +40,6 @@ struct stream_iterable_adapter
   std::istream& _is;
 };
 
-
-static_assert(
-    detail::is_encoder<
-        encoders::base64_stream_encoder<std::string::iterator>>::value,
-    "");
-
 template <typename Encoder>
 void bidirectional_tests(Encoder const& enc, std::string const& b64_text)
 {

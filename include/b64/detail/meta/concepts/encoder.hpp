@@ -16,6 +16,8 @@
 //  requires Constructible<T, Iterator, Sentinel>;
 //  typename T::value_type;
 //  typename T::difference_type;
+//  typename T::underlying_iterator;
+//  typename T::underlying_sentinel;
 //  requires(typename T::difference_type n) {
 //    v.get();
 //    v.seek_forward(n);
@@ -34,26 +36,23 @@ struct is_encoder : std::false_type
 };
 
 template <typename T>
-struct S;
-
-template <typename T>
 struct is_encoder<
     T,
     std::enable_if_t<is_iterable<T>::value && is_regular<T>::value &&
                      is_detected<value_type_t, T>::value &&
+                     is_detected<underlying_iterator_t, T>::value &&
+                     is_detected<underlying_sentinel_t, T>::value &&
                      is_detected<difference_type_t, T>::value>>
 {
 private:
-  using Iterator = detail2::result_of_begin_t<T>;
-  using Sentinel = detail2::result_of_end_t<T>;
-  S<Iterator> s;
-
   using value_type = typename T::value_type;
   using difference_type = typename T::difference_type;
 
 public:
   static auto constexpr value =
-      std::is_constructible<T, Iterator, Sentinel>::value &&
+      std::is_constructible<T,
+                            underlying_iterator_t<T>,
+                            underlying_sentinel_t<T>>::value &&
       is_detected_exact<value_type const&, get_function_t, T const&>::value &&
       is_detected_exact<void, seek_forward_function_t, T&, difference_type>::
           value;
