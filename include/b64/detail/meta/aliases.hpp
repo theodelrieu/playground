@@ -74,5 +74,9 @@ using get_function_t = decltype(std::declval<T>().get());
 template <typename T, typename... Args>
 using seek_forward_function_t =
     decltype(std::declval<T>().seek_forward(std::declval<Args>()...));
+
+template <typename T, typename... Args>
+using seek_backward_function_t =
+    decltype(std::declval<T>().seek_backward(std::declval<Args>()...));
 }
 }

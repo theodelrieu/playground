@@ -10,6 +10,7 @@
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/wrap_integer.hpp>
 
+#include <b64/detail/meta/concepts/bidirectional_encoder.hpp>
 #include <b64/detail/meta/concepts/encoder.hpp>
 #include <b64/detail/meta/concepts/iterable.hpp>
 #include <b64/detail/meta/concepts/iterator.hpp>
@@ -86,3 +87,7 @@ private:
 static_assert(
     b64::detail::is_encoder<b64::encoders::base64_stream_encoder<char*>>::value,
     "");
+
+static_assert(b64::detail::is_bidirectional_encoder<
+                  b64::encoders::base64_stream_encoder<char*>>::value,
+              "");
