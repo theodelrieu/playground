@@ -95,7 +95,6 @@ template <typename T, typename U>
 bool operator==(noop_encoder<T, U> const& lhs,
                 noop_encoder<T, U> const& rhs) noexcept
 {
-  // FIXME expose underlying iterator in Encoder + friend adaptive?
   if (detail::is_derived_from<
           detail::iterator_category_t<
               typename noop_encoder<T, U>::underlying_iterator_traits>,

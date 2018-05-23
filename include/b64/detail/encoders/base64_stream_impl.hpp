@@ -4,6 +4,8 @@
 #include <bitset>
 #include <cassert>
 
+#include <b64/detail/meta/concepts/sized_sentinel.hpp>
+
 namespace b64
 {
 namespace encoders
@@ -86,12 +88,13 @@ template <typename, typename>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
     noexcept -> difference_type
 {
-  // this function only gets called by adaptive_random_access_iterators
-  // still using std::distance to avoid compiler errors on inferior iterators.
-  auto dist = std::distance(_begin, _current_it);
-  // FIXME SFINAE this method and use SizedSentinel.
+  // this is ensured by RandomAccessIterator
+  static_assert(detail::is_sized_sentinel<UnderlyingIterator, Sentinel>::value,
+                "");
+
+  auto dist = _current_it - _begin;
   if (!_last_encoded_index)
-    dist = std::distance(_begin, _end);
+    dist = _end - _begin;
   if (_current_it != _end && _last_encoded_index)
     dist -= 3;
   auto const res = std::lldiv(dist, 3);

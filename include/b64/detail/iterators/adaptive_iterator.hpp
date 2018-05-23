@@ -25,7 +25,6 @@ public:
   using value_type = typename Encoder::value_type;
   using difference_type = typename Encoder::difference_type;
 
-  // FIXME add stuff to encoder concept, + SFINAE
   using reference = decltype(std::declval<Encoder const&>().get());
   using const_reference = reference;
 
