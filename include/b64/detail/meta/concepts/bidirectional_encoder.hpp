@@ -6,11 +6,11 @@
 #include <b64/detail/meta/concepts/encoder.hpp>
 #include <b64/detail/meta/detected.hpp>
 
-// concept BidirectionalEncoder = requires(T const& v) {
+// concept BidirectionalEncoder = requires(T& u) {
 //   requires Encoder<T>;
 //   requires(typename T::difference_type n) {
-//     v.seek_backward(n);
-//     requires { v.seek_backward(n) } -> void;
+//     u.seek_backward(n);
+//     requires { u.seek_backward(n) } -> void;
 //   }
 // }
 namespace b64

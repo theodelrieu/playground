@@ -82,8 +82,8 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-std::size_t base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos()
-    const noexcept
+auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
+    noexcept -> difference_type
 {
   // this function only gets called by adaptive_random_access_iterators
   // still using std::distance to avoid compiler errors on inferior iterators.

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <cstdint>
-#include <cstdlib>
 
 #include <optional.hpp>
 
@@ -14,6 +12,7 @@
 #include <b64/detail/meta/concepts/encoder.hpp>
 #include <b64/detail/meta/concepts/iterable.hpp>
 #include <b64/detail/meta/concepts/iterator.hpp>
+#include <b64/detail/meta/concepts/random_access_encoder.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
 
 namespace b64
@@ -59,7 +58,7 @@ public:
   base64_stream_encoder(UnderlyingIterator const&, Sentinel const&);
 
   value_type const& get() const;
-  std::size_t pos() const noexcept;
+  difference_type pos() const noexcept;
   void seek_forward(difference_type);
   void seek_backward(difference_type);
 
@@ -89,5 +88,9 @@ static_assert(
     "");
 
 static_assert(b64::detail::is_bidirectional_encoder<
+                  b64::encoders::base64_stream_encoder<char*>>::value,
+              "");
+
+static_assert(b64::detail::is_random_access_encoder<
                   b64::encoders::base64_stream_encoder<char*>>::value,
               "");

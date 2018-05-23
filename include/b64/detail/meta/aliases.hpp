@@ -78,5 +78,8 @@ using seek_forward_function_t =
 template <typename T, typename... Args>
 using seek_backward_function_t =
     decltype(std::declval<T>().seek_backward(std::declval<Args>()...));
+
+template <typename T>
+using pos_function_t = decltype(std::declval<T>().pos());
 }
 }

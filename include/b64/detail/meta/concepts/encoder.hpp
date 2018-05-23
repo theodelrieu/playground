@@ -10,7 +10,7 @@
 #include <b64/detail/meta/detected.hpp>
 
 // template <Iterator, Sentinel>
-// concept Encoder = requires(T const& v) {
+// concept Encoder = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  requires Iterable<T>;
 //  requires Constructible<T, Iterator, Sentinel>;
@@ -20,9 +20,9 @@
 //  typename T::underlying_sentinel;
 //  requires(typename T::difference_type n) {
 //    v.get();
-//    v.seek_forward(n);
+//    u.seek_forward(n);
 //    requires { v.get() } -> value_type const&;
-//    requires { v.seek_forward(n) } -> void;
+//    requires { u.seek_forward(n) } -> void;
 //  }
 // }
 namespace b64
