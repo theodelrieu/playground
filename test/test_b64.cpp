@@ -99,23 +99,23 @@ void bidirectional_tests(Encoder const& enc, std::string const& b64_text)
       CHECK(*std::next(begin, i) == b64_text[i]);
   }
 
-  SECTION("Seek backward")
-  {
-    auto copy_it = std::next(begin, 35);
-
-    CHECK(*copy_it == b64_text.back());
-    CHECK(*(copy_it--) == b64_text.back());
-    CHECK(*copy_it == b64_text[34]);
-    CHECK(*std::prev(copy_it, 5) == b64_text[29]);
-    CHECK(*std::prev(copy_it, 10) == b64_text[24]);
-    std::advance(copy_it, -34);
-    CHECK(copy_it == begin);
-    CHECK(*copy_it == b64_text.front());
-
-    auto copy_end = std::next(begin, 36);
-    for (auto i = 0; i < b64_text.size(); ++i)
-      CHECK(*std::prev(copy_end, b64_text.size() - i) == b64_text[i]);
-  }
+  // SECTION("Seek backward")
+  // {
+  //   auto copy_it = std::next(begin, 35);
+  //
+  //   CHECK(*copy_it == b64_text.back());
+  //   CHECK(*(copy_it--) == b64_text.back());
+  //   CHECK(*copy_it == b64_text[34]);
+  //   CHECK(*std::prev(copy_it, 5) == b64_text[29]);
+  //   CHECK(*std::prev(copy_it, 10) == b64_text[24]);
+  //   std::advance(copy_it, -34);
+  //   CHECK(copy_it == begin);
+  //   CHECK(*copy_it == b64_text.front());
+  //
+  //   auto copy_end = std::next(begin, 36);
+  //   for (auto i = 0; i < b64_text.size(); ++i)
+  //     CHECK(*std::prev(copy_end, b64_text.size() - i) == b64_text[i]);
+  // }
 }
 }
 

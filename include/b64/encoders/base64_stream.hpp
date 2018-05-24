@@ -40,13 +40,6 @@ template <
             std::iterator_traits<UnderlyingIterator>>>::value>>
 class base64_stream_encoder
 {
-  static constexpr char const alphabet[] = {
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-      'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
-
   using iterator = detail::adaptive_iterator<
       base64_stream_encoder,
       detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>>;
@@ -61,6 +54,7 @@ public:
   base64_stream_encoder(UnderlyingIterator const&, Sentinel const&);
 
   value_type const& get() const;
+
   void seek_forward(difference_type);
 
   iterator begin() const;
@@ -81,8 +75,6 @@ public:
                          base64_stream_encoder<T, U, V> const&);
 
 private:
-  void _encode_next_values();
-
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};
   Sentinel _end{};
