@@ -13,6 +13,7 @@
 #include <b64/detail/meta/concepts/iterator.hpp>
 #include <b64/detail/meta/concepts/random_access_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
+#include <b64/detail/meta/concepts/sized_sentinel.hpp>
 
 namespace b64
 {
@@ -27,13 +28,16 @@ struct is_byte_integral
 
 namespace encoders
 {
-template <typename UnderlyingIterator,
-          typename Sentinel = UnderlyingIterator,
-          typename = std::enable_if_t<
-              detail::is_iterator<UnderlyingIterator>::value &&
-              detail::is_sentinel<Sentinel, UnderlyingIterator>::value &&
-              detail::is_byte_integral<detail::value_type_t<
-                  std::iterator_traits<UnderlyingIterator>>>::value>>
+template <
+    typename UnderlyingIterator,
+    typename Sentinel = UnderlyingIterator,
+    typename = std::enable_if_t<
+        ((detail::is_input_iterator<UnderlyingIterator>::value &&
+          detail::is_sentinel<Sentinel, UnderlyingIterator>::value) ||
+         (detail::is_random_access_iterator<UnderlyingIterator>::value &&
+          detail::is_sized_sentinel<Sentinel, UnderlyingIterator>::value)) &&
+        detail::is_byte_integral<detail::value_type_t<
+            std::iterator_traits<UnderlyingIterator>>>::value>>
 class base64_stream_encoder
 {
   static constexpr char const alphabet[] = {
@@ -82,7 +86,7 @@ private:
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};
   Sentinel _end{};
-  std::array<char, 4> _last_encoded;
+  nonstd::optional<std::array<char, 4>> _last_encoded;
   nonstd::optional<detail::wrap_integer<0, 3>> _last_encoded_index;
 };
 }

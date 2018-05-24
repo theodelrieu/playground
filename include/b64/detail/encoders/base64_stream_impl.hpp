@@ -4,8 +4,6 @@
 #include <bitset>
 #include <cassert>
 
-#include <b64/detail/meta/concepts/sized_sentinel.hpp>
-
 namespace b64
 {
 namespace encoders
@@ -24,6 +22,7 @@ base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
   if (_current_it != _end)
   {
     _last_encoded_index.emplace(0);
+    _last_encoded = std::array<char, 4>{};
     _encode_next_values();
   }
 }
@@ -53,6 +52,8 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     _encode_next_values()
 {
   assert(_current_it != _end);
+  assert(_last_encoded_index);
+  assert(_last_encoded);
 
   std::bitset<24> bits;
   int i = 0;
@@ -71,16 +72,16 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     auto l = bits & mask;
     l >>= shift;
     auto index = static_cast<std::uint8_t>(l.to_ulong());
-    _last_encoded[j] = alphabet[index];
+    _last_encoded.value()[j] = alphabet[index];
   }
-  std::fill(std::next(_last_encoded.begin(), i + 1), _last_encoded.end(), '=');
+  std::fill(std::next(_last_encoded->begin(), i + 1), _last_encoded->end(), '=');
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type const&
 {
-  return _last_encoded[*_last_encoded_index];
+  return _last_encoded->operator[](*_last_encoded_index);
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -162,7 +163,7 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     // we have to reset the underlying iterator so that
     // distance(begin, current) % 3 == 0
     auto const nb_read =
-        3 - std::count(_last_encoded.begin() + 2, _last_encoded.end(), '=');
+        3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
     std::advance(_current_it, -nb_read);
   }
   else
