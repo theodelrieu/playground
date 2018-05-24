@@ -24,3 +24,14 @@ Le use-case pour en remplacer un par un autre ? Speed ? Differents iterateurs ?
 
 codec variant:
 Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
+
+=======================================================================================
+
+- changer namespace en cdcs
+- trouver un moyen de modulariser la lib:
+  + lib a part pour les concepts
+  + lib de base avec les checks, definitions de codec etc
+  + 1 lib par famille de codec?
+
+- clean le code lol
+- reverse_iterator

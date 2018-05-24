@@ -14,8 +14,10 @@ namespace b64
 {
 namespace detail
 {
-template <typename T, typename  = void>
-struct is_random_access_iterator;
+template <typename T, typename = void>
+struct is_random_access_iterator : std::false_type
+{
+};
 
 template <typename T>
 struct is_random_access_iterator<
