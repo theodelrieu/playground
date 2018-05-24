@@ -51,7 +51,8 @@ std::array<char, 4> encode_base64_values(Iterator& current, Sentinel const& end)
 }
 
 template <typename Iterator, typename Sentinel>
-void seek_forward(Iterator& current,
+void seek_forward(Iterator const& begin,
+                  Iterator& current,
                   Sentinel const& end,
                   difference_type_t<Iterator> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
@@ -71,7 +72,8 @@ void seek_forward(Iterator& current,
 }
 
 template <typename Iterator, typename Sentinel>
-void seek_forward(Iterator& current,
+void seek_forward(Iterator const& begin,
+                  Iterator& current,
                   Sentinel const& end,
                   difference_type_t<Iterator> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
@@ -101,37 +103,111 @@ void seek_forward(Iterator& current,
     current -= dist % 3;
   }
   encoded = encode_base64_values(current, end);
+}
+
+template <typename Iterator, typename Sentinel>
+void seek_backward(Iterator const& begin,
+                   Iterator& current,
+                   Sentinel const& end,
+                   difference_type_t<Iterator> n,
+                   nonstd::optional<std::array<char, 4>>& encoded,
+                   nonstd::optional<wrap_integer<0, 3>>& index,
+                   std::bidirectional_iterator_tag)
+{
+  assert(n == -1);
+
+  if (current != end)
+  {
+    assert(index);
+    assert(encoded);
+    if (--*index == 3)
+    {
+      std::advance(current, -3 * 2);
+      encoded = encode_base64_values(current, end);
+    }
+  }
+  else
+  {
+    auto offset = std::distance(begin, end) % 3;
+    if (offset == 0)
+      offset = 3;
+    if (!index)
+    {
+      index.emplace(3);
+      std::advance(current, -offset);
+      encoded = encode_base64_values(current, end);
+    }
+    else if (--*index == 3)
+    {
+      std::advance(current, -3 - offset);
+      encoded = encode_base64_values(current, end);
+    }
+  }
+  // assert(n < 0);
+  // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
+  // _last_encoded_index.emplace(idx);
+  // if (idx >= 0)
+  //   return;
   //
-  // auto const res = std::ldiv(*index + n, 4);
-  // auto const max_increment = res.quot;
-  // if (max_increment == 0)
-  //   *index += n;
-  // else
+  // auto res = std::ldiv(idx, 4);
+  // if (_current_it == _end)
   // {
-  //   // if _last_encoded_index + n is a multiple of 4, it could reach the end.
-  //   // However, we cannot know that before we increment the iterator.
-  //   // In this specific case, perform 2 _encode_next_values() and test for
-  //   // _current_it == _end each time.
-  //   auto const min_increment =
-  //       (max_increment > 1 ? max_increment - (res.rem == 0 ? 2 : 1) : 0);
-  //   std::advance(_current_it, min_increment * 3);
-  //   if (_current_it == _end)
-  //     _last_encoded_index = nonstd::nullopt;
-  //   else
-  //   {
-  //     // Must encode values here, even if we'll reach the end.
-  //     // This is because we cannot assume the underlying iterator category
-  //     // here. So going backwards is not an option.
-  //     _encode_next_values();
-  //     *_last_encoded_index += n;
-  //     if (max_increment - min_increment == 2)
-  //     {
-  //       if (_current_it != _end)
-  //         _encode_next_values();
-  //       else if (_last_encoded_index == 0)
-  //         _last_encoded_index = nonstd::nullopt;
-  //     }
-  //   }
+  //   // we have to reset the underlying iterator so that
+  //   // distance(begin, current) % 3 == 0
+  //   auto const nb_read =
+  //       3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
+  //   std::advance(_current_it, -nb_read);
+  // }
+  // else
+  //   res.quot--;
+  // if (res.rem)
+  //   res.quot--;
+  // std::advance(_current_it, res.quot * 3);
+  // _encode_next_values();
+}
+
+template <typename Iterator, typename Sentinel>
+void seek_backward(Iterator const& begin,
+                   Iterator& current,
+                   Sentinel const& end,
+                   difference_type_t<Iterator> n,
+                   nonstd::optional<std::array<char, 4>>& encoded,
+                   nonstd::optional<wrap_integer<0, 3>>& index,
+                   std::random_access_iterator_tag)
+{
+  // FIXME lol
+  while (n < 0)
+  {
+    seek_backward(begin,
+                  current,
+                  end,
+                  -1,
+                  encoded,
+                  index,
+                  std::bidirectional_iterator_tag{});
+    ++n;
+  }
+  // assert(n < 0);
+  // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
+  // _last_encoded_index.emplace(idx);
+  // if (idx >= 0)
+  //   return;
+  //
+  // auto res = std::ldiv(idx, 4);
+  // if (_current_it == _end)
+  // {
+  //   // we have to reset the underlying iterator so that
+  //   // distance(begin, current) % 3 == 0
+  //   auto const nb_read =
+  //       3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
+  //   std::advance(_current_it, -nb_read);
+  // }
+  // else
+  //   res.quot--;
+  // if (res.rem)
+  //   res.quot--;
+  // std::advance(_current_it, res.quot * 3);
+  // _encode_next_values();
 }
 }
 
@@ -209,8 +285,9 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
 {
   using tag =
       detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
+
   detail::seek_forward(
-      _current_it, _end, n, _last_encoded, _last_encoded_index, tag{});
+      _begin, _current_it, _end, n, _last_encoded, _last_encoded_index, tag{});
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -218,27 +295,11 @@ template <typename, typename>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     seek_backward(difference_type n)
 {
-  // assert(n < 0);
-  // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
-  // _last_encoded_index.emplace(idx);
-  // if (idx >= 0)
-  //   return;
-  //
-  // auto res = std::ldiv(idx, 4);
-  // if (_current_it == _end)
-  // {
-  //   // we have to reset the underlying iterator so that
-  //   // distance(begin, current) % 3 == 0
-  //   auto const nb_read =
-  //       3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
-  //   std::advance(_current_it, -nb_read);
-  // }
-  // else
-  //   res.quot--;
-  // if (res.rem)
-  //   res.quot--;
-  // std::advance(_current_it, res.quot * 3);
-  // _encode_next_values();
+  using tag =
+      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
+
+  detail::seek_backward(
+      _begin, _current_it, _end, n, _last_encoded, _last_encoded_index, tag{});
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
