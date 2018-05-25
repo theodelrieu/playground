@@ -149,18 +149,32 @@ void seek_backward(Iterator const& begin,
                    nonstd::optional<wrap_integer<0, 3>>& index,
                    std::random_access_iterator_tag)
 {
-  // FIXME lol
-  while (n < 0)
+  assert(n < 0);
+
+  if (index && *index + n > 0)
   {
-    seek_backward(begin,
-                  current,
-                  end,
-                  -1,
-                  encoded,
-                  index,
-                  std::bidirectional_iterator_tag{});
-    ++n;
+    *index += n;
+    return;
   }
+
+  auto offset = decltype(n)(0);
+  auto const dist = current - begin;
+  if (current == end)
+  {
+    offset = dist % 3;
+    if (offset == 0)
+      offset = 3;
+  }
+  index.emplace(n + index.value_or(4));
+
+  auto res = std::lldiv(n, -4);
+  assert(res.quot >= 0);
+  if (res.rem)
+    ++res.quot;
+  offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
+  assert(offset);
+  std::advance(current, -offset);
+  encoded = encode_base64_values(current, end);
   // assert(n < 0);
   // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
   // _last_encoded_index.emplace(idx);
