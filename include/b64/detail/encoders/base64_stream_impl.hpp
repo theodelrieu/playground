@@ -172,7 +172,6 @@ void seek_backward(Iterator const& begin,
   if (res.quot && res.rem == 0)
     --res.quot;
   offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
-  assert(offset);
   std::advance(current, -offset);
   encoded = encode_base64_values(current, end);
 }
@@ -198,8 +197,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
     -> iterator
 {
-  // FIXME
-  return {*this};
+  return {{_begin, _end}};
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>

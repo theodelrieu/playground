@@ -240,6 +240,22 @@ TEST_CASE("b64 stream", "[encoding][base64]")
         bidirectional_tests(enc, b64_text);
       }
     }
+
+    SECTION("reverse iterator")
+    {
+      auto const text = "abcdefghijklmnopqrstuvwxyza"s;
+      auto b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
+      std::reverse(b64_text.begin(), b64_text.end());
+
+      encoders::base64_stream_encoder<std::string::const_iterator> enc(
+          text.begin(), text.end());
+
+      auto rbegin = std::make_reverse_iterator(enc.end());
+      auto const rend = std::make_reverse_iterator(enc.begin());
+
+      std::string s(rbegin, rend);
+      CHECK(s == b64_text);
+    }
   }
 
   SECTION("Inception")
