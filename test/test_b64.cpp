@@ -165,6 +165,7 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     stream_iterable_adapter input{random_data};
     encoders::base64_stream_encoder<decltype(input.begin())> enc(
         input.begin(), input.end());
+    
     std::istreambuf_iterator<char> expectedB64It(b64_random_data);
     std::istreambuf_iterator<char> expectedEnd;
     CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
@@ -270,12 +271,23 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     std::string s1(first_enc.begin(), first_enc.end());
     CHECK(s1 == b64_text);
 
-    auto it = second_enc.begin();
-    auto end = second_enc.end();
-    auto dist = end - it;
+    SECTION("Normal iterators")
+    {
+      std::string s2(second_enc.begin(), second_enc.end());
+      CHECK(s2 == final_b64_text);
+    }
 
-    std::string s2(second_enc.begin(), second_enc.end());
-    CHECK(s2 == final_b64_text);
+    SECTION("reverse iterator")
+    {
+      auto rbegin = std::make_reverse_iterator(second_enc.end());
+      auto const rend = std::make_reverse_iterator(second_enc.begin());
+
+      auto reversed = final_b64_text;
+      std::reverse(reversed.begin(), reversed.end());
+
+      std::string s2(rbegin, rend);
+      CHECK(s2 == reversed);
+    }
   }
 
   // TODO test with sentinel once adaptive_iterator is refactored

@@ -151,12 +151,14 @@ void seek_backward(Iterator const& begin,
 {
   assert(n < 0);
 
-  if (index && *index + n > 0)
+  if (index && *index + n >= 0)
   {
     *index += n;
     return;
   }
 
+  if (!index)
+    current = begin + (end - begin);
   auto offset = decltype(n)(0);
   auto const dist = current - begin;
   if (current == end)
@@ -165,15 +167,23 @@ void seek_backward(Iterator const& begin,
     if (offset == 0)
       offset = 3;
   }
-  index.emplace(n + index.value_or(4));
-
   auto res = std::lldiv(n, -4);
   assert(res.quot >= 0);
   if (res.quot && res.rem == 0)
     --res.quot;
+  // TODO refactor this mess
+  if (res.quot == 0 && index && *index == 0)
+  {
+    if (current == end)
+      ++res.quot;
+    else
+      res.quot = 2;
+  }
   offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
   std::advance(current, -offset);
   encoded = encode_base64_values(current, end);
+  index.emplace(n + index.value_or(4));
+
 }
 }
 
@@ -197,6 +207,13 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
     -> iterator
 {
+  // FIXME enormous hack to avoid skipping the first 4 chars
+  if (std::is_same<detail::iterator_category_t<
+                       std::iterator_traits<underlying_iterator>>,
+                   std::input_iterator_tag>::value)
+  {
+    return {*this};
+  }
   return {{_begin, _end}};
 }
 
