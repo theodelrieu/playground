@@ -54,7 +54,7 @@ template <typename Iterator, typename Sentinel>
 void seek_forward(Iterator const& begin,
                   Iterator& current,
                   Sentinel const& end,
-                  difference_type_t<Iterator> n,
+                  difference_type_t<std::iterator_traits<Iterator>> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
                   nonstd::optional<wrap_integer<0, 3>>& index,
                   std::input_iterator_tag)
@@ -75,7 +75,7 @@ template <typename Iterator, typename Sentinel>
 void seek_forward(Iterator const& begin,
                   Iterator& current,
                   Sentinel const& end,
-                  difference_type_t<Iterator> n,
+                  difference_type_t<std::iterator_traits<Iterator>> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
                   nonstd::optional<wrap_integer<0, 3>>& index,
                   std::random_access_iterator_tag)
@@ -109,61 +109,35 @@ template <typename Iterator, typename Sentinel>
 void seek_backward(Iterator const& begin,
                    Iterator& current,
                    Sentinel const& end,
-                   difference_type_t<Iterator> n,
+                   difference_type_t<std::iterator_traits<Iterator>> n,
                    nonstd::optional<std::array<char, 4>>& encoded,
                    nonstd::optional<wrap_integer<0, 3>>& index,
                    std::bidirectional_iterator_tag)
 {
   assert(n == -1);
 
+  auto offset = decltype(n)(0);
   if (current != end)
   {
     assert(index);
     assert(encoded);
-    if (--*index == 3)
-    {
-      std::advance(current, -3 * 2);
-      encoded = encode_base64_values(current, end);
-    }
+    if (--*index != 3)
+      return;
+    offset = 3 * 2;
   }
   else
   {
-    auto offset = std::distance(begin, end) % 3;
+    offset = std::distance(begin, end) % 3;
     if (offset == 0)
       offset = 3;
     if (!index)
-    {
       index.emplace(3);
-      std::advance(current, -offset);
-      encoded = encode_base64_values(current, end);
-    }
     else if (--*index == 3)
-    {
-      std::advance(current, -3 - offset);
-      encoded = encode_base64_values(current, end);
-    }
+      offset += 3;
   }
-  // assert(n < 0);
-  // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
-  // _last_encoded_index.emplace(idx);
-  // if (idx >= 0)
-  //   return;
-  //
-  // auto res = std::ldiv(idx, 4);
-  // if (_current_it == _end)
-  // {
-  //   // we have to reset the underlying iterator so that
-  //   // distance(begin, current) % 3 == 0
-  //   auto const nb_read =
-  //       3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
-  //   std::advance(_current_it, -nb_read);
-  // }
-  // else
-  //   res.quot--;
-  // if (res.rem)
-  //   res.quot--;
-  // std::advance(_current_it, res.quot * 3);
-  // _encode_next_values();
+  assert(offset);
+  std::advance(current, -offset);
+  encoded = encode_base64_values(current, end);
 }
 
 template <typename Iterator, typename Sentinel>
