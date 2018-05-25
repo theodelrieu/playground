@@ -169,33 +169,12 @@ void seek_backward(Iterator const& begin,
 
   auto res = std::lldiv(n, -4);
   assert(res.quot >= 0);
-  if (res.rem)
-    ++res.quot;
+  if (res.quot && res.rem == 0)
+    --res.quot;
   offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
   assert(offset);
   std::advance(current, -offset);
   encoded = encode_base64_values(current, end);
-  // assert(n < 0);
-  // auto const idx = (_last_encoded_index ? *_last_encoded_index + n : 4 + n);
-  // _last_encoded_index.emplace(idx);
-  // if (idx >= 0)
-  //   return;
-  //
-  // auto res = std::ldiv(idx, 4);
-  // if (_current_it == _end)
-  // {
-  //   // we have to reset the underlying iterator so that
-  //   // distance(begin, current) % 3 == 0
-  //   auto const nb_read =
-  //       3 - std::count(_last_encoded->begin() + 2, _last_encoded->end(), '=');
-  //   std::advance(_current_it, -nb_read);
-  // }
-  // else
-  //   res.quot--;
-  // if (res.rem)
-  //   res.quot--;
-  // std::advance(_current_it, res.quot * 3);
-  // _encode_next_values();
 }
 }
 

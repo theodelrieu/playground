@@ -188,7 +188,8 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       SECTION("Bidirectional")
       {
         std::list<char> const l{text.begin(), text.end()};
-        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),                                                                 l.end());
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
 
         bidirectional_tests(enc, b64_text);
       }
