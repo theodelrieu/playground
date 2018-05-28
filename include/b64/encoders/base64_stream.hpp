@@ -6,7 +6,6 @@
 
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
-#include <b64/detail/wrap_integer.hpp>
 
 #include <b64/detail/meta/concepts/bidirectional_iterator.hpp>
 #include <b64/detail/meta/concepts/iterable.hpp>
@@ -79,7 +78,7 @@ private:
   UnderlyingIterator _current_it{};
   Sentinel _end{};
   nonstd::optional<std::array<char, 4>> _last_encoded;
-  nonstd::optional<detail::wrap_integer<0, 3>> _last_encoded_index;
+  int _last_encoded_index{4};
 };
 }
 }

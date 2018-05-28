@@ -56,16 +56,17 @@ void seek_forward(Iterator const& begin,
                   Sentinel const& end,
                   difference_type_t<std::iterator_traits<Iterator>> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
-                  nonstd::optional<wrap_integer<0, 3>>& index,
+                  int& index,
                   std::input_iterator_tag)
 {
   assert(n == 1);
-  assert(index);
+  assert(index != 4);
 
-  if (++*index == 0)
+  index = wrap_integer<0, 3>(index + 1);
+  if (index == 0)
   {
     if (current == end)
-      index = nonstd::nullopt;
+      index = 4;
     else
       encoded = encode_base64_values(current, end);
   }
@@ -77,27 +78,27 @@ void seek_forward(Iterator const& begin,
                   Sentinel const& end,
                   difference_type_t<std::iterator_traits<Iterator>> n,
                   nonstd::optional<std::array<char, 4>>& encoded,
-                  nonstd::optional<wrap_integer<0, 3>>& index,
+                  int& index,
                   std::random_access_iterator_tag)
 {
   assert(n > 0);
-  assert(index);
+  assert(index != 4);
 
-  if (*index + n <= 3)
+  if (index + n <= 3)
   {
-    *index += n;
+    index += n;
     return;
   }
-  auto const offset = n - (4 - *index);
+  auto const offset = n - (4 - index);
   auto const res = std::lldiv(offset, 4);
   auto const dist = end - current;
-  *index += n;
   current += std::min<std::uint64_t>(dist, res.quot * 3);
+  index = wrap_integer<0, 3>(index + n);
   if (current == end)
   {
     if (res.rem == 0)
     {
-      index = nonstd::nullopt;
+      index = 4;
       return;
     }
     current -= dist % 3;
@@ -111,7 +112,7 @@ void seek_backward(Iterator const& begin,
                    Sentinel const& end,
                    difference_type_t<std::iterator_traits<Iterator>> n,
                    nonstd::optional<std::array<char, 4>>& encoded,
-                   nonstd::optional<wrap_integer<0, 3>>& index,
+                   int& index, 
                    std::bidirectional_iterator_tag)
 {
   assert(n == -1);
@@ -119,9 +120,10 @@ void seek_backward(Iterator const& begin,
   auto offset = decltype(n)(0);
   if (current != end)
   {
-    assert(index);
+    assert(index != 4);
     assert(encoded);
-    if (--*index != 3)
+    index = wrap_integer<0, 3>(index - 1);
+    if (index != 3)
       return;
     offset = 3 * 2;
   }
@@ -130,10 +132,15 @@ void seek_backward(Iterator const& begin,
     offset = std::distance(begin, end) % 3;
     if (offset == 0)
       offset = 3;
-    if (!index)
-      index.emplace(3);
-    else if (--*index == 3)
-      offset += 3;
+    // at the very end
+    if (index == 4)
+      index = 3;
+    else
+    {
+      index = wrap_integer<0, 3>(index - 1);
+      if (index == 3)
+        offset += 3;
+    }
   }
   assert(offset);
   std::advance(current, -offset);
@@ -146,18 +153,18 @@ void seek_backward(Iterator const& begin,
                    Sentinel const& end,
                    difference_type_t<Iterator> n,
                    nonstd::optional<std::array<char, 4>>& encoded,
-                   nonstd::optional<wrap_integer<0, 3>>& index,
+                   int& index,
                    std::random_access_iterator_tag)
 {
   assert(n < 0);
 
-  if (index && *index + n >= 0)
+  if (index != 4 && index + n >= 0)
   {
-    *index += n;
+    index += n;
     return;
   }
 
-  if (!index)
+  if (index == 4)
     current = begin + (end - begin);
   auto offset = decltype(n)(0);
   auto const dist = current - begin;
@@ -172,7 +179,7 @@ void seek_backward(Iterator const& begin,
   if (res.quot && res.rem == 0)
     --res.quot;
   // TODO refactor this mess
-  if (res.quot == 0 && index && *index == 0)
+  if (res.quot == 0 && index == 0)
   {
     if (current == end)
       ++res.quot;
@@ -182,8 +189,7 @@ void seek_backward(Iterator const& begin,
   offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
   std::advance(current, -offset);
   encoded = encode_base64_values(current, end);
-  index.emplace(n + index.value_or(4));
-
+  index = wrap_integer<0, 3>(n + index);
 }
 }
 
@@ -198,7 +204,7 @@ base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
 {
   if (_current_it != _end)
   {
-    _last_encoded_index.emplace(0);
+    _last_encoded_index = 0;
     _last_encoded = detail::encode_base64_values(_current_it, _end);
   }
 }
@@ -234,7 +240,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type const&
 {
-  return _last_encoded->operator[](*_last_encoded_index);
+  return _last_encoded->operator[](_last_encoded_index);
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -248,7 +254,7 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
 
   auto dist = difference_type{};
 
-  if (_current_it == _end || !_last_encoded_index)
+  if (_current_it == _end || _last_encoded_index == 4)
     dist = _end - _begin;
   else
   {
@@ -289,7 +295,7 @@ bool operator==(
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
 {
-  if (!lhs._last_encoded_index || !rhs._last_encoded_index)
+  if (lhs._last_encoded_index == 4|| !rhs._last_encoded_index == 4)
     return lhs._last_encoded_index == rhs._last_encoded_index;
   return std::tie(lhs._begin, lhs._current_it, lhs._last_encoded_index) ==
          std::tie(rhs._begin, rhs._current_it, rhs._last_encoded_index);
