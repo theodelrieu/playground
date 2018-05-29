@@ -27,27 +27,27 @@ namespace
 template <typename Iterator, typename Sentinel = Iterator>
 using encoder = encoders::base64_stream_encoder<Iterator, Sentinel>;
 
-static_assert(detail::is_encoder<encoder<char*>>::value, "");
-static_assert(detail::is_bidirectional_encoder<encoder<char*>>::value, "");
-static_assert(detail::is_random_access_encoder<encoder<char*>>::value, "");
-
-static_assert(!detail::is_random_access_encoder<
-                  encoder<std::list<char>::iterator>>::value,
-              "");
-static_assert(
-    detail::is_bidirectional_encoder<encoder<std::list<char>::iterator>>::value,
-    "");
-static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
-              "");
-
-static_assert(!detail::is_random_access_encoder<
-                  encoder<std::forward_list<char>::iterator>>::value,
-              "");
-static_assert(!detail::is_bidirectional_encoder<
-                  encoder<std::forward_list<char>::iterator>>::value,
-              "");
-static_assert(
-    detail::is_encoder<encoder<std::forward_list<char>::iterator>>::value, "");
+// static_assert(detail::is_encoder<encoder<char*>>::value, "");
+// static_assert(detail::is_bidirectional_encoder<encoder<char*>>::value, "");
+// static_assert(detail::is_random_access_encoder<encoder<char*>>::value, "");
+//
+// static_assert(!detail::is_random_access_encoder<
+//                   encoder<std::list<char>::iterator>>::value,
+//               "");
+// static_assert(
+//     detail::is_bidirectional_encoder<encoder<std::list<char>::iterator>>::value,
+//     "");
+// static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
+//               "");
+//
+// static_assert(!detail::is_random_access_encoder<
+//                   encoder<std::forward_list<char>::iterator>>::value,
+//               "");
+// static_assert(!detail::is_bidirectional_encoder<
+//                   encoder<std::forward_list<char>::iterator>>::value,
+//               "");
+// static_assert(
+//     detail::is_encoder<encoder<std::forward_list<char>::iterator>>::value, "");
 
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
@@ -121,40 +121,40 @@ void bidirectional_tests(Encoder const& enc, std::string const& b64_text)
 
 TEST_CASE("b64 stream", "[encoding][base64]")
 {
-  SECTION("Two bytes of padding")
-  {
-    auto const text = "abcd"s;
-    encoders::base64_stream_encoder<std::string::const_iterator> enc(
-        text.begin(), text.end());
-
-    std::string s(enc.begin(), enc.end());
-    static_assert(detail::is_random_access_iterator<decltype(s.begin())>::value,
-                  "");
-
-    static_assert(detail::is_random_access_iterator<decltype(enc.begin())>::value,
-                  "");
-    CHECK(s == "YWJjZA==");
-  }
-
-  SECTION("One byte of padding")
-  {
-    auto const text = "abcde"s;
-    encoders::base64_stream_encoder<std::string::const_iterator> enc(
-        text.begin(), text.end());
-
-    std::string s(enc.begin(), enc.end());
-    CHECK(s == "YWJjZGU=");
-  }
-
-  SECTION("No padding")
-  {
-    auto const text = "abcdef"s;
-    encoders::base64_stream_encoder<std::string::const_iterator> enc(
-        text.begin(), text.end());
-
-    std::string s(enc.begin(), enc.end());
-    CHECK(s == "YWJjZGVm");
-  }
+  // SECTION("Two bytes of padding")
+  // {
+  //   auto const text = "abcd"s;
+  //   encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //       text.begin(), text.end());
+  //
+  //   std::string s(enc.begin(), enc.end());
+  //   static_assert(detail::is_random_access_iterator<decltype(s.begin())>::value,
+  //                 "");
+  //
+  //   static_assert(detail::is_random_access_iterator<decltype(enc.begin())>::value,
+  //                 "");
+  //   CHECK(s == "YWJjZA==");
+  // }
+  //
+  // SECTION("One byte of padding")
+  // {
+  //   auto const text = "abcde"s;
+  //   encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //       text.begin(), text.end());
+  //
+  //   std::string s(enc.begin(), enc.end());
+  //   CHECK(s == "YWJjZGU=");
+  // }
+  //
+  // SECTION("No padding")
+  // {
+  //   auto const text = "abcdef"s;
+  //   encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //       text.begin(), text.end());
+  //
+  //   std::string s(enc.begin(), enc.end());
+  //   CHECK(s == "YWJjZGVm");
+  // }
 
   SECTION("Huge file")
   {
@@ -170,125 +170,125 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     std::istreambuf_iterator<char> expectedEnd;
     CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
   }
-
-  SECTION("Iterators")
-  {
-    SECTION("One byte padding")
-    {
-      auto const text = "abcdefghijklmnopqrstuvwxyz"s;
-      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
-
-      SECTION("Random access")
-      {
-        encoders::base64_stream_encoder<std::string::const_iterator> enc(
-            text.begin(), text.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-
-      SECTION("Bidirectional")
-      {
-        std::list<char> const l{text.begin(), text.end()};
-        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-                                                                 l.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-    }
-
-    SECTION("Two byte padding")
-    {
-      auto const text = "abcdefghijklmnopqrstuvwxy"s;
-      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
-
-      SECTION("Random access")
-      {
-        encoders::base64_stream_encoder<std::string::const_iterator> enc(
-            text.begin(), text.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-
-      SECTION("Bidirectional")
-      {
-        std::list<char> const l{text.begin(), text.end()};
-        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-                                                                 l.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-    }
-
-    SECTION("No byte padding")
-    {
-      auto const text = "abcdefghijklmnopqrstuvwxyza"s;
-      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
-
-      SECTION("Random access")
-      {
-        encoders::base64_stream_encoder<std::string::const_iterator> enc(
-            text.begin(), text.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-
-      SECTION("Bidirectional")
-      {
-        std::list<char> const l{text.begin(), text.end()};
-        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-                                                                 l.end());
-
-        bidirectional_tests(enc, b64_text);
-      }
-    }
-
-    SECTION("reverse iterator")
-    {
-      auto const text = "abcdefghijklmnopqrstuvwxyza"s;
-      auto b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
-      std::reverse(b64_text.begin(), b64_text.end());
-
-      encoders::base64_stream_encoder<std::string::const_iterator> enc(
-          text.begin(), text.end());
-
-      auto rbegin = std::make_reverse_iterator(enc.end());
-      auto const rend = std::make_reverse_iterator(enc.begin());
-
-      std::string s(rbegin, rend);
-      CHECK(s == b64_text);
-    }
-  }
-
-  SECTION("Inception")
-  {
-    auto const text = "abcde"s;
-    auto const b64_text = "YWJjZGU="s;
-    auto const final_b64_text = "WVdKalpHVT0="s;
-
-    encoder<std::string::const_iterator> first_enc(text.begin(), text.end());
-    encoder<decltype(first_enc.begin())> second_enc(first_enc.begin(), first_enc.end());
-
-    std::string s1(first_enc.begin(), first_enc.end());
-    CHECK(s1 == b64_text);
-
-    SECTION("Normal iterators")
-    {
-      std::string s2(second_enc.begin(), second_enc.end());
-      CHECK(s2 == final_b64_text);
-    }
-
-    SECTION("reverse iterator")
-    {
-      auto rbegin = std::make_reverse_iterator(second_enc.end());
-      auto const rend = std::make_reverse_iterator(second_enc.begin());
-
-      auto reversed = final_b64_text;
-      std::reverse(reversed.begin(), reversed.end());
-
-      std::string s2(rbegin, rend);
-      CHECK(s2 == reversed);
-    }
-  }
-
+  //
+  // SECTION("Iterators")
+  // {
+  //   SECTION("One byte padding")
+  //   {
+  //     auto const text = "abcdefghijklmnopqrstuvwxyz"s;
+  //     auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
+  //
+  //     SECTION("Random access")
+  //     {
+  //       encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //           text.begin(), text.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //
+  //     SECTION("Bidirectional")
+  //     {
+  //       std::list<char> const l{text.begin(), text.end()};
+  //       encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+  //                                                                l.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //   }
+  //
+  //   SECTION("Two byte padding")
+  //   {
+  //     auto const text = "abcdefghijklmnopqrstuvwxy"s;
+  //     auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
+  //
+  //     SECTION("Random access")
+  //     {
+  //       encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //           text.begin(), text.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //
+  //     SECTION("Bidirectional")
+  //     {
+  //       std::list<char> const l{text.begin(), text.end()};
+  //       encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+  //                                                                l.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //   }
+  //
+  //   SECTION("No byte padding")
+  //   {
+  //     auto const text = "abcdefghijklmnopqrstuvwxyza"s;
+  //     auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
+  //
+  //     SECTION("Random access")
+  //     {
+  //       encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //           text.begin(), text.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //
+  //     SECTION("Bidirectional")
+  //     {
+  //       std::list<char> const l{text.begin(), text.end()};
+  //       encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+  //                                                                l.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+  //   }
+  //
+  //   SECTION("reverse iterator")
+  //   {
+  //     auto const text = "abcdefghijklmnopqrstuvwxyza"s;
+  //     auto b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXph"s;
+  //     std::reverse(b64_text.begin(), b64_text.end());
+  //
+  //     encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //         text.begin(), text.end());
+  //
+  //     auto rbegin = std::make_reverse_iterator(enc.end());
+  //     auto const rend = std::make_reverse_iterator(enc.begin());
+  //
+  //     std::string s(rbegin, rend);
+  //     CHECK(s == b64_text);
+  //   }
+  // }
+  //
+  // SECTION("Inception")
+  // {
+  //   auto const text = "abcde"s;
+  //   auto const b64_text = "YWJjZGU="s;
+  //   auto const final_b64_text = "WVdKalpHVT0="s;
+  //
+  //   encoder<std::string::const_iterator> first_enc(text.begin(), text.end());
+  //   encoder<decltype(first_enc.begin())> second_enc(first_enc.begin(), first_enc.end());
+  //
+  //   std::string s1(first_enc.begin(), first_enc.end());
+  //   CHECK(s1 == b64_text);
+  //
+  //   SECTION("Normal iterators")
+  //   {
+  //     std::string s2(second_enc.begin(), second_enc.end());
+  //     CHECK(s2 == final_b64_text);
+  //   }
+  //
+  //   SECTION("reverse iterator")
+  //   {
+  //     auto rbegin = std::make_reverse_iterator(second_enc.end());
+  //     auto const rend = std::make_reverse_iterator(second_enc.begin());
+  //
+  //     auto reversed = final_b64_text;
+  //     std::reverse(reversed.begin(), reversed.end());
+  //
+  //     std::string s2(rbegin, rend);
+  //     CHECK(s2 == reversed);
+  //   }
+  // }
+  //
   // TODO test with sentinel once adaptive_iterator is refactored
 }

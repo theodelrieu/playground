@@ -36,7 +36,7 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 - clean le code lol
 
 virer les concepts encoder qui check seek_forward etc
-pour restreindre l'utilisation aux iterators
+pour restreindre l'utilisation aux iterators???
 
 private inheritance, then using seek_forward etc, impl<Underlying, Sentinel, Tag = iterator_category<Underlying>>;
 dummy seek_backward if needed, static assert in body.

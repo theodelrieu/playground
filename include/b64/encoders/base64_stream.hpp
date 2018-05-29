@@ -5,6 +5,7 @@
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
 
+#include <b64/detail/encoders/base64_stream_impl.hpp>
 #include <b64/detail/meta/concepts/bidirectional_iterator.hpp>
 #include <b64/detail/meta/concepts/iterable.hpp>
 #include <b64/detail/meta/concepts/iterator.hpp>
@@ -16,102 +17,68 @@ namespace b64
 {
 namespace detail
 {
-template <typename T>
-struct is_byte_integral
-    : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
+// Must have this, since inheritance errors are not SFINAE.
+template <typename Iterator, typename Sentinel>
+struct base64_stream_encoder_requirements
 {
+  static constexpr auto value =
+      ((detail::is_input_iterator<Iterator>::value &&
+        detail::is_sentinel<Sentinel, Iterator>::value) ||
+       (detail::is_random_access_iterator<Iterator>::value &&
+        detail::is_sized_sentinel<Sentinel, Iterator>::value)) &&
+      detail::is_byte_integral<
+          detail::value_type_t<std::iterator_traits<Iterator>>>::value;
 };
 }
 
 namespace encoders
 {
-template <
-    typename UnderlyingIterator,
-    typename Sentinel = UnderlyingIterator,
-    typename = std::enable_if_t<
-        ((detail::is_input_iterator<UnderlyingIterator>::value &&
-          detail::is_sentinel<Sentinel, UnderlyingIterator>::value) ||
-         (detail::is_random_access_iterator<UnderlyingIterator>::value &&
-          detail::is_sized_sentinel<Sentinel, UnderlyingIterator>::value)) &&
-        detail::is_byte_integral<detail::value_type_t<
-            std::iterator_traits<UnderlyingIterator>>>::value>>
+// TODO test static_assert with valid RandomAccessIterator and Sentinel (not SizedSentinel)
+// to be sure SFINAE correctness is not broken.
+template <typename UnderlyingIterator,
+          typename Sentinel = UnderlyingIterator,
+          typename = std::enable_if_t<
+              detail::base64_stream_encoder_requirements<UnderlyingIterator,
+                                                         Sentinel>::value>>
 class base64_stream_encoder
+    : private detail::base64_stream_encoder_impl<
+          base64_stream_encoder<UnderlyingIterator, Sentinel>>
 {
-  using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
-  using underlying_iterator_tag =
-      detail::iterator_category_t<underlying_iterator_traits>;
-
-  using iterator = detail::adaptive_iterator<
-      base64_stream_encoder,
-      detail::iterator_category_t<underlying_iterator_traits>>;
+  using base = detail::base64_stream_encoder_impl<base64_stream_encoder<UnderlyingIterator, Sentinel>>;
 
 public:
-  using value_type = char;
-  using difference_type = std::streamoff;
-  using underlying_iterator = UnderlyingIterator;
-  using underlying_sentinel = Sentinel;
+  using base::base;
 
-  base64_stream_encoder() = default;
-  base64_stream_encoder(UnderlyingIterator const&, Sentinel const&);
+  using typename base::value_type;
+  using typename base::difference_type;
 
-  value_type const& get() const;
+  using typename base::iterator;
 
-  void seek_forward(difference_type);
+  using typename base::underlying_iterator;
+  using typename base::underlying_sentinel;
 
-  iterator begin() const;
-  iterator end() const;
+  using base::get;
+  using base::seek_forward;
+  using base::seek_backward;
+  using base::pos;
 
-  template <
-      typename T = UnderlyingIterator,
-      typename = std::enable_if_t<detail::is_bidirectional_iterator<T>::value>>
-  void seek_backward(difference_type);
-
-  template <
-      typename T = UnderlyingIterator,
-      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
-  auto pos() const noexcept -> difference_type;
+  using base::begin;
+  using base::end;
 
   template <typename T, typename U, typename V>
-  friend bool operator==(base64_stream_encoder<T, U, V> const&,
-                         base64_stream_encoder<T, U, V> const&);
-
-private:
-  void _encode_next_values();
-
-  template <typename T = UnderlyingIterator,
-            typename = std::enable_if_t<detail::is_input_iterator<T>::value>>
-  void _seek_forward_impl(difference_type, std::input_iterator_tag);
-
-  template <
-      typename T = UnderlyingIterator,
-      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
-  void _seek_forward_impl(difference_type, std::random_access_iterator_tag);
-
-  template <
-      typename T = UnderlyingIterator,
-      typename = std::enable_if_t<detail::is_bidirectional_iterator<T>::value>>
-  void _seek_backward_impl(difference_type, std::bidirectional_iterator_tag);
-
-  template <
-      typename T = UnderlyingIterator,
-      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
-  void _seek_backward_impl(difference_type, std::random_access_iterator_tag);
-
-  template <typename T = UnderlyingIterator,
-            typename = std::enable_if_t<detail::is_input_iterator<T>::value>>
-  iterator _begin_impl(std::input_iterator_tag) const;
-
-  template <typename T = UnderlyingIterator,
-            typename = std::enable_if_t<detail::is_forward_iterator<T>::value>>
-  iterator _begin_impl(std::forward_iterator_tag) const;
-
-  UnderlyingIterator _begin{};
-  UnderlyingIterator _current_it{};
-  Sentinel _end{};
-  std::array<char, 4> _last_encoded;
-  int _last_encoded_index{4};
+  friend bool operator==(base64_stream_encoder<T, U, V> const& lhs,
+                         base64_stream_encoder<T, U, V> const& rhs)
+  {
+    return static_cast<base const&>(lhs) == static_cast<base const&>(rhs);
+  }
 };
-} // namespace encoders
+
+template <typename T, typename U, typename V>
+bool operator!=(base64_stream_encoder<T, U, V> const& lhs,
+                base64_stream_encoder<T, U, V> const& rhs)
+{
+  return !(lhs == rhs);
+}
+}
 }
 
-#include <b64/detail/encoders/base64_stream_impl.hpp>
