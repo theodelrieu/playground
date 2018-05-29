@@ -37,12 +37,13 @@ template <
             std::iterator_traits<UnderlyingIterator>>>::value>>
 class base64_stream_encoder
 {
+  using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
+  using underlying_iterator_tag =
+      detail::iterator_category_t<underlying_iterator_traits>;
+
   using iterator = detail::adaptive_iterator<
       base64_stream_encoder,
-      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>>;
-
-  using underlying_iterator_tag =
-      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
+      detail::iterator_category_t<underlying_iterator_traits>>;
 
 public:
   using value_type = char;
