@@ -72,13 +72,34 @@ public:
                          base64_stream_encoder<T, U, V> const&);
 
 private:
+  void _encode_next_values();
+
+  template <typename T = UnderlyingIterator,
+            typename = std::enable_if_t<detail::is_input_iterator<T>::value>>
+  void _seek_forward_impl(difference_type, std::input_iterator_tag);
+
+  template <
+      typename T = UnderlyingIterator,
+      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
+  void _seek_forward_impl(difference_type, std::random_access_iterator_tag);
+
+  template <
+      typename T = UnderlyingIterator,
+      typename = std::enable_if_t<detail::is_bidirectional_iterator<T>::value>>
+  void _seek_backward_impl(difference_type, std::bidirectional_iterator_tag);
+
+  template <
+      typename T = UnderlyingIterator,
+      typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
+  void _seek_backward_impl(difference_type, std::random_access_iterator_tag);
+
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};
   Sentinel _end{};
   std::array<char, 4> _last_encoded;
   int _last_encoded_index{4};
 };
-}
+} // namespace encoders
 }
 
 #include <b64/detail/encoders/base64_stream_impl.hpp>
