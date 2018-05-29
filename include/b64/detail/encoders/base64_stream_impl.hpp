@@ -5,8 +5,6 @@
 #include <bitset>
 #include <cassert>
 
-#include <optional.hpp>
-
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/wrap_integer.hpp>
 
@@ -55,7 +53,7 @@ void seek_forward(Iterator const& begin,
                   Iterator& current,
                   Sentinel const& end,
                   difference_type_t<std::iterator_traits<Iterator>> n,
-                  nonstd::optional<std::array<char, 4>>& encoded,
+                  std::array<char, 4>& encoded,
                   int& index,
                   std::input_iterator_tag)
 {
@@ -77,7 +75,7 @@ void seek_forward(Iterator const& begin,
                   Iterator& current,
                   Sentinel const& end,
                   difference_type_t<std::iterator_traits<Iterator>> n,
-                  nonstd::optional<std::array<char, 4>>& encoded,
+                  std::array<char, 4>& encoded,
                   int& index,
                   std::random_access_iterator_tag)
 {
@@ -111,7 +109,7 @@ void seek_backward(Iterator const& begin,
                    Iterator& current,
                    Sentinel const& end,
                    difference_type_t<std::iterator_traits<Iterator>> n,
-                   nonstd::optional<std::array<char, 4>>& encoded,
+                   std::array<char, 4>& encoded,
                    int& index, 
                    std::bidirectional_iterator_tag)
 {
@@ -121,7 +119,6 @@ void seek_backward(Iterator const& begin,
   if (current != end)
   {
     assert(index != 4);
-    assert(encoded);
     index = wrap_integer<0, 3>(index - 1);
     if (index != 3)
       return;
@@ -152,7 +149,7 @@ void seek_backward(Iterator const& begin,
                    Iterator& current,
                    Sentinel const& end,
                    difference_type_t<Iterator> n,
-                   nonstd::optional<std::array<char, 4>>& encoded,
+                   std::array<char, 4>& encoded,
                    int& index,
                    std::random_access_iterator_tag)
 {
@@ -228,7 +225,7 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
     -> iterator
 {
   // hack to trick the constructor, avoid encoding values twice
-  // _last_encoded_index == nullopt
+  // _last_encoded_index == 4
   base64_stream_encoder enc;
   enc._begin = _begin;
   enc._current_it = _begin;
@@ -240,7 +237,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type const&
 {
-  return _last_encoded->operator[](_last_encoded_index);
+  return _last_encoded[_last_encoded_index];
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>

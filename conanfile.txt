@@ -1,6 +1,3 @@
-[requires]
-optional-lite/2.3.0@nonstd-lite/stable
-
 [build_requires]
 catch2/2.2.1@bincrafters/stable
 

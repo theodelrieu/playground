@@ -2,8 +2,6 @@
 
 #include <array>
 
-#include <optional.hpp>
-
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
 
@@ -77,7 +75,7 @@ private:
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};
   Sentinel _end{};
-  nonstd::optional<std::array<char, 4>> _last_encoded;
+  std::array<char, 4> _last_encoded;
   int _last_encoded_index{4};
 };
 }
