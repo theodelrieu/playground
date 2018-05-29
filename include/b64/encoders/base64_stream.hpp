@@ -41,6 +41,9 @@ class base64_stream_encoder
       base64_stream_encoder,
       detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>>;
 
+  using underlying_iterator_tag =
+      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
+
 public:
   using value_type = char;
   using difference_type = std::streamoff;
@@ -92,6 +95,14 @@ private:
       typename T = UnderlyingIterator,
       typename = std::enable_if_t<detail::is_random_access_iterator<T>::value>>
   void _seek_backward_impl(difference_type, std::random_access_iterator_tag);
+
+  template <typename T = UnderlyingIterator,
+            typename = std::enable_if_t<detail::is_input_iterator<T>::value>>
+  iterator _begin_impl(std::input_iterator_tag) const;
+
+  template <typename T = UnderlyingIterator,
+            typename = std::enable_if_t<detail::is_forward_iterator<T>::value>>
+  iterator _begin_impl(std::forward_iterator_tag) const;
 
   UnderlyingIterator _begin{};
   UnderlyingIterator _current_it{};

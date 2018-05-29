@@ -34,9 +34,8 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
   + 1 lib par famille de codec?
 
 - clean le code lol
-- reverse_iterator
 
 virer les concepts encoder qui check seek_forward etc
 pour restreindre l'utilisation aux iterators
 
-virer wrap_integer, en faire une fonction
+meson?

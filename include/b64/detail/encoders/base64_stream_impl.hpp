@@ -30,14 +30,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
     -> iterator
 {
-  // FIXME enormous hack to avoid skipping the first 4 chars
-  if (std::is_same<detail::iterator_category_t<
-                       std::iterator_traits<underlying_iterator>>,
-                   std::input_iterator_tag>::value)
-  {
-    return {*this};
-  }
-  return {{_begin, _end}};
+  return _begin_impl(underlying_iterator_tag{});
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -88,10 +81,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
     difference_type n)
 {
-  using tag =
-      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
-
-  _seek_forward_impl(n, tag{});
+  _seek_forward_impl(n, underlying_iterator_tag{});
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -99,10 +89,23 @@ template <typename, typename>
 void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
     seek_backward(difference_type n)
 {
-  using tag =
-      detail::iterator_category_t<std::iterator_traits<UnderlyingIterator>>;
+  _seek_backward_impl(n, underlying_iterator_tag{});
+}
 
-  _seek_backward_impl(n, tag{});
+template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
+template <typename, typename>
+auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_begin_impl(
+    std::input_iterator_tag) const -> iterator
+{
+  return {*this};
+}
+
+template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
+template <typename, typename>
+auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_begin_impl(
+    std::forward_iterator_tag) const -> iterator
+{
+  return {{_begin, _end}};
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
