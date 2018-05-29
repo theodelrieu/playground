@@ -295,7 +295,7 @@ bool operator==(
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
 {
-  if (lhs._last_encoded_index == 4|| !rhs._last_encoded_index == 4)
+  if (lhs._last_encoded_index == 4|| rhs._last_encoded_index == 4)
     return lhs._last_encoded_index == rhs._last_encoded_index;
   return std::tie(lhs._begin, lhs._current_it, lhs._last_encoded_index) ==
          std::tie(rhs._begin, rhs._current_it, rhs._last_encoded_index);
