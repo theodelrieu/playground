@@ -43,12 +43,6 @@ class base64_stream_encoder<
 public:
   using base::base;
 
-  using typename base::value_type;
-  using typename base::difference_type;
-
-  using typename base::underlying_iterator;
-  using typename base::underlying_sentinel;
-
   iterator begin() const
   {
     auto enc_base = (static_cast<base const*>(this))->begin_impl();

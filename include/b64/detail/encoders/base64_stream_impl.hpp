@@ -10,6 +10,7 @@
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/meta/concepts/input_iterator.hpp>
+#include <b64/detail/meta/concepts/forward_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
 #include <b64/detail/wrap_integer.hpp>
 
@@ -79,9 +80,9 @@ class base64_stream_encoder_impl<
                          std::iterator_traits<UnderlyingIterator>>>::value>>
 {
   using self = base64_stream_encoder_impl;
-  using algorithm = base64_encode_algorithm;
 
 protected:
+  using algorithm = base64_encode_algorithm;
   using iterator_category = std::input_iterator_tag;
 
 public:
@@ -161,6 +162,52 @@ protected:
       return lhs._index == rhs._index;
     return std::tie(lhs._current, lhs._end) == std::tie(rhs._current, rhs._end);
   }
+};
+
+template <typename UnderlyingIterator, typename Sentinel>
+class base64_stream_encoder_impl<
+    UnderlyingIterator,
+    Sentinel,
+    std::forward_iterator_tag,
+    std::enable_if_t<is_forward_iterator<UnderlyingIterator>::value &&
+                     is_sentinel<Sentinel, UnderlyingIterator>::value &&
+                     is_byte_integral<value_type_t<
+                         std::iterator_traits<UnderlyingIterator>>>::value>>
+  : public base64_stream_encoder_impl<UnderlyingIterator,
+                                      Sentinel,
+                                      std::input_iterator_tag>
+{
+  using self = base64_stream_encoder_impl;
+
+protected:
+  using base = base64_stream_encoder_impl<UnderlyingIterator,
+                                          Sentinel,
+                                          std::input_iterator_tag>;
+
+public:
+  base64_stream_encoder_impl() = default;
+  base64_stream_encoder_impl(UnderlyingIterator const& begin,
+                             Sentinel const& end)
+    : base(begin, end), _begin(begin)
+  {
+  }
+
+  self begin_impl() const
+  {
+    return {_begin, this->_end};
+  }
+
+  self end_impl() const
+  {
+    self enc;
+    enc._begin = _begin;
+    enc._current = _begin;
+    enc._end = this->_end;
+    return enc;
+  }
+
+protected:
+  UnderlyingIterator _begin{};
 };
 
 template <typename T, typename U, typename V>
