@@ -9,8 +9,9 @@
 
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
-#include <b64/detail/meta/concepts/input_iterator.hpp>
+#include <b64/detail/meta/concepts/bidirectional_iterator.hpp>
 #include <b64/detail/meta/concepts/forward_iterator.hpp>
+#include <b64/detail/meta/concepts/input_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
 #include <b64/detail/wrap_integer.hpp>
 
@@ -20,7 +21,7 @@ namespace detail
 {
 template <typename T>
 struct is_byte_integral
-    : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
+  : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
 {
 };
 
@@ -184,6 +185,8 @@ protected:
                                           Sentinel,
                                           std::input_iterator_tag>;
 
+  using iterator_category = std::forward_iterator_tag;
+
 public:
   base64_stream_encoder_impl() = default;
   base64_stream_encoder_impl(UnderlyingIterator const& begin,
@@ -208,6 +211,74 @@ public:
 
 protected:
   UnderlyingIterator _begin{};
+};
+
+template <typename UnderlyingIterator, typename Sentinel>
+class base64_stream_encoder_impl<
+    UnderlyingIterator,
+    Sentinel,
+    std::bidirectional_iterator_tag,
+    std::enable_if_t<is_bidirectional_iterator<UnderlyingIterator>::value &&
+                     is_sentinel<Sentinel, UnderlyingIterator>::value &&
+                     is_byte_integral<value_type_t<
+                         std::iterator_traits<UnderlyingIterator>>>::value>>
+  : public base64_stream_encoder_impl<UnderlyingIterator,
+                                      Sentinel,
+                                      std::forward_iterator_tag>
+{
+  using self = base64_stream_encoder_impl;
+
+protected:
+  using base = base64_stream_encoder_impl<UnderlyingIterator,
+                                          Sentinel,
+                                          std::forward_iterator_tag>;
+
+  using iterator_category = std::bidirectional_iterator_tag;
+public:
+  using base::base;
+
+  self begin_impl() const
+  {
+    return static_cast<self&&>(base::begin_impl());
+  }
+
+  self end_impl() const
+  {
+    return static_cast<self&&>(base::end_impl());
+  }
+
+  void seek_backward(typename base::difference_type n)
+  {
+    assert(n == -1);
+
+    auto offset = decltype(n){0};
+    if (this->_current != this->_end)
+    {
+      assert(this->_index != 4);
+      this->_index = detail::wrap_integer<0, 3>(this->_index - 1);
+      if (this->_index != 3)
+        return;
+      offset = 3 * 2;
+    }
+    else
+    {
+      offset = std::distance(this->_begin, this->_end) % 3;
+      if (offset == 0)
+        offset = 3;
+      // at the very end
+      if (this->_index == 4)
+        this->_index = 3;
+      else
+      {
+        this->_index = detail::wrap_integer<0, 3>(this->_index - 1);
+        if (this->_index == 3)
+          offset += 3;
+      }
+    }
+    assert(offset);
+    std::advance(this->_current, -offset);
+    this->_encoded = typename base::algorithm{}(this->_current, this->_end);
+  }
 };
 
 template <typename T, typename U, typename V>

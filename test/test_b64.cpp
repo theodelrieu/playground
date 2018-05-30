@@ -31,15 +31,15 @@ using encoder = encoders::base64_stream_encoder<Iterator, Sentinel>;
 // static_assert(detail::is_bidirectional_encoder<encoder<char*>>::value, "");
 // static_assert(detail::is_random_access_encoder<encoder<char*>>::value, "");
 //
-// static_assert(!detail::is_random_access_encoder<
-//                   encoder<std::list<char>::iterator>>::value,
-//               "");
-// static_assert(
-//     detail::is_bidirectional_encoder<encoder<std::list<char>::iterator>>::value,
-//     "");
-// static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
-//               "");
-//
+static_assert(!detail::is_random_access_encoder<
+                  encoder<std::list<char>::iterator>>::value,
+              "");
+static_assert(
+    detail::is_bidirectional_encoder<encoder<std::list<char>::iterator>>::value,
+    "");
+static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
+              "");
+
 static_assert(!detail::is_random_access_encoder<
                   encoder<std::forward_list<char>::iterator>>::value,
               "");
@@ -174,12 +174,35 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
   }
   //
-  // SECTION("Iterators")
-  // {
-  //   SECTION("One byte padding")
-  //   {
-  //     auto const text = "abcdefghijklmnopqrstuvwxyz"s;
-  //     auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
+  SECTION("Iterators")
+  {
+    SECTION("One byte padding")
+    {
+      auto const text = "abcdefghijklmnopqrstuvwxyz"s;
+      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo="s;
+
+  //     SECTION("Random access")
+  //     {
+  //       encoders::base64_stream_encoder<std::string::const_iterator> enc(
+  //           text.begin(), text.end());
+  //
+  //       bidirectional_tests(enc, b64_text);
+  //     }
+
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
+    }
+
+    SECTION("Two byte padding")
+    {
+      auto const text = "abcdefghijklmnopqrstuvwxy"s;
+      auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
   //
   //     SECTION("Random access")
   //     {
@@ -189,39 +212,16 @@ TEST_CASE("b64 stream", "[encoding][base64]")
   //       bidirectional_tests(enc, b64_text);
   //     }
   //
-  //     SECTION("Bidirectional")
-  //     {
-  //       std::list<char> const l{text.begin(), text.end()};
-  //       encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-  //                                                                l.end());
-  //
-  //       bidirectional_tests(enc, b64_text);
-  //     }
-  //   }
-  //
-  //   SECTION("Two byte padding")
-  //   {
-  //     auto const text = "abcdefghijklmnopqrstuvwxy"s;
-  //     auto const b64_text = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eQ=="s;
-  //
-  //     SECTION("Random access")
-  //     {
-  //       encoders::base64_stream_encoder<std::string::const_iterator> enc(
-  //           text.begin(), text.end());
-  //
-  //       bidirectional_tests(enc, b64_text);
-  //     }
-  //
-  //     SECTION("Bidirectional")
-  //     {
-  //       std::list<char> const l{text.begin(), text.end()};
-  //       encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-  //                                                                l.end());
-  //
-  //       bidirectional_tests(enc, b64_text);
-  //     }
-  //   }
-  //
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
+    }
+
     SECTION("No byte padding")
     {
       auto const text = "abcdefghijklmnopqrstuvwxyza"s;
@@ -236,14 +236,14 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       //   bidirectional_tests(enc, b64_text);
       // }
 
-      // SECTION("Bidirectional")
-      // {
-      //   std::list<char> const l{text.begin(), text.end()};
-      //   encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
-      //                                                            l.end());
-      //
-      //   bidirectional_tests(enc, b64_text);
-      // }
+      SECTION("Bidirectional")
+      {
+        std::list<char> const l{text.begin(), text.end()};
+        encoders::base64_stream_encoder<decltype(l.begin())> enc(l.begin(),
+                                                                 l.end());
+
+        bidirectional_tests(enc, b64_text);
+      }
       
       SECTION("Forward")
       {
@@ -270,7 +270,7 @@ TEST_CASE("b64 stream", "[encoding][base64]")
     //   std::string s(rbegin, rend);
     //   CHECK(s == b64_text);
     // }
-  // }
+  }
 
   // SECTION("Inception")
   // {
