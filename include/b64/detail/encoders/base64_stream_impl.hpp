@@ -7,13 +7,21 @@
 #include <iterator>
 #include <tuple>
 
+#include <b64/detail/advance_to.hpp>
+#include <b64/detail/distance.hpp>
 #include <b64/detail/iterators/adaptive_iterator.hpp>
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/meta/concepts/bidirectional_iterator.hpp>
 #include <b64/detail/meta/concepts/forward_iterator.hpp>
 #include <b64/detail/meta/concepts/input_iterator.hpp>
+#include <b64/detail/meta/concepts/random_access_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
+#include <b64/detail/meta/concepts/sized_sentinel.hpp>
 #include <b64/detail/wrap_integer.hpp>
+
+void foo()
+{
+}
 
 namespace b64
 {
@@ -65,8 +73,9 @@ struct base64_encode_algorithm
 };
 
 template <typename UnderlyingIterator,
-          typename Sentinel,
-          typename IteratorTag = iterator_category_t<UnderlyingIterator>,
+          typename Sentinel = UnderlyingIterator,
+          typename IteratorTag =
+              iterator_category_t<std::iterator_traits<UnderlyingIterator>>,
           typename = void>
 struct base64_stream_encoder_impl;
 
@@ -140,7 +149,10 @@ public:
   self end_impl() const
   {
     // hack to trick the constructor, avoid encoding values twice
-    // _index == 4
+    // no need to set current to end, since _index == 4
+    // This only holds true for input/forward iterators,
+    // bidirectional iterators can be decremented, so _current == _end for those
+    // iterators
     base64_stream_encoder_impl enc;
     enc._current = _current;
     enc._end = _end;
@@ -161,7 +173,8 @@ protected:
   {
     if (lhs._index == 4 || rhs._index == 4)
       return lhs._index == rhs._index;
-    return std::tie(lhs._current, lhs._end) == std::tie(rhs._current, rhs._end);
+    return std::tie(lhs._current, lhs._index) ==
+           std::tie(rhs._current, rhs._index);
   }
 };
 
@@ -211,6 +224,22 @@ public:
 
 protected:
   UnderlyingIterator _begin{};
+
+  template <typename T,
+            typename U,
+            typename V,
+            typename W,
+            std::enable_if_t<
+                detail::is_derived_from<V, std::forward_iterator_tag>::value>>
+  friend bool operator==(base64_stream_encoder_impl<T, U, V, W> const& lhs,
+                         base64_stream_encoder_impl<T, U, V, W> const& rhs)
+  {
+
+    if (lhs._index == 4 || rhs._index == 4)
+      return lhs._index == rhs._index;
+    return std::tie(lhs._current, lhs._index, lhs._begin) ==
+           std::tie(rhs._current, rhs._index, rhs._begin);
+  }
 };
 
 template <typename UnderlyingIterator, typename Sentinel>
@@ -234,6 +263,7 @@ protected:
                                           std::forward_iterator_tag>;
 
   using iterator_category = std::bidirectional_iterator_tag;
+
 public:
   using base::base;
 
@@ -244,11 +274,17 @@ public:
 
   self end_impl() const
   {
-    return static_cast<self&&>(base::end_impl());
+    self enc;
+    enc._begin = this->_begin;
+    enc._current = this->_current;
+    enc._end = this->_end;
+    ::b64::detail::advance_to(enc._current, enc._end);
+    return enc;
   }
 
   void seek_backward(typename base::difference_type n)
   {
+    foo();
     assert(n == -1);
 
     auto offset = decltype(n){0};
@@ -262,7 +298,7 @@ public:
     }
     else
     {
-      offset = std::distance(this->_begin, this->_end) % 3;
+      offset = ::b64::detail::distance(this->_begin, this->_end) % 3;
       if (offset == 0)
         offset = 3;
       // at the very end
@@ -281,288 +317,134 @@ public:
   }
 };
 
-template <typename T, typename U, typename V>
+template <typename UnderlyingIterator, typename Sentinel>
+class base64_stream_encoder_impl<
+    UnderlyingIterator,
+    Sentinel,
+    std::random_access_iterator_tag,
+    std::enable_if_t<is_random_access_iterator<UnderlyingIterator>::value &&
+                     is_sized_sentinel<Sentinel, UnderlyingIterator>::value &&
+                     is_byte_integral<value_type_t<
+                         std::iterator_traits<UnderlyingIterator>>>::value>>
+  : public base64_stream_encoder_impl<UnderlyingIterator,
+                                      Sentinel,
+                                      std::bidirectional_iterator_tag>
+{
+  using self = base64_stream_encoder_impl;
+
+protected:
+  using base = base64_stream_encoder_impl<UnderlyingIterator,
+                                          Sentinel,
+                                          std::bidirectional_iterator_tag>;
+
+  using iterator_category = std::random_access_iterator_tag;
+
+public:
+  using base::base;
+
+  self begin_impl() const
+  {
+    return static_cast<self&&>(base::begin_impl());
+  }
+
+  self end_impl() const
+  {
+    return static_cast<self&&>(base::end_impl());
+  }
+
+  void seek_forward(typename base::difference_type n)
+  {
+    assert(n > 0);
+    assert(this->_index != 4);
+
+    if (this->_index + n <= 3)
+    {
+      this->_index += n;
+      return;
+    }
+
+    auto const offset = n - (4 - this->_index);
+    auto const res = std::lldiv(offset, 4);
+    auto const dist = this->_end - this->_current;
+
+    this->_current += std::min<std::uint64_t>(dist, res.quot * 3);
+    this->_index = detail::wrap_integer<0, 3>(this->_index + n);
+
+    if (this->_current == this->_end)
+    {
+      if (res.rem == 0)
+      {
+        this->_index = 4;
+        return;
+      }
+      this->_current -= dist % 3;
+    }
+    this->_encoded = typename base::algorithm{}(this->_current, this->_end);
+  }
+
+  void seek_backward(typename base::difference_type n)
+  {
+    assert(n < 0);
+
+    if (this->_index != 4 && this->_index + n >= 0)
+    {
+      this->_index += n;
+      return;
+    }
+
+    if (this->_index == 4)
+      this->_current = this->_begin + (this->_end - this->_begin);
+    auto offset = decltype(n)(0);
+    auto const dist = this->_current - this->_begin;
+    if (this->_current == this->_end)
+    {
+      offset = dist % 3;
+      if (offset == 0)
+        offset = 3;
+    }
+    auto res = std::lldiv(n, -4);
+    assert(res.quot >= 0);
+    if (res.quot && res.rem == 0)
+      --res.quot;
+    // TODO refactor this mess
+    if (res.quot == 0 && this->_index == 0)
+    {
+      if (this->_current == this->_end)
+        ++res.quot;
+      else
+        res.quot = 2;
+    }
+    offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
+    std::advance(this->_current, -offset);
+    this->_encoded = typename base::algorithm{}(this->_current, this->_end);
+    this->_index = detail::wrap_integer<0, 3>(n + this->_index);
+  }
+
+  typename base::difference_type pos() const noexcept
+  {
+    auto dist = typename base::difference_type{0};
+
+    if ((this->_current == this->_end) || this->_index == 4)
+      dist = this->_end - this->_begin;
+    else
+    {
+      dist = this->_current - this->_begin;
+      // FIXME clean this code...
+      if ((this->_current != this->_end) && dist > 0)
+        dist -= 3;
+    }
+
+    auto const res = std::lldiv(dist, 3);
+    return (res.quot + std::min(res.rem, 1ll)) * 4;
+  }
+};
+
+template <typename T, typename U, typename V, typename W>
 bool operator!=(
-    base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& lhs,
-    base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& rhs)
+    base64_stream_encoder_impl<T, U, V, W> const& lhs,
+    base64_stream_encoder_impl<T, U, V, W> const& rhs)
 {
   return !(lhs == rhs);
 }
 }
 }
-// {
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     base64_stream_encoder(UnderlyingIterator const& begin, Sentinel const& end)
-//   : _begin(begin),
-//     _current_it(begin),
-//     _end(end)
-// {
-//   if (_current_it != _end)
-//   {
-//     _last_encoded_index = 0;
-//     _encode_next_values();
-//   }
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
-//     -> iterator
-// {
-//   return _begin_impl(underlying_iterator_tag{});
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
-//     -> iterator
-// {
-//   // hack to trick the constructor, avoid encoding values twice
-//   // _last_encoded_index == 4
-//   base64_stream_encoder enc;
-//   enc._begin = _begin;
-//   enc._current_it = _begin;
-//   enc._end = _end;
-//   return {std::move(enc)};
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
-//     -> value_type const&
-// {
-//   return _last_encoded[_last_encoded_index];
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::pos() const
-//     noexcept -> difference_type
-// {
-//   // this is ensured by RandomAccessIterator
-//   static_assert(detail::is_sized_sentinel<UnderlyingIterator, Sentinel>::value,
-//                 "");
-//
-//   auto dist = difference_type{};
-//
-//   if (_current_it == _end || _last_encoded_index == 4)
-//     dist = _end - _begin;
-//   else
-//   {
-//     dist = _current_it - _begin;
-//     // FIXME clean this code...
-//     if (_current_it != _end && dist > 0)
-//       dist -= 3;
-//   }
-//   auto const res = std::lldiv(dist, 3);
-//   return (res.quot + std::min(res.rem, 1ll)) * 4;
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
-//     difference_type n)
-// {
-//   _seek_forward_impl(n, underlying_iterator_tag{});
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     seek_backward(difference_type n)
-// {
-//   _seek_backward_impl(n, underlying_iterator_tag{});
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_begin_impl(
-//     std::input_iterator_tag) const -> iterator
-// {
-//   return {*this};
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::_begin_impl(
-//     std::forward_iterator_tag) const -> iterator
-// {
-//   return {{_begin, _end}};
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     _encode_next_values()
-// {
-//   static constexpr char const alphabet[] = {
-//       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-//       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-//       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-//       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-//       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
-//
-//   assert(_current_it != _end);
-//
-//   std::bitset<24> bits;
-//   int i = 0;
-//   for (; i < 3; ++i)
-//   {
-//     if (_current_it == _end)
-//       break;
-//     auto byte = static_cast<std::uint8_t>(*_current_it++);
-//     bits |= (byte << (16 - (8 * i)));
-//   }
-//
-//   for (int j = 0; j < i + 1; ++j)
-//   {
-//     auto shift = (18 - (6 * j));
-//     auto mask = ((std::bitset<24>(0xFFFFFF) >> 18) << shift);
-//     auto l = bits & mask;
-//     l >>= shift;
-//     auto index = static_cast<std::uint8_t>(l.to_ulong());
-//     _last_encoded[j] = alphabet[index];
-//   }
-//   std::fill(std::next(_last_encoded.begin(), i + 1), _last_encoded.end(), '=');
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     _seek_forward_impl(difference_type n, std::input_iterator_tag)
-// {
-//   assert(n == 1);
-//   assert(_last_encoded_index != 4);
-//
-//   _last_encoded_index = detail::wrap_integer<0, 3>(_last_encoded_index + 1);
-//   if (_last_encoded_index == 0)
-//   {
-//     if (_current_it == _end)
-//       _last_encoded_index = 4;
-//     else
-//       _encode_next_values();
-//   }
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     _seek_forward_impl(difference_type n, std::random_access_iterator_tag)
-// {
-//   assert(n > 0);
-//   assert(_last_encoded_index != 4);
-//
-//   if (_last_encoded_index + n <= 3)
-//   {
-//     _last_encoded_index += n;
-//     return;
-//   }
-//   auto const offset = n - (4 - _last_encoded_index);
-//   auto const res = std::lldiv(offset, 4);
-//   auto const dist = _end - _current_it;
-//   _current_it += std::min<std::uint64_t>(dist, res.quot * 3);
-//   _last_encoded_index = detail::wrap_integer<0, 3>(_last_encoded_index + n);
-//   if (_current_it == _end)
-//   {
-//     if (res.rem == 0)
-//     {
-//       _last_encoded_index = 4;
-//       return;
-//     }
-//     _current_it -= dist % 3;
-//   }
-//   _encode_next_values();
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     _seek_backward_impl(difference_type n, std::bidirectional_iterator_tag)
-// {
-//   assert(n == -1);
-//
-//   auto offset = decltype(n)(0);
-//   if (_current_it != _end)
-//   {
-//     assert(_last_encoded_index != 4);
-//     _last_encoded_index = detail::wrap_integer<0, 3>(_last_encoded_index - 1);
-//     if (_last_encoded_index != 3)
-//       return;
-//     offset = 3 * 2;
-//   }
-//   else
-//   {
-//     offset = std::distance(_begin, _end) % 3;
-//     if (offset == 0)
-//       offset = 3;
-//     // at the very end
-//     if (_last_encoded_index == 4)
-//       _last_encoded_index = 3;
-//     else
-//     {
-//       _last_encoded_index = detail::wrap_integer<0, 3>(_last_encoded_index - 1);
-//       if (_last_encoded_index == 3)
-//         offset += 3;
-//     }
-//   }
-//   assert(offset);
-//   std::advance(_current_it, -offset);
-//   _encode_next_values();
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// template <typename, typename>
-// void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-//     _seek_backward_impl(difference_type n, std::random_access_iterator_tag)
-// {
-//   assert(n < 0);
-//
-//   if (_last_encoded_index != 4 && _last_encoded_index + n >= 0)
-//   {
-//     _last_encoded_index += n;
-//     return;
-//   }
-//
-//   if (_last_encoded_index == 4)
-//     _current_it = _begin + (_end - _begin);
-//   auto offset = decltype(n)(0);
-//   auto const dist = _current_it - _begin;
-//   if (_current_it == _end)
-//   {
-//     offset = dist % 3;
-//     if (offset == 0)
-//       offset = 3;
-//   }
-//   auto res = std::lldiv(n, -4);
-//   assert(res.quot >= 0);
-//   if (res.quot && res.rem == 0)
-//     --res.quot;
-//   // TODO refactor this mess
-//   if (res.quot == 0 && _last_encoded_index == 0)
-//   {
-//     if (_current_it == _end)
-//       ++res.quot;
-//     else
-//       res.quot = 2;
-//   }
-//   offset = std::min<std::uint64_t>(dist, offset + (3 * res.quot));
-//   std::advance(_current_it, -offset);
-//   _encode_next_values();
-//   _last_encoded_index = detail::wrap_integer<0, 3>(n + _last_encoded_index);
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// bool operator==(
-//     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
-//     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
-// {
-//   if (lhs._last_encoded_index == 4|| rhs._last_encoded_index == 4)
-//     return lhs._last_encoded_index == rhs._last_encoded_index;
-//   return std::tie(lhs._begin, lhs._current_it, lhs._last_encoded_index) ==
-//          std::tie(rhs._begin, rhs._current_it, rhs._last_encoded_index);
-// }
-//
-// template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-// bool operator!=(
-//     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& lhs,
-//     base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE> const& rhs)
-// {
-//   return !(lhs == rhs);
-// }
-// }
