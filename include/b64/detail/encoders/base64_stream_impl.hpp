@@ -58,33 +58,33 @@ struct base64_encode_algorithm
       encoded[j] = alphabet[index];
     }
     std::fill(std::next(encoded.begin(), i + 1), encoded.end(), '=');
+    return encoded;
   }
 };
 
-template <typename CRTP,
-          typename IteratorTag =
-              iterator_category_t<typename CRTP::underlying_iterator>,
+template <typename UnderlyingIterator,
+          typename Sentinel,
+          typename IteratorTag = iterator_category_t<UnderlyingIterator>,
           typename = void>
 struct base64_stream_encoder_impl;
 
-template <template <class...> class Encoder,
-          typename UnderlyingIterator,
-          typename Sentinel>
+template <typename UnderlyingIterator, typename Sentinel>
 class base64_stream_encoder_impl<
-    Encoder<UnderlyingIterator, Sentinel>,
+    UnderlyingIterator,
+    Sentinel,
     std::input_iterator_tag,
     std::enable_if_t<is_input_iterator<UnderlyingIterator>::value &&
                      is_sentinel<Sentinel, UnderlyingIterator>::value &&
                      is_byte_integral<value_type_t<
                          std::iterator_traits<UnderlyingIterator>>>::value>>
 {
+  using self = base64_stream_encoder_impl;
   using algorithm = base64_encode_algorithm;
 
 protected:
-  using iterator = adaptive_iterator<Encoder<UnderlyingIterator, Sentinel>,
-                                     std::input_iterator_tag>;
-  friend iterator;
+  using iterator_category = std::input_iterator_tag;
 
+public:
   using underlying_iterator = UnderlyingIterator;
   using underlying_sentinel = Sentinel;
 
@@ -130,14 +130,12 @@ protected:
     }
   }
 
-  iterator begin() const
+  self begin_impl() const
   {
-    // input iterators are not multi-pass, no need to store begin, so copying
-    // *this is the only thing to do.
-    return {*this};
+    return *this;
   }
 
-  iterator end() const
+  self end_impl() const
   {
     // hack to trick the constructor, avoid encoding values twice
     // _index == 4
@@ -145,32 +143,19 @@ protected:
     enc._current = _current;
     enc._end = _end;
     assert(enc._index == 4);
-    return {std::move(enc)};
+    return enc;
   }
 
-  // dummy methods
-  void seek_backward(difference_type)
-  {
-    static_assert(sizeof(UnderlyingIterator) == 0,
-                  "this function should never be called");
-  }
-
-  difference_type pos() const noexcept
-  {
-    static_assert(sizeof(UnderlyingIterator) == 0,
-                  "this function should never be called");
-    return 0;
-  }
-
+protected:
   UnderlyingIterator _current{};
   Sentinel _end{};
   int _index{4};
   std::array<char, 4> _encoded;
 
-  template <typename T, typename U>
+  template <typename T, typename U, typename V>
   friend bool operator==(
-      base64_stream_encoder_impl<T, std::input_iterator_tag, U> const& lhs,
-      base64_stream_encoder_impl<T, std::input_iterator_tag, U> const& rhs)
+      base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& lhs,
+      base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& rhs)
   {
     if (lhs._index == 4 || rhs._index == 4)
       return lhs._index == rhs._index;
@@ -178,10 +163,10 @@ protected:
   }
 };
 
-template <typename T, typename U>
+template <typename T, typename U, typename V>
 bool operator!=(
-    base64_stream_encoder_impl<T, std::input_iterator_tag, U> const& lhs,
-    base64_stream_encoder_impl<T, std::input_iterator_tag, U> const& rhs)
+    base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& lhs,
+    base64_stream_encoder_impl<T, U, std::input_iterator_tag, V> const& rhs)
 {
   return !(lhs == rhs);
 }

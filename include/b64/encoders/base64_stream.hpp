@@ -15,36 +15,30 @@
 
 namespace b64
 {
-namespace detail
-{
-// Must have this, since inheritance errors are not SFINAE.
-template <typename Iterator, typename Sentinel>
-struct base64_stream_encoder_requirements
-{
-  static constexpr auto value =
-      ((detail::is_input_iterator<Iterator>::value &&
-        detail::is_sentinel<Sentinel, Iterator>::value) ||
-       (detail::is_random_access_iterator<Iterator>::value &&
-        detail::is_sized_sentinel<Sentinel, Iterator>::value)) &&
-      detail::is_byte_integral<
-          detail::value_type_t<std::iterator_traits<Iterator>>>::value;
-};
-}
-
 namespace encoders
 {
 // TODO test static_assert with valid RandomAccessIterator and Sentinel (not SizedSentinel)
 // to be sure SFINAE correctness is not broken.
-template <typename UnderlyingIterator,
-          typename Sentinel = UnderlyingIterator,
-          typename = std::enable_if_t<
-              detail::base64_stream_encoder_requirements<UnderlyingIterator,
-                                                         Sentinel>::value>>
-class base64_stream_encoder
-    : private detail::base64_stream_encoder_impl<
-          base64_stream_encoder<UnderlyingIterator, Sentinel>>
+template <
+    typename UnderlyingIterator,
+    typename Sentinel = UnderlyingIterator,
+    typename = void>
+class base64_stream_encoder;
+
+template <typename UnderlyingIterator, typename Sentinel>
+class base64_stream_encoder<
+    UnderlyingIterator,
+    Sentinel,
+    // every SFINAE check is done in the base class, but we have to trigger SFINAE here.
+    // inheritance errors are not SFINAE.
+    decltype(std::declval<detail::base64_stream_encoder_impl<UnderlyingIterator,
+                                                             Sentinel>>(),
+             void())>
+  : public detail::base64_stream_encoder_impl<UnderlyingIterator, Sentinel>
 {
-  using base = detail::base64_stream_encoder_impl<base64_stream_encoder<UnderlyingIterator, Sentinel>>;
+  using base = detail::base64_stream_encoder_impl<UnderlyingIterator, Sentinel>;
+  using iterator = detail::adaptive_iterator<base64_stream_encoder,
+                                             detail::iterator_category_t<base>>;
 
 public:
   using base::base;
@@ -52,26 +46,30 @@ public:
   using typename base::value_type;
   using typename base::difference_type;
 
-  using typename base::iterator;
-
   using typename base::underlying_iterator;
   using typename base::underlying_sentinel;
 
-  using base::get;
-  using base::seek_forward;
-  using base::seek_backward;
-  using base::pos;
-
-  using base::begin;
-  using base::end;
-
-  template <typename T, typename U, typename V>
-  friend bool operator==(base64_stream_encoder<T, U, V> const& lhs,
-                         base64_stream_encoder<T, U, V> const& rhs)
+  iterator begin() const
   {
-    return static_cast<base const&>(lhs) == static_cast<base const&>(rhs);
+    auto enc_base = (static_cast<base const*>(this))->begin_impl();
+    return {static_cast<base64_stream_encoder const&>(enc_base)};
+  }
+
+  iterator end() const
+  {
+    auto enc_base = (static_cast<base const*>(this))->end_impl();
+    return {static_cast<base64_stream_encoder const&>(enc_base)};
   }
 };
+
+template <typename T, typename U, typename V>
+bool operator==(base64_stream_encoder<T, U, V> const& lhs,
+                base64_stream_encoder<T, U, V> const& rhs)
+{
+  using base = detail::base64_stream_encoder_impl<T, U>;
+
+  return static_cast<base const&>(lhs) == static_cast<base const&>(rhs);
+}
 
 template <typename T, typename U, typename V>
 bool operator!=(base64_stream_encoder<T, U, V> const& lhs,
