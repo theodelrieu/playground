@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <array>
-#include <bitset>
 #include <cassert>
 #include <iterator>
 #include <tuple>
@@ -11,7 +10,6 @@
 #include <b64/detail/meta/aliases.hpp>
 #include <b64/detail/meta/concepts/input_iterator.hpp>
 #include <b64/detail/meta/concepts/sentinel.hpp>
-#include <b64/detail/wrap_integer.hpp>
 
 namespace b64
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 
 namespace b64
 {
