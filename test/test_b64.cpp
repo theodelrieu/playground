@@ -14,7 +14,7 @@
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/encoder.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/encoders/base64_stream.hpp>
+#include <mgs/encoders/base64_lazy.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -24,7 +24,7 @@ extern std::vector<std::string> testFilePaths;
 namespace
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using encoder = encoders::base64_stream_encoder<Iterator, Sentinel>;
+using encoder = encoders::base64_lazy_encoder<Iterator, Sentinel>;
 
 static_assert(detail::is_encoder<encoder<char*>>::value, "");
 static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
@@ -62,7 +62,7 @@ void expect_base64(Iterable it, std::string expected_b64)
   using std::begin;
   using std::end;
 
-  encoders::base64_stream_encoder<Iterator, Sentinel> enc(begin(it), end(it));
+  encoders::base64_lazy_encoder<Iterator, Sentinel> enc(begin(it), end(it));
 
   std::string s(enc.begin(), enc.end());
   CHECK(s == expected_b64);
@@ -81,7 +81,7 @@ void base64_checks()
 }
 }
 
-TEST_CASE("b64 stream", "[encoding][base64]")
+TEST_CASE("b64 lazy", "[encoding][base64]")
 {
   SECTION("RandomAccessIterator")
   {
@@ -137,7 +137,7 @@ TEST_CASE("b64 stream", "[encoding][base64]")
       std::ifstream b64_random_data(testFilePaths[1]);
 
       stream_iterable_adapter input{random_data};
-      encoders::base64_stream_encoder<decltype(input.begin())> enc(
+      encoders::base64_lazy_encoder<decltype(input.begin())> enc(
           input.begin(), input.end());
 
       std::istreambuf_iterator<char> expectedB64It(b64_random_data);

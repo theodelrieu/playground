@@ -11,8 +11,6 @@
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 
-#include <mgs/encoders/base64_stream.hpp>
-
 using namespace mgs;
 using namespace std::string_literals;
 
@@ -157,7 +155,7 @@ void bidirectional_iterator_checks(BidirectionalIterator current, Sentinel end)
 {
   forward_iterator_checks(current, end);
 
-  assert(*current == 'a');
+  REQUIRE(*current == 'a');
   std::advance(current, 3);
   --current;
   CHECK(*current == 'c');

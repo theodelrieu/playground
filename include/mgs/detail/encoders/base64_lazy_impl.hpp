@@ -50,8 +50,8 @@ struct base64_encode_algorithm
 namespace encoders
 {
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
-    base64_stream_encoder(UnderlyingIterator const& begin, Sentinel const& end)
+base64_lazy_encoder<UnderlyingIterator, Sentinel, SFINAE>::base64_lazy_encoder(
+    UnderlyingIterator const& begin, Sentinel const& end)
   : _current(begin), _end(end)
 {
   if (_current != _end)
@@ -62,7 +62,7 @@ base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
+auto base64_lazy_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type const&
 {
   assert(_index != 4);
@@ -70,7 +70,7 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
+void base64_lazy_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
     difference_type n)
 {
   assert(n > 0);
@@ -93,19 +93,19 @@ void base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
+auto base64_lazy_encoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
     -> iterator
 {
   return {*this};
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
+auto base64_lazy_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
     -> iterator
 {
   // hack to trick the constructor, avoid encoding values twice
   // no need to set current to end, since _index == 4
-  base64_stream_encoder enc;
+  base64_lazy_encoder enc;
   enc._current = _current;
   enc._end = _end;
   assert(enc._index == 4);
@@ -113,8 +113,8 @@ auto base64_stream_encoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
 }
 
 template <typename T, typename U, typename V>
-bool operator==(base64_stream_encoder<T, U, V> const& lhs,
-                base64_stream_encoder<T, U, V> const& rhs)
+bool operator==(base64_lazy_encoder<T, U, V> const& lhs,
+                base64_lazy_encoder<T, U, V> const& rhs)
 {
   if (lhs._index == 4 || rhs._index == 4)
     return lhs._index == rhs._index;
@@ -123,8 +123,8 @@ bool operator==(base64_stream_encoder<T, U, V> const& lhs,
 }
 
 template <typename T, typename U, typename V>
-bool operator!=(base64_stream_encoder<T, U, V> const& lhs,
-                base64_stream_encoder<T, U, V> const& rhs)
+bool operator!=(base64_lazy_encoder<T, U, V> const& lhs,
+                base64_lazy_encoder<T, U, V> const& rhs)
 {
   return !(lhs == rhs);
 }

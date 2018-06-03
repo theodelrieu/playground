@@ -28,7 +28,6 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 
 meson?
 
-- renommer stream en lazy
 - base64 decoder
 
 Ensuite,
