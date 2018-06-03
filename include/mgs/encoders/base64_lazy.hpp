@@ -8,20 +8,12 @@
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/aliases.hpp>
+#include <mgs/detail/meta/concepts/byte_integral.hpp>
 #include <mgs/detail/meta/concepts/input_iterator.hpp>
 #include <mgs/detail/meta/concepts/sentinel.hpp>
 
 namespace mgs
 {
-namespace detail
-{
-template <typename T>
-struct is_byte_integral
-    : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
-{
-};
-}
-
 namespace encoders
 {
 template <typename UnderlyingIterator,
