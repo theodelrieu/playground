@@ -53,7 +53,7 @@ public:
       std::is_constructible<T,
                             underlying_iterator_t<T>,
                             underlying_sentinel_t<T>>::value &&
-      is_detected_exact<value_type const&, get_function_t, T const&>::value &&
+      is_detected<get_function_t, T const&>::value &&
       is_detected_exact<void, seek_forward_function_t, T&, difference_type>::
           value;
 };

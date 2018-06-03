@@ -15,6 +15,7 @@
 #include <mgs/detail/meta/concepts/encoder.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/encoders/base64_lazy.hpp>
+#include <mgs/decoders/base64_lazy.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -178,4 +179,16 @@ TEST_CASE("b64 lazy encoding", "[encoding][base64]")
     std::string s(second_enc.begin(), second_enc.end());
     CHECK(s == final_b64_text);
   }
+}
+
+TEST_CASE("b64 lazy decoding", "[decoding][base64]")
+{
+  auto const encoded_no_padding = "YWJjZGVm"s;
+
+  decoders::base64_lazy_decoder<std::string::const_iterator> dec(
+      encoded_no_padding.begin(), encoded_no_padding.end());
+
+  std::string s(dec.begin(), dec.end());
+
+  CHECK(s == "abcdef");
 }
