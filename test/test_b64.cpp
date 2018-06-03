@@ -68,47 +68,59 @@ void expect_base64(Iterable it, std::string expected_b64)
   CHECK(s == expected_b64);
 }
 
-template <typename Container>
-void base64_checks()
+template <typename Container, typename Iterable>
+void base64_checks(Iterable const& source, std::string const& expected)
 {
-  Container two_byte_padding{'a', 'b', 'c', 'd'};
-  Container one_byte_padding{'a', 'b', 'c', 'd', 'e'};
-  Container no_padding{'a', 'b', 'c', 'd', 'e', 'f'};
+  using std::begin;
+  using std::end;
 
-  expect_base64(two_byte_padding, "YWJjZA==");
-  expect_base64(one_byte_padding, "YWJjZGU=");
-  expect_base64(no_padding, "YWJjZGVm");
+  Container cont(begin(source), end(source));
+  expect_base64(cont, expected);
 }
 }
 
-TEST_CASE("b64 lazy", "[encoding][base64]")
+TEST_CASE("b64 lazy encoding", "[encoding][base64]")
 {
+  std::array<char, 4> two_byte_padding = {'a', 'b', 'c', 'd'};
+  std::array<char, 5> one_byte_padding = {'a', 'b', 'c', 'd', 'e'};
+  std::array<char, 6> no_padding = {'a', 'b', 'c', 'd', 'e', 'f'};
+
+  auto const encoded_two_byte_padding = "YWJjZA=="s;
+  auto const encoded_one_byte_padding = "YWJjZGU="s;
+  auto const encoded_no_padding = "YWJjZGVm"s;
+
   SECTION("RandomAccessIterator")
   {
     SECTION("std::string")
     {
-      base64_checks<std::string>();
+      base64_checks<std::string>(two_byte_padding, encoded_two_byte_padding);
+      base64_checks<std::string>(one_byte_padding, encoded_one_byte_padding);
+      base64_checks<std::string>(no_padding, encoded_no_padding);
     }
 
     SECTION("std::vector")
     {
-      base64_checks<std::vector<char>>();
+      base64_checks<std::vector<char>>(two_byte_padding,
+                                       encoded_two_byte_padding);
+      base64_checks<std::vector<char>>(one_byte_padding,
+                                       encoded_one_byte_padding);
+      base64_checks<std::vector<char>>(no_padding, encoded_no_padding);
     }
 
     SECTION("std::deque")
     {
-      base64_checks<std::deque<char>>();
+      base64_checks<std::deque<char>>(two_byte_padding,
+                                      encoded_two_byte_padding);
+      base64_checks<std::deque<char>>(one_byte_padding,
+                                      encoded_one_byte_padding);
+      base64_checks<std::deque<char>>(no_padding, encoded_no_padding);
     }
 
     SECTION("std::array")
     {
-      std::array<char, 4> two_byte_padding{'a', 'b', 'c', 'd'};
-      std::array<char, 5> one_byte_padding{'a', 'b', 'c', 'd', 'e'};
-      std::array<char, 6> no_padding{'a', 'b', 'c', 'd', 'e', 'f'};
-
-      expect_base64(two_byte_padding, "YWJjZA==");
-      expect_base64(one_byte_padding, "YWJjZGU=");
-      expect_base64(no_padding, "YWJjZGVm");
+      expect_base64(two_byte_padding, encoded_two_byte_padding);
+      expect_base64(one_byte_padding, encoded_one_byte_padding);
+      expect_base64(no_padding, encoded_no_padding);
     }
   }
 
@@ -116,7 +128,11 @@ TEST_CASE("b64 lazy", "[encoding][base64]")
   {
     SECTION("std::list")
     {
-      base64_checks<std::list<char>>();
+      base64_checks<std::list<char>>(two_byte_padding,
+                                     encoded_two_byte_padding);
+      base64_checks<std::list<char>>(one_byte_padding,
+                                     encoded_one_byte_padding);
+      base64_checks<std::list<char>>(no_padding, encoded_no_padding);
     }
   }
 
@@ -124,7 +140,11 @@ TEST_CASE("b64 lazy", "[encoding][base64]")
   {
     SECTION("std::forward_list")
     {
-      base64_checks<std::forward_list<char>>();
+      base64_checks<std::forward_list<char>>(two_byte_padding,
+                                             encoded_two_byte_padding);
+      base64_checks<std::forward_list<char>>(one_byte_padding,
+                                             encoded_one_byte_padding);
+      base64_checks<std::forward_list<char>>(no_padding, encoded_no_padding);
     }
   }
 
