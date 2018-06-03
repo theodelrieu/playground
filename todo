@@ -12,28 +12,19 @@ func decode<T>(Iterator, Sentinel);
 Un Decoder qui veut tout copier pour aller plus vite retourne un iterator different que celui de son input source
 Il utilise un adapteur Iterable qui prend un Iterable 
 
-Dans un premier temps, ecrire tous les iterateurs a la main.
-Ensuite CRTP.
-
 Pas la peine de contraindre Encoder <=> Decoder.
 
-Responsabilite du programmeur de s'assurer que les 2 implementent le meme algo.
-
-Le use-case pour en remplacer un par un autre ? Speed ? Differents iterateurs ?
-
+Gerer conversion de UDT ?
 
 codec variant:
 Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 
 =======================================================================================
 
-- changer namespace en cdcs, ou trouver un nom potable : mgs
 - trouver un moyen de modulariser la lib:
   + lib a part pour les concepts
   + lib de base avec les checks, definitions de codec etc
   + 1 lib par famille de codec?
-
-- clean le code lol
 
 meson?
 

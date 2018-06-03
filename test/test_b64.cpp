@@ -11,13 +11,13 @@
 
 #include <catch.hpp>
 
-#include <b64/detail/meta/concepts/derived_from.hpp>
-#include <b64/detail/meta/concepts/encoder.hpp>
-#include <b64/detail/meta/concepts/iterable.hpp>
-#include <b64/encoders/base64_stream.hpp>
+#include <mgs/detail/meta/concepts/derived_from.hpp>
+#include <mgs/detail/meta/concepts/encoder.hpp>
+#include <mgs/detail/meta/concepts/iterable.hpp>
+#include <mgs/encoders/base64_stream.hpp>
 
 using namespace std::string_literals;
-using namespace b64;
+using namespace mgs;
 
 extern std::vector<std::string> testFilePaths;
 

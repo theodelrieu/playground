@@ -5,15 +5,15 @@
 
 #include <catch.hpp>
 
-#include <b64/detail/meta/aliases.hpp>
-#include <b64/detail/meta/concepts/derived_from.hpp>
-#include <b64/detail/meta/concepts/iterator.hpp>
+#include <mgs/detail/meta/aliases.hpp>
+#include <mgs/detail/meta/concepts/derived_from.hpp>
+#include <mgs/detail/meta/concepts/iterator.hpp>
 
-#include <b64/detail/iterators/adaptive_iterator.hpp>
+#include <mgs/detail/iterators/adaptive_iterator.hpp>
 
-#include <b64/encoders/base64_stream.hpp>
+#include <mgs/encoders/base64_stream.hpp>
 
-using namespace b64;
+using namespace mgs;
 using namespace std::string_literals;
 
 namespace

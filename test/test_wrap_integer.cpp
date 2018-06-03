@@ -2,10 +2,10 @@
 
 #include <catch.hpp>
 
-#include <b64/detail/wrap_integer.hpp>
-#include <b64/detail/meta/detected.hpp>
+#include <mgs/detail/wrap_integer.hpp>
+#include <mgs/detail/meta/detected.hpp>
 
-using namespace b64::detail;
+using namespace mgs::detail;
 
 TEST_CASE("wrap_integer", "[wrap_integer]")
 {
