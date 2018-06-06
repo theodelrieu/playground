@@ -49,7 +49,7 @@ public:
 private:
   UnderlyingIterator _current{};
   Sentinel _end{};
-  int _index{4};
+  char _index{4};
   std::array<char, 4> _encoded;
 
   template <typename T, typename U, typename V>

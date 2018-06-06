@@ -43,9 +43,12 @@ public:
   iterator end() const;
 
 private:
+  void _decode_next_values();
+
   UnderlyingIterator _current{};
   Sentinel _end{};
-  int _index{3};
+  char _max_index{3};
+  char _index{_max_index};
   std::array<std::uint8_t, 3> _decoded;
 
   template <typename T, typename U, typename V>

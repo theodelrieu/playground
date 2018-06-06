@@ -4,7 +4,7 @@
 
 namespace mgs
 {
-class parse_error : exception
+class parse_error : public exception
 {
 public:
   using exception::exception;

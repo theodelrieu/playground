@@ -12,8 +12,8 @@ namespace detail
 {
 struct base64_decode_algorithm
 {
-  template <typename Iterator, typename Sentinel>
-  std::array<std::uint8_t, 3> operator()(Iterator& current, Sentinel const end) const
+  template <typename Iterator, typename Sentinel, typename OutputIt>
+  void operator()(Iterator& current, Sentinel const end, OutputIt& out) const
   {
     static constexpr char const alphabet[] = {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -25,31 +25,43 @@ struct base64_decode_algorithm
     auto const alph_begin = std::begin(alphabet);
     auto const alph_end = std::end(alphabet);
 
-    std::array<std::uint8_t, 3> decoded;
     assert(current != end);
 
     std::bitset<24> bits;
-    for (auto i = 0; i < 4; ++i)
+    auto i = 0;
+    for (; i < 4; ++i)
     {
       if (current == end)
         throw parse_error{"base64: unexpected EOF"};
       auto c = static_cast<char>(*current++);
       auto const index_it = std::find(alph_begin, alph_end, c);
       if (index_it == alph_end)
+      {
+        if (c == '=')
+        {
+          if (current != end)
+          {
+            c = *current++;
+            if (c != '=' || current != end)
+              throw parse_error{"base64: unexpected padding character"};
+          }
+          break;
+        }
+
         throw parse_error{"base64: invalid character"};
+      }
       bits |= (std::distance(alph_begin, index_it) << (18 - (6 * i)));
     }
 
-    for (int j = 0; j < 3; ++j)
+    for (int j = 0; j < i - 1; ++j)
     {
       auto shift = (16 - (8 * j));
       auto mask = ((std::bitset<24>(0xFFFFFF) >> 16) << shift);
       auto l = bits & mask;
       l >>= shift;
       auto byte = static_cast<std::uint8_t>(l.to_ulong());
-      decoded[j] = byte;
+      *out++ = byte;
     }
-    return decoded;
   }
 };
 }
@@ -62,17 +74,14 @@ base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::base64_lazy_decoder(
   : _current(begin), _end(end)
 {
   if (_current != _end)
-  {
-    _index = 0;
-    _decoded = detail::base64_decode_algorithm{}(_current, _end);
-  }
+    _decode_next_values();
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::get() const
     -> value_type
 {
-  assert(_index != 3);
+  assert(_index != _max_index);
   return _decoded[_index];
 }
 
@@ -81,18 +90,15 @@ void base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::seek_forward(
     difference_type n)
 {
   assert(n > 0);
-  assert(_index != 3);
+  assert(_index != _max_index);
 
   while (n-- > 0)
   {
     ++_index;
-    if (_index == 3)
+    if (_index == _max_index)
     {
       if (_current != _end)
-      {
-        _index = 0;
-        _decoded = detail::base64_decode_algorithm{}(_current, _end);
-      }
+        _decode_next_values();
       else
         assert(n == 0);
     }
@@ -112,21 +118,33 @@ auto base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
 {
   // hack to trick the constructor, avoid encoding values twice
   // no need to set current to end, since _index == 4
-  base64_lazy_decoder enc;
-  enc._current = _current;
-  enc._end = _end;
-  assert(enc._index == 3);
-  return enc;
+  base64_lazy_decoder dec;
+  dec._current = _current;
+  dec._end = _end;
+  assert(dec._index == 3);
+  assert(dec._max_index == 3);
+  return dec;
+}
+
+template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
+void base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::_decode_next_values()
+{
+  auto it = _decoded.begin();
+  detail::base64_decode_algorithm{}(_current, _end, it);
+  _max_index = 3 - (_decoded.end() - it);
+  assert(_max_index <= 3);
+  _index = 0;
 }
 
 template <typename T, typename U, typename V>
 bool operator==(base64_lazy_decoder<T, U, V> const& lhs,
                 base64_lazy_decoder<T, U, V> const& rhs)
 {
-  if (lhs._index == 3 || rhs._index == 3)
-    return lhs._index == rhs._index;
-  return std::tie(lhs._current, lhs._index) ==
-         std::tie(rhs._current, rhs._index);
+  // a bit similar to std::istreambuf_iterator::equal...
+  if (lhs._index == lhs._max_index || rhs._index == rhs._max_index)
+    return lhs._index == lhs._max_index && rhs._index == rhs._max_index;
+  return std::tie(lhs._current, lhs._index, lhs._max_index) ==
+         std::tie(rhs._current, rhs._index, rhs._max_index);
 }
 
 template <typename T, typename U, typename V>
