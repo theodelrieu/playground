@@ -35,6 +35,14 @@ static_assert(
 static_assert(
     detail::is_encoder<encoder<std::istreambuf_iterator<char>>>::value, "");
 
+struct encode_tag
+{
+};
+
+struct decode_tag
+{
+};
+
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
 {
@@ -54,20 +62,6 @@ struct stream_iterable_adapter
 
   std::istream& _is;
 };
-
-template <typename Iterable>
-void expect_output(Iterable it, std::string expected_b64)
-{
-  using Iterator = detail2::result_of_begin_t<Iterable>;
-  using Sentinel = detail2::result_of_end_t<Iterable>;
-  using std::begin;
-  using std::end;
-
-  encoders::base64_lazy_encoder<Iterator, Sentinel> enc(begin(it), end(it));
-
-  std::string s(enc.begin(), enc.end());
-  CHECK(s == expected_b64);
-}
 
 template <template <typename, typename, typename...> class InputTransformer,
           typename Container,
@@ -90,74 +84,90 @@ void base64_checks_impl(Container const& source,
   CHECK(output == expected);
 }
 
-template <typename Container, typename Iterable, typename Iterable2>
-void base64_encode_checks(Iterable const& source, Iterable2 const& expected)
+template <typename Container, typename Iterable>
+void base64_checks_impl(Container const& source,
+                        Iterable const& expected_output,
+                        encode_tag)
+{
+  base64_checks_impl<encoders::base64_lazy_encoder>(source, expected_output);
+}
+
+template <typename Container, typename Iterable>
+void base64_checks_impl(Iterable const& expected_output,
+                        Container const& source,
+                        decode_tag)
+{
+  base64_checks_impl<decoders::base64_lazy_decoder>(source, expected_output);
+}
+
+template <typename Container,
+          typename Iterable,
+          typename Iterable2,
+          typename Tag>
+void base64_checks(Iterable const& source, Iterable2 const& expected, Tag tag)
 {
   using std::begin;
   using std::end;
 
   Container cont(begin(source), end(source));
 
-  base64_checks_impl<encoders::base64_lazy_encoder>(cont, expected);
+  base64_checks_impl(cont, expected, tag);
 }
 
-template <typename Container, typename Iterable, typename Iterable2>
-void base64_decode_checks(Iterable const& source, Iterable2 const& expected)
+template <typename Tag>
+void common_checks()
 {
-  using std::begin;
-  using std::end;
+  Tag tag;
 
-  Container cont(begin(source), end(source));
+  std::array<char, 4> decoded_two_byte_padding = {'a', 'b', 'c', 'd'};
+  std::array<char, 5> decoded_one_byte_padding = {'a', 'b', 'c', 'd', 'e'};
+  std::array<char, 6> decoded_no_padding = {'a', 'b', 'c', 'd', 'e', 'f'};
 
-  base64_checks_impl<decoders::base64_lazy_decoder>(cont, expected);
-}
-}
-
-TEST_CASE("b64 lazy encoding", "[encoding][base64]")
-{
-  std::array<char, 4> two_byte_padding = {'a', 'b', 'c', 'd'};
-  std::array<char, 5> one_byte_padding = {'a', 'b', 'c', 'd', 'e'};
-  std::array<char, 6> no_padding = {'a', 'b', 'c', 'd', 'e', 'f'};
-
-  auto const encoded_two_byte_padding = "YWJjZA=="s;
-  auto const encoded_one_byte_padding = "YWJjZGU="s;
-  auto const encoded_no_padding = "YWJjZGVm"s;
+  std::array<char, 8> const encoded_two_byte_padding{
+      'Y', 'W', 'J', 'j', 'Z', 'A', '=', '='};
+  std::array<char, 8> const encoded_one_byte_padding{
+      'Y', 'W', 'J', 'j', 'Z', 'G', 'U', '='};
+  std::array<char, 8> const encoded_no_padding{
+      'Y', 'W', 'J', 'j', 'Z', 'G', 'V', 'm'};
 
   SECTION("RandomAccessIterator")
   {
     SECTION("std::string")
     {
-      base64_encode_checks<std::string>(two_byte_padding, encoded_two_byte_padding);
-      base64_encode_checks<std::string>(one_byte_padding, encoded_one_byte_padding);
-      base64_encode_checks<std::string>(no_padding, encoded_no_padding);
+      base64_checks<std::string>(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks<std::string>(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks<std::string>(decoded_no_padding, encoded_no_padding, tag);
     }
 
     SECTION("std::vector")
     {
-      base64_encode_checks<std::vector<char>>(two_byte_padding,
-                                       encoded_two_byte_padding);
-      base64_encode_checks<std::vector<char>>(one_byte_padding,
-                                       encoded_one_byte_padding);
-      base64_encode_checks<std::vector<char>>(no_padding, encoded_no_padding);
+      base64_checks<std::vector<char>>(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks<std::vector<char>>(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks<std::vector<char>>(
+          decoded_no_padding, encoded_no_padding, tag);
     }
 
     SECTION("std::deque")
     {
-      base64_encode_checks<std::deque<char>>(two_byte_padding,
-                                             encoded_two_byte_padding);
-      base64_encode_checks<std::deque<char>>(one_byte_padding,
-                                             encoded_one_byte_padding);
-      base64_encode_checks<std::deque<char>>(no_padding, encoded_no_padding);
+      base64_checks<std::deque<char>>(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks<std::deque<char>>(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks<std::deque<char>>(
+          decoded_no_padding, encoded_no_padding, tag);
     }
 
     SECTION("std::array")
     {
-      base64_checks_impl<encoders::base64_lazy_encoder>(
-          two_byte_padding, encoded_two_byte_padding);
-      base64_checks_impl<encoders::base64_lazy_encoder>(
-          one_byte_padding, encoded_one_byte_padding);
-      base64_checks_impl<encoders::base64_lazy_encoder>(no_padding,
-                                                        encoded_no_padding);
+      base64_checks_impl(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks_impl(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks_impl(decoded_no_padding, encoded_no_padding, tag);
     }
   }
 
@@ -165,11 +175,12 @@ TEST_CASE("b64 lazy encoding", "[encoding][base64]")
   {
     SECTION("std::list")
     {
-      base64_encode_checks<std::list<char>>(two_byte_padding,
-                                            encoded_two_byte_padding);
-      base64_encode_checks<std::list<char>>(one_byte_padding,
-                                            encoded_one_byte_padding);
-      base64_encode_checks<std::list<char>>(no_padding, encoded_no_padding);
+      base64_checks<std::list<char>>(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks<std::list<char>>(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks<std::list<char>>(
+          decoded_no_padding, encoded_no_padding, tag);
     }
   }
 
@@ -177,31 +188,42 @@ TEST_CASE("b64 lazy encoding", "[encoding][base64]")
   {
     SECTION("std::forward_list")
     {
-      base64_encode_checks<std::forward_list<char>>(two_byte_padding,
-                                                    encoded_two_byte_padding);
-      base64_encode_checks<std::forward_list<char>>(one_byte_padding,
-                                                    encoded_one_byte_padding);
-      base64_encode_checks<std::forward_list<char>>(no_padding,
-                                                    encoded_no_padding);
+      base64_checks<std::forward_list<char>>(
+          decoded_two_byte_padding, encoded_two_byte_padding, tag);
+      base64_checks<std::forward_list<char>>(
+          decoded_one_byte_padding, encoded_one_byte_padding, tag);
+      base64_checks<std::forward_list<char>>(
+          decoded_no_padding, encoded_no_padding, tag);
     }
   }
+}
+}
 
-  SECTION("InputIterator")
+TEST_CASE("b64 lazy", "[base64]")
+{
+  SECTION("encoding")
   {
-    SECTION("std::ifstream")
+    SECTION("common_checks")
     {
-      REQUIRE(testFilePaths.size() == 2);
-      std::ifstream random_data(testFilePaths[0]);
-      std::ifstream b64_random_data(testFilePaths[1]);
-
-      stream_iterable_adapter input{random_data};
-      encoders::base64_lazy_encoder<decltype(input.begin())> enc(
-          input.begin(), input.end());
-
-      std::istreambuf_iterator<char> expectedB64It(b64_random_data);
-      std::istreambuf_iterator<char> expectedEnd;
-      CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
+      common_checks<encode_tag>();
     }
+
+    SECTION("InputIterator")
+    {
+      SECTION("std::ifstream")
+      {
+        REQUIRE(testFilePaths.size() == 2);
+        std::ifstream random_data(testFilePaths[0]);
+        std::ifstream b64_random_data(testFilePaths[1]);
+
+        stream_iterable_adapter input{random_data};
+        encoders::base64_lazy_encoder<decltype(input.begin())> enc(
+            input.begin(), input.end());
+
+        std::istreambuf_iterator<char> expectedB64It(b64_random_data);
+        std::istreambuf_iterator<char> expectedEnd;
+        CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
+      }
   }
 
   SECTION("Inception")
@@ -216,83 +238,13 @@ TEST_CASE("b64 lazy encoding", "[encoding][base64]")
     std::string s(second_enc.begin(), second_enc.end());
     CHECK(s == final_b64_text);
   }
-}
-
-TEST_CASE("b64 lazy decoding", "[decoding][base64]")
-{
-  std::array<char, 8> const encoded_two_byte_padding{
-      'Y', 'W', 'J', 'j', 'Z', 'A', '=', '='};
-  std::array<char, 8> const encoded_one_byte_padding{
-      'Y', 'W', 'J', 'j', 'Z', 'G', 'U', '='};
-  std::array<char, 8> const encoded_no_padding{
-      'Y', 'W', 'J', 'j', 'Z', 'G', 'V', 'm'};
-
-  auto const two_byte_padding = "abcd"s;
-  auto const one_byte_padding = "abcde"s;
-  auto const no_padding = "abcdef"s;
-
-  SECTION("RandomAccessIterator")
-  {
-    SECTION("std::string")
-    {
-      base64_decode_checks<std::string>(encoded_two_byte_padding,
-                                        two_byte_padding);
-      base64_decode_checks<std::string>(encoded_one_byte_padding,
-                                        one_byte_padding);
-      base64_decode_checks<std::string>(encoded_no_padding, no_padding);
-    }
-
-    SECTION("std::vector")
-    {
-      base64_decode_checks<std::vector<char>>(encoded_two_byte_padding,
-                                              two_byte_padding);
-      base64_decode_checks<std::vector<char>>(encoded_one_byte_padding,
-                                              one_byte_padding);
-      base64_decode_checks<std::vector<char>>(encoded_no_padding, no_padding);
-    }
-
-    SECTION("std::deque")
-    {
-      base64_decode_checks<std::deque<char>>(encoded_two_byte_padding,
-                                             two_byte_padding);
-      base64_decode_checks<std::deque<char>>(encoded_one_byte_padding,
-                                             one_byte_padding);
-      base64_decode_checks<std::deque<char>>(encoded_no_padding, no_padding);
-    }
-
-    SECTION("std::array")
-    {
-      base64_checks_impl<decoders::base64_lazy_decoder>(
-          encoded_two_byte_padding, two_byte_padding);
-      base64_checks_impl<decoders::base64_lazy_decoder>(
-          encoded_one_byte_padding, one_byte_padding);
-      base64_checks_impl<decoders::base64_lazy_decoder>(encoded_no_padding,
-                                                        no_padding);
-    }
   }
 
-  SECTION("BidirectionalIterator")
+  SECTION("decoding")
   {
-    SECTION("std::list")
+    SECTION("common_checks")
     {
-      base64_decode_checks<std::list<char>>(encoded_two_byte_padding,
-                                            two_byte_padding);
-      base64_decode_checks<std::list<char>>(encoded_one_byte_padding,
-                                            one_byte_padding);
-      base64_decode_checks<std::list<char>>(encoded_no_padding, no_padding);
-    }
-  }
-
-  SECTION("ForwardIterator")
-  {
-    SECTION("std::forward_list")
-    {
-      base64_decode_checks<std::forward_list<char>>(encoded_two_byte_padding,
-                                                    two_byte_padding);
-      base64_decode_checks<std::forward_list<char>>(encoded_one_byte_padding,
-                                                    one_byte_padding);
-      base64_decode_checks<std::forward_list<char>>(encoded_no_padding,
-                                                    no_padding);
+      common_checks<decode_tag>();
     }
   }
 }

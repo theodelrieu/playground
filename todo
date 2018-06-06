@@ -39,4 +39,4 @@ Ensuite,
 - Policies? Algorithm + Seek forward policies? Pour les lazy encoder?
 Plus facile de decider une fois que 3 algo sont en place (dont un non texte?)
 
-base64 encoder uniquement quand operator* est appele (cacher le last_read?) encoder char par char
+check decode(encode()), then test sentinel, test file too
