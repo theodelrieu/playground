@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iterator>
 #include <list>
+#include <sstream>
 #include <type_traits>
 #include <vector>
 
@@ -29,7 +30,7 @@ using encoder = encoders::base64_lazy_encoder<Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using decoder = decoders::base64_lazy_decoder<Iterator, Sentinel>;
-// TODO is_encoder -> is_inpu_transformer + maybe a tag to have is_encoder/is_decoder?
+// TODO is_encoder -> is_input_transformer + maybe a tag to have is_encoder/is_decoder?
 
 static_assert(detail::is_encoder<encoder<char*>>::value, "");
 static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
@@ -66,6 +67,36 @@ struct stream_iterable_adapter
 
   std::istream& _is;
 };
+
+struct sentinel
+{
+};
+
+bool operator==(std::istreambuf_iterator<char> lhs, sentinel) noexcept
+{
+  return lhs.equal({});
+}
+
+bool operator==(sentinel, std::istreambuf_iterator<char> rhs) noexcept
+{
+  return rhs.equal({});
+}
+
+bool operator!=(std::istreambuf_iterator<char> lhs, sentinel s) noexcept
+{
+  return !(lhs == s);
+}
+
+bool operator!=(sentinel s, std::istreambuf_iterator<char> rhs) noexcept
+{
+  return !(s == rhs);
+}
+
+static_assert(
+    detail::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value, "");
+
+static_assert(
+    !detail::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
 
 template <template <typename, typename, typename...> class InputTransformer,
           typename Container,
@@ -227,6 +258,18 @@ TEST_CASE("b64 lazy", "[base64]")
       common_checks<encode_tag>();
     }
 
+    SECTION("sentinel")
+    {
+      std::stringstream ss{"abcde"s};
+      auto const b64_text = "YWJjZGU="s;
+
+      encoder<std::istreambuf_iterator<char>, sentinel> enc(
+          std::istreambuf_iterator<char>(ss), sentinel{});
+
+      std::string s(enc.begin(), enc.end());
+      CHECK(s == b64_text);
+    }
+
     SECTION("Inception")
     {
       auto const text = "abcde"s;
@@ -247,6 +290,18 @@ TEST_CASE("b64 lazy", "[base64]")
     SECTION("common_checks")
     {
       common_checks<decode_tag>();
+    }
+
+    SECTION("sentinel")
+    {
+      std::stringstream ss{"YWJjZGU="s};
+      auto const text = "abcde"s;
+
+      decoder<std::istreambuf_iterator<char>, sentinel> dec(
+          std::istreambuf_iterator<char>(ss), sentinel{});
+
+      std::string s(dec.begin(), dec.end());
+      CHECK(s == text);
     }
 
     SECTION("Inception")
