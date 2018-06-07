@@ -27,6 +27,10 @@ namespace
 template <typename Iterator, typename Sentinel = Iterator>
 using encoder = encoders::base64_lazy_encoder<Iterator, Sentinel>;
 
+template <typename Iterator, typename Sentinel = Iterator>
+using decoder = decoders::base64_lazy_decoder<Iterator, Sentinel>;
+// TODO is_encoder -> is_inpu_transformer + maybe a tag to have is_encoder/is_decoder?
+
 static_assert(detail::is_encoder<encoder<char*>>::value, "");
 static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
               "");
@@ -196,6 +200,21 @@ void common_checks()
           decoded_no_padding, encoded_no_padding, tag);
     }
   }
+
+  SECTION("InputIterator")
+  {
+    SECTION("std::ifstream")
+    {
+      REQUIRE(testFilePaths.size() == 2);
+      std::ifstream random_data(testFilePaths[0]);
+      std::ifstream b64_random_data(testFilePaths[1]);
+
+      stream_iterable_adapter random_input{random_data};
+      stream_iterable_adapter b64_random_input{b64_random_data};
+
+      base64_checks_impl(random_input, b64_random_input, tag);
+    }
+  }
 }
 }
 
@@ -208,36 +227,19 @@ TEST_CASE("b64 lazy", "[base64]")
       common_checks<encode_tag>();
     }
 
-    SECTION("InputIterator")
+    SECTION("Inception")
     {
-      SECTION("std::ifstream")
-      {
-        REQUIRE(testFilePaths.size() == 2);
-        std::ifstream random_data(testFilePaths[0]);
-        std::ifstream b64_random_data(testFilePaths[1]);
+      auto const text = "abcde"s;
+      auto const b64_text = "YWJjZGU="s;
+      auto const final_b64_text = "WVdKalpHVT0="s;
 
-        stream_iterable_adapter input{random_data};
-        encoders::base64_lazy_encoder<decltype(input.begin())> enc(
-            input.begin(), input.end());
+      encoder<std::string::const_iterator> first_enc(text.begin(), text.end());
+      encoder<decltype(first_enc.begin())> second_enc(first_enc.begin(),
+                                                      first_enc.end());
 
-        std::istreambuf_iterator<char> expectedB64It(b64_random_data);
-        std::istreambuf_iterator<char> expectedEnd;
-        CHECK(std::equal(expectedB64It, expectedEnd, enc.begin(), enc.end()));
-      }
-  }
-
-  SECTION("Inception")
-  {
-    auto const text = "abcde"s;
-    auto const b64_text = "YWJjZGU="s;
-    auto const final_b64_text = "WVdKalpHVT0="s;
-
-    encoder<std::string::const_iterator> first_enc(text.begin(), text.end());
-    encoder<decltype(first_enc.begin())> second_enc(first_enc.begin(), first_enc.end());
-
-    std::string s(second_enc.begin(), second_enc.end());
-    CHECK(s == final_b64_text);
-  }
+      std::string s(second_enc.begin(), second_enc.end());
+      CHECK(s == final_b64_text);
+    }
   }
 
   SECTION("decoding")
@@ -245,6 +247,46 @@ TEST_CASE("b64 lazy", "[base64]")
     SECTION("common_checks")
     {
       common_checks<decode_tag>();
+    }
+
+    SECTION("Inception")
+    {
+      auto const text = "abcde"s;
+      auto const b64_text = "YWJjZGU="s;
+      auto const final_b64_text = "WVdKalpHVT0="s;
+
+      decoder<std::string::const_iterator> first_dec(final_b64_text.begin(),
+                                                     final_b64_text.end());
+      decoder<decltype(first_dec.begin())> second_dec(first_dec.begin(),
+                                                      first_dec.end());
+
+      std::string s(second_dec.begin(), second_dec.end());
+      CHECK(s == text);
+    }
+  }
+
+  SECTION("back and forth")
+  {
+    SECTION("decode(encode())")
+    {
+      auto const text = "abcde"s;
+
+      encoder<std::string::const_iterator> enc(text.begin(), text.end());
+      decoder<decltype(enc.begin())> dec(enc.begin(), enc.end());
+
+      std::string s(dec.begin(), dec.end());
+      CHECK(s == text);
+    }
+
+    SECTION("encode(decode())")
+    {
+      auto const text = "YWJjZGU="s;
+
+      decoder<std::string::const_iterator> dec(text.begin(), text.end());
+      encoder<decltype(dec.begin())> enc(dec.begin(), dec.end());
+
+      std::string s(enc.begin(), enc.end());
+      CHECK(s == text);
     }
   }
 }
