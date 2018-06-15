@@ -3,7 +3,6 @@
 #include <type_traits>
 
 #include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterator.hpp>
 #include <mgs/detail/meta/concepts/regular.hpp>
 #include <mgs/detail/meta/concepts/sentinel.hpp>
@@ -12,7 +11,6 @@
 // template <Iterator, Sentinel>
 // concept InputTransformer = requires(T const& v, T& u) {
 //  requires Regular<T>;
-//  requires Iterable<T>;
 //  requires Constructible<T, Iterator, Sentinel>;
 //  typename T::value_type;
 //  typename T::difference_type;
@@ -43,7 +41,7 @@ struct is_input_transformer<
     T,
     detected_t<underlying_iterator_t, T>,
     detected_t<underlying_sentinel_t, T>,
-    std::enable_if_t<is_iterable<T>::value && is_regular<T>::value &&
+    std::enable_if_t<is_regular<T>::value &&
                      is_detected<value_type_t, T>::value &&
                      is_detected<underlying_iterator_t, T>::value &&
                      is_detected<underlying_sentinel_t, T>::value &&

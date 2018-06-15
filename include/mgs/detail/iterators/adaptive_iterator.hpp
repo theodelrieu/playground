@@ -18,6 +18,8 @@ template <typename T>
 using is_random_access_tag =
     is_derived_from<T, std::random_access_iterator_tag>;
 
+// not SFINAE friendly, cannot use is_input_transformer, since adaptive_iterator
+// is used during the definition of input transformers.
 template <typename Encoder, typename IteratorTag>
 class adaptive_iterator
 {
