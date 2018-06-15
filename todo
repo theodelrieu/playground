@@ -39,5 +39,7 @@ Ensuite,
 - Policies? Algorithm + Seek forward policies? Pour les lazy encoder?
 Plus facile de decider une fois que 3 algo sont en place (dont un non texte?)
 
-add concept input_transformer? (Remove adaptive_iterator related constraints? e.g. seek_forward etc)
+Remove adaptive_iterator related constraints? e.g. seek_forward etc
+Another concept to that contains those constraints?
+Or just remove Iterable from input_transformer, and make iterable_input_transformer ++
 
