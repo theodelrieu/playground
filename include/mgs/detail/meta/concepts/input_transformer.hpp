@@ -10,7 +10,7 @@
 #include <mgs/detail/meta/detected.hpp>
 
 // template <Iterator, Sentinel>
-// concept Encoder = requires(T const& v, T& u) {
+// concept InputTransformer = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  requires Iterable<T>;
 //  requires Constructible<T, Iterator, Sentinel>;
@@ -19,25 +19,30 @@
 //  typename T::underlying_iterator;
 //  typename T::underlying_sentinel;
 //  requires(typename T::difference_type n) {
-//    v.get();
-//    u.seek_forward(n);
-//    requires { v.get() } -> value_type const&;
-//    requires { u.seek_forward(n) } -> void;
-//  }
+//     v.get();
+//     u.seek_forward(n);
+//     requires { v.get() } -> value_type const&;
+//     requires { u.seek_forward(n) } -> void;
+//   }
 // }
+
 namespace mgs
 {
 namespace detail
 {
 template <typename T,
+          typename Iterator,
+          typename Sentinel = Iterator,
           typename = void>
-struct is_encoder : std::false_type
+struct is_input_transformer : std::false_type
 {
 };
 
 template <typename T>
-struct is_encoder<
+struct is_input_transformer<
     T,
+    detected_t<underlying_iterator_t, T>,
+    detected_t<underlying_sentinel_t, T>,
     std::enable_if_t<is_iterable<T>::value && is_regular<T>::value &&
                      is_detected<value_type_t, T>::value &&
                      is_detected<underlying_iterator_t, T>::value &&

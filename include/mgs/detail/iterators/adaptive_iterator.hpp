@@ -4,7 +4,7 @@
 #include <type_traits>
 
 #include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/encoder.hpp>
+#include <mgs/detail/meta/concepts/input_transformer.hpp>
 
 namespace mgs
 {

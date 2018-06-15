@@ -11,12 +11,12 @@
 
 #include <catch.hpp>
 
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/decoders/base64_lazy.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/encoder.hpp>
+#include <mgs/detail/meta/concepts/input_transformer.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/encoders/base64_lazy.hpp>
-#include <mgs/decoders/base64_lazy.hpp>
+#include <mgs/exceptions/parse_error.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -30,15 +30,19 @@ using encoder = encoders::base64_lazy_encoder<Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using decoder = decoders::base64_lazy_decoder<Iterator, Sentinel>;
-// TODO is_encoder -> is_input_transformer + maybe a tag to have is_encoder/is_decoder?
 
-static_assert(detail::is_encoder<encoder<char*>>::value, "");
-static_assert(detail::is_encoder<encoder<std::list<char>::iterator>>::value,
+static_assert(detail::is_input_transformer<encoder<char*>, char*>::value, "");
+static_assert(detail::is_input_transformer<encoder<std::list<char>::iterator>,
+                                           std::list<char>::iterator>::value,
               "");
 static_assert(
-    detail::is_encoder<encoder<std::forward_list<char>::iterator>>::value, "");
+    detail::is_input_transformer<encoder<std::forward_list<char>::iterator>,
+                                 std::forward_list<char>::iterator>::value,
+    "");
 static_assert(
-    detail::is_encoder<encoder<std::istreambuf_iterator<char>>>::value, "");
+    detail::is_input_transformer<encoder<std::istreambuf_iterator<char>>,
+                                 std::istreambuf_iterator<char>>::value,
+    "");
 
 struct encode_tag
 {

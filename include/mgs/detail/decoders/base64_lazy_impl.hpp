@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
+#include <cassert>
 
 #include <mgs/exceptions/parse_error.hpp>
 
@@ -127,7 +128,8 @@ auto base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
-void base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::_decode_next_values()
+void base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::
+    _decode_next_values()
 {
   auto it = _decoded.begin();
   detail::base64_decode_algorithm{}(_current, _end, it);
