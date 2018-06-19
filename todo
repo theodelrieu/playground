@@ -28,18 +28,7 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 
 meson?
 
-- base64 decoder
+encoding traits
 
-Ensuite,
-
-- variantes base64 -> factoriser alphabet
-- base32
-- variantes base32 -> factoriser algorithm?
-
-- Policies? Algorithm + Seek forward policies? Pour les lazy encoder?
-Plus facile de decider une fois que 3 algo sont en place (dont un non texte?)
-
-Remove adaptive_iterator related constraints? e.g. seek_forward etc
-Another concept to that contains those constraints?
-Or just remove Iterable from input_transformer, and make iterable_input_transformer ++
+rename Encoder -> InputTransformer in tpl args
 

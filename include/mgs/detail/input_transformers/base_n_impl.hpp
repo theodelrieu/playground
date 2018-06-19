@@ -1,8 +1,5 @@
 #pragma once
 
-#include <mgs/detail/iterators/adaptive_iterator.hpp>
-#include <mgs/detail/meta/concepts/input_transformer.hpp>
-
 namespace mgs
 {
 // TODO namespace input_transformers?
@@ -17,10 +14,7 @@ base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
   : _current(begin), _end(end)
 {
   if (_current != _end)
-  {
-    _index = 0;
-    _encoded = typename EncodingTraits::algorithm{}(_current, _end);
-  }
+    _process_input();
 }
 
 template <typename EncodingTraits,
@@ -30,8 +24,8 @@ template <typename EncodingTraits,
 auto base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
     get() const -> value_type
 {
-  assert(_index != EncodingTraits::nb_output_bytes);
-  return _encoded[_index];
+  assert(_index != _max_index);
+  return _output[_index];
 }
 
 template <typename EncodingTraits,
@@ -42,18 +36,15 @@ void base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
     seek_forward(difference_type n)
 {
   assert(n > 0);
-  assert(_index != EncodingTraits::nb_output_bytes);
+  assert(_index != _max_index);
 
   while (n-- > 0)
   {
     ++_index;
-    if (_index == EncodingTraits::nb_output_bytes)
+    if (_index == _max_index)
     {
       if (_current != _end)
-      {
-        _index = 0;
-        _encoded = typename EncodingTraits::algorithm{}(_current, _end);
-      }
+        _process_input();
       else
         assert(n == 0);
     }
@@ -63,59 +54,50 @@ void base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
 template <typename EncodingTraits,
           typename UnderlyingIterator,
           typename Sentinel,
-          typename SFINAE,
-          typename = std::enable_if_t<
-              is_input_transformer<base_n_transformer<EncodingTraits,
-                                                      UnderlyingIterator,
-                                                      Sentinel,
-                                                      SFINAE>>::value>>
-auto begin(base_n_transformer<EncodingTraits,
-                              UnderlyingIterator,
-                              Sentinel,
-                              SFINAE> const& enc)
+          typename SFINAE>
+auto base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
+    begin() const -> iterator
 {
   return adaptive_iterator<
       base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>,
-      std::input_iterator_tag>{enc};
+      std::input_iterator_tag>{{*this}};
 }
 
 template <typename EncodingTraits,
           typename UnderlyingIterator,
           typename Sentinel,
-          typename SFINAE,
-          typename = std::enable_if_t<
-              is_input_transformer<base_n_transformer<EncodingTraits,
-                                                      UnderlyingIterator,
-                                                      Sentinel,
-                                                      SFINAE>>::value>>
-auto end(base_n_transformer<EncodingTraits,
-                            UnderlyingIterator,
-                            Sentinel,
-                            SFINAE> const& enc)
+          typename SFINAE>
+auto base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
+    end() const -> iterator
 {
-  // hack to trick the constructor, avoid encoding values twice
-  // no need to set current to end, since _index == 4
-  base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>
-      hack_enc;
-  hack_enc._current = enc._current;
-  hack_enc._end = enc._end;
-  assert(hack_enc._index == EncodingTraits::nb_output_bytes);
   return adaptive_iterator<
       base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>,
-      std::input_iterator_tag>{hack_enc};
+      std::input_iterator_tag>{{}};
+}
+
+template <typename EncodingTraits,
+          typename UnderlyingIterator,
+          typename Sentinel,
+          typename SFINAE>
+void base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
+    _process_input()
+{
+  auto it = _output.begin();
+  typename EncodingTraits::algorithm{}(_current, _end, it);
+  _max_index = _output.size() - (_output.end() - it);
+  assert(_max_index <= _output.size());
+  _index = 0;
 }
 
 template <typename T, typename U, typename V, typename W>
 bool operator==(base_n_transformer<T, U, V, W> const& lhs,
                 base_n_transformer<T, U, V, W> const& rhs)
 {
-  if (lhs._index == EncodingTraits::nb_output_bytes ||
-      rhs._index == EncodingTraits::nb_output_bytes)
-  {
-    return lhs._index == rhs._index;
-  }
-  return std::tie(lhs._current, lhs._index) ==
-         std::tie(rhs._current, rhs._index);
+  // a bit similar to std::istreambuf_iterator::equal
+  if (lhs._index == lhs._max_index || rhs._index == rhs._max_index)
+    return lhs._index == lhs._max_index && rhs._index == rhs._max_index;
+  return std::tie(lhs._current, lhs._index, lhs._max_index) ==
+         std::tie(rhs._current, rhs._index, rhs._max_index);
 }
 
 template <typename T, typename U, typename V, typename W>

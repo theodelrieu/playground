@@ -36,7 +36,7 @@ public:
   using iterator_category = IteratorTag;
 
   adaptive_iterator() = default;
-  adaptive_iterator(Encoder const&);
+  explicit adaptive_iterator(Encoder const&);
 
   reference operator*() const;
   pointer operator->() const;
