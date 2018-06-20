@@ -13,6 +13,7 @@
 
 #include <mgs/detail/base64/lazy_encoder.hpp>
 #include <mgs/detail/base64/lazy_decoder.hpp>
+#include <mgs/detail/base32/lazy_encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
@@ -307,4 +308,19 @@ TEST_CASE("b64 lazy", "[base64]")
     base_n_checks_impl<EncoderTraits>(random_input, b64_random_input);
     base_n_checks_impl<DecoderTraits>(b64_random_input, random_input);
   }
+}
+
+TEST_CASE("b32 lazy", "[base32]")
+{
+  std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
+  std::vector<std::string> encoded{
+      "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
+
+
+    using Traits = detail::base32_encode_traits;
+
+    SECTION("common_checks")
+    {
+      common_checks<Traits>(decoded, encoded);
+    }
 }
