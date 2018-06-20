@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <cstdlib>
+#include <bitset>
 #include <type_traits>
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
@@ -13,20 +15,28 @@ namespace mgs
 {
 namespace detail
 {
+template <int TotalBits, int EncodedBits>
+int base_n_nb_padding_bytes(int nb_bits_read)
+{
+  auto const nb_non_padded_bytes =
+      (nb_bits_read / EncodedBits) + int((nb_bits_read % EncodedBits) != 0);
+
+  return (TotalBits / EncodedBits) - nb_non_padded_bytes;
+}
+
 // TODO where to put those??
 template <typename EncodingTraits>
-struct base_n_encode
+class base_n_encode
 {
+public:
   template <typename Iterator, typename Sentinel, typename OutputIterator>
   void operator()(Iterator& current,
                   Sentinel const end,
                   OutputIterator& out) const
   {
-    using EncodingTraits::alphabet;
-
     assert(current != end);
 
-    constexpr auto total_bits = EncodingTraits::nb_output_bytes * 8;
+    constexpr auto total_bits = EncodingTraits::nb_input_bytes * 8;
     constexpr auto encoded_bits = total_bits / EncodingTraits::nb_output_bytes;
 
     std::bitset<total_bits> bits;
@@ -42,38 +52,54 @@ struct base_n_encode
       bits |= (byte << (total_bits - 8 - (8 * i)));
     }
 
-    int j = 0;
-    for (; j < i + 1; ++j)
+    for (auto j = 0; j < i + 1; ++j)
     {
       auto shift = (total_bits - encoded_bits - (encoded_bits * j));
       auto mask_bis = ((mask >> (total_bits - encoded_bits)) << shift);
       auto l = bits & mask_bis;
       l >>= shift;
       auto index = static_cast<std::uint8_t>(l.to_ulong());
-      *out++ = alphabet[index];
+      *out++ = EncodingTraits::alphabet[index];
     }
-    for (; j < EncodingTraits::nb_output_bytes; ++j)
+    auto const nb_padding_bytes = base_n_nb_padding_bytes<total_bits, encoded_bits>(8 * i);
+    for (auto j = 0; j < nb_padding_bytes; ++j)
       *out++ = '=';
   }
 };
 
 template <typename EncodingTraits>
-struct base_n_decode
+class base_n_decode
 {
+private:
+  template <typename Iterator, typename Sentinel>
+  void expect_padding_bytes(Iterator& current, Sentinel const end, int n)
+  {
+    assert(current != end);
+    for (; n > 0; --n)
+    {
+      auto const c = *current++;
+      if (c != '=')
+        throw parse_error{"base64: unexpected padding character"};
+      if (current == end && n != 1)
+        throw parse_error{"base64: unexpected end of input"};
+    }
+    if (current == end)
+      throw parse_error{"base64: unexpected padding character"};
+  }
+
+public:
   template <typename Iterator, typename Sentinel, typename OutputIterator>
   void operator()(Iterator& current,
                   Sentinel const end,
                   OutputIterator& out) const
   {
-    using EncodingTraits::alphabet;
-
     assert(current != end);
 
     constexpr auto total_bits = EncodingTraits::nb_input_bytes * 8;
     constexpr auto encoded_bits = total_bits / EncodingTraits::nb_input_bytes;
 
-    auto const alph_begin = std::begin(alphabet);
-    auto const alph_end = std::end(alphabet);
+    auto const alph_begin = std::begin(EncodingTraits::alphabet);
+    auto const alph_end = std::end(EncodingTraits::alphabet);
 
     std::bitset<total_bits> bits;
     auto mask = bits;
@@ -84,33 +110,25 @@ struct base_n_decode
     {
       if (current == end)
         throw parse_error{"base64: unexpected EOF"};
-      auto c = static_cast<char>(*current++);
+      auto c = static_cast<char>(*current);
       auto const index_it = std::find(alph_begin, alph_end, c);
-      // FIXME FIXME FIXME
-      // need to make it work too...
       if (index_it == alph_end)
       {
-        if (c == '=')
-        {
-          if (current != end)
-          {
-            c = *current++;
-            if (c != '=' || current != end)
-              throw parse_error{"base64: unexpected padding character"};
-          }
-          break;
-        }
-
-        throw parse_error{"base64: invalid character"};
+        expect_padding_bytes(
+            current,
+            end,
+            base_n_nb_padding_bytes<total_bits, encoded_bits>(8 * i));
+        break;
       }
       bits |= (std::distance(alph_begin, index_it)
                << (total_bits - encoded_bits - (encoded_bits * i)));
+      ++current;
     }
 
     for (int j = 0; j < i - 1; ++j)
     {
       auto shift = (total_bits - 8 - (8 * j));
-      auto mask_bis = (mask >> total_bits - 8) << shift;
+      auto mask_bis = (mask >> (total_bits - 8)) << shift;
       auto l = bits & mask_bis;
       l >>= shift;
       auto byte = static_cast<std::uint8_t>(l.to_ulong());
@@ -137,8 +155,8 @@ public:
   using underlying_iterator = UnderlyingIterator;
   using underlying_sentinel = Sentinel;
 
-  using typename EncodingTraits::difference_type;
-  using typename EncodingTraits::value_type;
+  using difference_type = typename EncodingTraits::difference_type;
+  using value_type = typename EncodingTraits::value_type;
 
   base_n_transformer() = default;
   base_n_transformer(UnderlyingIterator const& begin, Sentinel const& end);

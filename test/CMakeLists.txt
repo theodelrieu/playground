@@ -5,11 +5,11 @@ get_target_property(CATCH2_INC_DIR CONAN_PKG::catch2 INTERFACE_INCLUDE_DIRECTORI
 target_include_directories(catch_main PRIVATE ${CATCH2_INC_DIR})
 
 add_executable(test_b64 test_b64.cpp $<TARGET_OBJECTS:catch_main>)
-add_executable(test_b32 test_b32.cpp $<TARGET_OBJECTS:catch_main>)
+# add_executable(test_b32 test_b32.cpp $<TARGET_OBJECTS:catch_main>)
 add_executable(test_adaptive_iterator test_adaptive_iterator.cpp $<TARGET_OBJECTS:catch_main>)
 
 target_link_libraries(test_b64 mgs CONAN_PKG::catch2)
-target_link_libraries(test_b32 mgs CONAN_PKG::catch2)
+# target_link_libraries(test_b32 mgs CONAN_PKG::catch2)
 target_link_libraries(test_adaptive_iterator mgs CONAN_PKG::catch2)
 # TODO function/macro
 
@@ -24,4 +24,4 @@ ExternalData_Add_Test(b64_data NAME test_b64 COMMAND test_b64 --test-file DATA{d
 ExternalData_Add_Target(b64_data)
 
 add_test(NAME test_adaptive_iterator COMMAND test_adaptive_iterator)
-add_test(NAME test_b32 COMMAND test_b32)
+# add_test(NAME test_b32 COMMAND test_b32)

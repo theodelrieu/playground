@@ -45,7 +45,7 @@ public:
 
   iterator begin()
   {
-    return {*this};
+    return iterator{*this};
   }
 
   iterator end() const
@@ -53,7 +53,7 @@ public:
     noop_encoder enc{{}, _end};
     enc._begin = _begin;
     enc._current_it = enc._end;
-    return {enc};
+    return iterator{enc};
   }
 
   void seek_backward(difference_type n)

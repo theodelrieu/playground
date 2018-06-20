@@ -110,7 +110,7 @@ template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
 auto base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::begin() const
     -> iterator
 {
-  return {*this};
+  return iterator{*this};
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>
@@ -124,7 +124,7 @@ auto base64_lazy_decoder<UnderlyingIterator, Sentinel, SFINAE>::end() const
   dec._end = _end;
   assert(dec._index == 3);
   assert(dec._max_index == 3);
-  return dec;
+  return iterator{dec};
 }
 
 template <typename UnderlyingIterator, typename Sentinel, typename SFINAE>

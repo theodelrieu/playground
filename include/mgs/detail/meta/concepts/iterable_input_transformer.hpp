@@ -14,14 +14,11 @@ namespace mgs
 {
 namespace detail
 {
-template <typename T,
-          typename Iterator,
-          typename Sentinel = Iterator>
+template <typename T>
 struct is_iterable_input_transformer
 {
   static constexpr bool value =
-      is_input_transformer<T, Iterator, Sentinel>::value &&
-      is_iterable<T>::value;
+      is_input_transformer<T>::value && is_iterable<T>::value;
 };
 }
 }

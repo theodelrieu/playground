@@ -8,14 +8,13 @@
 #include <mgs/detail/meta/concepts/sentinel.hpp>
 #include <mgs/detail/meta/detected.hpp>
 
-// template <Iterator, Sentinel>
 // concept InputTransformer = requires(T const& v, T& u) {
 //  requires Regular<T>;
-//  requires Constructible<T, Iterator, Sentinel>;
 //  typename T::value_type;
 //  typename T::difference_type;
 //  typename T::underlying_iterator;
 //  typename T::underlying_sentinel;
+//  requires Constructible<T, T::underlying_iterator, T::underlying_sentinel>;
 //  requires(typename T::difference_type n) {
 //     v.get();
 //     u.seek_forward(n);
@@ -28,10 +27,7 @@ namespace mgs
 {
 namespace detail
 {
-template <typename T,
-          typename Iterator,
-          typename Sentinel = Iterator,
-          typename = void>
+template <typename T, typename = void>
 struct is_input_transformer : std::false_type
 {
 };
@@ -39,8 +35,6 @@ struct is_input_transformer : std::false_type
 template <typename T>
 struct is_input_transformer<
     T,
-    detected_t<underlying_iterator_t, T>,
-    detected_t<underlying_sentinel_t, T>,
     std::enable_if_t<is_regular<T>::value &&
                      is_detected<value_type_t, T>::value &&
                      is_detected<underlying_iterator_t, T>::value &&

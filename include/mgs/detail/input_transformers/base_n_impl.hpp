@@ -58,9 +58,7 @@ template <typename EncodingTraits,
 auto base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
     begin() const -> iterator
 {
-  return adaptive_iterator<
-      base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>,
-      std::input_iterator_tag>{{*this}};
+  return iterator{*this};
 }
 
 template <typename EncodingTraits,
@@ -70,9 +68,7 @@ template <typename EncodingTraits,
 auto base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>::
     end() const -> iterator
 {
-  return adaptive_iterator<
-      base_n_transformer<EncodingTraits, UnderlyingIterator, Sentinel, SFINAE>,
-      std::input_iterator_tag>{{}};
+  return iterator{{}};
 }
 
 template <typename EncodingTraits,
