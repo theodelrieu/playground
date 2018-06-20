@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
-#include <cstdlib>
 #include <bitset>
+#include <cassert>
+#include <cstdlib>
 #include <type_traits>
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
@@ -72,7 +73,7 @@ class base_n_decode
 {
 private:
   template <typename Iterator, typename Sentinel>
-  void expect_padding_bytes(Iterator& current, Sentinel const end, int n)
+  void expect_padding_bytes(Iterator& current, Sentinel const end, int n) const
   {
     assert(current != end);
     for (; n > 0; --n)
@@ -83,7 +84,7 @@ private:
       if (current == end && n != 1)
         throw parse_error{"base64: unexpected end of input"};
     }
-    if (current == end)
+    if (current != end)
       throw parse_error{"base64: unexpected padding character"};
   }
 
@@ -95,7 +96,7 @@ public:
   {
     assert(current != end);
 
-    constexpr auto total_bits = EncodingTraits::nb_input_bytes * 8;
+    constexpr auto total_bits = EncodingTraits::nb_output_bytes * 8;
     constexpr auto encoded_bits = total_bits / EncodingTraits::nb_input_bytes;
 
     auto const alph_begin = std::begin(EncodingTraits::alphabet);
@@ -117,6 +118,7 @@ public:
         expect_padding_bytes(
             current,
             end,
+            // FIXME
             base_n_nb_padding_bytes<total_bits, encoded_bits>(8 * i));
         break;
       }

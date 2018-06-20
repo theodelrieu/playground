@@ -11,12 +11,11 @@
 
 #include <catch.hpp>
 
-#include <mgs/decoders/base64_lazy.hpp>
+#include <mgs/detail/base64/lazy_encoder.hpp>
+#include <mgs/detail/base64/lazy_decoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
-// #include <mgs/encoders/base64_lazy.hpp>
-#include <mgs/detail/base64/base64_lazy_encoder.hpp>
+#include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
 #include <mgs/exceptions/parse_error.hpp>
 
 using namespace std::string_literals;
@@ -30,23 +29,20 @@ template <typename Iterator, typename Sentinel = Iterator>
 using encoder = detail::base64_lazy_encoder<Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using decoder = decoders::base64_lazy_decoder<Iterator, Sentinel>;
+using decoder = detail::base64_lazy_decoder<Iterator, Sentinel>;
 
 static_assert(
     detail::is_iterable_input_transformer<encoder<char*>>::value, "");
-// static_assert(
-//     detail::is_iterable_input_transformer<encoder<std::list<char>::iterator>,
-//                                           std::list<char>::iterator>::value,
-//     "");
-// static_assert(detail::is_iterable_input_transformer<
-//                   encoder<std::forward_list<char>::iterator>,
-//                   std::forward_list<char>::iterator>::value,
-//               "");
-// static_assert(detail::is_iterable_input_transformer<
-//                   encoder<std::istreambuf_iterator<char>>,
-//                   std::istreambuf_iterator<char>>::value,
-//               "");
-//
+static_assert(detail::is_iterable_input_transformer<
+                  encoder<std::list<char>::iterator>>::value,
+              "");
+static_assert(detail::is_iterable_input_transformer<
+                  encoder<std::forward_list<char>::iterator>>::value,
+              "");
+static_assert(detail::is_iterable_input_transformer<
+                  encoder<std::istreambuf_iterator<char>>>::value,
+              "");
+
 struct encode_tag
 {
 };
@@ -139,7 +135,7 @@ void base64_checks_impl(Iterable const& expected_output,
                         Container const& source,
                         decode_tag)
 {
-  base64_checks_impl<decoders::base64_lazy_decoder>(source, expected_output);
+  base64_checks_impl<decoder>(source, expected_output);
 }
 
 template <typename Container,
