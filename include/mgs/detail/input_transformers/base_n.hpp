@@ -62,7 +62,13 @@ public:
       auto index = static_cast<std::uint8_t>(l.to_ulong());
       *out++ = EncodingTraits::alphabet[index];
     }
-    auto const nb_padding_bytes = base_n_nb_padding_bytes<total_bits, encoded_bits>(8 * i);
+
+    auto const nb_bits_read = 8 * i;
+    auto const nb_non_padded_bytes =
+        (nb_bits_read / encoded_bits) + int((nb_bits_read % encoded_bits) != 0);
+    auto const nb_padding_bytes =
+        EncodingTraits::nb_output_bytes - nb_non_padded_bytes;
+
     for (auto j = 0; j < nb_padding_bytes; ++j)
       *out++ = '=';
   }
@@ -115,11 +121,11 @@ public:
       auto const index_it = std::find(alph_begin, alph_end, c);
       if (index_it == alph_end)
       {
-        expect_padding_bytes(
-            current,
-            end,
-            // FIXME
-            base_n_nb_padding_bytes<total_bits, encoded_bits>(8 * i));
+        // true for base64 and base32, base16 does not have padding.
+        auto const min_padding_position = 2;
+        if (i < 2)
+          throw parse_error{"base64: unexpected padding character"};
+        expect_padding_bytes(current, end, EncodingTraits::nb_input_bytes - i);
         break;
       }
       bits |= (std::distance(alph_begin, index_it)
