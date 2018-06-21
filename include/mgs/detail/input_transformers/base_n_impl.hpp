@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 namespace mgs
 {
 // TODO namespace input_transformers?

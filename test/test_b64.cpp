@@ -15,6 +15,8 @@
 #include <mgs/detail/base64/lazy_decoder.hpp>
 #include <mgs/detail/base32/lazy_encoder.hpp>
 #include <mgs/detail/base32/lazy_decoder.hpp>
+#include <mgs/detail/base16/lazy_encoder.hpp>
+#include <mgs/detail/base16/lazy_decoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
@@ -313,6 +315,7 @@ TEST_CASE("b64 lazy", "[base64]")
 
 TEST_CASE("b32 lazy", "[base32]")
 {
+  // TODO same test layout than b64
   std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
@@ -322,7 +325,45 @@ TEST_CASE("b32 lazy", "[base32]")
 
   SECTION("common_checks")
   {
-    // common_checks<EncoderTraits>(decoded, encoded);
-    common_checks<DecoderTraits>(encoded, decoded);
+    SECTION("encode")
+    {
+      common_checks<EncoderTraits>(decoded, encoded);
+    }
+
+    SECTION("decode")
+    {
+      common_checks<DecoderTraits>(encoded, decoded);
+    }
+  }
+}
+
+TEST_CASE("b16 lazy", "[base16]")
+{
+  // TODO same test layout than b64
+  std::vector<std::string> decoded{
+      "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
+  std::vector<std::string> encoded{
+      "66"s,
+      "666F"s,
+      "666F6F"s,
+      "666F6F62"s,
+      "666F6F6261"s,
+      "666F6F626172"s,
+  };
+
+  using EncoderTraits = detail::base16_encode_traits;
+  using DecoderTraits = detail::base16_decode_traits;
+
+  SECTION("common_checks")
+  {
+    SECTION("encode")
+    {
+      common_checks<EncoderTraits>(decoded, encoded);
+    }
+
+    SECTION("decode")
+    {
+      common_checks<DecoderTraits>(encoded, decoded);
+    }
   }
 }
