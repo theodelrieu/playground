@@ -16,7 +16,10 @@ target_link_libraries(test_adaptive_iterator mgs CONAN_PKG::catch2)
 include(ExternalData)
 
 set(ExternalData_URL_TEMPLATES 
+  "https://github.com/theodelrieu/cmake_external_data/raw/master/binary/%(algo)/%(hash)"
   "https://github.com/theodelrieu/cmake_external_data/raw/master/base64/%(algo)/%(hash)"
+  "https://github.com/theodelrieu/cmake_external_data/raw/master/base32/%(algo)/%(hash)"
+  "https://github.com/theodelrieu/cmake_external_data/raw/master/base16/%(algo)/%(hash)"
 )
 
 ExternalData_Add_Test(b64_data NAME test_b64 COMMAND test_b64 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b64})
