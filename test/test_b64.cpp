@@ -316,11 +316,10 @@ TEST_CASE("b32 lazy", "[base32]")
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
 
+  using Traits = detail::base32_encode_traits;
 
-    using Traits = detail::base32_encode_traits;
-
-    SECTION("common_checks")
-    {
-      common_checks<Traits>(decoded, encoded);
-    }
+  SECTION("common_checks")
+  {
+    common_checks<Traits>(decoded, encoded);
+  }
 }

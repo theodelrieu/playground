@@ -50,10 +50,18 @@ public:
       if (current == end)
         break;
       auto byte = static_cast<std::uint8_t>(*current++);
-      bits |= (byte << (total_bits - 8 - (8 * i)));
+      // shifting on an integer type is a bit dangerous...
+      // use bitset instead
+      std::bitset<total_bits> byte_bits(byte);
+      byte_bits <<= (total_bits - 8 - (8* i));
+      bits |= byte_bits;
     }
 
-    for (auto j = 0; j < i + 1; ++j)
+    auto const nb_bits_read = 8 * i;
+    auto const nb_non_padded_bytes =
+        (nb_bits_read / encoded_bits) + int((nb_bits_read % encoded_bits) != 0);
+
+    for (auto j = 0; j < nb_non_padded_bytes; ++j)
     {
       auto shift = (total_bits - encoded_bits - (encoded_bits * j));
       auto mask_bis = ((mask >> (total_bits - encoded_bits)) << shift);
@@ -63,9 +71,6 @@ public:
       *out++ = EncodingTraits::alphabet[index];
     }
 
-    auto const nb_bits_read = 8 * i;
-    auto const nb_non_padded_bytes =
-        (nb_bits_read / encoded_bits) + int((nb_bits_read % encoded_bits) != 0);
     auto const nb_padding_bytes =
         EncodingTraits::nb_output_bytes - nb_non_padded_bytes;
 
