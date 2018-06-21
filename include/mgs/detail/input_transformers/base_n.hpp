@@ -105,6 +105,16 @@ template <typename EncodingTraits>
 class base_n_decode
 {
 private:
+  static constexpr auto nb_input_bits = EncodingTraits::nb_output_bytes * 8;
+  static constexpr auto nb_encoded_bits =
+      nb_input_bits / EncodingTraits::nb_input_bytes;
+
+  struct read_result
+  {
+    std::bitset<nb_input_bits> input_bits;
+    int nb_read_bytes;
+  };
+
   template <typename Iterator, typename Sentinel>
   void expect_padding_bytes(Iterator& current, Sentinel const end, int n) const
   {
@@ -121,6 +131,61 @@ private:
       throw parse_error{"base64: unexpected padding character"};
   }
 
+  template <typename Iterator, typename Sentinel>
+  read_result read(Iterator& current, Sentinel const sent) const
+  {
+    using std::begin;
+    using std::end;
+
+    auto const alph_begin = begin(EncodingTraits::alphabet);
+    auto const alph_end = end(EncodingTraits::alphabet);
+
+    std::bitset<nb_input_bits> input_bits;
+
+    auto i = 0;
+    for (; i < EncodingTraits::nb_input_bytes; ++i)
+    {
+      if (current == sent)
+        throw parse_error{"base64: unexpected EOF"};
+      auto c = static_cast<char>(*current);
+      auto const index_it = std::find(alph_begin, alph_end, c);
+      if (index_it == alph_end)
+      {
+        // true for base64 and base32, base16 does not have padding.
+        static constexpr auto min_padding_position = 2;
+        if (i < min_padding_position)
+          throw parse_error{"base64: unexpected padding character"};
+        expect_padding_bytes(current, sent, EncodingTraits::nb_input_bytes - i);
+        break;
+      }
+
+      std::bitset<nb_input_bits> const decoded_byte_bits(
+          std::distance(alph_begin, index_it));
+
+      input_bits |= (decoded_byte_bits << (nb_input_bits - nb_encoded_bits -
+                                           (nb_encoded_bits * i)));
+      ++current;
+    }
+
+    return {input_bits, i - 1};
+  }
+
+  template <typename OutputIterator>
+  void decode_input_bits(read_result const& res, OutputIterator& out) const
+  {
+    std::bitset<nb_input_bits> const mask{
+        std::numeric_limits<std::uint64_t>::max()};
+
+    for (int j = 0; j < res.nb_read_bytes; ++j)
+    {
+      auto const shift = (nb_input_bits - 8 - (8 * j));
+      auto const mask_bis = (mask >> (nb_input_bits - 8)) << shift;
+      auto const final_value = (res.input_bits & mask_bis) >> shift;
+      auto const byte = static_cast<std::uint8_t>(final_value.to_ulong());
+      *out++ = byte;
+    }
+  }
+
 public:
   template <typename Iterator, typename Sentinel, typename OutputIterator>
   void operator()(Iterator& current,
@@ -129,46 +194,8 @@ public:
   {
     assert(current != end);
 
-    constexpr auto total_bits = EncodingTraits::nb_output_bytes * 8;
-    constexpr auto encoded_bits = total_bits / EncodingTraits::nb_input_bytes;
-
-    auto const alph_begin = std::begin(EncodingTraits::alphabet);
-    auto const alph_end = std::end(EncodingTraits::alphabet);
-
-    std::bitset<total_bits> bits;
-    auto mask = bits;
-    mask.flip();
-
-    int i = 0;
-    for (; i < EncodingTraits::nb_input_bytes; ++i)
-    {
-      if (current == end)
-        throw parse_error{"base64: unexpected EOF"};
-      auto c = static_cast<char>(*current);
-      auto const index_it = std::find(alph_begin, alph_end, c);
-      if (index_it == alph_end)
-      {
-        // true for base64 and base32, base16 does not have padding.
-        auto const min_padding_position = 2;
-        if (i < 2)
-          throw parse_error{"base64: unexpected padding character"};
-        expect_padding_bytes(current, end, EncodingTraits::nb_input_bytes - i);
-        break;
-      }
-      bits |= (std::distance(alph_begin, index_it)
-               << (total_bits - encoded_bits - (encoded_bits * i)));
-      ++current;
-    }
-
-    for (int j = 0; j < i - 1; ++j)
-    {
-      auto shift = (total_bits - 8 - (8 * j));
-      auto mask_bis = (mask >> (total_bits - 8)) << shift;
-      auto l = bits & mask_bis;
-      l >>= shift;
-      auto byte = static_cast<std::uint8_t>(l.to_ulong());
-      *out++ = byte;
-    }
+    auto const res = read(current, end);
+    decode_input_bits(res, out);
   }
 };
 
