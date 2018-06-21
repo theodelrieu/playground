@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <array>
 #include <bitset>
 #include <cassert>
@@ -166,8 +168,7 @@ private:
                                            (nb_encoded_bits * i)));
       ++current;
     }
-
-    return {input_bits, i - 1};
+    return {input_bits, (i * nb_encoded_bits) / 8};
   }
 
   template <typename OutputIterator>
