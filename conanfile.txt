@@ -1,8 +1,5 @@
 [build_requires]
 catch2/2.2.2@bincrafters/stable
 
-[requires]
-optional-lite/2.3.0@nonstd-lite/stable
-
 [generators]
 cmake

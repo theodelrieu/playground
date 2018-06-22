@@ -8,8 +8,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <optional.hpp>
-
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
 #include <mgs/detail/meta/concepts/input_iterator.hpp>
@@ -134,65 +132,54 @@ private:
   }
 
   template <typename Iterator, typename Sentinel>
-  nonstd::optional<std::bitset<nb_input_bits>> read_bits(Iterator& current,
-                                                         Sentinel const sent,
-                                                         int const pos) const
-  {
-    using std::begin;
-    using std::end;
-
-    auto const alph_begin = begin(EncodingTraits::alphabet);
-    auto const alph_end = end(EncodingTraits::alphabet);
-
-    // TODO use fmt + sizeof(alphabet) to know which base?
-    if (current == sent)
-    {
-      throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                 "unexpected end of input"};
-    }
-    auto c = static_cast<char>(*current++);
-    auto const index_it = std::find(alph_begin, alph_end, c);
-    if (index_it == alph_end)
-    {
-      if (EncodingTraits::is_padding_character(c))
-      {
-        static constexpr auto min_padding_position =
-            (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
-        if (pos < min_padding_position)
-        {
-          throw invalid_input_error{EncodingTraits::encoding_name,
-                                    "unexpected padding character"};
-        }
-        expect_padding_bytes(
-            current, sent, EncodingTraits::nb_input_bytes - pos - 1);
-        return nonstd::nullopt;
-      }
-      else
-      {
-        throw invalid_input_error{EncodingTraits::encoding_name,
-                                  "invalid character"};
-      }
-    }
-
-    std::bitset<nb_input_bits> const decoded_byte_bits(
-        std::distance(alph_begin, index_it));
-
-    return decoded_byte_bits
-           << (nb_input_bits - nb_encoded_bits - (nb_encoded_bits * pos));
-  }
-
-  template <typename Iterator, typename Sentinel>
   read_result read(Iterator& current, Sentinel const sent) const
   {
     std::bitset<nb_input_bits> input_bits;
 
+    using std::begin;
+    using std::end;
+
     auto i = 0;
     for (; i < EncodingTraits::nb_input_bytes; ++i)
     {
-      auto const bits = read_bits(current, sent, i);
-      if (!bits)
-        break;
-      input_bits |= *bits;
+      auto const alph_begin = begin(EncodingTraits::alphabet);
+      auto const alph_end = end(EncodingTraits::alphabet);
+
+      // TODO use fmt + sizeof(alphabet) to know which base?
+      if (current == sent)
+      {
+        throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                   "unexpected end of input"};
+      }
+      auto c = static_cast<char>(*current++);
+      auto const index_it = std::find(alph_begin, alph_end, c);
+      if (index_it == alph_end)
+      {
+        if (EncodingTraits::is_padding_character(c))
+        {
+          static constexpr auto min_padding_position =
+              (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
+          if (i < min_padding_position)
+          {
+            throw invalid_input_error{EncodingTraits::encoding_name,
+                                      "unexpected padding character"};
+          }
+          expect_padding_bytes(
+              current, sent, EncodingTraits::nb_input_bytes - i - 1);
+          break;
+        }
+        else
+        {
+          throw invalid_input_error{EncodingTraits::encoding_name,
+                                    "invalid character"};
+        }
+      }
+
+      std::bitset<nb_input_bits> const decoded_byte_bits(
+          std::distance(alph_begin, index_it));
+
+      input_bits |= (decoded_byte_bits << (nb_input_bits - nb_encoded_bits -
+                                           (nb_encoded_bits * i)));
     }
     return {input_bits, (i * nb_encoded_bits) / 8};
   }

@@ -50,53 +50,49 @@ TEST_CASE("b32 lazy", "[base32]")
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
 
+  using EncoderTraits = detail::base32_encode_traits;
+  using DecoderTraits = detail::base32_decode_traits;
+
   SECTION("encoding")
   {
-    using Traits = detail::base32_encode_traits;
-
     SECTION("common_checks")
     {
-      common_checks<Traits>(decoded, encoded);
+      common_checks<EncoderTraits>(decoded, encoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<Traits>(decoded.back(), encoded.back());
+      sentinel_check<EncoderTraits>(decoded.back(), encoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<Traits>(
+      inception_check<EncoderTraits>(
           decoded.back(), encoded.back(), "JVDFER2HLJCEM==="s);
     }
   }
 
   SECTION("decoding")
   {
-    using Traits = detail::base32_decode_traits;
-
     SECTION("common_checks")
     {
-      common_checks<Traits>(encoded, decoded);
+      common_checks<DecoderTraits>(encoded, decoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<Traits>(encoded.back(), decoded.back());
+      sentinel_check<DecoderTraits>(encoded.back(), decoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<Traits>(
+      inception_check<DecoderTraits>(
           "JVDFER2HLJCEM==="s, encoded.back(), decoded.back());
     }
   }
 
   SECTION("back and forth")
   {
-    using EncoderTraits = detail::base32_encode_traits;
-    using DecoderTraits = detail::base32_decode_traits;
-
     SECTION("decode(encode())")
     {
       back_and_forth_check<EncoderTraits, DecoderTraits>(decoded.back());
@@ -114,10 +110,18 @@ TEST_CASE("b32 lazy", "[base32]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b32_random_data(testFilePaths[1]);
 
-    using EncoderTraits = detail::base32_encode_traits;
-    using DecoderTraits = detail::base32_encode_traits;
-
     stream_check<EncoderTraits>(random_data, b32_random_data);
     stream_check<DecoderTraits>(b32_random_data, random_data);
+  }
+
+  SECTION("invalid input")
+  {
+    // std::vector<std::string> invalid_chars{
+    //     "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
+    std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
+
+    invalid_input_checks<DecoderTraits, mgs::invalid_input_error>(
+        {"MFR====="s});
+    // invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
