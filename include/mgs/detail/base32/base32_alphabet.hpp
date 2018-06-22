@@ -14,6 +14,8 @@ struct base32_alphabet
       'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
       'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
 
+  static constexpr char const encoding_name[] = "base32";
+
   static constexpr bool is_padding_character(char c)
   {
     return c == '=';
@@ -23,5 +25,8 @@ struct base32_alphabet
 template <typename Dummy>
 constexpr typename base32_alphabet<Dummy>::alphabet_t
     base32_alphabet<Dummy>::alphabet;
+
+template <typename Dummy>
+constexpr char const base32_alphabet<Dummy>::encoding_name[];
 }
 }

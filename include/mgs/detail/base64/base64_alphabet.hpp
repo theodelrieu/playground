@@ -16,6 +16,8 @@ struct base64_alphabet
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
+  static constexpr char const encoding_name[] = "base64";
+
   static constexpr bool is_padding_character(char c)
   {
     return c == '=';
@@ -25,5 +27,8 @@ struct base64_alphabet
 template <typename Dummy>
 constexpr typename base64_alphabet<Dummy>::alphabet_t
     base64_alphabet<Dummy>::alphabet;
+
+template <typename Dummy>
+constexpr char const base64_alphabet<Dummy>::encoding_name[];
 }
 }

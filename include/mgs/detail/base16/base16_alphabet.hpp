@@ -26,6 +26,8 @@ struct base16_alphabet
                                           'E',
                                           'F'};
 
+  static constexpr char const encoding_name[] = "base16";
+
   static constexpr bool is_padding_character(char)
   {
     return false;
@@ -35,5 +37,8 @@ struct base16_alphabet
 template <typename Dummy>
 constexpr typename base16_alphabet<Dummy>::alphabet_t
     base16_alphabet<Dummy>::alphabet;
+
+template <typename Dummy>
+constexpr char const base16_alphabet<Dummy>::encoding_name[];
 }
 }

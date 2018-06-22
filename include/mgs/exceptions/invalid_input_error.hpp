@@ -1,12 +1,12 @@
 #pragma once
 
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/exceptions/decode_error.hpp>
 
 namespace mgs
 {
-class invalid_input_error : public parse_error
+class invalid_input_error : public decode_error
 {
 public:
-  using parse_error::parse_error;
+  using decode_error::decode_error;
 };
 }

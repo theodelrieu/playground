@@ -1,13 +1,13 @@
 #pragma once
 
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/exceptions/decode_error.hpp>
 
 // TODO add prefix in message
 namespace mgs
 {
-class unexpected_eof_error : public parse_error
+class unexpected_eof_error : public decode_error
 {
 public:
-  using parse_error::parse_error;
+  using decode_error::decode_error;
 };
 }

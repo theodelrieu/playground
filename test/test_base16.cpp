@@ -11,12 +11,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/detail/base16/lazy_encoder.hpp>
 #include <mgs/detail/base16/lazy_decoder.hpp>
+#include <mgs/detail/base16/lazy_encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/exceptions/invalid_input_error.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include "test_base_n.hpp"
 

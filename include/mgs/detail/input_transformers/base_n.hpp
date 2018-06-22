@@ -116,12 +116,21 @@ private:
     {
       auto const c = *current++;
       if (!EncodingTraits::is_padding_character(c))
-        throw invalid_input_error{"unexpected padding character"};
+      {
+        throw invalid_input_error{EncodingTraits::encoding_name,
+                                  "unexpected padding character"};
+      }
       if (current == end && n != 1)
-        throw unexpected_eof_error{"unexpected end of input"};
+      {
+        throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                   "unexpected end of input"};
+      }
     }
     if (current != end)
-      throw invalid_input_error{"unexpected padding character"};
+    {
+      throw invalid_input_error{EncodingTraits::encoding_name,
+                                "unexpected padding character"};
+    }
   }
 
   template <typename Iterator, typename Sentinel>
@@ -137,7 +146,10 @@ private:
 
     // TODO use fmt + sizeof(alphabet) to know which base?
     if (current == sent)
-      throw unexpected_eof_error{"unexpected end of input"};
+    {
+      throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                 "unexpected end of input"};
+    }
     auto c = static_cast<char>(*current++);
     auto const index_it = std::find(alph_begin, alph_end, c);
     if (index_it == alph_end)
@@ -147,13 +159,19 @@ private:
         static constexpr auto min_padding_position =
             (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
         if (pos < min_padding_position)
-          throw invalid_input_error{"unexpected padding character"};
+        {
+          throw invalid_input_error{EncodingTraits::encoding_name,
+                                    "unexpected padding character"};
+        }
         expect_padding_bytes(
             current, sent, EncodingTraits::nb_input_bytes - pos - 1);
         return nonstd::nullopt;
       }
       else
-        throw invalid_input_error{"invalid character"};
+      {
+        throw invalid_input_error{EncodingTraits::encoding_name,
+                                  "invalid character"};
+      }
     }
 
     std::bitset<nb_input_bits> const decoded_byte_bits(
