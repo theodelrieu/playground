@@ -11,7 +11,7 @@ function(create_tests)
   endforeach()
 endfunction(create_tests)
 
-create_tests(b64 b32 b16 adaptive_iterator)
+create_tests(base64 base32 base16 adaptive_iterator)
 
 include(ExternalData)
 
@@ -22,12 +22,12 @@ set(ExternalData_URL_TEMPLATES
   "https://github.com/theodelrieu/cmake_external_data/raw/master/base16/%(algo)/%(hash)"
 )
 
-ExternalData_Add_Test(b64_data NAME test_b64 COMMAND test_b64 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b64})
-ExternalData_Add_Test(b32_data NAME test_b32 COMMAND test_b32 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b32})
-ExternalData_Add_Test(b16_data NAME test_b16 COMMAND test_b16 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b16})
+ExternalData_Add_Test(base64_data NAME test_base64 COMMAND test_base64 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b64})
+ExternalData_Add_Test(base32_data NAME test_base32 COMMAND test_base32 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b32})
+ExternalData_Add_Test(base16_data NAME test_base16 COMMAND test_base16 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b16})
 
-ExternalData_Add_Target(b64_data)
-ExternalData_Add_Target(b32_data)
-ExternalData_Add_Target(b16_data)
+ExternalData_Add_Target(base64_data)
+ExternalData_Add_Target(base32_data)
+ExternalData_Add_Target(base16_data)
 
 add_test(NAME test_adaptive_iterator COMMAND test_adaptive_iterator)
