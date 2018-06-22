@@ -11,6 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(mgs INTERFACE)
 
 target_include_directories(mgs INTERFACE include)
+target_link_libraries(mgs INTERFACE CONAN_PKG::optional-lite)
 
 include(CTest)
 

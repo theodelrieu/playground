@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 #include <array>
 #include <bitset>
 #include <cassert>
@@ -9,6 +7,8 @@
 #include <limits>
 #include <type_traits>
 #include <utility>
+
+#include <optional.hpp>
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
@@ -21,15 +21,6 @@ namespace mgs
 {
 namespace detail
 {
-template <int TotalBits, int EncodedBits>
-int base_n_nb_padding_bytes(int nb_bits_read)
-{
-  auto const nb_non_padded_bytes =
-      (nb_bits_read / EncodedBits) + int((nb_bits_read % EncodedBits) != 0);
-
-  return (TotalBits / EncodedBits) - nb_non_padded_bytes;
-}
-
 // TODO where to put those??
 template <typename EncodingTraits>
 class base_n_encode
@@ -121,11 +112,10 @@ private:
   template <typename Iterator, typename Sentinel>
   void expect_padding_bytes(Iterator& current, Sentinel const end, int n) const
   {
-    assert(current != end);
     for (; n > 0; --n)
     {
       auto const c = *current++;
-      if (c != '=')
+      if (!EncodingTraits::is_padding_character(c))
         throw invalid_input_error{"unexpected padding character"};
       if (current == end && n != 1)
         throw unexpected_eof_error{"unexpected end of input"};
@@ -135,7 +125,9 @@ private:
   }
 
   template <typename Iterator, typename Sentinel>
-  read_result read(Iterator& current, Sentinel const sent) const
+  nonstd::optional<std::bitset<nb_input_bits>> read_bits(Iterator& current,
+                                                         Sentinel const sent,
+                                                         int const pos) const
   {
     using std::begin;
     using std::end;
@@ -143,37 +135,46 @@ private:
     auto const alph_begin = begin(EncodingTraits::alphabet);
     auto const alph_end = end(EncodingTraits::alphabet);
 
+    // TODO use fmt + sizeof(alphabet) to know which base?
+    if (current == sent)
+      throw unexpected_eof_error{"unexpected end of input"};
+    auto c = static_cast<char>(*current++);
+    auto const index_it = std::find(alph_begin, alph_end, c);
+    if (index_it == alph_end)
+    {
+      if (EncodingTraits::is_padding_character(c))
+      {
+        static constexpr auto min_padding_position =
+            (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
+        if (pos < min_padding_position)
+          throw invalid_input_error{"unexpected padding character"};
+        expect_padding_bytes(
+            current, sent, EncodingTraits::nb_input_bytes - pos - 1);
+        return nonstd::nullopt;
+      }
+      else
+        throw invalid_input_error{"invalid character"};
+    }
+
+    std::bitset<nb_input_bits> const decoded_byte_bits(
+        std::distance(alph_begin, index_it));
+
+    return decoded_byte_bits
+           << (nb_input_bits - nb_encoded_bits - (nb_encoded_bits * pos));
+  }
+
+  template <typename Iterator, typename Sentinel>
+  read_result read(Iterator& current, Sentinel const sent) const
+  {
     std::bitset<nb_input_bits> input_bits;
 
     auto i = 0;
     for (; i < EncodingTraits::nb_input_bytes; ++i)
     {
-      // TODO use fmt + sizeof(alphabet) to know which base?
-      if (current == sent)
-        throw unexpected_eof_error{"unexpected end of input"};
-      auto c = static_cast<char>(*current);
-      auto const index_it = std::find(alph_begin, alph_end, c);
-      if (index_it == alph_end)
-      {
-        if (EncodingTraits::is_padding_character(c))
-        {
-        static constexpr auto min_padding_position =
-            (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
-        if (i < min_padding_position)
-          throw invalid_input_error{"unexpected padding character"};
-        expect_padding_bytes(current, sent, EncodingTraits::nb_input_bytes - i);
+      auto const bits = read_bits(current, sent, i);
+      if (!bits)
         break;
-        }
-        else
-          throw invalid_input_error{"invalid character"};
-      }
-
-      std::bitset<nb_input_bits> const decoded_byte_bits(
-          std::distance(alph_begin, index_it));
-
-      input_bits |= (decoded_byte_bits << (nb_input_bits - nb_encoded_bits -
-                                           (nb_encoded_bits * i)));
-      ++current;
+      input_bits |= *bits;
     }
     return {input_bits, (i * nb_encoded_bits) / 8};
   }
