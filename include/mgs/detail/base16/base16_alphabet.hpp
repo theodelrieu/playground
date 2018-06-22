@@ -25,6 +25,11 @@ struct base16_alphabet
                                           'D',
                                           'E',
                                           'F'};
+
+  static constexpr bool is_padding_character(char)
+  {
+    return false;
+  }
 };
 
 template <typename Dummy>

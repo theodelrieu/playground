@@ -13,6 +13,11 @@ struct base32_alphabet
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
       'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
       'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
+
+  static constexpr bool is_padding_character(char c)
+  {
+    return c == '=';
+  }
 };
 
 template <typename Dummy>

@@ -155,12 +155,17 @@ private:
       auto const index_it = std::find(alph_begin, alph_end, c);
       if (index_it == alph_end)
       {
-        // true for base64 and base32, base16 does not have padding.
-        static constexpr auto min_padding_position = 2;
+        if (EncodingTraits::is_padding_character(c))
+        {
+        static constexpr auto min_padding_position =
+            (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
         if (i < min_padding_position)
           throw invalid_input_error{"unexpected padding character"};
         expect_padding_bytes(current, sent, EncodingTraits::nb_input_bytes - i);
         break;
+        }
+        else
+          throw invalid_input_error{"invalid character"};
       }
 
       std::bitset<nb_input_bits> const decoded_byte_bits(
