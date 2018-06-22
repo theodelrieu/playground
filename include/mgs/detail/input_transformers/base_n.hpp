@@ -14,7 +14,8 @@
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
 #include <mgs/detail/meta/concepts/input_iterator.hpp>
 #include <mgs/detail/meta/concepts/sentinel.hpp>
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/exceptions/invalid_input_error.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 
 namespace mgs
 {
@@ -125,12 +126,12 @@ private:
     {
       auto const c = *current++;
       if (c != '=')
-        throw parse_error{"base64: unexpected padding character"};
+        throw invalid_input_error{"unexpected padding character"};
       if (current == end && n != 1)
-        throw parse_error{"base64: unexpected end of input"};
+        throw unexpected_eof_error{"unexpected end of input"};
     }
     if (current != end)
-      throw parse_error{"base64: unexpected padding character"};
+      throw invalid_input_error{"unexpected padding character"};
   }
 
   template <typename Iterator, typename Sentinel>
@@ -147,8 +148,9 @@ private:
     auto i = 0;
     for (; i < EncodingTraits::nb_input_bytes; ++i)
     {
+      // TODO use fmt + sizeof(alphabet) to know which base?
       if (current == sent)
-        throw parse_error{"base64: unexpected EOF"};
+        throw unexpected_eof_error{"unexpected end of input"};
       auto c = static_cast<char>(*current);
       auto const index_it = std::find(alph_begin, alph_end, c);
       if (index_it == alph_end)
@@ -156,7 +158,7 @@ private:
         // true for base64 and base32, base16 does not have padding.
         static constexpr auto min_padding_position = 2;
         if (i < min_padding_position)
-          throw parse_error{"base64: unexpected padding character"};
+          throw invalid_input_error{"unexpected padding character"};
         expect_padding_bytes(current, sent, EncodingTraits::nb_input_bytes - i);
         break;
       }

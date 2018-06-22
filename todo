@@ -16,9 +16,6 @@ Pas la peine de contraindre Encoder <=> Decoder.
 
 Gerer conversion de UDT ?
 
-codec variant:
-Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
-
 =======================================================================================
 
 - trouver un moyen de modulariser la lib:
@@ -28,7 +25,4 @@ Detail d'implem, exe: BaseEncoder<stuff::base64>, BaseEncoder<stuff::base64_url>
 
 meson?
 
-encoding traits
-
-rename Encoder -> InputTransformer in tpl args
-
+bad input tests

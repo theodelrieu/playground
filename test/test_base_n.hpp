@@ -17,12 +17,9 @@
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
-#include <mgs/exceptions/parse_error.hpp>
 
 using namespace std::string_literals;
 
-namespace mgs
-{
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
 {
@@ -68,23 +65,25 @@ bool operator!=(sentinel s, std::istreambuf_iterator<char> rhs) noexcept
 }
 
 static_assert(
-    detail::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value, "");
+    mgs::detail::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
+    "");
 
 static_assert(
-    !detail::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
+    !mgs::detail::is_sentinel<sentinel, std::vector<char>::iterator>::value,
+    "");
 
 template <typename EncodingTraits, typename Container, typename Iterable>
 void base_n_checks_impl(Container const& source,
                         Iterable const& expected_output)
 {
-  using Iterator = detail2::result_of_begin_t<Container>;
-  using Sentinel = detail2::result_of_end_t<Container>;
+  using Iterator = mgs::detail2::result_of_begin_t<Container>;
+  using Sentinel = mgs::detail2::result_of_end_t<Container>;
 
   using std::begin;
   using std::end;
 
-  detail::base_n_transformer<EncodingTraits, Iterator, Sentinel> transformer(
-      begin(source), end(source));
+  mgs::detail::base_n_transformer<EncodingTraits, Iterator, Sentinel>
+      transformer(begin(source), end(source));
 
   std::vector<std::uint8_t> const output(transformer.begin(),
                                          transformer.end());
@@ -154,7 +153,7 @@ void common_checks(std::vector<Input> const& inputs,
   SECTION("ForwardIterator")
   {
     SECTION("std::forward_list")
-    { 
+    {
       base_n_checks<EncodingTraits, std::forward_list<char>>(inputs, outputs);
     }
   }
@@ -165,9 +164,9 @@ void sentinel_check(std::string const& input, std::string const& output)
 {
   std::stringstream ss{input};
 
-  detail::base_n_transformer<EncodingTraits,
-                             std::istreambuf_iterator<char>,
-                             sentinel>
+  mgs::detail::base_n_transformer<EncodingTraits,
+                                  std::istreambuf_iterator<char>,
+                                  sentinel>
   transformer(std::istreambuf_iterator<char>(ss), sentinel{});
 
   std::string s(transformer.begin(), transformer.end());
@@ -179,11 +178,11 @@ void inception_check(std::string const& input,
                      std::string const& first_output,
                      std::string const& final_output)
 {
-  detail::base_n_transformer<EncodingTraits, std::string::const_iterator>
+  mgs::detail::base_n_transformer<EncodingTraits, std::string::const_iterator>
       first_transformer(input.begin(), input.end());
 
-  detail::base_n_transformer<EncodingTraits,
-                             decltype(first_transformer.begin())>
+  mgs::detail::base_n_transformer<EncodingTraits,
+                                  decltype(first_transformer.begin())>
       second_transformer(first_transformer.begin(), first_transformer.end());
 
   std::string s(second_transformer.begin(), second_transformer.end());
@@ -193,12 +192,11 @@ void inception_check(std::string const& input,
 template <typename EncoderTraits, typename DecoderTraits>
 void back_and_forth_check(std::string const& input)
 {
-  detail::base_n_transformer<EncoderTraits, std::string::const_iterator> enc(
-      input.begin(), input.end());
+  mgs::detail::base_n_transformer<EncoderTraits, std::string::const_iterator>
+      enc(input.begin(), input.end());
 
-  detail::base_n_transformer<DecoderTraits, decltype(enc.begin())> dec(
-      enc.begin(), 
-      enc.end());
+  mgs::detail::base_n_transformer<DecoderTraits, decltype(enc.begin())> dec(
+      enc.begin(), enc.end());
 
   std::string s(dec.begin(), dec.end());
   CHECK(s == input);
@@ -212,4 +210,10 @@ void stream_check(std::istream& input, std::istream& output)
 
   base_n_checks_impl<EncodingTraits>(iterable_input, iterable_output);
 }
+
+template <typename DecoderTraits, typename Exception>
+void invalid_input_checks(std::vector<std::string> const& inputs)
+{
+  for (auto const& input : inputs)
+    CHECK_THROWS_AS(base_n_checks_impl<DecoderTraits>(input, ""s), Exception);
 }

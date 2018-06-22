@@ -11,12 +11,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/detail/base64/lazy_encoder.hpp>
 #include <mgs/detail/base64/lazy_decoder.hpp>
+#include <mgs/detail/base64/lazy_encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
-#include <mgs/exceptions/parse_error.hpp>
+#include <mgs/exceptions/invalid_input_error.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include "test_base_n.hpp"
 
@@ -48,51 +49,47 @@ TEST_CASE("b64 lazy", "[base64]")
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
 
+  using EncoderTraits = detail::base64_encode_traits;
+  using DecoderTraits = detail::base64_decode_traits;
+
   SECTION("encoding")
   {
-    using Traits = detail::base64_encode_traits;
-
     SECTION("common_checks")
     {
-      common_checks<Traits>(decoded, encoded);
+      common_checks<EncoderTraits>(decoded, encoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<Traits>("abcde"s, "YWJjZGU="s);
+      sentinel_check<EncoderTraits>("abcde"s, "YWJjZGU="s);
     }
 
     SECTION("Inception")
     {
-      inception_check<Traits>("abcde"s, "YWJjZGU="s, "WVdKalpHVT0="s);
+      inception_check<EncoderTraits>("abcde"s, "YWJjZGU="s, "WVdKalpHVT0="s);
     }
   }
 
   SECTION("decoding")
   {
-    using Traits = detail::base64_decode_traits;
-
     SECTION("common_checks")
     {
-      common_checks<Traits>(encoded, decoded);
+      common_checks<DecoderTraits>(encoded, decoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<Traits>("YWJjZGU="s, "abcde"s);
+      sentinel_check<DecoderTraits>("YWJjZGU="s, "abcde"s);
     }
 
     SECTION("Inception")
     {
-      inception_check<Traits>("WVdKalpHVT0="s, "YWJjZGU="s, "abcde"s);
+      inception_check<DecoderTraits>("WVdKalpHVT0="s, "YWJjZGU="s, "abcde"s);
     }
   }
 
   SECTION("back and forth")
   {
-    using EncoderTraits = detail::base64_encode_traits;
-    using DecoderTraits = detail::base64_decode_traits;
-
     SECTION("decode(encode())")
     {
       back_and_forth_check<EncoderTraits, DecoderTraits>("abcde"s);
@@ -110,41 +107,18 @@ TEST_CASE("b64 lazy", "[base64]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b64_random_data(testFilePaths[1]);
 
-    using EncoderTraits = detail::base64_encode_traits;
-    using DecoderTraits = detail::base64_encode_traits;
-
     stream_check<EncoderTraits>(random_data, b64_random_data);
     stream_check<DecoderTraits>(b64_random_data, random_data);
   }
-}
 
-// TEST_CASE("b16 lazy", "[base16]")
-// {
-//   // TODO same test layout than b64
-//   std::vector<std::string> decoded{
-//       "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
-//   std::vector<std::string> encoded{
-//       "66"s,
-//       "666F"s,
-//       "666F6F"s,
-//       "666F6F62"s,
-//       "666F6F6261"s,
-//       "666F6F626172"s,
-//   };
-//
-//   using EncoderTraits = detail::base16_encode_traits;
-//   using DecoderTraits = detail::base16_decode_traits;
-//
-//   SECTION("common_checks")
-//   {
-//     SECTION("encode")
-//     {
-//       common_checks<EncoderTraits>(decoded, encoded);
-//     }
-//
-//     SECTION("decode")
-//     {
-//       common_checks<DecoderTraits>(encoded, decoded);
-//     }
-//   }
-// }
+  SECTION("invalid input")
+  {
+    std::vector<std::string> invalid_chars{
+        "="s, "*"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA==="s, "ZAW@"s};
+    std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
+
+    invalid_input_checks<DecoderTraits, mgs::invalid_input_error>(
+        invalid_chars);
+    invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
+  }
+}
