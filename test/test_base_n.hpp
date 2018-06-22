@@ -13,14 +13,13 @@
 
 #include <catch.hpp>
 
+#include <mgs/detail/input_transformers/base_n.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
 #include <mgs/exceptions/parse_error.hpp>
 
 using namespace std::string_literals;
-
-extern std::vector<std::string> testFilePaths;
 
 namespace mgs
 {
@@ -159,18 +158,6 @@ void common_checks(std::vector<Input> const& inputs,
       base_n_checks<EncodingTraits, std::forward_list<char>>(inputs, outputs);
     }
   }
-
-  SECTION("InputIterator")
-  {
-    REQUIRE(testFilePaths.size() == 2);
-    std::ifstream input(testFilePaths[0]);
-    std::ifstream output(testFilePaths[1]);
-
-    stream_iterable_adapter input_stream{input};
-    stream_iterable_adapter output_stream{output};
-
-    base_n_checks_impl<EncodingTraits>(input_stream, output_stream);
-  }
 }
 
 template <typename EncodingTraits>
@@ -178,7 +165,7 @@ void sentinel_check(std::string const& input, std::string const& output)
 {
   std::stringstream ss{input};
 
-  detail::base_n_transformer<EncodingTrait,
+  detail::base_n_transformer<EncodingTraits,
                              std::istreambuf_iterator<char>,
                              sentinel>
   transformer(std::istreambuf_iterator<char>(ss), sentinel{});
@@ -209,11 +196,20 @@ void back_and_forth_check(std::string const& input)
   detail::base_n_transformer<EncoderTraits, std::string::const_iterator> enc(
       input.begin(), input.end());
 
-  detail::base_n_transformer<EncoderTraits, decltype(enc.begin())> dec(
+  detail::base_n_transformer<DecoderTraits, decltype(enc.begin())> dec(
       enc.begin(), 
       enc.end());
 
   std::string s(dec.begin(), dec.end());
   CHECK(s == input);
+}
+
+template <typename EncodingTraits>
+void stream_check(std::istream& input, std::istream& output)
+{
+  stream_iterable_adapter iterable_input{input};
+  stream_iterable_adapter iterable_output{output};
+
+  base_n_checks_impl<EncodingTraits>(iterable_input, iterable_output);
 }
 }
