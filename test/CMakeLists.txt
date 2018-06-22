@@ -4,14 +4,14 @@ add_library(catch_main OBJECT main.cpp)
 get_target_property(CATCH2_INC_DIR CONAN_PKG::catch2 INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(catch_main PRIVATE ${CATCH2_INC_DIR})
 
-add_executable(test_b64 test_b64.cpp $<TARGET_OBJECTS:catch_main>)
-# add_executable(test_b32 test_b32.cpp $<TARGET_OBJECTS:catch_main>)
-add_executable(test_adaptive_iterator test_adaptive_iterator.cpp $<TARGET_OBJECTS:catch_main>)
+function(create_tests)
+  foreach(name IN LISTS ARGV)
+    add_executable(test_${name} test_${name}.cpp $<TARGET_OBJECTS:catch_main>)
+    target_link_libraries(test_${name} mgs CONAN_PKG::catch2)
+  endforeach()
+endfunction(create_tests)
 
-target_link_libraries(test_b64 mgs CONAN_PKG::catch2)
-# target_link_libraries(test_b32 mgs CONAN_PKG::catch2)
-target_link_libraries(test_adaptive_iterator mgs CONAN_PKG::catch2)
-# TODO function/macro
+create_tests(b64 b32 b16 adaptive_iterator)
 
 include(ExternalData)
 
@@ -23,8 +23,11 @@ set(ExternalData_URL_TEMPLATES
 )
 
 ExternalData_Add_Test(b64_data NAME test_b64 COMMAND test_b64 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b64})
+ExternalData_Add_Test(b32_data NAME test_b32 COMMAND test_b32 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b32})
+ExternalData_Add_Test(b16_data NAME test_b16 COMMAND test_b16 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b16})
 
 ExternalData_Add_Target(b64_data)
+ExternalData_Add_Target(b32_data)
+ExternalData_Add_Target(b16_data)
 
 add_test(NAME test_adaptive_iterator COMMAND test_adaptive_iterator)
-# add_test(NAME test_b32 COMMAND test_b32)

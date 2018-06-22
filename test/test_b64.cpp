@@ -118,30 +118,6 @@ TEST_CASE("b64 lazy", "[base64]")
   }
 }
 
-// TEST_CASE("b32 lazy", "[base32]")
-// {
-//   // TODO same test layout than b64
-//   std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
-//   std::vector<std::string> encoded{
-//       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
-//
-//   using EncoderTraits = detail::base32_encode_traits;
-//   using DecoderTraits = detail::base32_decode_traits;
-//
-//   SECTION("common_checks")
-//   {
-//     SECTION("encode")
-//     {
-//       common_checks<EncoderTraits>(decoded, encoded);
-//     }
-//
-//     SECTION("decode")
-//     {
-//       common_checks<DecoderTraits>(encoded, decoded);
-//     }
-//   }
-// }
-//
 // TEST_CASE("b16 lazy", "[base16]")
 // {
 //   // TODO same test layout than b64
