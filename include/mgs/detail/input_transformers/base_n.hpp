@@ -157,9 +157,9 @@ private:
       {
         if (EncodingTraits::is_padding_character(c))
         {
-          static constexpr auto min_padding_position =
-              (8 / nb_encoded_bits) + int((8 % nb_encoded_bits) != 0);
-          if (i < min_padding_position)
+          // find out if padding character is at a correct position
+          auto const res = std::div(i * nb_encoded_bits, 8);
+          if (res.quot == 0 || res.rem >= nb_encoded_bits)
           {
             throw invalid_input_error{EncodingTraits::encoding_name,
                                       "unexpected padding character"};

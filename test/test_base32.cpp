@@ -116,12 +116,12 @@ TEST_CASE("b32 lazy", "[base32]")
 
   SECTION("invalid input")
   {
-    // std::vector<std::string> invalid_chars{
-    //     "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
+    std::vector<std::string> invalid_chars{
+        "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
     invalid_input_checks<DecoderTraits, mgs::invalid_input_error>(
-        {"MFR====="s});
-    // invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
+        invalid_chars);
+    invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
