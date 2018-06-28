@@ -124,6 +124,11 @@ template <typename EncodingTraits, typename Input, typename Output>
 void common_checks(std::vector<Input> const& inputs,
                    std::vector<Output> const& outputs)
 {
+  SECTION("Empty input")
+  {
+    base_n_checks_impl<EncodingTraits>(""s, ""s);
+  }
+
   SECTION("RandomAccessIterator")
   {
     SECTION("std::string")
