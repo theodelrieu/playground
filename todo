@@ -22,5 +22,3 @@ Gerer conversion de UDT ?
   + lib a part pour les concepts
   + lib de base avec les checks, definitions de codec etc
   + 1 lib par famille de codec?
-
-meson?

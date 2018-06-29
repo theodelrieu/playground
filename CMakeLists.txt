@@ -1,20 +1,10 @@
-cmake_minimum_required(VERSION 3.1.2)
+# conanws
+cmake_minimum_required(VERSION 3.3)
+project(mgs CXX)
 
-project(mgs)
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_library(mgs INTERFACE)
-
-target_include_directories(mgs INTERFACE include)
-
-include(CTest)
-
-if (BUILD_TESTING)
-  enable_testing()
-  add_subdirectory(test)
-endif()
+add_subdirectory(meta "/home/theo/Projects/playground/base64/build/./meta/")
+add_subdirectory(exceptions "/home/theo/Projects/playground/base64/build/./exceptions/")
+add_subdirectory(test_helpers "/home/theo/Projects/playground/base64/build/./test_helpers/")
+add_subdirectory(base_n "/home/theo/Projects/playground/base64/build/./base_n/")
+add_subdirectory(base64 "/home/theo/Projects/playground/base64/build/./base64/")
+add_subdirectory(all "/home/theo/Projects/playground/base64/build/./all/")

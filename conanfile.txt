@@ -1,5 +1,0 @@
-[build_requires]
-catch2/2.2.2@bincrafters/stable
-
-[generators]
-cmake

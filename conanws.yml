@@ -1,0 +1,26 @@
+mgs_meta:
+    folder: meta
+    includedirs: include
+
+mgs_exceptions:
+    folder: exceptions
+    includedirs: include
+
+mgs_test_helpers:
+    folder: test_helpers
+    includedirs: include
+
+mgs_base_n:
+    folder: base_n
+    includedirs: include
+
+mgs_base64:
+    folder: base64
+    includedirs: include
+
+mgs_all:
+    folder: all
+
+root: mgs_all
+generator: cmake
+name: mgs
