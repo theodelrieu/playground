@@ -122,3 +122,15 @@ TEST_CASE("b64 lazy", "[base64]")
     invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
+
+TEST_CASE("base64url lazy")
+{
+  auto const encoded = "-_-_"s;
+
+  mgs::detail::base64url_lazy_decoder<std::string::const_iterator> dec(
+      encoded.begin(), encoded.end());
+  mgs::detail::base64url_lazy_encoder<decltype(dec.begin())> enc(dec.begin(),
+                                                                 dec.end());
+  std::string s(enc.begin(), enc.end());
+  CHECK(encoded == s);
+}

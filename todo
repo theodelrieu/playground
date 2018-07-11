@@ -19,3 +19,4 @@ Gerer conversion de UDT ?
 =======================================================================================
 
 remove some detail folders?
+later on, add support for optional padding? (enum class optional/required/none)
