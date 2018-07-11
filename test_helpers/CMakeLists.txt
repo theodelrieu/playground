@@ -13,17 +13,3 @@ target_include_directories(mgs_test_helpers INTERFACE include)
 add_library(catch_main OBJECT src/catch_main.cpp)
 get_target_property(CATCH2_INC_DIR CONAN_PKG::catch2 INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(catch_main PRIVATE ${CATCH2_INC_DIR})
-#
-# install(TARGETS mgs_test_helpers
-#   EXPORT mgs_test_helpers
-#   EXCLUDE_FROM_ALL
-#   PUBLIC_HEADER
-#     DESTINATION include
-# )
-#
-# install(TARGETS catch_main
-#   EXPORT catch_main
-#   EXCLUDE_FROM_ALL
-#   OBJECTS
-#     DESTINATION bin
-# )

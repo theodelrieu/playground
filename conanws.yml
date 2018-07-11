@@ -10,6 +10,10 @@ mgs_test_helpers:
     folder: test_helpers
     includedirs: include
 
+mgs_iterators:
+    folder: iterators
+    includedirs: include
+
 mgs_base_n:
     folder: base_n
     includedirs: include
