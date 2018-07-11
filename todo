@@ -18,10 +18,5 @@ Gerer conversion de UDT ?
 
 =======================================================================================
 
-- trouver un moyen de modulariser la lib:
-  + lib a part pour les concepts
-  + lib de base avec les checks, definitions de codec etc
-  + 1 lib par famille de codec?
-
 remove some detail folders?
-modularize iterators, then other baseN encodings
+put detail packages in another folder?
