@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 import os
 
 
-class ConanMgsBase64Test(ConanFile):
+class ConanMgsBase32Test(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
 

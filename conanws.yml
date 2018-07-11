@@ -26,6 +26,10 @@ mgs_base32:
     folder: base32
     includedirs: include
 
+mgs_base16:
+    folder: base16
+    includedirs: include
+
 mgs_all:
     folder: all
 
