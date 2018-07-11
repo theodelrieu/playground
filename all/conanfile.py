@@ -10,4 +10,3 @@ class ConanMgsAll(ConanFile):
         version = "0.1"
 
         self.requires("mgs_base64/%s@mgs/testing" % version)
-        self.requires("mgs_iterators/%s@mgs/testing" % version)
