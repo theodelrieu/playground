@@ -24,6 +24,7 @@ later on, add support for optional padding? (enum class optional/required/none)
 inline namespace
 
 test empty strings
+test variants
 
 think about namespaces:
 
