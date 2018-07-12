@@ -1,10 +1,12 @@
 #pragma once
 
+#include <mgs/detail/base_n/padding_policy.hpp>
+
 namespace mgs
 {
 namespace detail
 {
-template <typename>
+template <base_n_padding_policy PaddingPolicy>
 struct base32_alphabet
 {
   using alphabet_t = char const[32];
@@ -15,6 +17,7 @@ struct base32_alphabet
       'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
 
   static constexpr char const encoding_name[] = "base32";
+  static constexpr auto const padding_policy = PaddingPolicy;
 
   static constexpr bool is_padding_character(char c)
   {
@@ -22,11 +25,10 @@ struct base32_alphabet
   }
 };
 
-template <typename Dummy>
-constexpr typename base32_alphabet<Dummy>::alphabet_t
-    base32_alphabet<Dummy>::alphabet;
+template <base_n_padding_policy P>
+constexpr typename base32_alphabet<P>::alphabet_t base32_alphabet<P>::alphabet;
 
-template <typename Dummy>
-constexpr char const base32_alphabet<Dummy>::encoding_name[];
+template <base_n_padding_policy P>
+constexpr char const base32_alphabet<P>::encoding_name[];
 }
 }

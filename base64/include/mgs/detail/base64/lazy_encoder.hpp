@@ -25,9 +25,12 @@ struct basic_base64_encode_traits : basic_base64_encode_traits_impl<Alphabet>
   using algorithm = base_n_encode<basic_base64_encode_traits_impl<Alphabet>>;
 };
 
-using base64_encode_traits = basic_base64_encode_traits<base64_alphabet<>>;
-using base64url_encode_traits =
-    basic_base64_encode_traits<base64url_alphabet<>>;
+// TODO get correct name, for alphabet and stuff...
+using base64_encode_traits = basic_base64_encode_traits<
+    base64_alphabet<base_n_padding_policy::required>>;
+using base64url_encode_traits = basic_base64_encode_traits<
+    base64url_alphabet<base_n_padding_policy::required>>;
+// TODO add url_unpadded
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_lazy_encoder =

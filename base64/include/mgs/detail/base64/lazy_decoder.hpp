@@ -26,9 +26,10 @@ struct basic_base64_decode_traits : basic_base64_decode_traits_impl<Alphabet>
   using algorithm = base_n_decode<basic_base64_decode_traits_impl<Alphabet>>;
 };
 
-using base64_decode_traits = basic_base64_decode_traits<base64_alphabet<>>;
-using base64url_decode_traits =
-    basic_base64_decode_traits<base64url_alphabet<>>;
+using base64_decode_traits = basic_base64_decode_traits<
+    base64_alphabet<base_n_padding_policy::required>>;
+using base64url_decode_traits = basic_base64_decode_traits<
+    base64url_alphabet<base_n_padding_policy::required>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_lazy_decoder =

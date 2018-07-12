@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <mgs/detail/base_n/padding_policy.hpp>
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
 #include <mgs/detail/meta/concepts/input_iterator.hpp>
@@ -19,7 +20,6 @@ namespace mgs
 {
 namespace detail
 {
-// TODO where to put those??
 template <typename EncodingTraits>
 class base_n_encode
 {
@@ -73,11 +73,14 @@ private:
       *out++ = EncodingTraits::alphabet[index];
     }
 
-    auto const nb_padding_bytes =
-        EncodingTraits::nb_output_bytes - res.nb_non_padded_bytes;
+    if (EncodingTraits::padding_policy == base_n_padding_policy::required)
+    {
+      auto const nb_padding_bytes =
+          EncodingTraits::nb_output_bytes - res.nb_non_padded_bytes;
 
-    for (auto j = 0; j < nb_padding_bytes; ++j)
-      *out++ = '=';
+      for (auto j = 0; j < nb_padding_bytes; ++j)
+        *out++ = '=';
+    }
   }
 
 public:
@@ -110,25 +113,44 @@ private:
   template <typename Iterator, typename Sentinel>
   void expect_padding_bytes(Iterator& current, Sentinel const end, int n) const
   {
+    assert(current != end);
+    assert(n > 0);
+
     for (; n > 0; --n)
     {
-      auto const c = *current++;
-      if (!EncodingTraits::is_padding_character(c))
+      auto const c = static_cast<char>(*current++);
+      if (c != '=')
       {
+        using namespace std::string_literals;
         throw invalid_input_error{EncodingTraits::encoding_name,
-                                  "unexpected padding character"};
+                                  "invalid encoded character: '"s + c + "'"};
       }
       if (current == end && n != 1)
       {
         throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                   "unexpected end of input"};
+                                   "unexpected end of encoded input"};
       }
     }
     if (current != end)
     {
       throw invalid_input_error{EncodingTraits::encoding_name,
-                                "unexpected padding character"};
+                                "invalid encoded input"};
     }
+  }
+
+  template <typename Iterator, typename Sentinel>
+  char read_encoded_char(Iterator& current, Sentinel const sent) const
+  {
+    if (current == sent)
+    {
+      if (EncodingTraits::padding_policy == base_n_padding_policy::required)
+      {
+        throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                   "unexpected end of input"};
+      }
+      return '=';
+    }
+    return *current++;
   }
 
   template <typename Iterator, typename Sentinel>
@@ -145,34 +167,30 @@ private:
       auto const alph_begin = begin(EncodingTraits::alphabet);
       auto const alph_end = end(EncodingTraits::alphabet);
 
-      // TODO use fmt + sizeof(alphabet) to know which base?
-      if (current == sent)
-      {
-        throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                   "unexpected end of input"};
-      }
-      auto c = static_cast<char>(*current++);
+      auto const c = read_encoded_char(current, sent);
       auto const index_it = std::find(alph_begin, alph_end, c);
+
       if (index_it == alph_end)
       {
-        if (EncodingTraits::is_padding_character(c))
+        if (c != '=')
         {
-          // find out if padding character is at a correct position
-          auto const res = std::div(i * nb_encoded_bits, 8);
-          if (res.quot == 0 || res.rem >= nb_encoded_bits)
-          {
-            throw invalid_input_error{EncodingTraits::encoding_name,
-                                      "unexpected padding character"};
-          }
-          expect_padding_bytes(
-              current, sent, EncodingTraits::nb_input_bytes - i - 1);
-          break;
+          using namespace std::string_literals;
+          throw invalid_input_error{EncodingTraits::encoding_name,
+                                    "invalid encoded character: '"s + c + "'"};
         }
-        else
+        // find out if padding character is at a correct position
+        auto const res = std::div(i * nb_encoded_bits, 8);
+        if (res.quot == 0 || res.rem >= nb_encoded_bits)
         {
           throw invalid_input_error{EncodingTraits::encoding_name,
-                                    "invalid character"};
+                                    "invalid encoded input"};
         }
+        if (current != sent)
+        {
+          expect_padding_bytes(
+              current, sent, EncodingTraits::nb_input_bytes - i - 1);
+        }
+        break;
       }
 
       std::bitset<nb_input_bits> const decoded_byte_bits(
