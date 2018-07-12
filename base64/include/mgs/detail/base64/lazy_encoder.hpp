@@ -11,25 +11,34 @@ namespace mgs
 namespace detail
 {
 template <typename Alphabet>
-struct basic_base64_encode_traits_impl : public Alphabet
+struct basic_base64_encode_common_traits : public Alphabet
 {
   static constexpr auto nb_input_bytes = 3;
   static constexpr auto nb_output_bytes = 4;
 };
 
-template <typename Alphabet>
-struct basic_base64_encode_traits : basic_base64_encode_traits_impl<Alphabet>
+template <typename Alphabet, base_n_padding_policy PaddingPolicy>
+struct basic_base64_encode_algo_traits
+  : basic_base64_encode_common_traits<Alphabet>
+{
+  static constexpr auto const padding_policy = PaddingPolicy;
+};
+
+template <typename Alphabet, base_n_padding_policy PaddingPolicy>
+struct basic_base64_encode_traits : basic_base64_encode_common_traits<Alphabet>
 {
   using value_type = char;
   using difference_type = std::streamoff;
-  using algorithm = base_n_encode<basic_base64_encode_traits_impl<Alphabet>>;
+  using algorithm =
+      base_n_encode<basic_base64_encode_algo_traits<Alphabet, PaddingPolicy>>;
 };
 
-// TODO get correct name, for alphabet and stuff...
-using base64_encode_traits = basic_base64_encode_traits<
-    base64_alphabet<base_n_padding_policy::required>>;
-using base64url_encode_traits = basic_base64_encode_traits<
-    base64url_alphabet<base_n_padding_policy::required>>;
+using base64_encode_traits =
+    basic_base64_encode_traits<base64_alphabet<>,
+                               base_n_padding_policy::required>;
+using base64url_encode_traits =
+    basic_base64_encode_traits<base64url_alphabet<>,
+                               base_n_padding_policy::required>;
 // TODO add url_unpadded
 
 template <typename Iterator, typename Sentinel = Iterator>

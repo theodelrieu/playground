@@ -4,23 +4,38 @@
 
 #include <mgs/detail/base32/base32_alphabet.hpp>
 #include <mgs/detail/base_n/base_n.hpp>
+#include <mgs/detail/base_n/padding_policy.hpp>
 
 namespace mgs
 {
 namespace detail
 {
-struct base32_decode_traits_impl : base32_alphabet<void>
+template <typename Alphabet>
+struct basic_base32_decode_common_traits : public Alphabet
 {
   static constexpr auto nb_input_bytes = 8;
   static constexpr auto nb_output_bytes = 5;
 };
 
-struct base32_decode_traits : base32_decode_traits_impl
+template <typename Alphabet, base_n_padding_policy PaddingPolicy>
+struct basic_base32_decode_algo_traits
+  : basic_base32_decode_common_traits<Alphabet>
+{
+  static constexpr auto const padding_policy = PaddingPolicy;
+};
+
+template <typename Alphabet, base_n_padding_policy PaddingPolicy>
+struct basic_base32_decode_traits : basic_base32_decode_common_traits<Alphabet>
 {
   using value_type = char;
   using difference_type = std::streamoff;
-  using algorithm = base_n_decode<base32_decode_traits_impl>;
+  using algorithm =
+      base_n_decode<basic_base32_decode_algo_traits<Alphabet, PaddingPolicy>>;
 };
+
+using base32_decode_traits =
+    basic_base32_decode_traits<base32_alphabet<>,
+                               base_n_padding_policy::required>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base32_lazy_decoder =

@@ -4,7 +4,7 @@ namespace mgs
 {
 namespace detail
 {
-template <base_n_padding_policy PaddingPolicy>
+template <typename = void>
 struct base64url_alphabet
 {
   using alphabet_t = char const[64];
@@ -17,19 +17,13 @@ struct base64url_alphabet
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
   static constexpr char const encoding_name[] = "base64url";
-  static constexpr auto const padding_policy = PaddingPolicy;
-
-  static constexpr bool is_padding_character(char c)
-  {
-    return c == '=';
-  }
 };
 
-template <base_n_padding_policy P>
-constexpr
-    typename base64url_alphabet<P>::alphabet_t base64url_alphabet<P>::alphabet;
+template <typename Dummy>
+constexpr typename base64url_alphabet<Dummy>::alphabet_t
+    base64url_alphabet<Dummy>::alphabet;
 
-template <base_n_padding_policy P>
-constexpr char const base64url_alphabet<P>::encoding_name[];
+template <typename Dummy>
+constexpr char const base64url_alphabet<Dummy>::encoding_name[];
 }
 }

@@ -143,7 +143,7 @@ private:
   {
     if (current == sent)
     {
-      if (EncodingTraits::padding_policy == base_n_padding_policy::required)
+      if (EncodingTraits::padding_policy != base_n_padding_policy::optional)
       {
         throw unexpected_eof_error{EncodingTraits::encoding_name,
                                    "unexpected end of input"};

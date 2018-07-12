@@ -1,10 +1,12 @@
 #pragma once
 
+#include <mgs/detail/base_n/padding_policy.hpp>
+
 namespace mgs
 {
 namespace detail
 {
-template <typename>
+template <typename = void>
 struct base16_alphabet
 {
   using alphabet_t = char const[16];
@@ -27,11 +29,6 @@ struct base16_alphabet
                                           'F'};
 
   static constexpr char const encoding_name[] = "base16";
-
-  static constexpr bool is_padding_character(char)
-  {
-    return false;
-  }
 };
 
 template <typename Dummy>
