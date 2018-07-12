@@ -3,8 +3,9 @@
 #include <ios>
 
 #include <mgs/detail/base32/base32_alphabet.hpp>
-#include <mgs/detail/base_n/base_n.hpp>
+#include <mgs/detail/base_n/encoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
+#include <mgs/detail/base_n/transformer.hpp>
 
 namespace mgs
 {
@@ -30,7 +31,7 @@ struct basic_base32_encode_traits : basic_base32_encode_common_traits<Alphabet>
   using value_type = char;
   using difference_type = std::streamoff;
   using algorithm =
-      base_n_encode<basic_base32_encode_algo_traits<Alphabet, PaddingPolicy>>;
+      base_n_encoder<basic_base32_encode_algo_traits<Alphabet, PaddingPolicy>>;
 };
 
 using base32_encode_traits =

@@ -3,8 +3,9 @@
 #include <ios>
 
 #include <mgs/detail/base16/base16_alphabet.hpp>
-#include <mgs/detail/base_n/base_n.hpp>
+#include <mgs/detail/base_n/encoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
+#include <mgs/detail/base_n/transformer.hpp>
 
 namespace mgs
 {
@@ -25,7 +26,7 @@ struct base16_encode_traits : base16_encode_common_traits
 {
   using value_type = char;
   using difference_type = std::streamoff;
-  using algorithm = base_n_encode<base16_encode_algo_traits>;
+  using algorithm = base_n_encoder<base16_encode_algo_traits>;
 };
 
 template <typename Iterator, typename Sentinel = Iterator>

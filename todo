@@ -20,3 +20,19 @@ Gerer conversion de UDT ?
 
 remove some detail folders?
 later on, add support for optional padding? (enum class optional/required/none)
+
+inline namespace
+
+test empty strings
+
+think about namespaces:
+
+mgs::base64::base64?
+mgs::base64::base64url?
+mgs::base64::base64url_unpadded?
+
+mgs::codecs::base64?
+mgs::codecs::base64url?
+mgs::codecs::base64url_unpadded?
+
+users will have to write usings anyway

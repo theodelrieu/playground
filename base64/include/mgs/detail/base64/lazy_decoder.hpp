@@ -5,8 +5,9 @@
 
 #include <mgs/detail/base64/base64_alphabet.hpp>
 #include <mgs/detail/base64/base64url_alphabet.hpp>
-#include <mgs/detail/base_n/base_n.hpp>
+#include <mgs/detail/base_n/decoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
+#include <mgs/detail/base_n/transformer.hpp>
 
 namespace mgs
 {
@@ -35,7 +36,7 @@ struct basic_base64_decode_traits : basic_base64_decode_common_traits<Alphabet>
   using value_type = std::uint8_t;
   using difference_type = std::streamoff;
   using algorithm =
-      base_n_decode<basic_base64_decode_algo_traits<Alphabet, PaddingPolicy>>;
+      base_n_decoder<basic_base64_decode_algo_traits<Alphabet, PaddingPolicy>>;
 };
 
 using base64_decode_traits =
