@@ -31,7 +31,7 @@ using base32_decode_traits =
                                base_n_padding_policy::required>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base32_lazy_decoder =
+using base32_decoder =
     base_n_transformer<base32_decode_traits, Iterator, Sentinel>;
 }
 }

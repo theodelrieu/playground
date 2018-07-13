@@ -11,8 +11,8 @@
 
 #include <catch.hpp>
 
-#include <mgs/detail/base32/lazy_decoder.hpp>
-#include <mgs/detail/base32/lazy_encoder.hpp>
+#include <mgs/detail/base32/decoder.hpp>
+#include <mgs/detail/base32/encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
@@ -27,10 +27,10 @@ using namespace mgs;
 extern std::vector<std::string> testFilePaths;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using b32_encoder = detail::base32_lazy_encoder<Iterator, Sentinel>;
+using b32_encoder = detail::base32_encoder<Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using b32_decoder = detail::base32_lazy_decoder<Iterator, Sentinel>;
+using b32_decoder = detail::base32_decoder<Iterator, Sentinel>;
 
 static_assert(
     detail::is_iterable_input_transformer<b32_encoder<char*>>::value, "");

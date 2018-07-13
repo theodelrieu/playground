@@ -11,8 +11,8 @@
 
 #include <catch.hpp>
 
-#include <mgs/detail/base64/lazy_decoder.hpp>
-#include <mgs/detail/base64/lazy_encoder.hpp>
+#include <mgs/detail/base64/decoder.hpp>
+#include <mgs/detail/base64/encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
@@ -27,10 +27,10 @@ using namespace mgs;
 extern std::vector<std::string> testFilePaths;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using b64_encoder = detail::base64_lazy_encoder<Iterator, Sentinel>;
+using b64_encoder = detail::base64_encoder<Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using b64_decoder = detail::base64_lazy_decoder<Iterator, Sentinel>;
+using b64_decoder = detail::base64_decoder<Iterator, Sentinel>;
 
 static_assert(
     detail::is_iterable_input_transformer<b64_encoder<char*>>::value, "");
@@ -127,9 +127,9 @@ TEST_CASE("base64url lazy")
 {
   auto const encoded = "-_-_"s;
 
-  mgs::detail::base64url_lazy_decoder<std::string::const_iterator> dec(
+  mgs::detail::base64url_decoder<std::string::const_iterator> dec(
       encoded.begin(), encoded.end());
-  mgs::detail::base64url_lazy_encoder<decltype(dec.begin())> enc(dec.begin(),
+  mgs::detail::base64url_encoder<decltype(dec.begin())> enc(dec.begin(),
                                                                  dec.end());
   std::string s(enc.begin(), enc.end());
   CHECK(encoded == s);

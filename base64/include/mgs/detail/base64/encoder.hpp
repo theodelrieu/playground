@@ -35,11 +35,11 @@ using base64url_encode_traits =
 // TODO add url_unpadded
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64_lazy_encoder =
+using base64_encoder =
     base_n_transformer<base64_encode_traits, Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64url_lazy_encoder =
+using base64url_encoder =
     base_n_transformer<base64url_encode_traits, Iterator, Sentinel>;
 }
 }

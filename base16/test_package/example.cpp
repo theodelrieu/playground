@@ -2,12 +2,12 @@
 #include <iostream>
 #include <string>
 
-#include <mgs/detail/base16/lazy_encoder.hpp>
+#include <mgs/detail/base16/encoder.hpp>
 
 int main(int argc, char const *argv[])
 {
   auto const h = "Hello, World!";
-  mgs::detail::base16_lazy_encoder<char const*> enc(h, h + std::strlen(h));
+  mgs::detail::base16_encoder<char const*> enc(h, h + std::strlen(h));
 
   std::cout << std::string(enc.begin(), v.end()) << std::endl;
 }

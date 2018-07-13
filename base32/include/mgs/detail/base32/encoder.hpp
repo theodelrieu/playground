@@ -32,7 +32,7 @@ using base32_encode_traits =
                                base_n_padding_policy::required>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base32_lazy_encoder =
+using base32_encoder =
     base_n_transformer<base32_encode_traits, Iterator, Sentinel>;
 }
 }

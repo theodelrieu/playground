@@ -36,11 +36,11 @@ using base64url_decode_traits =
                                base_n_padding_policy::required>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64_lazy_decoder =
+using base64_decoder =
     base_n_transformer<base64_decode_traits, Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64url_lazy_decoder =
+using base64url_decoder =
     base_n_transformer<base64url_decode_traits, Iterator, Sentinel>;
 }
 }
