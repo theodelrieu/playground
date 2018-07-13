@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <chrono>
 #include <deque>
 #include <forward_list>
@@ -32,8 +33,8 @@ using b64_encoder = detail::base64_encoder<Iterator, Sentinel>;
 template <typename Iterator, typename Sentinel = Iterator>
 using b64_decoder = detail::base64_decoder<Iterator, Sentinel>;
 
-static_assert(
-    detail::is_iterable_input_transformer<b64_encoder<char*>>::value, "");
+static_assert(detail::is_iterable_input_transformer<b64_encoder<char*>>::value,
+              "");
 static_assert(detail::is_iterable_input_transformer<
                   b64_encoder<std::list<char>::iterator>>::value,
               "");
@@ -123,14 +124,32 @@ TEST_CASE("b64 lazy", "[base64]")
   }
 }
 
-TEST_CASE("base64url lazy")
+TEST_CASE("base64url lazy", "[base64]")
 {
   auto const encoded = "-_-_"s;
 
-  mgs::detail::base64url_decoder<std::string::const_iterator> dec(
-      encoded.begin(), encoded.end());
-  mgs::detail::base64url_encoder<decltype(dec.begin())> enc(dec.begin(),
-                                                                 dec.end());
+  detail::base64url_decoder<std::string::const_iterator> dec(encoded.begin(),
+                                                             encoded.end());
+  detail::base64url_encoder<decltype(dec.begin())> enc(dec.begin(), dec.end());
   std::string s(enc.begin(), enc.end());
   CHECK(encoded == s);
+}
+
+TEST_CASE("base64url_unpadded", "[base64]")
+{
+  std::vector<std::string> decoded{"abcd"s, "abcde"s};
+  std::vector<std::string> encoded_unpadded{"YWJjZA"s, "YWJjZGU"s};
+  std::vector<std::string> encoded_padded{"YWJjZA=="s, "YWJjZGU="s};
+
+  using EncoderTraits = detail::base64url_unpadded_encode_traits;
+  using DecoderTraits = detail::base64url_unpadded_decode_traits;
+
+  SECTION("encode")
+  {
+    common_checks<EncoderTraits>(decoded, encoded_unpadded);
+  }
+  SECTION("decode")
+  {
+    common_checks<DecoderTraits>(encoded_padded, decoded);
+  }
 }

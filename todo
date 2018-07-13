@@ -22,9 +22,6 @@ remove some detail folders?
 
 inline namespace
 
-test empty strings
-test variants
-
 think about namespaces:
 
 look at static_vector in boost containers

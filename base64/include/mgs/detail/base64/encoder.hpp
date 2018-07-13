@@ -32,7 +32,10 @@ using base64_encode_traits =
 using base64url_encode_traits =
     basic_base64_encode_traits<base64url_alphabet<>,
                                base_n_padding_policy::required>;
-// TODO add url_unpadded
+
+using base64url_unpadded_encode_traits =
+    basic_base64_encode_traits<base64url_alphabet<>,
+                               base_n_padding_policy::none>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_encoder =
@@ -41,5 +44,9 @@ using base64_encoder =
 template <typename Iterator, typename Sentinel = Iterator>
 using base64url_encoder =
     base_n_transformer<base64url_encode_traits, Iterator, Sentinel>;
+
+template <typename Iterator, typename Sentinel = Iterator>
+using base64url_unpadded_encoder =
+    base_n_transformer<base64url_unpadded_encode_traits, Iterator, Sentinel>;
 }
 }

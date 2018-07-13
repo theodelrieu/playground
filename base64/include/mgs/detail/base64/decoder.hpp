@@ -31,9 +31,14 @@ struct basic_base64_decode_traits : public Alphabet
 using base64_decode_traits =
     basic_base64_decode_traits<base64_alphabet<>,
                                base_n_padding_policy::required>;
+
 using base64url_decode_traits =
     basic_base64_decode_traits<base64url_alphabet<>,
                                base_n_padding_policy::required>;
+
+using base64url_unpadded_decode_traits =
+    basic_base64_decode_traits<base64url_alphabet<>,
+                               base_n_padding_policy::optional>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_decoder =
@@ -42,5 +47,9 @@ using base64_decoder =
 template <typename Iterator, typename Sentinel = Iterator>
 using base64url_decoder =
     base_n_transformer<base64url_decode_traits, Iterator, Sentinel>;
+
+template <typename Iterator, typename Sentinel = Iterator>
+using base64url_unpadded_decoder =
+    base_n_transformer<base64url_unpadded_decode_traits, Iterator, Sentinel>;
 }
 }
