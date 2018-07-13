@@ -30,7 +30,6 @@ think about namespaces:
 look at static_vector in boost containers
 having an InputTransformerBlock that returns array<char, 4> (base64)
 and the InputTransformer deals with iterators and such
-support padding character, requires if constexpr like in code
 
 #include <mgs/base64.hpp>
 

@@ -17,6 +17,7 @@ struct base64_alphabet
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
   static constexpr char const encoding_name[] = "base64";
+  static constexpr char const padding_character = '=';
 };
 
 template <typename Dummy>

@@ -12,9 +12,34 @@ namespace mgs
 {
 namespace detail
 {
+template <typename EncodingTraits,
+          base_n_padding_policy Policy = EncodingTraits::padding_policy>
+struct padding_writer
+{
+  template <typename OutputIterator>
+  static void write(OutputIterator&, int)
+  {
+  }
+};
+
+template <typename EncodingTraits>
+struct padding_writer<EncodingTraits, base_n_padding_policy::required>
+{
+  template <typename OutputIterator>
+  static void write(OutputIterator& out, int n)
+  {
+    while (n-- > 0)
+      *out++ = EncodingTraits::padding_character;
+  }
+};
+
 template <typename EncodingTraits>
 class base_n_encoder
 {
+  static_assert(EncodingTraits::padding_policy !=
+                    base_n_padding_policy::optional,
+                "optional padding does not make sense when encoding");
+
 public:
   // needed by transformer, useless once we use static_vector
   static constexpr auto nb_output_bytes =
@@ -72,13 +97,8 @@ private:
       *out++ = EncodingTraits::alphabet[index];
     }
 
-    if (EncodingTraits::padding_policy == base_n_padding_policy::required)
-    {
-      auto const nb_padding_bytes = nb_output_bytes - res.nb_non_padded_bytes;
-
-      for (auto j = 0; j < nb_padding_bytes; ++j)
-        *out++ = '=';
-    }
+    padding_writer<EncodingTraits>::write(
+        out, nb_output_bytes - res.nb_non_padded_bytes);
   }
 
 public:

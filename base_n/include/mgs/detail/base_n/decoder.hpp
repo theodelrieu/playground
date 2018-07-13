@@ -15,6 +15,110 @@ namespace mgs
 {
 namespace detail
 {
+template <typename EncodingTraits,
+          base_n_padding_policy = EncodingTraits::padding_policy>
+struct encoded_input_reader
+{
+  template <typename Iterator, typename Sentinel>
+  static char read(Iterator& current, Sentinel const sent)
+  {
+    if (current == sent)
+    {
+      throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                 "unexpected end of input"};
+    }
+    return *current++;
+  }
+};
+
+template <typename EncodingTraits>
+struct encoded_input_reader<EncodingTraits, base_n_padding_policy::optional>
+{
+  template <typename Iterator, typename Sentinel>
+  static char read(Iterator& current, Sentinel const sent)
+  {
+    if (current == sent)
+      return EncodingTraits::padding_character;
+    return *current++;
+  }
+};
+
+template <typename EncodingTraits,
+          base_n_padding_policy = EncodingTraits::padding_policy>
+struct non_alphabet_character_handler
+{
+private:
+  static constexpr auto nb_output_bytes =
+      decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
+  static constexpr auto nb_input_bytes =
+      encoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
+  static constexpr auto nb_output_bits = nb_output_bytes * 8;
+  static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
+
+  template <typename Iterator, typename Sentinel>
+  static void expect_padding_bytes(Iterator& current, Sentinel const end, int n)
+  {
+    assert(current != end);
+    assert(n > 0);
+
+    for (; n > 0; --n)
+    {
+      auto const c = static_cast<char>(*current++);
+      if (c != EncodingTraits::padding_character)
+      {
+        using namespace std::string_literals;
+        throw invalid_input_error{EncodingTraits::encoding_name,
+                                  "invalid encoded character: '"s + c + "'"};
+      }
+      if (current == end && n != 1)
+      {
+        throw unexpected_eof_error{EncodingTraits::encoding_name,
+                                   "unexpected end of encoded input"};
+      }
+    }
+    if (current != end)
+    {
+      throw invalid_input_error{EncodingTraits::encoding_name,
+                                "invalid encoded input"};
+    }
+  }
+
+public:
+  template <typename Iterator, typename Sentinel>
+  static void handle(int i, char c, Iterator& current, Sentinel const sent)
+  {
+    if (c != EncodingTraits::padding_character)
+    {
+      using namespace std::string_literals;
+      throw invalid_input_error{EncodingTraits::encoding_name,
+                                "invalid encoded character: '"s + c + "'"};
+    }
+    // find out if padding character is at a correct position
+    auto const res = std::div(i * nb_encoded_bits, 8);
+    if (res.quot == 0 || res.rem >= nb_encoded_bits)
+    {
+      throw invalid_input_error{EncodingTraits::encoding_name,
+                                "invalid encoded input"};
+    }
+    if (current != sent)
+      expect_padding_bytes(current, sent, nb_input_bytes - i - 1);
+  }
+};
+
+template <typename EncodingTraits>
+struct non_alphabet_character_handler<EncodingTraits, base_n_padding_policy::none>
+{
+  template <typename Iterator, typename Sentinel>
+  static void handle(int, char c, Iterator&, Sentinel const)
+  {
+    using namespace std::string_literals;
+    throw invalid_input_error{EncodingTraits::encoding_name,
+                              "invalid encoded character: '"s + c + "'"};
+  }
+};
+
 template <typename EncodingTraits>
 class base_n_decoder
 {
@@ -37,49 +141,6 @@ private:
   };
 
   template <typename Iterator, typename Sentinel>
-  void expect_padding_bytes(Iterator& current, Sentinel const end, int n) const
-  {
-    assert(current != end);
-    assert(n > 0);
-
-    for (; n > 0; --n)
-    {
-      auto const c = static_cast<char>(*current++);
-      if (c != '=')
-      {
-        using namespace std::string_literals;
-        throw invalid_input_error{EncodingTraits::encoding_name,
-                                  "invalid encoded character: '"s + c + "'"};
-      }
-      if (current == end && n != 1)
-      {
-        throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                   "unexpected end of encoded input"};
-      }
-    }
-    if (current != end)
-    {
-      throw invalid_input_error{EncodingTraits::encoding_name,
-                                "invalid encoded input"};
-    }
-  }
-
-  template <typename Iterator, typename Sentinel>
-  char read_encoded_char(Iterator& current, Sentinel const sent) const
-  {
-    if (current == sent)
-    {
-      if (EncodingTraits::padding_policy != base_n_padding_policy::optional)
-      {
-        throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                   "unexpected end of input"};
-      }
-      return '=';
-    }
-    return *current++;
-  }
-
-  template <typename Iterator, typename Sentinel>
   read_result read(Iterator& current, Sentinel const sent) const
   {
     std::bitset<nb_output_bits> input_bits;
@@ -93,28 +154,13 @@ private:
       auto const alph_begin = begin(EncodingTraits::alphabet);
       auto const alph_end = end(EncodingTraits::alphabet);
 
-      auto const c = read_encoded_char(current, sent);
+      auto const c = encoded_input_reader<EncodingTraits>::read(current, sent);
       auto const index_it = std::find(alph_begin, alph_end, c);
 
       if (index_it == alph_end)
       {
-        if (c != '=')
-        {
-          using namespace std::string_literals;
-          throw invalid_input_error{EncodingTraits::encoding_name,
-                                    "invalid encoded character: '"s + c + "'"};
-        }
-        // find out if padding character is at a correct position
-        auto const res = std::div(i * nb_encoded_bits, 8);
-        if (res.quot == 0 || res.rem >= nb_encoded_bits)
-        {
-          throw invalid_input_error{EncodingTraits::encoding_name,
-                                    "invalid encoded input"};
-        }
-        if (current != sent)
-        {
-          expect_padding_bytes(current, sent, nb_input_bytes - i - 1);
-        }
+        non_alphabet_character_handler<EncodingTraits>::handle(
+            i, c, current, sent);
         break;
       }
 

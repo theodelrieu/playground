@@ -15,6 +15,7 @@ struct base32_alphabet
       'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
 
   static constexpr char const encoding_name[] = "base32";
+  static constexpr char const padding_character = '=';
 };
 
 template <typename Dummy>

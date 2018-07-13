@@ -16,6 +16,7 @@ struct base64url_alphabet
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
+  static constexpr auto const padding_character = '=';
   static constexpr char const encoding_name[] = "base64url";
 };
 
