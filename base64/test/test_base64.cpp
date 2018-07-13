@@ -45,6 +45,47 @@ static_assert(detail::is_iterable_input_transformer<
                   b64_encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
+namespace
+{
+template <typename = void>
+struct custom_base64_alphabet
+{
+  using alphabet_t = char const[64];
+
+  static constexpr alphabet_t alphabet = {
+      '0', '1', '8', '7', '2', '3', '4', '9', '6', '5', 'K', 'L', 'M',
+      '*', '/', '-', '_', '$', 'A', '{', '}', '~', '`', 'X', 'Y', 'Z',
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+      '%', '!', '@', '%', '^', '&', '(', ')', '=', ',', '+', '\\'};
+
+  static constexpr char const encoding_name[] = "base64";
+  static constexpr char const padding_character = '#';
+  static constexpr auto const padding_policy = detail::base_n_padding_policy::required;
+};
+
+template <typename Dummy>
+constexpr typename custom_base64_alphabet<Dummy>::alphabet_t
+    custom_base64_alphabet<Dummy>::alphabet;
+
+template <typename Dummy>
+constexpr char const custom_base64_alphabet<Dummy>::encoding_name[];
+
+struct custom_base64_encode_traits : custom_base64_alphabet<>
+{
+  using value_type = char;
+  using difference_type = std::streamoff;
+  using algorithm = detail::base_n_encoder<custom_base64_alphabet<>>;
+};
+
+struct custom_base64_decode_traits : custom_base64_alphabet<>
+{
+  using value_type = std::uint8_t;
+  using difference_type = std::streamoff;
+  using algorithm = detail::base_n_decoder<custom_base64_alphabet<>>;
+};
+}
+
 TEST_CASE("b64 lazy", "[base64]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
@@ -148,8 +189,28 @@ TEST_CASE("base64url_unpadded", "[base64]")
   {
     common_checks<EncoderTraits>(decoded, encoded_unpadded);
   }
+
   SECTION("decode")
   {
     common_checks<DecoderTraits>(encoded_padded, decoded);
+  }
+}
+
+TEST_CASE("Custom base64 alphabet", "[base64]")
+{
+  std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
+  std::vector<std::string> encoded{"Y`5jZ0##"s, "Y`5jZ4}#"s, "Y`5jZ4~m"s};
+
+  using EncoderTraits = custom_base64_encode_traits;
+  using DecoderTraits = custom_base64_decode_traits;
+
+  SECTION("encode")
+  {
+    common_checks<EncoderTraits>(decoded, encoded);
+  }
+
+  SECTION("decode")
+  {
+    common_checks<DecoderTraits>(encoded, decoded);
   }
 }
