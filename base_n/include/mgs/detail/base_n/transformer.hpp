@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <type_traits>
 
+#include <mgs/detail/base_n/math.hpp>
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
 #include <mgs/detail/meta/concepts/input_iterator.hpp>
@@ -44,11 +45,14 @@ public:
   iterator end() const;
 
 private:
+  static constexpr auto nb_output_bytes =
+      EncodingTraits::algorithm::nb_output_bytes;
+
   UnderlyingIterator _current{};
   Sentinel _end{};
-  std::array<value_type, EncodingTraits::nb_output_bytes> _output;
+  std::array<value_type, nb_output_bytes> _output;
   // only useful for decoding, but it allows to have the same class for both
-  char _max_index{EncodingTraits::nb_output_bytes};
+  char _max_index{nb_output_bytes};
   char _index{_max_index};
 
   void _process_input();

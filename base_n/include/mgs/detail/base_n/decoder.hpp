@@ -6,6 +6,7 @@
 #include <limits>
 #include <string>
 
+#include <mgs/detail/base_n/math.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -17,14 +18,21 @@ namespace detail
 template <typename EncodingTraits>
 class base_n_decoder
 {
+public:
+  // needed by transformer, useless once we use static_vector
+  static constexpr auto nb_output_bytes =
+      decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
 private:
-  static constexpr auto nb_input_bits = EncodingTraits::nb_output_bytes * 8;
-  static constexpr auto nb_encoded_bits =
-      nb_input_bits / EncodingTraits::nb_input_bytes;
+  static constexpr auto nb_input_bytes =
+      encoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
+  static constexpr auto nb_output_bits = nb_output_bytes * 8;
+  static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
 
   struct read_result
   {
-    std::bitset<nb_input_bits> input_bits;
+    std::bitset<nb_output_bits> input_bits;
     int nb_read_bytes;
   };
 
@@ -74,13 +82,13 @@ private:
   template <typename Iterator, typename Sentinel>
   read_result read(Iterator& current, Sentinel const sent) const
   {
-    std::bitset<nb_input_bits> input_bits;
+    std::bitset<nb_output_bits> input_bits;
 
     using std::begin;
     using std::end;
 
     auto i = 0;
-    for (; i < EncodingTraits::nb_input_bytes; ++i)
+    for (; i < nb_input_bytes; ++i)
     {
       auto const alph_begin = begin(EncodingTraits::alphabet);
       auto const alph_end = end(EncodingTraits::alphabet);
@@ -105,16 +113,15 @@ private:
         }
         if (current != sent)
         {
-          expect_padding_bytes(
-              current, sent, EncodingTraits::nb_input_bytes - i - 1);
+          expect_padding_bytes(current, sent, nb_input_bytes - i - 1);
         }
         break;
       }
 
-      std::bitset<nb_input_bits> const decoded_byte_bits(
+      std::bitset<nb_output_bits> const decoded_byte_bits(
           std::distance(alph_begin, index_it));
 
-      input_bits |= (decoded_byte_bits << (nb_input_bits - nb_encoded_bits -
+      input_bits |= (decoded_byte_bits << (nb_output_bits - nb_encoded_bits -
                                            (nb_encoded_bits * i)));
     }
     return {input_bits, (i * nb_encoded_bits) / 8};
@@ -123,13 +130,13 @@ private:
   template <typename OutputIterator>
   void decode_input_bits(read_result const& res, OutputIterator& out) const
   {
-    std::bitset<nb_input_bits> const mask{
+    std::bitset<nb_output_bits> const mask{
         std::numeric_limits<std::uint64_t>::max()};
 
     for (int j = 0; j < res.nb_read_bytes; ++j)
     {
-      auto const shift = (nb_input_bits - 8 - (8 * j));
-      auto const mask_bis = (mask >> (nb_input_bits - 8)) << shift;
+      auto const shift = (nb_output_bits - 8 - (8 * j));
+      auto const mask_bis = (mask >> (nb_output_bits - 8)) << shift;
       auto const final_value = (res.input_bits & mask_bis) >> shift;
       auto const byte = static_cast<std::uint8_t>(final_value.to_ulong());
       *out++ = byte;

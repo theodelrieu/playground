@@ -11,22 +11,14 @@ namespace mgs
 {
 namespace detail
 {
-template <typename Alphabet>
-struct basic_base32_decode_common_traits : public Alphabet
-{
-  static constexpr auto nb_input_bytes = 8;
-  static constexpr auto nb_output_bytes = 5;
-};
-
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
-struct basic_base32_decode_algo_traits
-  : basic_base32_decode_common_traits<Alphabet>
+struct basic_base32_decode_algo_traits : public Alphabet
 {
   static constexpr auto const padding_policy = PaddingPolicy;
 };
 
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
-struct basic_base32_decode_traits : basic_base32_decode_common_traits<Alphabet>
+struct basic_base32_decode_traits : public Alphabet
 {
   using value_type = char;
   using difference_type = std::streamoff;

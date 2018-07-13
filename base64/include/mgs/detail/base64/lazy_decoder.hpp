@@ -13,25 +13,14 @@ namespace mgs
 {
 namespace detail
 {
-// common to the algorithm and transformer
-template <typename Alphabet>
-struct basic_base64_decode_common_traits : public Alphabet
-{
-  static constexpr auto const nb_input_bytes = 4;
-  static constexpr auto const nb_output_bytes = 3;
-};
-
-// only for algorithm
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
-struct basic_base64_decode_algo_traits
-  : basic_base64_decode_common_traits<Alphabet>
+struct basic_base64_decode_algo_traits : public Alphabet
 {
   static constexpr auto const padding_policy = PaddingPolicy;
 };
 
-// only for transformer
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
-struct basic_base64_decode_traits : basic_base64_decode_common_traits<Alphabet>
+struct basic_base64_decode_traits : public Alphabet
 {
   using value_type = std::uint8_t;
   using difference_type = std::streamoff;

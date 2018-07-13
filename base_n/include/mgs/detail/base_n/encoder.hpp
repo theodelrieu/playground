@@ -5,6 +5,9 @@
 #include <limits>
 #include <utility>
 
+#include <mgs/detail/base_n/math.hpp>
+#include <mgs/detail/base_n/padding_policy.hpp>
+
 namespace mgs
 {
 namespace detail
@@ -12,10 +15,17 @@ namespace detail
 template <typename EncodingTraits>
 class base_n_encoder
 {
+public:
+  // needed by transformer, useless once we use static_vector
+  static constexpr auto nb_output_bytes =
+      encoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
 private:
-  static constexpr auto nb_input_bits = EncodingTraits::nb_input_bytes * 8;
-  static constexpr auto nb_encoded_bits =
-      nb_input_bits / EncodingTraits::nb_output_bytes;
+  static constexpr auto nb_input_bytes =
+      decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+
+  static constexpr auto nb_input_bits = nb_input_bytes * 8;
+  static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
 
   struct read_result
   {
@@ -29,7 +39,7 @@ private:
     std::bitset<nb_input_bits> input_bits;
 
     int i = 0;
-    for (; i < EncodingTraits::nb_input_bytes; ++i)
+    for (; i < nb_input_bytes; ++i)
     {
       if (current == end)
         break;
@@ -64,8 +74,7 @@ private:
 
     if (EncodingTraits::padding_policy == base_n_padding_policy::required)
     {
-      auto const nb_padding_bytes =
-          EncodingTraits::nb_output_bytes - res.nb_non_padded_bytes;
+      auto const nb_padding_bytes = nb_output_bytes - res.nb_non_padded_bytes;
 
       for (auto j = 0; j < nb_padding_bytes; ++j)
         *out++ = '=';

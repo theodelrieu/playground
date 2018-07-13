@@ -19,7 +19,6 @@ Gerer conversion de UDT ?
 =======================================================================================
 
 remove some detail folders?
-later on, add support for optional padding? (enum class optional/required/none)
 
 inline namespace
 
@@ -28,36 +27,25 @@ test variants
 
 think about namespaces:
 
-what about lazy vs. eager?
-osef? call decode if you want eager
-
 look at static_vector in boost containers
 having an InputTransformerBlock that returns array<char, 4> (base64)
-
-use log2 instead of hard coded values gcd(log2(sizeof(alphabet)), 8 bits)
+and the InputTransformer deals with iterators and such
+support padding character, requires if constexpr like in code
 
 #include <mgs/base64.hpp>
 
 #include <mgs/base64/base64.hpp>
 #include <mgs/base64/base64url.hpp>
 
-#include <mgs/base64/base64_eager.hpp>
-#include <mgs/base64/base64_lazy.hpp>
+aliases:
 
-#include <mgs/lazy/base64/base64.hpp>
-#include <mgs/eager/base64/base64url.hpp>
+mgs::base64?
+mgs::base64url?
+mgs::base64url_unpadded?
 
-#include <mgs/base64/lazy/base64.hpp>
-#include <mgs/base64/eager/base64.hpp>
-#include <mgs/base64/lazy/base64url.hpp>
-#include <mgs/base64/eager/base64url.hpp>
 
-mgs::base64::base64?
-mgs::base64::base64url?
-mgs::base64::base64url_unpadded?
+namespaces:
 
 mgs::codecs::base64?
 mgs::codecs::base64url?
 mgs::codecs::base64url_unpadded?
-
-users will have to write usings anyway

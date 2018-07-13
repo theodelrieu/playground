@@ -12,18 +12,12 @@ namespace mgs
 {
 namespace detail
 {
-struct base16_decode_common_traits : base16_alphabet<>
-{
-  static constexpr auto const nb_input_bytes = 2;
-  static constexpr auto const nb_output_bytes = 1;
-};
-
-struct base16_decode_algo_traits : base16_decode_common_traits
+struct base16_decode_algo_traits : base16_alphabet<>
 {
   static constexpr auto const padding_policy = base_n_padding_policy::none;
 };
 
-struct base16_decode_traits : base16_decode_common_traits
+struct base16_decode_traits : base16_alphabet<>
 {
   using value_type = std::uint8_t;
   using difference_type = std::streamoff;
