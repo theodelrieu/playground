@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -19,5 +21,6 @@ struct is_weakly_incrementable
             is_detected<post_increment_t, T&>::value>
 {
 };
+}
 }
 }

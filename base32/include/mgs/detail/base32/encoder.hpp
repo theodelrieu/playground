@@ -10,6 +10,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 
@@ -43,5 +45,6 @@ using base32_encoder =
 template <typename Iterator, typename Sentinel = Iterator>
 using base32hex_encoder =
     base_n_transformer<base32hex_encode_traits, Iterator, Sentinel>;
+}
 }
 }

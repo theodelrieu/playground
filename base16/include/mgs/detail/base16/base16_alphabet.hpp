@@ -4,6 +4,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename = void>
@@ -45,5 +47,6 @@ constexpr typename base16_alphabet<Dummy>::alphabet_t
 
 template <typename Dummy>
 constexpr char const base16_alphabet<Dummy>::encoding_name[];
+}
 }
 }

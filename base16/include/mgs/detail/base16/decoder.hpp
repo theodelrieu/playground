@@ -10,6 +10,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 struct base16_decode_algo_traits : base16_alphabet<>
@@ -27,5 +29,6 @@ struct base16_decode_traits : base16_alphabet<>
 template <typename Iterator, typename Sentinel = Iterator>
 using base16_decoder =
     base_n_transformer<base16_decode_traits, Iterator, Sentinel>;
+}
 }
 }

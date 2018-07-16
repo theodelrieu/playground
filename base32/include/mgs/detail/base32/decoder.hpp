@@ -10,6 +10,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
@@ -42,5 +44,6 @@ using base32_decoder =
 template <typename Iterator, typename Sentinel = Iterator>
 using base32hex_decoder =
     base_n_transformer<base32hex_decode_traits, Iterator, Sentinel>;
+}
 }
 }

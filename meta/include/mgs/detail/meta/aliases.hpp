@@ -4,6 +4,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -81,5 +83,6 @@ using seek_backward_function_t =
 
 template <typename T>
 using pos_function_t = decltype(std::declval<T>().pos());
+}
 }
 }

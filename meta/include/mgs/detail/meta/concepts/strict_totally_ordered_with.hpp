@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
@@ -37,5 +39,6 @@ struct is_strict_totally_ordered_with
                               T const&>::value>
 {
 };
+}
 }
 }

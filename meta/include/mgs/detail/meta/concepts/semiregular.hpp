@@ -6,6 +6,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename = void>
@@ -20,5 +22,6 @@ struct is_semiregular
                                is_swappable<T>::value>
 {
 };
+}
 }
 }

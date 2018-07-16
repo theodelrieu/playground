@@ -9,6 +9,8 @@
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
 {
+inline namespace v1
+{
 CAN_CALL_STD_FUNC_IMPL(swap)
 
 namespace detail
@@ -29,5 +31,6 @@ template <typename T, std::size_t N>
 struct is_swappable<T[N]> : is_swappable<T>
 {
 };
+}
 }
 }

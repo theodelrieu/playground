@@ -12,6 +12,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 // TODO sfinae on encoding traits
@@ -61,6 +63,7 @@ private:
   friend bool operator==(base_n_transformer<T, U, V, W> const& lhs,
                          base_n_transformer<T, U, V, W> const& rhs);
 };
+}
 }
 }
 

@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename U>
@@ -18,5 +20,6 @@ struct is_derived_from
                                                    std::remove_cv_t<U>*>::value>
 {
 };
+}
 }
 }

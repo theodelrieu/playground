@@ -10,6 +10,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename EncodingTraits,
@@ -113,5 +115,6 @@ public:
     encode_input_bits(res, out);
   }
 };
+}
 }
 }

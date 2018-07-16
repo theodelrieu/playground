@@ -9,6 +9,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -20,5 +22,6 @@ struct is_incrementable
             is_weakly_incrementable<T>::value>
 {
 };
+}
 }
 }

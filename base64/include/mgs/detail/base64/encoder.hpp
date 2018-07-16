@@ -9,6 +9,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
@@ -48,5 +50,6 @@ using base64url_encoder =
 template <typename Iterator, typename Sentinel = Iterator>
 using base64url_unpadded_encoder =
     base_n_transformer<base64url_unpadded_encode_traits, Iterator, Sentinel>;
+}
 }
 }

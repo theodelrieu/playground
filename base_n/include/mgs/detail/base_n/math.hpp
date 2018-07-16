@@ -5,6 +5,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 // constexpr functions caused apple-clang ICEs...
@@ -74,6 +76,7 @@ template <std::size_t AlphabetSize>
 constexpr std::size_t encoded_bytes()
 {
   return encoding_bytes<AlphabetSize>().second;
+}
 }
 }
 }

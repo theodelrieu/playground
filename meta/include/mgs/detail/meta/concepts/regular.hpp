@@ -7,6 +7,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename = void>
@@ -15,5 +17,6 @@ struct is_regular : std::integral_constant<bool,
                                                is_equality_comparable<T>::value>
 {
 };
+}
 }
 }

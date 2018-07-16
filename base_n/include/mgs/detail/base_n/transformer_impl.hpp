@@ -4,6 +4,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 // TODO namespace input_transformers?
 namespace detail
 {
@@ -103,6 +105,7 @@ bool operator!=(base_n_transformer<T, U, V, W> const& lhs,
                 base_n_transformer<T, U, V, W> const& rhs)
 {
   return !(lhs == rhs);
+}
 }
 }
 }

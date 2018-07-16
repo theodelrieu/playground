@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -116,6 +118,7 @@ bool operator<=(
     adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
     adaptive_iterator<Encoder,
                       std::random_access_iterator_tag> const&) noexcept;
+}
 }
 }
 

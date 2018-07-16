@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -26,5 +28,6 @@ struct is_strict_totally_ordered
                               T const&>::value>
 {
 };
+}
 }
 }

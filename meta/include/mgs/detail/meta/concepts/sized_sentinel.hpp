@@ -9,6 +9,8 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename Iterator>
@@ -25,5 +27,6 @@ public:
       std::is_same<difference_type,
                    detected_t<substraction_t, Iterator, T>>::value;
 };
+}
 }
 }

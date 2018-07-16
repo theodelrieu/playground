@@ -12,6 +12,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -25,5 +27,6 @@ struct is_forward_iterator
               is_sentinel<T, T>::value && is_incrementable<T>::value>
 {
 };
+}
 }
 }

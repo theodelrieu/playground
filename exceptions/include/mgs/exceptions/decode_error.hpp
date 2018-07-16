@@ -6,6 +6,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 class decode_error : public exception
 {
 public:
@@ -14,4 +16,5 @@ public:
   {
   }
 };
+}
 }

@@ -12,6 +12,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename = void>
@@ -46,5 +48,6 @@ public:
       std::is_convertible<detected_t<array_subscript_t, T, difference_type>,
                           reference_t<std::iterator_traits<T>>>::value;
 };
+}
 }
 }

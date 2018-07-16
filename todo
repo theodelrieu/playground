@@ -20,11 +20,6 @@ Gerer conversion de UDT ?
 
 remove some detail folders?
 
-base32hex, alias base16 -> hex, base16lower
-have a way to make base16 case-insensitive
-
-inline namespace
-
 think about namespaces:
 
 look at static_vector in boost containers

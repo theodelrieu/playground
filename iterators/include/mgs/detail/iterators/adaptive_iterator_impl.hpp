@@ -2,6 +2,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 // input iterator
@@ -175,6 +177,7 @@ bool operator<=(
         rhs) noexcept
 {
   return !(lhs > rhs);
+}
 }
 }
 }

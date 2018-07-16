@@ -13,6 +13,8 @@
 // }
 namespace mgs
 {
+inline namespace v1
+{
 CAN_CALL_STD_FUNC_IMPL(begin)
 CAN_CALL_STD_FUNC_IMPL(end)
 
@@ -37,5 +39,6 @@ struct is_iterable<T,
     static constexpr bool value =
         is_iterator<Iterator>::value && is_sentinel<Sentinel, Iterator>::value;
 };
+}
 }
 }

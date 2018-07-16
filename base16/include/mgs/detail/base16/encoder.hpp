@@ -9,6 +9,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 struct base16_encode_algo_traits : base16_alphabet<>
@@ -26,5 +28,6 @@ struct base16_encode_traits : base16_alphabet<>
 template <typename Iterator, typename Sentinel = Iterator>
 using base16_encoder =
     base_n_transformer<base16_encode_traits, Iterator, Sentinel>;
+}
 }
 }

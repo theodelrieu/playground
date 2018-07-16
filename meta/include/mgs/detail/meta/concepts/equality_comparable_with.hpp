@@ -8,6 +8,8 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/EqualityComparable
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename U, typename = void>
@@ -25,5 +27,6 @@ struct is_equality_comparable_with<
   : std::true_type
 {
 };
+}
 }
 }

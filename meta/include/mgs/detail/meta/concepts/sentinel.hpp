@@ -9,6 +9,8 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename Iterator>
@@ -19,5 +21,6 @@ struct is_sentinel
             is_weakly_equality_comparable_with<T, Iterator>::value>
 {
 };
+}
 }
 }

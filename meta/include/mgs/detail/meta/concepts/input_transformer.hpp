@@ -25,6 +25,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename = void>
@@ -54,5 +56,6 @@ public:
       is_detected_exact<void, seek_forward_function_t, T&, difference_type>::
           value;
 };
+}
 }
 }

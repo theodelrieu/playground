@@ -10,6 +10,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -22,5 +24,6 @@ struct is_input_iterator
                   std::input_iterator_tag>::value>
 {
 };
+}
 }
 }

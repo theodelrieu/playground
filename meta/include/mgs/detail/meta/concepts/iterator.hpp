@@ -10,6 +10,8 @@
 // concept Iterator: http://en.cppreference.com/w/cpp/concept/Iterator
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T>
@@ -45,5 +47,6 @@ struct is_iterator
               is_detected_exact<T&, pre_increment_t, T&>::value>
 {
 };
+}
 }
 }

@@ -5,6 +5,8 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/WeaklyEqualityComparableWith
 namespace mgs
 {
+inline namespace v1
+{
 namespace detail
 {
 template <typename T, typename U, typename = void>
@@ -30,5 +32,6 @@ struct is_weakly_equality_comparable_with<
                                          bool>::value>> : std::true_type
 {
 };
+}
 }
 }
