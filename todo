@@ -26,20 +26,15 @@ look at static_vector in boost containers
 having an InputTransformerBlock that returns array<char, 4> (base64)
 and the InputTransformer deals with iterators and such
 
-#include <mgs/base64.hpp>
+#include <mgs/base64.hpp> // umbrella
 
 #include <mgs/base64/base64.hpp>
 #include <mgs/base64/base64url.hpp>
 
-aliases:
+// codecs
 
-mgs::base64?
-mgs::base64url?
-mgs::base64url_unpadded?
+mgs::base64
+mgs::base64url
+mgs::base64url_unpadded
 
-
-namespaces:
-
-mgs::codecs::base64?
-mgs::codecs::base64url?
-mgs::codecs::base64url_unpadded?
+encoders are left in detail, aliased inside codec, and exposed via getters.
