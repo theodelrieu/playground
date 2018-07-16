@@ -62,6 +62,11 @@ struct custom_base64_alphabet
   static constexpr char const encoding_name[] = "base64";
   static constexpr char const padding_character = '#';
   static constexpr auto const padding_policy = detail::base_n_padding_policy::required;
+
+  static constexpr auto find_char(char c)
+  {
+    return std::find(std::begin(alphabet), std::end(alphabet), c);
+  }
 };
 
 template <typename Dummy>

@@ -83,7 +83,24 @@ TEST_CASE("b16 lazy", "[base16]")
   {
     SECTION("common_checks")
     {
+      SECTION("case sensitive")
+      {
       common_checks<DecoderTraits>(encoded, decoded);
+      }
+
+      SECTION("case insensitive")
+      {
+        std::vector<std::string> encoded_lower{
+            "66"s,
+            "666f"s,
+            "666f6f"s,
+            "666f6f62"s,
+            "666f6f6261"s,
+            "666f6f626172"s,
+        };
+
+        common_checks<DecoderTraits>(encoded_lower, decoded);
+      }
     }
 
     SECTION("sentinel")

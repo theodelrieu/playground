@@ -155,7 +155,7 @@ private:
       auto const alph_end = end(EncodingTraits::alphabet);
 
       auto const c = encoded_input_reader<EncodingTraits>::read(current, sent);
-      auto const index_it = std::find(alph_begin, alph_end, c);
+      auto const index_it = EncodingTraits::find_char(c);
 
       if (index_it == alph_end)
       {

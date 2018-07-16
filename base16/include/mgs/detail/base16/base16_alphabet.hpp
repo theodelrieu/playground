@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/detail/base_n/padding_policy.hpp>
+#include <algorithm>
 
 namespace mgs
 {
@@ -27,6 +27,14 @@ struct base16_alphabet
                                           'D',
                                           'E',
                                           'F'};
+
+  static constexpr auto find_char(char c)
+  {
+    // toupper is meh...
+    if (c >= 'a' && c <= 'z')
+      c -= 32;
+    return std::find(std::begin(alphabet), std::end(alphabet), c);
+  }
 
   static constexpr char const encoding_name[] = "base16";
 };

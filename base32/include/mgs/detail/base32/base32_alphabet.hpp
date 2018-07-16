@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace mgs
 {
 namespace detail
@@ -16,6 +18,11 @@ struct base32_alphabet
 
   static constexpr char const encoding_name[] = "base32";
   static constexpr char const padding_character = '=';
+
+  static constexpr auto find_char(char c)
+  {
+    return std::find(std::begin(alphabet), std::end(alphabet), c);
+  }
 };
 
 template <typename Dummy>
