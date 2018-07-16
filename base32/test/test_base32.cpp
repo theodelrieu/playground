@@ -125,3 +125,29 @@ TEST_CASE("b32 lazy", "[base32]")
     invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
+
+TEST_CASE("base32hex", "[base32]")
+{
+  std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
+  std::vector<std::string> encoded{
+      "C4======"s, "C5H0===="s, "C5H66==="s, "C5H66P0="s, "C5H66P35"s};
+
+  using EncoderTraits = detail::base32hex_encode_traits;
+  using DecoderTraits = detail::base32hex_decode_traits;
+
+  SECTION("encoding")
+  {
+    SECTION("common_checks")
+    {
+      common_checks<EncoderTraits>(decoded, encoded);
+    }
+  }
+
+  SECTION("decoding")
+  {
+    SECTION("common_checks")
+    {
+      common_checks<DecoderTraits>(encoded, decoded);
+    }
+  }
+}

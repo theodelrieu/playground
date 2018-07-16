@@ -3,6 +3,7 @@
 #include <ios>
 
 #include <mgs/detail/base32/base32_alphabet.hpp>
+#include <mgs/detail/base32/base32hex_alphabet.hpp>
 #include <mgs/detail/base_n/decoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
 #include <mgs/detail/base_n/transformer.hpp>
@@ -30,8 +31,16 @@ using base32_decode_traits =
     basic_base32_decode_traits<base32_alphabet<>,
                                base_n_padding_policy::required>;
 
+using base32hex_decode_traits =
+    basic_base32_decode_traits<base32hex_alphabet<>,
+                               base_n_padding_policy::required>;
+
 template <typename Iterator, typename Sentinel = Iterator>
 using base32_decoder =
     base_n_transformer<base32_decode_traits, Iterator, Sentinel>;
+
+template <typename Iterator, typename Sentinel = Iterator>
+using base32hex_decoder =
+    base_n_transformer<base32hex_decode_traits, Iterator, Sentinel>;
 }
 }
