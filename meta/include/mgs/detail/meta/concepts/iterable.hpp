@@ -7,6 +7,7 @@
 #include <mgs/detail/meta/concepts/sentinel.hpp>
 #include <mgs/detail/meta/detected.hpp>
 
+// template <typename T>
 // concept Iterable = requires(T& a) {
 //  requires { begin(a) } -> Iterator
 //  requires { end(a) } -> Sentinel<Iterator>

@@ -1,5 +1,6 @@
 #pragma once
 
+// template <typename T>
 // concept ByteIntegral = requires(T val) {
 //   requires Integral<T>;
 //   requires sizeof(T) == 1;

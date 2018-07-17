@@ -5,6 +5,7 @@
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/input_transformer.hpp>
 
+// template <typename T>
 // concept IterableInputTransformer = requires(T const&) {
 //    requires InputTransformer<T>;
 //    requires Iterable<T>;
