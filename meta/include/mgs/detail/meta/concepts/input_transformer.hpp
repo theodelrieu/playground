@@ -8,6 +8,7 @@
 #include <mgs/detail/meta/concepts/sentinel.hpp>
 #include <mgs/detail/meta/detected.hpp>
 
+// template <typename T>
 // concept InputTransformer = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  typename T::value_type;
