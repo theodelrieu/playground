@@ -2,12 +2,12 @@
 
 #include <type_traits>
 
+#include <mgs/detail/meta/concepts/input_adapter.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/input_transformer.hpp>
 
 // template <typename T>
-// concept IterableInputTransformer = requires(T const&) {
-//    requires InputTransformer<T>;
+// concept IterableInputAdapter = requires(T const&) {
+//    requires InputAdapter<T>;
 //    requires Iterable<T>;
 //  }
 
@@ -18,10 +18,10 @@ inline namespace v1
 namespace detail
 {
 template <typename T>
-struct is_iterable_input_transformer
+struct is_iterable_input_adapter
 {
   static constexpr bool value =
-      is_input_transformer<T>::value && is_iterable<T>::value;
+      is_input_adapter<T>::value && is_iterable<T>::value;
 };
 }
 }

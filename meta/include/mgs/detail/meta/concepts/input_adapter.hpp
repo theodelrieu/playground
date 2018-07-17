@@ -9,7 +9,7 @@
 #include <mgs/detail/meta/detected.hpp>
 
 // template <typename T>
-// concept InputTransformer = requires(T const& v, T& u) {
+// concept InputAdapter = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  typename T::value_type;
 //  typename T::difference_type;
@@ -31,12 +31,12 @@ inline namespace v1
 namespace detail
 {
 template <typename T, typename = void>
-struct is_input_transformer : std::false_type
+struct is_input_adapter : std::false_type
 {
 };
 
 template <typename T>
-struct is_input_transformer<
+struct is_input_adapter<
     T,
     std::enable_if_t<is_regular<T>::value &&
                      is_detected<value_type_t, T>::value &&

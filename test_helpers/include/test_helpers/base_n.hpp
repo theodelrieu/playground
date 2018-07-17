@@ -16,7 +16,7 @@
 #include <mgs/detail/base_n/base_n.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
+#include <mgs/detail/meta/concepts/iterable_input_adapter.hpp>
 
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter

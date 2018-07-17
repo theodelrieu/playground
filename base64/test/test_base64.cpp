@@ -16,7 +16,7 @@
 #include <mgs/detail/base64/encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/iterable_input_transformer.hpp>
+#include <mgs/detail/meta/concepts/iterable_input_adapter.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -33,15 +33,15 @@ using b64_encoder = detail::base64_encoder<Iterator, Sentinel>;
 template <typename Iterator, typename Sentinel = Iterator>
 using b64_decoder = detail::base64_decoder<Iterator, Sentinel>;
 
-static_assert(detail::is_iterable_input_transformer<b64_encoder<char*>>::value,
+static_assert(detail::is_iterable_input_adapter<b64_encoder<char*>>::value,
               "");
-static_assert(detail::is_iterable_input_transformer<
+static_assert(detail::is_iterable_input_adapter<
                   b64_encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(detail::is_iterable_input_transformer<
+static_assert(detail::is_iterable_input_adapter<
                   b64_encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(detail::is_iterable_input_transformer<
+static_assert(detail::is_iterable_input_adapter<
                   b64_encoder<std::istreambuf_iterator<char>>>::value,
               "");
 

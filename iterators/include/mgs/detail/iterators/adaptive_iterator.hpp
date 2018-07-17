@@ -4,7 +4,7 @@
 #include <type_traits>
 
 #include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/input_transformer.hpp>
+#include <mgs/detail/meta/concepts/input_adapter.hpp>
 
 namespace mgs
 {
@@ -12,6 +12,7 @@ inline namespace v1
 {
 namespace detail
 {
+// TODO put in aliases.hpp
 template <typename T>
 using is_bidirectional_tag =
     is_derived_from<T, std::bidirectional_iterator_tag>;
@@ -20,16 +21,19 @@ template <typename T>
 using is_random_access_tag =
     is_derived_from<T, std::random_access_iterator_tag>;
 
-// not SFINAE friendly, cannot use is_input_transformer, since adaptive_iterator
-// is used during the definition of input transformers.
-template <typename Encoder, typename IteratorTag>
+template <typename Adapter, typename IteratorTag>
 class adaptive_iterator
 {
-public:
-  using value_type = typename Encoder::value_type;
-  using difference_type = typename Encoder::difference_type;
+  // cannot use is_iterable_input_adapter, since adaptive_iterator
+  // is used during the definition of input transformers.
+  static_assert(is_input_adapter<Adapter>::value,
+                "Adapter is not an InputAdapter");
 
-  using reference = decltype(std::declval<Encoder const&>().get());
+public:
+  using value_type = typename Adapter::value_type;
+  using difference_type = typename Adapter::difference_type;
+
+  using reference = decltype(std::declval<Adapter const&>().get());
   using const_reference = reference;
 
   using pointer = value_type const*;
@@ -38,7 +42,7 @@ public:
   using iterator_category = IteratorTag;
 
   adaptive_iterator() = default;
-  explicit adaptive_iterator(Encoder const&);
+  explicit adaptive_iterator(Adapter const&);
 
   reference operator*() const;
   pointer operator->() const;
@@ -88,35 +92,35 @@ public:
       adaptive_iterator<T, std::random_access_iterator_tag> const&) noexcept;
 
 private:
-  Encoder _encoder;
+  Adapter _encoder;
 };
 
-template <typename Encoder, typename Tag>
-bool operator!=(adaptive_iterator<Encoder, Tag> const&,
-                adaptive_iterator<Encoder, Tag> const&) noexcept;
+template <typename Adapter, typename Tag>
+bool operator!=(adaptive_iterator<Adapter, Tag> const&,
+                adaptive_iterator<Adapter, Tag> const&) noexcept;
 
-template <typename Encoder, typename Tag>
-adaptive_iterator<Encoder, std::random_access_iterator_tag> operator+(
-    typename adaptive_iterator<Encoder, std::random_access_iterator_tag>::
+template <typename Adapter, typename Tag>
+adaptive_iterator<Adapter, std::random_access_iterator_tag> operator+(
+    typename adaptive_iterator<Adapter, std::random_access_iterator_tag>::
         difference_type,
-    adaptive_iterator<Encoder, std::random_access_iterator_tag> const& it);
+    adaptive_iterator<Adapter, std::random_access_iterator_tag> const& it);
 
-template <typename Encoder>
+template <typename Adapter>
 bool operator>(
-    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
-    adaptive_iterator<Encoder,
+    adaptive_iterator<Adapter, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Adapter,
                       std::random_access_iterator_tag> const&) noexcept;
 
-template <typename Encoder>
+template <typename Adapter>
 bool operator>=(
-    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
-    adaptive_iterator<Encoder,
+    adaptive_iterator<Adapter, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Adapter,
                       std::random_access_iterator_tag> const&) noexcept;
 
-template <typename Encoder>
+template <typename Adapter>
 bool operator<=(
-    adaptive_iterator<Encoder, std::random_access_iterator_tag> const&,
-    adaptive_iterator<Encoder,
+    adaptive_iterator<Adapter, std::random_access_iterator_tag> const&,
+    adaptive_iterator<Adapter,
                       std::random_access_iterator_tag> const&) noexcept;
 }
 }

@@ -6,7 +6,7 @@ namespace mgs
 {
 inline namespace v1
 {
-// TODO namespace input_transformers?
+// TODO namespace input_adapters?
 namespace detail
 {
 template <typename EncodingTraits,
