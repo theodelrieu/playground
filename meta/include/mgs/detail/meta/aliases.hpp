@@ -85,8 +85,7 @@ template <typename T>
 using pos_function_t = decltype(std::declval<T>().pos());
 
 template <typename T, typename... Args>
-using process_function_t =
-    decltype(std::declval<T>().process(std::declval<Args>()...));
+using call_operator_t = decltype(std::declval<T>()(std::declval<Args>()...));
 }
 }
 }

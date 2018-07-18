@@ -1,20 +1,5 @@
 look at static_vector in boost containers
 
-template <typename T, Iterator I, Sentinel<I> S>
-concept BlockInputTransformer = requires(T const& a) {
-  requires SemiRegular<T>;
-  typename T::value_type;
-  requires Iterable<T::value_type>;
-
-  requires (I& it, S sent) {
-    a.process(it, sent);
-    { a.process(it, sent) } -> T::value_type;
-  }
-}
-
-rename InputTransformer to InputAdapter, based on an InputTransformer (no BlockInputTransformer)
-
-
 #include <mgs/base64.hpp> // umbrella
 
 #include <mgs/base64/base64.hpp>
@@ -26,4 +11,7 @@ mgs::base64
 mgs::base64url
 mgs::base64url_unpadded
 
+codecs should be a constexpr instance, not just an alias(?)
+
 encoders are left in detail, aliased inside codec.
+

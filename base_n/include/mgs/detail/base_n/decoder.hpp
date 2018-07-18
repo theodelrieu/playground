@@ -6,6 +6,8 @@
 #include <limits>
 #include <string>
 
+#include <boost/container/static_vector.hpp>
+
 #include <mgs/detail/base_n/math.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
@@ -125,6 +127,8 @@ template <typename EncodingTraits>
 class base_n_decoder
 {
 public:
+  using value_type = boost::container::static_vector<std::uint8_t, 3>;
+
   // needed by transformer, useless once we use static_vector
   static constexpr auto nb_output_bytes =
       decoded_bytes<sizeof(EncodingTraits::alphabet)>();
@@ -176,7 +180,7 @@ private:
   }
 
   template <typename OutputIterator>
-  void decode_input_bits(read_result const& res, OutputIterator& out) const
+  void decode_input_bits(read_result const& res, OutputIterator out) const
   {
     std::bitset<nb_output_bits> const mask{
         std::numeric_limits<std::uint64_t>::max()};
@@ -192,15 +196,16 @@ private:
   }
 
 public:
-  template <typename Iterator, typename Sentinel, typename OutputIterator>
-  void operator()(Iterator& current,
-                  Sentinel const end,
-                  OutputIterator& out) const
+  template <typename Iterator, typename Sentinel>
+  value_type operator()(Iterator& current, Sentinel const end) const
   {
     assert(current != end);
 
     auto const res = read(current, end);
-    decode_input_bits(res, out);
+
+    value_type ret;
+    decode_input_bits(res, std::back_inserter(ret));
+    return ret;
   }
 };
 }

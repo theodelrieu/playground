@@ -1,9 +1,12 @@
 #pragma once
 
+#include <array>
 #include <bitset>
 #include <cstdint>
 #include <limits>
 #include <utility>
+
+#include <boost/container/static_vector.hpp>
 
 #include <mgs/detail/base_n/math.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
@@ -19,7 +22,7 @@ template <typename EncodingTraits,
 struct padding_writer
 {
   template <typename OutputIterator>
-  static void write(OutputIterator&, int)
+  static void write(OutputIterator, int)
   {
   }
 };
@@ -28,7 +31,7 @@ template <typename EncodingTraits>
 struct padding_writer<EncodingTraits, base_n_padding_policy::required>
 {
   template <typename OutputIterator>
-  static void write(OutputIterator& out, int n)
+  static void write(OutputIterator out, int n)
   {
     while (n-- > 0)
       *out++ = EncodingTraits::padding_character;
@@ -43,6 +46,8 @@ class base_n_encoder
                 "optional padding does not make sense when encoding");
 
 public:
+  using value_type = boost::container::static_vector<char, 4>;
+
   // needed by transformer, useless once we use static_vector
   static constexpr auto nb_output_bytes =
       encoded_bytes<sizeof(EncodingTraits::alphabet)>();
@@ -83,7 +88,7 @@ private:
   }
 
   template <typename OutputIterator>
-  void encode_input_bits(read_result const& res, OutputIterator& out) const
+  void encode_input_bits(read_result const& res, OutputIterator out) const
   {
     std::bitset<nb_input_bits> const mask{
         std::numeric_limits<std::uint64_t>::max()};
@@ -104,15 +109,15 @@ private:
   }
 
 public:
-  template <typename Iterator, typename Sentinel, typename OutputIterator>
-  void operator()(Iterator& current,
-                  Sentinel const end,
-                  OutputIterator& out) const
+  template <typename Iterator, typename Sentinel>
+  value_type operator()(Iterator& current, Sentinel const end) const
   {
     assert(current != end);
 
     auto const res = read(current, end);
-    encode_input_bits(res, out);
+    value_type ret;
+    encode_input_bits(res, std::back_inserter(ret));
+    return ret;
   }
 };
 }

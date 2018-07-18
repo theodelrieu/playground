@@ -34,7 +34,9 @@ public:
   using underlying_iterator = UnderlyingIterator;
   using underlying_sentinel = Sentinel;
 
+  // TODO = streamoff
   using difference_type = typename EncodingTraits::difference_type;
+  // TODO = iterator_traits<Transformer::value_type>::value_type
   using value_type = typename EncodingTraits::value_type;
 
   base_n_transformer() = default;
@@ -54,6 +56,10 @@ private:
   Sentinel _end{};
   std::array<value_type, nb_output_bytes> _output;
   // only useful for decoding, but it allows to have the same class for both
+  // TODO remove those, add result_of_begin_t<Transformer::value_type>
+  //
+  // end condition: _current == _end && distance(begin(_output), end(_output)) == 0
+  // see if we can process only in get()
   char _max_index{nb_output_bytes};
   char _index{_max_index};
 

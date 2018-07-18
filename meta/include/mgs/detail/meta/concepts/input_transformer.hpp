@@ -14,6 +14,7 @@
 //   requires SemiRegular<T>;
 //   typename T::value_type;
 //   requires Iterable<T::value_type>;
+//   requires SemiRegular<T::value_type>;
 //
 //   requires (I& it, S sent) {
 //     a.process(it, sent);
@@ -39,13 +40,14 @@ struct is_input_transformer<
     std::enable_if_t<is_iterator<Iterator>::value &&
                      is_sentinel<Sentinel, Iterator>::value &&
                      is_semiregular<T>::value &&
-                     is_iterable<detected_t<value_type_t, T>>::value>>
+                     is_iterable<detected_t<value_type_t, T>>::value &&
+                     is_semiregular<detected_t<value_type_t, T>>::value>>
 {
   using value_type = typename T::value_type;
 
 public:
   static auto constexpr value = is_detected_exact<value_type,
-                                                  process_function_t,
+                                                  call_operator_t,
                                                   T const&,
                                                   Iterator&,
                                                   Sentinel>::value;
