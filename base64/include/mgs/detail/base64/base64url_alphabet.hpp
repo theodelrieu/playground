@@ -35,6 +35,9 @@ constexpr typename base64url_alphabet<Dummy>::alphabet_t
 
 template <typename Dummy>
 constexpr char const base64url_alphabet<Dummy>::encoding_name[];
+
+template <typename Dummy>
+constexpr char const base64url_alphabet<Dummy>::padding_character;
 }
 }
 }

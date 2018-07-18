@@ -33,6 +33,9 @@ constexpr typename base32_alphabet<Dummy>::alphabet_t
 
 template <typename Dummy>
 constexpr char const base32_alphabet<Dummy>::encoding_name[];
+
+template <typename Dummy>
+constexpr char const base32_alphabet<Dummy>::padding_character;
 }
 }
 }

@@ -48,11 +48,10 @@ class base_n_encoder
 public:
   using value_type = boost::container::static_vector<char, 4>;
 
-  // needed by transformer, useless once we use static_vector
+private:
   static constexpr auto nb_output_bytes =
       encoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
-private:
   static constexpr auto nb_input_bytes =
       decoded_bytes<sizeof(EncodingTraits::alphabet)>();
 

@@ -5,8 +5,10 @@
 #include <mgs/detail/meta/aliases.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterator.hpp>
+#include <mgs/detail/meta/concepts/random_access_iterator.hpp>
 #include <mgs/detail/meta/concepts/semiregular.hpp>
 #include <mgs/detail/meta/concepts/sentinel.hpp>
+#include <mgs/detail/meta/concepts/sized_sentinel.hpp>
 #include <mgs/detail/meta/detected.hpp>
 
 // template <typename T, Iterator I, Sentinel<I> S>
@@ -15,6 +17,11 @@
 //   typename T::value_type;
 //   requires Iterable<T::value_type>;
 //   requires SemiRegular<T::value_type>;
+//
+//   requires (T::value_type v) {
+//     { begin(v) } -> RandomAccessIterator;
+//     { end(v) } -> SizedSentinel<decltype(begin(v))>;
+//   }
 //
 //   requires (I& it, S sent) {
 //     a.process(it, sent);
@@ -44,13 +51,18 @@ struct is_input_transformer<
                      is_semiregular<detected_t<value_type_t, T>>::value>>
 {
   using value_type = typename T::value_type;
+  using value_type_iterator = detail2::result_of_begin_t<value_type const>;
+  using value_type_sentinel = detail2::result_of_end_t<value_type const>;
 
 public:
-  static auto constexpr value = is_detected_exact<value_type,
-                                                  call_operator_t,
-                                                  T const&,
-                                                  Iterator&,
-                                                  Sentinel>::value;
+  static auto constexpr value =
+      is_random_access_iterator<value_type_iterator>::value &&
+      is_sized_sentinel<value_type_sentinel, value_type_iterator>::value &&
+      is_detected_exact<value_type,
+                        call_operator_t,
+                        T const&,
+                        Iterator&,
+                        Sentinel>::value;
 };
 }
 }
