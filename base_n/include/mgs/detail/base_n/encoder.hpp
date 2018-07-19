@@ -45,9 +45,6 @@ class base_n_encoder
                     base_n_padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
-public:
-  using value_type = boost::container::static_vector<char, 4>;
-
 private:
   static constexpr auto nb_output_bytes =
       encoded_bytes<sizeof(EncodingTraits::alphabet)>();
@@ -108,6 +105,8 @@ private:
   }
 
 public:
+  using value_type = boost::container::static_vector<char, nb_output_bytes>;
+
   template <typename Iterator, typename Sentinel>
   value_type operator()(Iterator& current, Sentinel const end) const
   {

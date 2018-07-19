@@ -2,11 +2,11 @@
 
 #include <ios>
 
+#include <mgs/detail/adapters/transformer_adapter.hpp>
 #include <mgs/detail/base32/base32_alphabet.hpp>
 #include <mgs/detail/base32/base32hex_alphabet.hpp>
 #include <mgs/detail/base_n/decoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
-#include <mgs/detail/base_n/transformer.hpp>
 
 namespace mgs
 {
@@ -15,18 +15,9 @@ inline namespace v1
 namespace detail
 {
 template <typename Alphabet, base_n_padding_policy PaddingPolicy>
-struct basic_base32_decode_algo_traits : public Alphabet
-{
-  static constexpr auto const padding_policy = PaddingPolicy;
-};
-
-template <typename Alphabet, base_n_padding_policy PaddingPolicy>
 struct basic_base32_decode_traits : public Alphabet
 {
-  using value_type = char;
-  using difference_type = std::streamoff;
-  using algorithm =
-      base_n_decoder<basic_base32_decode_algo_traits<Alphabet, PaddingPolicy>>;
+  static constexpr auto const padding_policy = PaddingPolicy;
 };
 
 using base32_decode_traits =
@@ -38,12 +29,15 @@ using base32hex_decode_traits =
                                base_n_padding_policy::required>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base32_decoder =
-    base_n_transformer<base32_decode_traits, Iterator, Sentinel>;
+using base32_decoder = transformer_adapter<base_n_decoder<base32_decode_traits>,
+                                           Iterator,
+                                           Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base32hex_decoder =
-    base_n_transformer<base32hex_decode_traits, Iterator, Sentinel>;
+    transformer_adapter<base_n_decoder<base32hex_decode_traits>,
+                        Iterator,
+                        Sentinel>;
 }
 }
 }

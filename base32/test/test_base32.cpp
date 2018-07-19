@@ -50,24 +50,24 @@ TEST_CASE("b32 lazy", "[base32]")
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
 
-  using EncoderTraits = detail::base32_encode_traits;
-  using DecoderTraits = detail::base32_decode_traits;
+  using Encoder = detail::base_n_encoder<detail::base32_encode_traits>;
+  using Decoder = detail::base_n_decoder<detail::base32_decode_traits>;
 
   SECTION("encoding")
   {
     SECTION("common_checks")
     {
-      common_checks<EncoderTraits>(decoded, encoded);
+      common_checks<Encoder>(decoded, encoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<EncoderTraits>(decoded.back(), encoded.back());
+      sentinel_check<Encoder>(decoded.back(), encoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<EncoderTraits>(
+      inception_check<Encoder>(
           decoded.back(), encoded.back(), "JVDFER2HLJCEM==="s);
     }
   }
@@ -76,17 +76,17 @@ TEST_CASE("b32 lazy", "[base32]")
   {
     SECTION("common_checks")
     {
-      common_checks<DecoderTraits>(encoded, decoded);
+      common_checks<Decoder>(encoded, decoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<DecoderTraits>(encoded.back(), decoded.back());
+      sentinel_check<Decoder>(encoded.back(), decoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<DecoderTraits>(
+      inception_check<Decoder>(
           "JVDFER2HLJCEM==="s, encoded.back(), decoded.back());
     }
   }
@@ -95,12 +95,12 @@ TEST_CASE("b32 lazy", "[base32]")
   {
     SECTION("decode(encode())")
     {
-      back_and_forth_check<EncoderTraits, DecoderTraits>(decoded.back());
+      back_and_forth_check<Encoder, Decoder>(decoded.back());
     }
 
     SECTION("encode(decode())")
     {
-      back_and_forth_check<DecoderTraits, EncoderTraits>(encoded.back());
+      back_and_forth_check<Decoder, Encoder>(encoded.back());
     }
   }
 
@@ -110,8 +110,8 @@ TEST_CASE("b32 lazy", "[base32]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b32_random_data(testFilePaths[1]);
 
-    stream_check<EncoderTraits>(random_data, b32_random_data);
-    stream_check<DecoderTraits>(b32_random_data, random_data);
+    stream_check<Encoder>(random_data, b32_random_data);
+    stream_check<Decoder>(b32_random_data, random_data);
   }
 
   SECTION("invalid input")
@@ -120,9 +120,8 @@ TEST_CASE("b32 lazy", "[base32]")
         "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
-    invalid_input_checks<DecoderTraits, mgs::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<Decoder, mgs::invalid_input_error>(invalid_chars);
+    invalid_input_checks<Decoder, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
 
@@ -132,14 +131,14 @@ TEST_CASE("base32hex", "[base32]")
   std::vector<std::string> encoded{
       "C4======"s, "C5H0===="s, "C5H66==="s, "C5H66P0="s, "C5H66P35"s};
 
-  using EncoderTraits = detail::base32hex_encode_traits;
-  using DecoderTraits = detail::base32hex_decode_traits;
+  using Encoder = detail::base_n_encoder<detail::base32hex_encode_traits>;
+  using Decoder = detail::base_n_decoder<detail::base32hex_decode_traits>;
 
   SECTION("encoding")
   {
     SECTION("common_checks")
     {
-      common_checks<EncoderTraits>(decoded, encoded);
+      common_checks<Encoder>(decoded, encoded);
     }
   }
 
@@ -147,7 +146,7 @@ TEST_CASE("base32hex", "[base32]")
   {
     SECTION("common_checks")
     {
-      common_checks<DecoderTraits>(encoded, decoded);
+      common_checks<Decoder>(encoded, decoded);
     }
   }
 }
