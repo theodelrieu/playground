@@ -1,4 +1,3 @@
-base32 base16 use transformer_adapter
 base_n/detail/concepts/encoding_traits.hpp
 
 #include <mgs/base64.hpp> // umbrella

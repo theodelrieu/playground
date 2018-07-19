@@ -57,24 +57,24 @@ TEST_CASE("b16 lazy", "[base16]")
       "666F6F626172"s,
   };
 
-  using EncoderTraits = detail::base16_encode_traits;
-  using DecoderTraits = detail::base16_decode_traits;
+  using Encoder = detail::base_n_encoder<detail::base16_encode_traits>;
+  using Decoder = detail::base_n_decoder<detail::base16_decode_traits>;
 
   SECTION("encoding")
   {
     SECTION("common_checks")
     {
-      common_checks<EncoderTraits>(decoded, encoded);
+      common_checks<Encoder>(decoded, encoded);
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<EncoderTraits>(decoded.back(), encoded.back());
+      sentinel_check<Encoder>(decoded.back(), encoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<EncoderTraits>(
+      inception_check<Encoder>(
           decoded.back(), encoded.back(), "363636463646363236313732"s);
     }
   }
@@ -85,7 +85,7 @@ TEST_CASE("b16 lazy", "[base16]")
     {
       SECTION("case sensitive")
       {
-      common_checks<DecoderTraits>(encoded, decoded);
+      common_checks<Decoder>(encoded, decoded);
       }
 
       SECTION("case insensitive")
@@ -99,18 +99,18 @@ TEST_CASE("b16 lazy", "[base16]")
             "666f6f626172"s,
         };
 
-        common_checks<DecoderTraits>(encoded_lower, decoded);
+        common_checks<Decoder>(encoded_lower, decoded);
       }
     }
 
     SECTION("sentinel")
     {
-      sentinel_check<DecoderTraits>(encoded.back(), decoded.back());
+      sentinel_check<Decoder>(encoded.back(), decoded.back());
     }
 
     SECTION("Inception")
     {
-      inception_check<DecoderTraits>(
+      inception_check<Decoder>(
           "363636463646363236313732"s, encoded.back(), decoded.back());
     }
   }
@@ -119,12 +119,12 @@ TEST_CASE("b16 lazy", "[base16]")
   {
     SECTION("decode(encode())")
     {
-      back_and_forth_check<EncoderTraits, DecoderTraits>(decoded.back());
+      back_and_forth_check<Encoder, Decoder>(decoded.back());
     }
 
     SECTION("encode(decode())")
     {
-      back_and_forth_check<DecoderTraits, EncoderTraits>(encoded.back());
+      back_and_forth_check<Decoder, Encoder>(encoded.back());
     }
   }
 
@@ -134,8 +134,8 @@ TEST_CASE("b16 lazy", "[base16]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b16_random_data(testFilePaths[1]);
 
-    stream_check<EncoderTraits>(random_data, b16_random_data);
-    stream_check<DecoderTraits>(b16_random_data, random_data);
+    stream_check<Encoder>(random_data, b16_random_data);
+    stream_check<Decoder>(b16_random_data, random_data);
   }
 
   SECTION("invalid input")
@@ -143,8 +143,8 @@ TEST_CASE("b16 lazy", "[base16]")
     std::vector<std::string> invalid_chars{"="s, "*"s, "0G"s};
     std::vector<std::string> invalid_eof{"0F0"s};
 
-    invalid_input_checks<DecoderTraits, mgs::invalid_input_error>(
+    invalid_input_checks<Decoder, mgs::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<DecoderTraits, mgs::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<Decoder, mgs::unexpected_eof_error>(invalid_eof);
   }
 }
