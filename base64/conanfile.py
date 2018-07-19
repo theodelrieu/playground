@@ -13,7 +13,7 @@ class ConanMgsBase64(ConanFile):
 
     def requirements(self):
         self.requires("mgs_base_n/%s@mgs/testing" % self.version)
-        self.requires("mgs_iterators/%s@mgs/testing" % self.version)
+        self.requires("mgs_adapters/%s@mgs/testing" % self.version)
 
     def build(self):
         cmake = CMake(self)

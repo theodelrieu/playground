@@ -6,6 +6,10 @@ mgs_exceptions:
     folder: exceptions
     includedirs: include
 
+mgs_adapters:
+    folder: adapters
+    includedirs: include
+
 mgs_test_helpers:
     folder: test_helpers
     includedirs: include

@@ -9,7 +9,7 @@ conan_basic_setup(TARGETS)
 
 add_library(mgs_base32 INTERFACE)
 target_include_directories(mgs_base32 INTERFACE include)
-target_link_libraries(mgs_base32 INTERFACE CONAN_PKG::mgs_base_n CONAN_PKG::mgs_iterators)
+target_link_libraries(mgs_base32 INTERFACE CONAN_PKG::mgs_base_n CONAN_PKG::mgs_adapters)
 
 include(CTest)
 

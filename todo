@@ -1,4 +1,3 @@
-put basic_adapter in a different package
 base_n/detail/concepts/encoding_traits.hpp
 
 #include <mgs/base64.hpp> // umbrella

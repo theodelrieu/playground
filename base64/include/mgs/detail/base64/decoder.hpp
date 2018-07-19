@@ -5,7 +5,7 @@
 
 #include <mgs/detail/base64/base64_alphabet.hpp>
 #include <mgs/detail/base64/base64url_alphabet.hpp>
-#include <mgs/detail/base_n/basic_adapter.hpp>
+#include <mgs/detail/adapters/transformer_adapter.hpp>
 #include <mgs/detail/base_n/decoder.hpp>
 #include <mgs/detail/base_n/padding_policy.hpp>
 
@@ -35,15 +35,15 @@ using base64url_unpadded_decode_traits =
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_decoder =
-    basic_adapter<base_n_decoder<base64_decode_traits>, Iterator, Sentinel>;
+    transformer_adapter<base_n_decoder<base64_decode_traits>, Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64url_decoder =
-    basic_adapter<base_n_decoder<base64url_decode_traits>, Iterator, Sentinel>;
+    transformer_adapter<base_n_decoder<base64url_decode_traits>, Iterator, Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64url_unpadded_decoder =
-    basic_adapter<base_n_decoder<base64url_unpadded_decode_traits>,
+    transformer_adapter<base_n_decoder<base64url_unpadded_decode_traits>,
                   Iterator,
                   Sentinel>;
 }

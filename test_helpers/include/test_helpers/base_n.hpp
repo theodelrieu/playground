@@ -80,7 +80,7 @@ void base_n_checks_impl(Container const& source,
   using std::begin;
   using std::end;
 
-  mgs::detail::basic_adapter<InputTransformer, Iterator, Sentinel> adapter(
+  mgs::detail::transformer_adapter<InputTransformer, Iterator, Sentinel> adapter(
       begin(source), end(source));
 
   std::vector<std::uint8_t> const output(adapter.begin(), adapter.end());
@@ -169,7 +169,7 @@ void sentinel_check(std::string const& input, std::string const& output)
   std::stringstream ss{input};
 
   mgs::detail::
-      basic_adapter<InputTransformer, std::istreambuf_iterator<char>, sentinel>
+      transformer_adapter<InputTransformer, std::istreambuf_iterator<char>, sentinel>
       adapter(std::istreambuf_iterator<char>(ss), sentinel{});
 
   std::string s(adapter.begin(), adapter.end());
@@ -181,10 +181,10 @@ void inception_check(std::string const& input,
                      std::string const& first_output,
                      std::string const& final_output)
 {
-  mgs::detail::basic_adapter<InputTransformer, std::string::const_iterator>
+  mgs::detail::transformer_adapter<InputTransformer, std::string::const_iterator>
       first_adapter(input.begin(), input.end());
 
-  mgs::detail::basic_adapter<InputTransformer, decltype(first_adapter.begin())>
+  mgs::detail::transformer_adapter<InputTransformer, decltype(first_adapter.begin())>
       second_adapter(first_adapter.begin(), first_adapter.end());
 
   std::string s(second_adapter.begin(), second_adapter.end());
@@ -194,10 +194,10 @@ void inception_check(std::string const& input,
 template <typename Encoder, typename Decoder>
 void back_and_forth_check(std::string const& input)
 {
-  mgs::detail::basic_adapter<Encoder, std::string::const_iterator> enc(
+  mgs::detail::transformer_adapter<Encoder, std::string::const_iterator> enc(
       input.begin(), input.end());
 
-  mgs::detail::basic_adapter<Decoder, decltype(enc.begin())> dec(enc.begin(),
+  mgs::detail::transformer_adapter<Decoder, decltype(enc.begin())> dec(enc.begin(),
                                                                  enc.end());
 
   std::string s(dec.begin(), dec.end());

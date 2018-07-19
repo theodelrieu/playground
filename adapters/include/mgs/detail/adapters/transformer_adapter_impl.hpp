@@ -6,14 +6,13 @@ namespace mgs
 {
 inline namespace v1
 {
-// TODO namespace input_adapters?
 namespace detail
 {
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::basic_adapter(
-    UnderlyingIterator const& beg, Sentinel const& end)
+transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
+    transformer_adapter(UnderlyingIterator const& beg, Sentinel const& end)
   : _current(beg), _end(end)
 {
   if (_current != _end)
@@ -23,8 +22,8 @@ basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::basic_adapter(
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::get() const
-    -> value_type const&
+auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::get()
+    const -> value_type const&
 {
   using std::begin;
 
@@ -34,7 +33,7 @@ auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::get() const
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
+void transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
     seek_forward(difference_type n)
 {
   assert(n > 0);
@@ -60,7 +59,7 @@ void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
+void transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
     _process_input()
 {
   assert(_current != _end);
@@ -73,8 +72,8 @@ void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::begin()
-    const -> iterator
+auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
+    begin() const -> iterator
 {
   return iterator{*this};
 }
@@ -82,15 +81,15 @@ auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::begin()
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::end() const
-    -> iterator
+auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::end()
+    const -> iterator
 {
   return iterator{{}};
 }
 
 template <typename T, typename U, typename V>
-bool operator==(basic_adapter<T, U, V> const& lhs,
-                basic_adapter<T, U, V> const& rhs)
+bool operator==(transformer_adapter<T, U, V> const& lhs,
+                transformer_adapter<T, U, V> const& rhs)
 {
   using std::begin;
   using std::end;
@@ -112,8 +111,8 @@ bool operator==(basic_adapter<T, U, V> const& lhs,
 }
 
 template <typename T, typename U, typename V>
-bool operator!=(basic_adapter<T, U, V> const& lhs,
-                basic_adapter<T, U, V> const& rhs)
+bool operator!=(transformer_adapter<T, U, V> const& lhs,
+                transformer_adapter<T, U, V> const& rhs)
 {
   return !(lhs == rhs);
 }

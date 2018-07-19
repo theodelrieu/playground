@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/detail/base_n/math.hpp>
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
 #include <mgs/detail/meta/can_call_std.hpp>
 #include <mgs/detail/meta/concepts/byte_integral.hpp>
@@ -21,7 +20,7 @@ namespace detail
 template <typename InputTransformer,
           typename UnderlyingIterator,
           typename Sentinel = UnderlyingIterator>
-class basic_adapter
+class transformer_adapter
 {
   static_assert(detail::is_input_iterator<UnderlyingIterator>::value,
                 "UnderlyingIterator is not an InputIterator");
@@ -34,7 +33,7 @@ class basic_adapter
                 "UnderlyingIterator/Sentinel are invalid)");
 
   using iterator =
-      adaptive_iterator<basic_adapter, std::input_iterator_tag>;
+      adaptive_iterator<transformer_adapter, std::input_iterator_tag>;
 
   using transformer_value_type = typename InputTransformer::value_type;
   using transformer_value_type_iterator =
@@ -48,8 +47,8 @@ public:
   using value_type = typename std::iterator_traits<
       transformer_value_type_iterator>::value_type;
 
-  basic_adapter() = default;
-  basic_adapter(UnderlyingIterator const& begin, Sentinel const& end);
+  transformer_adapter() = default;
+  transformer_adapter(UnderlyingIterator const& begin, Sentinel const& end);
 
   value_type const& get() const;
   void seek_forward(difference_type n);
@@ -67,15 +66,15 @@ private:
   void _process_input();
 
   template <typename T, typename U, typename V>
-  friend bool operator==(basic_adapter<T, U, V> const& lhs,
-                         basic_adapter<T, U, V> const& rhs);
+  friend bool operator==(transformer_adapter<T, U, V> const& lhs,
+                         transformer_adapter<T, U, V> const& rhs);
 };
 
 template <typename T, typename U, typename V>
-bool operator!=(basic_adapter<T, U, V> const& lhs,
-                basic_adapter<T, U, V> const& rhs);
+bool operator!=(transformer_adapter<T, U, V> const& lhs,
+                transformer_adapter<T, U, V> const& rhs);
 }
 }
 }
 
-#include <mgs/detail/base_n/basic_adapter_impl.hpp>
+#include <mgs/detail/adapters/transformer_adapter_impl.hpp>
