@@ -7,9 +7,22 @@ base_n/detail/concepts/encoding_traits.hpp
 
 // codecs
 
+mgs::codecs::base64
+mgs::codecs::base64url
+mgs::codecs::base64url_unpadded
+
+// namespaces
+
+mgs::base_n
+
 mgs::base64
-mgs::base64url
-mgs::base64url_unpadded
+mgs::base64::detail
+
+mgs::meta
+
+// only things useful to everybody
+mgs::detail
+
 
 codecs should be a constexpr instance, not just an alias(?)
 
