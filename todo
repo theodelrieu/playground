@@ -1,5 +1,5 @@
 put basic_adapter in a different package
-expose transformer alias in basic_adapter?
+base_n/detail/concepts/encoding_traits.hpp
 
 #include <mgs/base64.hpp> // umbrella
 

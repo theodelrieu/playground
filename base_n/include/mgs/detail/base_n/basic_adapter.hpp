@@ -18,20 +18,21 @@ inline namespace v1
 {
 namespace detail
 {
-// FIXME move enable_if to static_asserts
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel = UnderlyingIterator,
-          typename = std::enable_if_t<
-              detail::is_input_iterator<UnderlyingIterator>::value &&
-              detail::is_sentinel<Sentinel, UnderlyingIterator>::value &&
-              detail::is_input_transformer<InputTransformer,
-                                           UnderlyingIterator,
-                                           Sentinel>::value &&
-              detail::is_byte_integral<detail::value_type_t<
-                  std::iterator_traits<UnderlyingIterator>>>::value>>
+          typename Sentinel = UnderlyingIterator>
 class basic_adapter
 {
+  static_assert(detail::is_input_iterator<UnderlyingIterator>::value,
+                "UnderlyingIterator is not an InputIterator");
+  static_assert(detail::is_sentinel<Sentinel, UnderlyingIterator>::value,
+                "Sentinel is not a Sentinel<UnderlyingIterator>");
+  static_assert(detail::is_input_transformer<InputTransformer,
+                                             UnderlyingIterator,
+                                             Sentinel>::value,
+                "InputTransformer is not an InputTransformer (or "
+                "UnderlyingIterator/Sentinel are invalid)");
+
   using iterator =
       adaptive_iterator<basic_adapter, std::input_iterator_tag>;
 
@@ -65,14 +66,14 @@ private:
 
   void _process_input();
 
-  template <typename T, typename U, typename V, typename W>
-  friend bool operator==(basic_adapter<T, U, V, W> const& lhs,
-                         basic_adapter<T, U, V, W> const& rhs);
+  template <typename T, typename U, typename V>
+  friend bool operator==(basic_adapter<T, U, V> const& lhs,
+                         basic_adapter<T, U, V> const& rhs);
 };
 
-template <typename T, typename U, typename V, typename W>
-bool operator!=(basic_adapter<T, U, V, W> const& lhs,
-                basic_adapter<T, U, V, W> const& rhs);
+template <typename T, typename U, typename V>
+bool operator!=(basic_adapter<T, U, V> const& lhs,
+                basic_adapter<T, U, V> const& rhs);
 }
 }
 }

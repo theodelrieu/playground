@@ -15,6 +15,7 @@
 #include <mgs/detail/base64/decoder.hpp>
 #include <mgs/detail/base64/encoder.hpp>
 #include <mgs/detail/meta/concepts/derived_from.hpp>
+#include <mgs/detail/meta/concepts/input_transformer.hpp>
 #include <mgs/detail/meta/concepts/iterable.hpp>
 #include <mgs/detail/meta/concepts/iterable_input_adapter.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>

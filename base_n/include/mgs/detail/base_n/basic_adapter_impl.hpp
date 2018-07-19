@@ -11,10 +11,9 @@ namespace detail
 {
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
-    basic_adapter(UnderlyingIterator const& beg, Sentinel const& end)
+          typename Sentinel>
+basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::basic_adapter(
+    UnderlyingIterator const& beg, Sentinel const& end)
   : _current(beg), _end(end)
 {
   if (_current != _end)
@@ -23,10 +22,9 @@ basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
 
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
-    get() const -> value_type const&
+          typename Sentinel>
+auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::get() const
+    -> value_type const&
 {
   using std::begin;
 
@@ -35,9 +33,8 @@ auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
 
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
+          typename Sentinel>
+void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
     seek_forward(difference_type n)
 {
   assert(n > 0);
@@ -62,9 +59,8 @@ void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
 
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
+          typename Sentinel>
+void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
     _process_input()
 {
   assert(_current != _end);
@@ -76,27 +72,25 @@ void basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
 
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::
-    begin() const -> iterator
+          typename Sentinel>
+auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::begin()
+    const -> iterator
 {
   return iterator{*this};
 }
 
 template <typename InputTransformer,
           typename UnderlyingIterator,
-          typename Sentinel,
-          typename SFINAE>
-auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel, SFINAE>::end()
-    const -> iterator
+          typename Sentinel>
+auto basic_adapter<InputTransformer, UnderlyingIterator, Sentinel>::end() const
+    -> iterator
 {
   return iterator{{}};
 }
 
-template <typename T, typename U, typename V, typename W>
-bool operator==(basic_adapter<T, U, V, W> const& lhs,
-                basic_adapter<T, U, V, W> const& rhs)
+template <typename T, typename U, typename V>
+bool operator==(basic_adapter<T, U, V> const& lhs,
+                basic_adapter<T, U, V> const& rhs)
 {
   using std::begin;
   using std::end;
@@ -117,9 +111,9 @@ bool operator==(basic_adapter<T, U, V, W> const& lhs,
          std::tie(rhs._current, rhs._index);
 }
 
-template <typename T, typename U, typename V, typename W>
-bool operator!=(basic_adapter<T, U, V, W> const& lhs,
-                basic_adapter<T, U, V, W> const& rhs)
+template <typename T, typename U, typename V>
+bool operator!=(basic_adapter<T, U, V> const& lhs,
+                basic_adapter<T, U, V> const& rhs)
 {
   return !(lhs == rhs);
 }
