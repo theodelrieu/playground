@@ -119,8 +119,10 @@ TEST_CASE("b32 lazy", "[base32]")
         "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
-    invalid_input_checks<Decoder, mgs::invalid_input_error>(invalid_chars);
-    invalid_input_checks<Decoder, mgs::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<Decoder, mgs::exceptions::invalid_input_error>(
+        invalid_chars);
+    invalid_input_checks<Decoder, mgs::exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }
 

@@ -2,5 +2,5 @@
 
 int main(int argc, char const *argv[])
 {
-  mgs::decode_error err;
+  mgs::exceptions::decode_error err{"", ""};
 }

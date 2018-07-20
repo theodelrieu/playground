@@ -163,9 +163,10 @@ TEST_CASE("b64 lazy", "[base64]")
         "="s, "*"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA==="s, "ZAW@"s};
     std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
-    invalid_input_checks<Decoder, mgs::invalid_input_error>(
+    invalid_input_checks<Decoder, mgs::exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<Decoder, mgs::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<Decoder, mgs::exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }
 

@@ -142,8 +142,9 @@ TEST_CASE("b16 lazy", "[base16]")
     std::vector<std::string> invalid_chars{"="s, "*"s, "0G"s};
     std::vector<std::string> invalid_eof{"0F0"s};
 
-    invalid_input_checks<Decoder, mgs::invalid_input_error>(
+    invalid_input_checks<Decoder, mgs::exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<Decoder, mgs::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<Decoder, mgs::exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }

@@ -42,19 +42,20 @@ private:
       if (c != EncodingTraits::padding_character)
       {
         using namespace std::string_literals;
-        throw invalid_input_error{EncodingTraits::encoding_name,
-                                  "invalid encoded character: '"s + c + "'"};
+        throw exceptions::invalid_input_error{
+            EncodingTraits::encoding_name,
+            "invalid encoded character: '"s + c + "'"};
       }
       if (current == end && n != 1)
       {
-        throw unexpected_eof_error{EncodingTraits::encoding_name,
-                                   "unexpected end of encoded input"};
+        throw exceptions::unexpected_eof_error{
+            EncodingTraits::encoding_name, "unexpected end of encoded input"};
       }
     }
     if (current != end)
     {
-      throw invalid_input_error{EncodingTraits::encoding_name,
-                                "invalid encoded input"};
+      throw exceptions::invalid_input_error{EncodingTraits::encoding_name,
+                                            "invalid encoded input"};
     }
   }
 
@@ -65,15 +66,16 @@ public:
     if (c != EncodingTraits::padding_character)
     {
       using namespace std::string_literals;
-      throw invalid_input_error{EncodingTraits::encoding_name,
-                                "invalid encoded character: '"s + c + "'"};
+      throw exceptions::invalid_input_error{
+          EncodingTraits::encoding_name,
+          "invalid encoded character: '"s + c + "'"};
     }
     // find out if padding character is at a correct position
     auto const res = std::div(i * nb_encoded_bits, 8);
     if (res.quot == 0 || res.rem >= nb_encoded_bits)
     {
-      throw invalid_input_error{EncodingTraits::encoding_name,
-                                "invalid encoded input"};
+      throw exceptions::invalid_input_error{EncodingTraits::encoding_name,
+                                            "invalid encoded input"};
     }
     if (current != sent)
       expect_padding_bytes(current, sent, nb_input_bytes - i - 1);
@@ -87,8 +89,9 @@ struct invalid_character_handler<EncodingTraits, padding_policy::none>
   static void handle(int, char c, Iterator&, Sentinel const)
   {
     using namespace std::string_literals;
-    throw invalid_input_error{EncodingTraits::encoding_name,
-                              "invalid encoded character: '"s + c + "'"};
+    throw exceptions::invalid_input_error{
+        EncodingTraits::encoding_name,
+        "invalid encoded character: '"s + c + "'"};
   }
 };
 }

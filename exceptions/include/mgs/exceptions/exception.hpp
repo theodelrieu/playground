@@ -4,6 +4,8 @@
 
 namespace mgs
 {
+namespace exceptions
+{
 inline namespace v1
 {
 class exception : public std::runtime_error
@@ -11,5 +13,6 @@ class exception : public std::runtime_error
 public:
   using std::runtime_error::runtime_error;
 };
+}
 }
 }
