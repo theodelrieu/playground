@@ -9,7 +9,7 @@
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/iterator.hpp>
 
-#include <mgs/detail/iterators/adaptive_iterator.hpp>
+#include <mgs/iterators/adaptive_iterator.hpp>
 
 using namespace mgs;
 using namespace std::string_literals;
@@ -25,11 +25,11 @@ public:
 
 private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
-  using iterator = detail::adaptive_iterator<
+  using iterator = iterators::adaptive_iterator<
       noop_encoder,
       meta::iterator_category_t<underlying_iterator_traits>>;
 
-  friend detail::adaptive_iterator<
+  friend iterators::adaptive_iterator<
       noop_encoder,
       meta::iterator_category_t<underlying_iterator_traits>>;
 

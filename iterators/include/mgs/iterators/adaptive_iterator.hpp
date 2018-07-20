@@ -8,6 +8,8 @@
 
 namespace mgs
 {
+namespace iterators
+{
 inline namespace v1
 {
 namespace detail
@@ -19,6 +21,7 @@ using is_bidirectional_tag =
 template <typename T>
 using is_random_access_tag =
     meta::is_derived_from<T, std::random_access_iterator_tag>;
+}
 
 template <typename Adapter, typename IteratorTag>
 class adaptive_iterator
@@ -49,36 +52,44 @@ public:
   adaptive_iterator& operator++();
   adaptive_iterator operator++(int);
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_bidirectional_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_bidirectional_tag<Tag>::value>>
   adaptive_iterator& operator--();
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_bidirectional_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_bidirectional_tag<Tag>::value>>
   adaptive_iterator operator--(int);
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   adaptive_iterator& operator+=(difference_type);
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   adaptive_iterator& operator-=(difference_type);
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   adaptive_iterator operator+(difference_type) const;
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   adaptive_iterator operator-(difference_type) const;
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   auto operator-(adaptive_iterator const&) const -> difference_type;
 
-  template <typename Tag = IteratorTag,
-            typename = std::enable_if_t<is_random_access_tag<Tag>::value>>
+  template <
+      typename Tag = IteratorTag,
+      typename = std::enable_if_t<detail::is_random_access_tag<Tag>::value>>
   value_type operator[](difference_type) const;
 
   template <typename T, typename Tag>
@@ -91,7 +102,7 @@ public:
       adaptive_iterator<T, std::random_access_iterator_tag> const&) noexcept;
 
 private:
-  Adapter _encoder;
+  Adapter _adapter;
 };
 
 template <typename Adapter, typename Tag>
@@ -125,4 +136,4 @@ bool operator<=(
 }
 }
 
-#include <mgs/detail/iterators/adaptive_iterator_impl.hpp>
+#include <mgs/iterators/adaptive_iterator_impl.hpp>

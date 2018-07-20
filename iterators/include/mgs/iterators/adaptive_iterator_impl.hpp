@@ -1,22 +1,24 @@
 #pragma once
 
+#include <memory>
+
 namespace mgs
 {
-inline namespace v1
+namespace iterators
 {
-namespace detail
+inline namespace v1
 {
 // input iterator
 template <typename Adapter, typename Tag>
 adaptive_iterator<Adapter, Tag>::adaptive_iterator(Adapter const& e)
-  : _encoder(e)
+  : _adapter(e)
 {
 }
 
 template <typename Adapter, typename Tag>
 auto adaptive_iterator<Adapter, Tag>::operator*() const -> reference
 {
-  return _encoder.get();
+  return _adapter.get();
 }
 
 template <typename Adapter, typename Tag>
@@ -29,7 +31,7 @@ template <typename Adapter, typename Tag>
 auto adaptive_iterator<Adapter, Tag>::operator++()
     -> adaptive_iterator<Adapter, Tag>&
 {
-  _encoder.seek_forward(1);
+  _adapter.seek_forward(1);
   return *this;
 }
 
@@ -46,7 +48,7 @@ template <typename Adapter, typename Tag>
 bool operator==(adaptive_iterator<Adapter, Tag> const& lhs,
                 adaptive_iterator<Adapter, Tag> const& rhs) noexcept
 {
-  return lhs._encoder == rhs._encoder;
+  return lhs._adapter == rhs._adapter;
 }
 
 template <typename Adapter, typename Tag>
@@ -61,7 +63,7 @@ template <typename, typename>
 auto adaptive_iterator<Adapter, Tag>::operator--()
     -> adaptive_iterator<Adapter, Tag>&
 {
-  _encoder.seek_backward(-1);
+  _adapter.seek_backward(-1);
   return *this;
 }
 
@@ -81,9 +83,9 @@ auto adaptive_iterator<Adapter, Tag>::operator+=(difference_type n)
     -> adaptive_iterator<Adapter, Tag>&
 {
   if (n > 0)
-    _encoder.seek_forward(n);
+    _adapter.seek_forward(n);
   else if (n < 0)
-    _encoder.seek_backward(n);
+    _adapter.seek_backward(n);
   return *this;
 }
 
@@ -132,7 +134,7 @@ template <typename, typename>
 auto adaptive_iterator<Adapter, Tag>::operator-(
     adaptive_iterator<Adapter, Tag> const& it) const -> difference_type
 {
-  return _encoder.pos() - it._encoder.pos();
+  return _adapter.pos() - it._adapter.pos();
 }
 
 template <typename Adapter, typename Tag>
@@ -149,7 +151,7 @@ bool operator<(
     adaptive_iterator<Adapter, std::random_access_iterator_tag> const&
         rhs) noexcept
 {
-  return lhs._encoder.pos() < rhs._encoder.pos();
+  return lhs._adapter.pos() < rhs._adapter.pos();
 }
 
 template <typename Adapter>

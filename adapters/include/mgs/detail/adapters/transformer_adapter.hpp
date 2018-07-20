@@ -4,8 +4,7 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/detail/iterators/adaptive_iterator.hpp>
-#include <mgs/meta/can_call_std.hpp>
+#include <mgs/iterators/adaptive_iterator.hpp>
 #include <mgs/meta/concepts/byte_integral.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/input_transformer.hpp>
@@ -32,8 +31,8 @@ class transformer_adapter
                 "InputTransformer is not an InputTransformer (or "
                 "UnderlyingIterator/Sentinel are invalid)");
 
-  using iterator =
-      adaptive_iterator<transformer_adapter, std::input_iterator_tag>;
+  using iterator = iterators::adaptive_iterator<transformer_adapter,
+                                                std::input_iterator_tag>;
 
   using transformer_value_type = typename InputTransformer::value_type;
   using transformer_value_type_iterator =

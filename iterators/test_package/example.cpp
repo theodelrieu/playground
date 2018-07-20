@@ -2,7 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include <mgs/detail/iterators/adaptive_iterator.hpp>
+#include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/meta/aliases.hpp>
 
 namespace
 {
@@ -16,11 +17,11 @@ public:
 private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
   using iterator =
-      detail::adaptive_iterator<noop_encoder, std::input_iterator_tag>;
+      mgs::iterators::adaptive_iterator<noop_encoder, std::input_iterator_tag>;
 
-  friend detail::adaptive_iterator<
+  friend mgs::iterators::adaptive_iterator<
       noop_encoder,
-      detail::iterator_category_t<underlying_iterator_traits>>;
+      mgs::meta::iterator_category_t<underlying_iterator_traits>>;
 
 public:
   using difference_type = typename underlying_iterator_traits::difference_type;
@@ -86,5 +87,7 @@ bool operator!=(noop_encoder<T, U> const& lhs,
 
 int main(int argc, char const *argv[])
 {
-  mgs::detail::adaptive_iterator<noop_encoder<char*>> it;
+  mgs::iterators::adaptive_iterator<noop_encoder<char*>,
+                                    std::input_iterator_tag>
+      it;
 }
