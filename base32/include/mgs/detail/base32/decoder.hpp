@@ -2,9 +2,9 @@
 
 #include <ios>
 
+#include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/base_n/basic_decoder.hpp>
 #include <mgs/base_n/padding_policy.hpp>
-#include <mgs/detail/adapters/transformer_adapter.hpp>
 #include <mgs/detail/base32/base32_alphabet.hpp>
 #include <mgs/detail/base32/base32hex_alphabet.hpp>
 
@@ -30,15 +30,15 @@ using base32hex_decode_traits =
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base32_decoder =
-    transformer_adapter<base_n::basic_decoder<base32_decode_traits>,
-                        Iterator,
-                        Sentinel>;
+    adapters::transformer_adapter<base_n::basic_decoder<base32_decode_traits>,
+                                  Iterator,
+                                  Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base32hex_decoder =
-    transformer_adapter<base_n::basic_decoder<base32hex_decode_traits>,
-                        Iterator,
-                        Sentinel>;
+using base32hex_decoder = adapters::transformer_adapter<
+    base_n::basic_decoder<base32hex_decode_traits>,
+    Iterator,
+    Sentinel>;
 }
 }
 }

@@ -12,9 +12,9 @@
 
 namespace mgs
 {
-inline namespace v1
+namespace adapters
 {
-namespace detail
+inline namespace v1
 {
 template <typename InputTransformer,
           typename UnderlyingIterator,
@@ -76,4 +76,4 @@ bool operator!=(transformer_adapter<T, U, V> const& lhs,
 }
 }
 
-#include <mgs/detail/adapters/transformer_adapter_impl.hpp>
+#include <mgs/adapters/detail/transformer_adapter_impl.hpp>

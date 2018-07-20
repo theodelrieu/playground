@@ -2,9 +2,9 @@
 
 #include <ios>
 
+#include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/base_n/basic_encoder.hpp>
 #include <mgs/base_n/padding_policy.hpp>
-#include <mgs/detail/adapters/transformer_adapter.hpp>
 #include <mgs/detail/base16/base16_alphabet.hpp>
 
 namespace mgs
@@ -20,9 +20,9 @@ struct base16_encode_traits : base16_alphabet<>
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base16_encoder =
-    transformer_adapter<base_n::basic_encoder<base16_encode_traits>,
-                        Iterator,
-                        Sentinel>;
+    adapters::transformer_adapter<base_n::basic_encoder<base16_encode_traits>,
+                                  Iterator,
+                                  Sentinel>;
 }
 }
 }

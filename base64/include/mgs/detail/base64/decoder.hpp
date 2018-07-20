@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <ios>
 
+#include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/base_n/basic_decoder.hpp>
 #include <mgs/base_n/padding_policy.hpp>
-#include <mgs/detail/adapters/transformer_adapter.hpp>
 #include <mgs/detail/base64/base64_alphabet.hpp>
 #include <mgs/detail/base64/base64url_alphabet.hpp>
 
@@ -35,21 +35,21 @@ using base64url_unpadded_decode_traits =
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base64_decoder =
-    transformer_adapter<base_n::basic_decoder<base64_decode_traits>,
-                        Iterator,
-                        Sentinel>;
+    adapters::transformer_adapter<base_n::basic_decoder<base64_decode_traits>,
+                                  Iterator,
+                                  Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64url_decoder =
-    transformer_adapter<base_n::basic_decoder<base64url_decode_traits>,
-                        Iterator,
-                        Sentinel>;
+using base64url_decoder = adapters::transformer_adapter<
+    base_n::basic_decoder<base64url_decode_traits>,
+    Iterator,
+    Sentinel>;
 
 template <typename Iterator, typename Sentinel = Iterator>
-using base64url_unpadded_decoder =
-    transformer_adapter<base_n::basic_decoder<base64url_unpadded_decode_traits>,
-                        Iterator,
-                        Sentinel>;
+using base64url_unpadded_decoder = adapters::transformer_adapter<
+    base_n::basic_decoder<base64url_unpadded_decode_traits>,
+    Iterator,
+    Sentinel>;
 }
 }
 }
