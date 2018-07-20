@@ -13,7 +13,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/detail/base_n/base_n.hpp>
+#include <mgs/base_n/base_n.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>

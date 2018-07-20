@@ -8,49 +8,28 @@
 
 #include <boost/container/static_vector.hpp>
 
-#include <mgs/detail/base_n/math.hpp>
-#include <mgs/detail/base_n/padding_policy.hpp>
+#include <mgs/base_n/detail/math.hpp>
+#include <mgs/base_n/detail/padding_writer.hpp>
+#include <mgs/base_n/padding_policy.hpp>
 
 namespace mgs
 {
+namespace base_n
+{
 inline namespace v1
 {
-namespace detail
-{
-template <typename EncodingTraits,
-          base_n_padding_policy Policy = EncodingTraits::padding_policy>
-struct padding_writer
-{
-  template <typename OutputIterator>
-  static void write(OutputIterator, int)
-  {
-  }
-};
-
 template <typename EncodingTraits>
-struct padding_writer<EncodingTraits, base_n_padding_policy::required>
+class basic_encoder
 {
-  template <typename OutputIterator>
-  static void write(OutputIterator out, int n)
-  {
-    while (n-- > 0)
-      *out++ = EncodingTraits::padding_character;
-  }
-};
-
-template <typename EncodingTraits>
-class base_n_encoder
-{
-  static_assert(EncodingTraits::padding_policy !=
-                    base_n_padding_policy::optional,
+  static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
 private:
   static constexpr auto nb_output_bytes =
-      encoded_bytes<sizeof(EncodingTraits::alphabet)>();
+      detail::encoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
   static constexpr auto nb_input_bytes =
-      decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+      detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
   static constexpr auto nb_input_bits = nb_input_bytes * 8;
   static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
@@ -100,7 +79,7 @@ private:
       *out++ = EncodingTraits::alphabet[index];
     }
 
-    padding_writer<EncodingTraits>::write(
+    detail::padding_writer<EncodingTraits>::write(
         out, nb_output_bytes - res.nb_non_padded_bytes);
   }
 

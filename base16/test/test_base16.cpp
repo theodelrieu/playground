@@ -56,8 +56,8 @@ TEST_CASE("b16 lazy", "[base16]")
       "666F6F626172"s,
   };
 
-  using Encoder = detail::base_n_encoder<detail::base16_encode_traits>;
-  using Decoder = detail::base_n_decoder<detail::base16_decode_traits>;
+  using Encoder = base_n::basic_encoder<detail::base16_encode_traits>;
+  using Decoder = base_n::basic_decoder<detail::base16_decode_traits>;
 
   SECTION("encoding")
   {

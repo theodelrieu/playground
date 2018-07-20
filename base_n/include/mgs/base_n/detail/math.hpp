@@ -5,6 +5,8 @@
 
 namespace mgs
 {
+namespace base_n
+{
 inline namespace v1
 {
 namespace detail
@@ -76,6 +78,7 @@ template <std::size_t AlphabetSize>
 constexpr std::size_t encoded_bytes()
 {
   return encoding_bytes<AlphabetSize>().second;
+}
 }
 }
 }

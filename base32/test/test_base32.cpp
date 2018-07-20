@@ -49,8 +49,8 @@ TEST_CASE("b32 lazy", "[base32]")
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
 
-  using Encoder = detail::base_n_encoder<detail::base32_encode_traits>;
-  using Decoder = detail::base_n_decoder<detail::base32_decode_traits>;
+  using Encoder = base_n::basic_encoder<detail::base32_encode_traits>;
+  using Decoder = base_n::basic_decoder<detail::base32_decode_traits>;
 
   SECTION("encoding")
   {
@@ -130,8 +130,8 @@ TEST_CASE("base32hex", "[base32]")
   std::vector<std::string> encoded{
       "C4======"s, "C5H0===="s, "C5H66==="s, "C5H66P0="s, "C5H66P35"s};
 
-  using Encoder = detail::base_n_encoder<detail::base32hex_encode_traits>;
-  using Decoder = detail::base_n_decoder<detail::base32hex_decode_traits>;
+  using Encoder = base_n::basic_encoder<detail::base32hex_encode_traits>;
+  using Decoder = base_n::basic_decoder<detail::base32hex_decode_traits>;
 
   SECTION("encoding")
   {

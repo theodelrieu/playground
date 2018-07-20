@@ -12,14 +12,16 @@
 
 #include <catch.hpp>
 
+#include <mgs/base_n/basic_decoder.hpp>
+#include <mgs/base_n/basic_encoder.hpp>
 #include <mgs/detail/base64/decoder.hpp>
 #include <mgs/detail/base64/encoder.hpp>
+#include <mgs/exceptions/invalid_input_error.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/input_transformer.hpp>
 #include <mgs/meta/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
-#include <mgs/exceptions/invalid_input_error.hpp>
-#include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/base_n.hpp>
 
@@ -61,7 +63,7 @@ struct custom_base64_alphabet
 
   static constexpr char const encoding_name[] = "base64custom";
   static constexpr char const padding_character = '#';
-  static constexpr auto const padding_policy = detail::base_n_padding_policy::required;
+  static constexpr auto const padding_policy = base_n::padding_policy::required;
 
   static constexpr auto find_char(char c)
   {
@@ -93,8 +95,8 @@ TEST_CASE("b64 lazy", "[base64]")
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
 
-  using Encoder = detail::base_n_encoder<detail::base64_encode_traits>;
-  using Decoder = detail::base_n_decoder<detail::base64_decode_traits>;
+  using Encoder = base_n::basic_encoder<detail::base64_encode_traits>;
+  using Decoder = base_n::basic_decoder<detail::base64_decode_traits>;
 
   SECTION("encoding")
   {
@@ -185,9 +187,9 @@ TEST_CASE("base64url_unpadded", "[base64]")
   std::vector<std::string> encoded_padded{"YWJjZA=="s, "YWJjZGU="s};
 
   using Encoder =
-      detail::base_n_encoder<detail::base64url_unpadded_encode_traits>;
+      base_n::basic_encoder<detail::base64url_unpadded_encode_traits>;
   using Decoder =
-      detail::base_n_decoder<detail::base64url_unpadded_decode_traits>;
+      base_n::basic_decoder<detail::base64url_unpadded_decode_traits>;
 
   SECTION("encode")
   {
@@ -205,8 +207,8 @@ TEST_CASE("Custom base64 alphabet", "[base64]")
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"Y`5jZ0##"s, "Y`5jZ4}#"s, "Y`5jZ4~m"s};
 
-  using Encoder = detail::base_n_encoder<custom_base64_encode_traits>;
-  using Decoder = detail::base_n_decoder<custom_base64_decode_traits>;
+  using Encoder = base_n::basic_encoder<custom_base64_encode_traits>;
+  using Decoder = base_n::basic_decoder<custom_base64_decode_traits>;
 
   SECTION("encode")
   {
