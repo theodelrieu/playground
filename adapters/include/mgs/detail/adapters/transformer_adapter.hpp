@@ -5,11 +5,11 @@
 #include <type_traits>
 
 #include <mgs/detail/iterators/adaptive_iterator.hpp>
-#include <mgs/detail/meta/can_call_std.hpp>
-#include <mgs/detail/meta/concepts/byte_integral.hpp>
-#include <mgs/detail/meta/concepts/input_iterator.hpp>
-#include <mgs/detail/meta/concepts/input_transformer.hpp>
-#include <mgs/detail/meta/concepts/sentinel.hpp>
+#include <mgs/meta/can_call_std.hpp>
+#include <mgs/meta/concepts/byte_integral.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/input_transformer.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 
 namespace mgs
 {
@@ -22,13 +22,13 @@ template <typename InputTransformer,
           typename Sentinel = UnderlyingIterator>
 class transformer_adapter
 {
-  static_assert(detail::is_input_iterator<UnderlyingIterator>::value,
+  static_assert(meta::is_input_iterator<UnderlyingIterator>::value,
                 "UnderlyingIterator is not an InputIterator");
-  static_assert(detail::is_sentinel<Sentinel, UnderlyingIterator>::value,
+  static_assert(meta::is_sentinel<Sentinel, UnderlyingIterator>::value,
                 "Sentinel is not a Sentinel<UnderlyingIterator>");
-  static_assert(detail::is_input_transformer<InputTransformer,
-                                             UnderlyingIterator,
-                                             Sentinel>::value,
+  static_assert(meta::is_input_transformer<InputTransformer,
+                                           UnderlyingIterator,
+                                           Sentinel>::value,
                 "InputTransformer is not an InputTransformer (or "
                 "UnderlyingIterator/Sentinel are invalid)");
 
@@ -37,7 +37,7 @@ class transformer_adapter
 
   using transformer_value_type = typename InputTransformer::value_type;
   using transformer_value_type_iterator =
-      detail2::result_of_begin_t<transformer_value_type>;
+      meta::result_of_begin_t<transformer_value_type>;
 
 public:
   using underlying_iterator = UnderlyingIterator;
@@ -60,7 +60,7 @@ private:
   UnderlyingIterator _current{};
   Sentinel _end{};
   transformer_value_type _transformed{};
-  difference_type_t<std::iterator_traits<transformer_value_type_iterator>>
+  meta::difference_type_t<std::iterator_traits<transformer_value_type_iterator>>
       _index{0};
 
   void _process_input();

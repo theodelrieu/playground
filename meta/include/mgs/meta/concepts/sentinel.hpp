@@ -2,16 +2,16 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/concepts/iterator.hpp>
-#include <mgs/detail/meta/concepts/semiregular.hpp>
-#include <mgs/detail/meta/concepts/weakly_equality_comparable_with.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename Iterator>
 struct is_sentinel

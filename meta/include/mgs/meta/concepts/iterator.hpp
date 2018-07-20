@@ -3,16 +3,16 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/semiregular.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/detected.hpp>
 
 // concept Iterator: http://en.cppreference.com/w/cpp/concept/Iterator
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T>
 struct is_valid_iterator_traits : std::false_type

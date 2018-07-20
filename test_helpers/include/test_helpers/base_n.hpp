@@ -14,9 +14,9 @@
 #include <catch.hpp>
 
 #include <mgs/detail/base_n/base_n.hpp>
-#include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/iterable_input_adapter.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
+#include <mgs/meta/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
@@ -63,19 +63,18 @@ bool operator!=(sentinel s, std::istreambuf_iterator<char> rhs) noexcept
 }
 
 static_assert(
-    mgs::detail::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
+    mgs::meta::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
     "");
 
 static_assert(
-    !mgs::detail::is_sentinel<sentinel, std::vector<char>::iterator>::value,
-    "");
+    !mgs::meta::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
 
 template <typename InputTransformer, typename Container, typename Iterable>
 void base_n_checks_impl(Container const& source,
                         Iterable const& expected_output)
 {
-  using Iterator = mgs::detail2::result_of_begin_t<Container>;
-  using Sentinel = mgs::detail2::result_of_end_t<Container>;
+  using Iterator = mgs::meta::result_of_begin_t<Container>;
+  using Sentinel = mgs::meta::result_of_end_t<Container>;
 
   using std::begin;
   using std::end;

@@ -2,13 +2,13 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/concepts/swappable.hpp>
+#include <mgs/meta/concepts/swappable.hpp>
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename = void>
 struct is_semiregular

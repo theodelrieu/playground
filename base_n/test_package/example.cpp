@@ -1,4 +1,4 @@
-#include <mgs/detail/meta/concepts/is_iterator.hpp>
+#include <mgs/meta/concepts/is_iterator.hpp>
 
 int main(int argc, char const *argv[])
 {

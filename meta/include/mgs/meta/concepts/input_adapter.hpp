@@ -2,11 +2,11 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/iterator.hpp>
-#include <mgs/detail/meta/concepts/regular.hpp>
-#include <mgs/detail/meta/concepts/sentinel.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/regular.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/detected.hpp>
 
 // template <typename T>
 // concept InputAdapter = requires(T const& v, T& u) {
@@ -26,9 +26,9 @@
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename = void>
 struct is_input_adapter : std::false_type

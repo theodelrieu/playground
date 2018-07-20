@@ -2,9 +2,9 @@
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename...>
 using void_t = void;

@@ -2,14 +2,14 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/void_t.hpp>
+#include <mgs/meta/void_t.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/is_detected
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 struct nonesuch
 {

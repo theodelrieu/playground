@@ -3,18 +3,18 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/incrementable.hpp>
-#include <mgs/detail/meta/concepts/input_iterator.hpp>
-#include <mgs/detail/meta/concepts/sentinel.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
+#include <mgs/meta/concepts/incrementable.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/detected.hpp>
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T>
 struct is_forward_iterator

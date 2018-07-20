@@ -2,15 +2,15 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/strict_totally_ordered.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/strict_totally_ordered.hpp>
+#include <mgs/meta/detected.hpp>
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
 template <typename T, typename U>

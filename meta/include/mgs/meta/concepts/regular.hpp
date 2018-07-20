@@ -2,14 +2,14 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/concepts/equality_comparable.hpp>
-#include <mgs/detail/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/equality_comparable.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename = void>
 struct is_regular : std::integral_constant<bool,

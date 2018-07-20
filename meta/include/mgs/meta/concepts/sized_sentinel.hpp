@@ -2,16 +2,16 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/sentinel.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/detected.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename Iterator>
 struct is_sized_sentinel

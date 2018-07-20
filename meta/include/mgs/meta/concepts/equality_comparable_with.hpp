@@ -2,15 +2,15 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/concepts/equality_comparable.hpp>
-#include <mgs/detail/meta/concepts/weakly_equality_comparable_with.hpp>
+#include <mgs/meta/concepts/equality_comparable.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/EqualityComparable
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename U, typename = void>
 struct is_equality_comparable_with : std::false_type

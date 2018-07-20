@@ -2,15 +2,15 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/detected.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/DerivedFrom
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename U>
 struct is_derived_from

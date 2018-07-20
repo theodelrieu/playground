@@ -10,9 +10,9 @@
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T>
 struct is_byte_integral

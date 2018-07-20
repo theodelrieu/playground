@@ -2,8 +2,8 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/concepts/input_adapter.hpp>
-#include <mgs/detail/meta/concepts/iterable.hpp>
+#include <mgs/meta/concepts/input_adapter.hpp>
+#include <mgs/meta/concepts/iterable.hpp>
 
 // template <typename T>
 // concept IterableInputAdapter = requires(T const&) {
@@ -13,9 +13,9 @@
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T>
 struct is_iterable_input_adapter

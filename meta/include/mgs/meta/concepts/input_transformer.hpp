@@ -2,14 +2,14 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/iterator.hpp>
-#include <mgs/detail/meta/concepts/random_access_iterator.hpp>
-#include <mgs/detail/meta/concepts/semiregular.hpp>
-#include <mgs/detail/meta/concepts/sentinel.hpp>
-#include <mgs/detail/meta/concepts/sized_sentinel.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/random_access_iterator.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/detected.hpp>
 
 // template <typename T, Iterator I, Sentinel<I> S>
 // concept BlockInputTransformer = requires(T const& a) {
@@ -30,9 +30,9 @@
 // }
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T, typename Iterator, typename Sentinel, typename = void>
 struct is_input_transformer : std::false_type
@@ -51,8 +51,8 @@ struct is_input_transformer<
                      is_semiregular<detected_t<value_type_t, T>>::value>>
 {
   using value_type = typename T::value_type;
-  using value_type_iterator = detail2::result_of_begin_t<value_type const>;
-  using value_type_sentinel = detail2::result_of_end_t<value_type const>;
+  using value_type_iterator = result_of_begin_t<value_type const>;
+  using value_type_sentinel = result_of_end_t<value_type const>;
 
 public:
   static auto constexpr value =

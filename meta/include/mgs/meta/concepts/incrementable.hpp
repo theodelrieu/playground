@@ -2,16 +2,16 @@
 
 #include <type_traits>
 
-#include <mgs/detail/meta/aliases.hpp>
-#include <mgs/detail/meta/concepts/regular.hpp>
-#include <mgs/detail/meta/concepts/weakly_incrementable.hpp>
-#include <mgs/detail/meta/detected.hpp>
+#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/concepts/regular.hpp>
+#include <mgs/meta/concepts/weakly_incrementable.hpp>
+#include <mgs/meta/detected.hpp>
 
 namespace mgs
 {
-inline namespace v1
+namespace meta
 {
-namespace detail
+inline namespace v1
 {
 template <typename T>
 struct is_incrementable

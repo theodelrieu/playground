@@ -13,9 +13,9 @@
 
 #include <mgs/detail/base32/decoder.hpp>
 #include <mgs/detail/base32/encoder.hpp>
-#include <mgs/detail/meta/concepts/derived_from.hpp>
-#include <mgs/detail/meta/concepts/iterable.hpp>
-#include <mgs/detail/meta/concepts/iterable_input_adapter.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
+#include <mgs/meta/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterable_input_adapter.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -32,15 +32,14 @@ using b32_encoder = detail::base32_encoder<Iterator, Sentinel>;
 template <typename Iterator, typename Sentinel = Iterator>
 using b32_decoder = detail::base32_decoder<Iterator, Sentinel>;
 
-static_assert(
-    detail::is_iterable_input_adapter<b32_encoder<char*>>::value, "");
-static_assert(detail::is_iterable_input_adapter<
+static_assert(meta::is_iterable_input_adapter<b32_encoder<char*>>::value, "");
+static_assert(meta::is_iterable_input_adapter<
                   b32_encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(detail::is_iterable_input_adapter<
+static_assert(meta::is_iterable_input_adapter<
                   b32_encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(detail::is_iterable_input_adapter<
+static_assert(meta::is_iterable_input_adapter<
                   b32_encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
