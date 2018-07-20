@@ -2,14 +2,18 @@
 
 #include <algorithm>
 
+#include <mgs/base_n/padding_policy.hpp>
+
 namespace mgs
+{
+namespace base64
 {
 inline namespace v1
 {
 namespace detail
 {
-template <typename = void>
-struct base64url_alphabet
+template <base_n::padding_policy PaddingPolicy>
+struct basic_traits_url
 {
   using alphabet_t = char const[64];
 
@@ -20,8 +24,8 @@ struct base64url_alphabet
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
-  static constexpr auto const padding_character = '=';
   static constexpr char const encoding_name[] = "base64url";
+  static constexpr char const padding_character = '=';
 
   static constexpr auto find_char(char c)
   {
@@ -29,15 +33,16 @@ struct base64url_alphabet
   }
 };
 
-template <typename Dummy>
-constexpr typename base64url_alphabet<Dummy>::alphabet_t
-    base64url_alphabet<Dummy>::alphabet;
+template <base_n::padding_policy PaddingPolicy>
+constexpr typename basic_traits_url<PaddingPolicy>::alphabet_t
+    basic_traits_url<PaddingPolicy>::alphabet;
 
-template <typename Dummy>
-constexpr char const base64url_alphabet<Dummy>::encoding_name[];
+template <base_n::padding_policy PaddingPolicy>
+constexpr char const basic_traits_url<PaddingPolicy>::encoding_name[];
 
-template <typename Dummy>
-constexpr char const base64url_alphabet<Dummy>::padding_character;
+template <base_n::padding_policy PaddingPolicy>
+constexpr char const basic_traits_url<PaddingPolicy>::padding_character;
+}
 }
 }
 }

@@ -2,14 +2,18 @@
 
 #include <algorithm>
 
+#include <mgs/base_n/padding_policy.hpp>
+
 namespace mgs
+{
+namespace base64
 {
 inline namespace v1
 {
 namespace detail
 {
-template <typename = void>
-struct base64_alphabet
+template <base_n::padding_policy PaddingPolicy>
+struct basic_traits
 {
   using alphabet_t = char const[64];
 
@@ -29,15 +33,16 @@ struct base64_alphabet
   }
 };
 
-template <typename Dummy>
-constexpr typename base64_alphabet<Dummy>::alphabet_t
-    base64_alphabet<Dummy>::alphabet;
+template <base_n::padding_policy PaddingPolicy>
+constexpr typename basic_traits<PaddingPolicy>::alphabet_t
+    basic_traits<PaddingPolicy>::alphabet;
 
-template <typename Dummy>
-constexpr char const base64_alphabet<Dummy>::encoding_name[];
+template <base_n::padding_policy PaddingPolicy>
+constexpr char const basic_traits<PaddingPolicy>::encoding_name[];
 
-template <typename Dummy>
-constexpr char const base64_alphabet<Dummy>::padding_character;
+template <base_n::padding_policy PaddingPolicy>
+constexpr char const basic_traits<PaddingPolicy>::padding_character;
+}
 }
 }
 }
