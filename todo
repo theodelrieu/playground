@@ -23,8 +23,38 @@ mgs::meta
 // only things useful to everybody
 mgs::detail
 
+// classes
+
+mgs::base_n::basic_encoder
+mgs::base_n::basic_decoder
+mgs::base_n::padding_policy
+mgs::base_n::detail::log2
+
+mgs::base64::basic_encoder
+mgs::base64::basic_decoder
+mgs::base64::alphabet
+mgs::base64::url_alphabet
+mgs::base64::url_unpadded_alphabet
+mgs::base64::encoder_traits
+mgs::base64::decoder_traits
+mgs::base64::url_encoder_traits
+mgs::base64::url_decoder_traits
+mgs::base64::url_unpadded_encoder_traits
+mgs::base64::url_unpadded_decoder_traits
+
+mgs::base64::encoder
+mgs::base64::decoder
+mgs::base64::url_encoder
+mgs::base64::url_decoder
+mgs::base64::url_unpadded_encoder
+mgs::base64::url_unpadded_decoder
+
+mgs::codecs::basic_codec
+mgs::codecs::base64
+mgs::codecs::base64url
+mgs::codecs::base64url_unpadded
+
+using mgs::codecs::base64;
 
 codecs should be a constexpr instance, not just an alias(?)
-
-encoders are left in detail, aliased inside codec.
 
