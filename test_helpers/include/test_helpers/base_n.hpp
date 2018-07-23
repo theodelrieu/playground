@@ -70,7 +70,7 @@ static_assert(
 static_assert(
     !mgs::meta::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
 
-template <typename InputTransformer, typename Container, typename Iterable>
+template <template <typename ...> class Adapter, typename Container, typename Iterable>
 void base_n_checks_impl(Container const& source,
                         Iterable const& expected_output)
 {
@@ -80,8 +80,7 @@ void base_n_checks_impl(Container const& source,
   using std::begin;
   using std::end;
 
-  mgs::adapters::transformer_adapter<InputTransformer, Iterator, Sentinel>
-      adapter(begin(source), end(source));
+  Adapter<Iterator, Sentinel> adapter(begin(source), end(source));
 
   std::vector<std::uint8_t> const output(adapter.begin(), adapter.end());
   std::vector<std::uint8_t> const expected(expected_output.begin(),
@@ -90,7 +89,7 @@ void base_n_checks_impl(Container const& source,
   CHECK(output == expected);
 }
 
-template <typename InputTransformer,
+template <template <typename...> class Adapter,
           typename Container,
           typename Iterable,
           typename Iterable2>
@@ -101,10 +100,10 @@ void base_n_checks(Iterable const& source, Iterable2 const& expected)
 
   Container cont(begin(source), end(source));
 
-  base_n_checks_impl<InputTransformer>(cont, expected);
+  base_n_checks_impl<Adapter>(cont, expected);
 }
 
-template <typename InputTransformer,
+template <template <typename...> class Adapter,
           typename Container,
           typename Input,
           typename Output>
@@ -114,10 +113,10 @@ void base_n_checks(std::vector<Input> const& inputs,
   REQUIRE(inputs.size() == outputs.size());
 
   for (auto i = 0; i < inputs.size(); ++i)
-    base_n_checks<InputTransformer, Container>(inputs[i], outputs[i]);
+    base_n_checks<Adapter, Container>(inputs[i], outputs[i]);
 }
 
-template <typename InputTransformer, typename Input, typename Output>
+template <template <typename...> class Adapter, typename Input, typename Output>
 void common_checks(std::vector<Input> const& inputs,
                    std::vector<Output> const& outputs)
 {
@@ -125,24 +124,24 @@ void common_checks(std::vector<Input> const& inputs,
   {
     using namespace std::string_literals;
 
-    base_n_checks_impl<InputTransformer>(""s, ""s);
+    base_n_checks_impl<Adapter>(""s, ""s);
   }
 
   SECTION("RandomAccessIterator")
   {
     SECTION("std::string")
     {
-      base_n_checks<InputTransformer, std::string>(inputs, outputs);
+      base_n_checks<Adapter, std::string>(inputs, outputs);
     }
 
     SECTION("std::vector")
     {
-      base_n_checks<InputTransformer, std::vector<char>>(inputs, outputs);
+      base_n_checks<Adapter, std::vector<char>>(inputs, outputs);
     }
 
     SECTION("std::deque")
     {
-      base_n_checks<InputTransformer, std::deque<char>>(inputs, outputs);
+      base_n_checks<Adapter, std::deque<char>>(inputs, outputs);
     }
   }
 
@@ -150,7 +149,7 @@ void common_checks(std::vector<Input> const& inputs,
   {
     SECTION("std::list")
     {
-      base_n_checks<InputTransformer, std::list<char>>(inputs, outputs);
+      base_n_checks<Adapter, std::list<char>>(inputs, outputs);
     }
   }
 
@@ -158,69 +157,64 @@ void common_checks(std::vector<Input> const& inputs,
   {
     SECTION("std::forward_list")
     {
-      base_n_checks<InputTransformer, std::forward_list<char>>(inputs, outputs);
+      base_n_checks<Adapter, std::forward_list<char>>(inputs, outputs);
     }
   }
 }
 
-template <typename InputTransformer>
+template <template <typename...> class Adapter>
 void sentinel_check(std::string const& input, std::string const& output)
 {
   std::stringstream ss{input};
 
-  mgs::adapters::transformer_adapter<InputTransformer,
-                                     std::istreambuf_iterator<char>,
-                                     sentinel>
-  adapter(std::istreambuf_iterator<char>(ss), sentinel{});
+  Adapter<std::istreambuf_iterator<char>, sentinel> adapter(
+      std::istreambuf_iterator<char>(ss), sentinel{});
 
   std::string s(adapter.begin(), adapter.end());
   CHECK(s == output);
 }
 
-template <typename InputTransformer>
+template <template <typename...> class Adapter>
 void inception_check(std::string const& input,
                      std::string const& first_output,
                      std::string const& final_output)
 {
-  mgs::adapters::transformer_adapter<InputTransformer,
-                                     std::string::const_iterator>
-      first_adapter(input.begin(), input.end());
+  Adapter<std::string::const_iterator> first_adapter(input.begin(),
+                                                     input.end());
 
-  mgs::adapters::transformer_adapter<InputTransformer,
-                                     decltype(first_adapter.begin())>
-      second_adapter(first_adapter.begin(), first_adapter.end());
+  Adapter<decltype(first_adapter.begin())> second_adapter(first_adapter.begin(),
+                                                          first_adapter.end());
 
   std::string s(second_adapter.begin(), second_adapter.end());
   CHECK(s == final_output);
 }
 
-template <typename Encoder, typename Decoder>
+template <template <typename...> class EncodingAdapter,
+          template <typename...> class DecodingAdapter>
 void back_and_forth_check(std::string const& input)
 {
-  mgs::adapters::transformer_adapter<Encoder, std::string::const_iterator> enc(
-      input.begin(), input.end());
+  EncodingAdapter<std::string::const_iterator> enc(input.begin(), input.end());
 
-  mgs::adapters::transformer_adapter<Decoder, decltype(enc.begin())> dec(
-      enc.begin(), enc.end());
+  DecodingAdapter<decltype(enc.begin())> dec(enc.begin(), enc.end());
 
   std::string s(dec.begin(), dec.end());
   CHECK(s == input);
 }
 
-template <typename InputTransformer>
+template <template <typename...> class Adapter>
 void stream_check(std::istream& input, std::istream& output)
 {
   stream_iterable_adapter iterable_input{input};
   stream_iterable_adapter iterable_output{output};
 
-  base_n_checks_impl<InputTransformer>(iterable_input, iterable_output);
+  base_n_checks_impl<Adapter>(iterable_input, iterable_output);
 }
 
-template <typename Decoder, typename Exception>
+template <template <typename...> class DecodingAdapter, typename Exception>
 void invalid_input_checks(std::vector<std::string> const& inputs)
 {
   using namespace std::string_literals;
 
   for (auto const& input : inputs)
-    CHECK_THROWS_AS(base_n_checks_impl<Decoder>(input, ""s), Exception);
+    CHECK_THROWS_AS(base_n_checks_impl<DecodingAdapter>(input, ""s), Exception);
 }

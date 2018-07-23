@@ -12,3 +12,5 @@ set(ExternalData_URL_TEMPLATES
 
 ExternalData_Add_Test(base32_data NAME test_base32 COMMAND test_base32 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b32})
 ExternalData_Add_Target(base32_data)
+
+add_dependencies(test_base32 base32_data)

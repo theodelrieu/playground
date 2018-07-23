@@ -1,6 +1,8 @@
-base_n/detail/concepts/encoding_traits.hpp
+adapt test code for base64/32/16
 
-Two packages for base64/base64url? Yes.
+test base_n
+
+base_n/detail/concepts/encoding_traits.hpp
 
 #include <mgs/base64.hpp> // umbrella
 

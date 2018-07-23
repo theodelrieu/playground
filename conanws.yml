@@ -26,6 +26,10 @@ mgs_base64:
     folder: base64
     includedirs: include
 
+mgs_base64url:
+    folder: base64url
+    includedirs: include
+
 mgs_base32:
     folder: base32
     includedirs: include

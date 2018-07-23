@@ -12,3 +12,5 @@ set(ExternalData_URL_TEMPLATES
 
 ExternalData_Add_Test(base16_data NAME test_base16 COMMAND test_base16 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b16})
 ExternalData_Add_Target(base16_data)
+
+add_dependencies(test_base16 base16_data)

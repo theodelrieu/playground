@@ -12,3 +12,5 @@ set(ExternalData_URL_TEMPLATES
 
 ExternalData_Add_Test(base64_data NAME test_base64 COMMAND test_base64 --test-file DATA{data/random_data} --test-file DATA{data/random_data.b64})
 ExternalData_Add_Target(base64_data)
+
+add_dependencies(test_base64 base64_data)
