@@ -1,3 +1,7 @@
+maybe pass encoder/decoder as template template arguments?
+
+does not make sense to have iterators specified in a codec!!
+
 adapt test code for base64/32/16
 
 test base_n
