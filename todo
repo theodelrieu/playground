@@ -1,6 +1,3 @@
-maybe pass encoder/decoder as template template arguments?
-
-does not make sense to have iterators specified in a codec!!
 
 adapt test code for base64/32/16
 
@@ -19,50 +16,55 @@ mgs::codecs::base64
 mgs::codecs::base64url
 mgs::codecs::base64url_unpadded
 
-// namespaces
+using mgs::codecs::base64;
 
-mgs::base_n
+same UDT conversion system for everyone?
+I think so
 
-mgs::base64
-mgs::base64::detail
+// concept codec
+// add default encode/decode template parameter in concept?
+// What if there is no good default?
 
-mgs::meta
+// concept ByteCodec
+// TODO write down use-cases for UDT conversion
+// Container or not Container, concepts for compatible UDT?
 
-// only things useful to everybody
-mgs::detail
+I think we have to design the UDT conversion mechanism first, with its concepts and then go to codecs.
 
-// classes
+Goals of UDT mechanism:
 
-mgs::base_n::basic_encoder
-mgs::base_n::basic_decoder
-mgs::base_n::padding_policy
-mgs::base_n::detail::log2
+* Handle std::* containers
+* Allow users to define a way to create an instance their type with a pair of iterators.
 
-mgs::base64::basic_encoder
-mgs::base64::basic_decoder
-mgs::base64::alphabet
-mgs::base64::url_alphabet
-mgs::base64::url_unpadded_alphabet
-mgs::base64::encoder_traits
-mgs::base64::decoder_traits
-mgs::base64::url_encoder_traits
-mgs::base64::url_decoder_traits
-mgs::base64::url_unpadded_encoder_traits
-mgs::base64::url_unpadded_decoder_traits
+Questions:
 
-mgs::base64::encoder
-mgs::base64::decoder
-mgs::base64::url_encoder
-mgs::base64::url_decoder
-mgs::base64::url_unpadded_encoder
-mgs::base64::url_unpadded_decoder
+* What granularity level? Global, per codec, both?
 
-mgs::codecs::basic_codec
-mgs::codecs::base64
-mgs::codecs::base64url
-mgs::codecs::base64url_unpadded
+---------------
+
+template <typename T, Iterable I, Iterator It = result_of_begin_t<Iterable>, Sentinel<Iterator> S = result_of_end_t<Iterable>>
+concept Codec = requires {
+  // eager.
+  { T::encode<C>(a, b); } -> C;
+  { T::encode<C>(c); } -> C;
+  { T::decode<C>(a, b); } -> C;
+  { T::decode<C>(c); } -> C;
+  // lazy, so only iterators to avoid lifetime issues.
+  { T::make_encoder(a, b); } -> InputAdapter;
+  { T::make_decoder(a, b); } -> InputAdapter;
+};
+
+fix concept comments:
+
+template <typename T>
+concept A = B<T> && requires()... use Same where needed
+
+maybe pass encoder/decoder as template template arguments to basic_codec??
+
+does not make sense to have iterators specified in a codec!!
+
+// template template arguments
 
 using mgs::codecs::base64;
 
-codecs should be a constexpr instance, not just an alias(?)
-
+auto encoder = base64::make_encoder(begin, end);
