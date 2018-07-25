@@ -42,25 +42,25 @@ A simple struct specialization should do the trick.
 ---------------
 
 template <typename T>
-concept CodecOutput = ?;
+concept CodecOutput = Container<T> || INSERT TRAIT HERE;
 
 template <typename T, CodecOutput Out, Iterable I, Iterator It = result_of_begin_t<Iterable>, Sentinel<Iterator> S = result_of_end_t<Iterable>>
-concept Codec = requires (It a, S b, I c){
+concept Codec = requires (It a, S b, I const& c) {
   // eager, user specifies return type.
-  { T::encode<Out>(a, b); } -> Out;
-  { T::encode<Out>(c); } -> Out;
-  { T::decode<Out>(a, b); } -> Out;
-  { T::decode<Out>(c); } -> Out;
+  Same<Out, decltype(T::encode<Out>(a, b))>;
+  Same<Out, decltype(T::encode<Out>(c))>;
+  Same<Out, decltype(T::decode<Out>(a, b))>;
+  Same<Out, decltype(T::decode<Out>(c))>;
 
   // eager, default return type.
-  { T::encode(a, b); } -> CodecOutput;
-  { T::encode(c); } -> CodecOutput;
-  { T::decode(a, b); } -> CodecOutput;
-  { T::decode(c); } -> CodecOutput;
+  CodecOutput<decltype(T::encode(a, b))>;
+  CodecOutput<decltype(T::encode(c))>;
+  CodecOutput<decltype(T::decode(a, b))>;
+  CodecOutput<decltype(T::decode(c))>;
 
   // lazy, so only iterators to avoid lifetime issues.
-  { T::make_encoder(a, b); } -> InputAdapter;
-  { T::make_decoder(a, b); } -> InputAdapter;
+  InputAdapter<decltype(T::make_encoder(a, b))>;
+  InputAdapter<decltype(T::make_decoder(a, b))>;
 };
 
 fix concept comments:
