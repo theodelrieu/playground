@@ -35,20 +35,29 @@ Goals of UDT mechanism:
 
 * Handle std::* containers
 * Allow users to define a way to create an instance their type with a pair of iterators.
+* Only one definition for every codec.
 
-Questions:
-
-* What granularity level? Global, per codec, both?
+A simple struct specialization should do the trick.
 
 ---------------
 
-template <typename T, Iterable I, Iterator It = result_of_begin_t<Iterable>, Sentinel<Iterator> S = result_of_end_t<Iterable>>
-concept Codec = requires {
-  // eager.
-  { T::encode<C>(a, b); } -> C;
-  { T::encode<C>(c); } -> C;
-  { T::decode<C>(a, b); } -> C;
-  { T::decode<C>(c); } -> C;
+template <typename T>
+concept CodecOutput = ?;
+
+template <typename T, CodecOutput Out, Iterable I, Iterator It = result_of_begin_t<Iterable>, Sentinel<Iterator> S = result_of_end_t<Iterable>>
+concept Codec = requires (It a, S b, I c){
+  // eager, user specifies return type.
+  { T::encode<Out>(a, b); } -> Out;
+  { T::encode<Out>(c); } -> Out;
+  { T::decode<Out>(a, b); } -> Out;
+  { T::decode<Out>(c); } -> Out;
+
+  // eager, default return type.
+  { T::encode(a, b); } -> CodecOutput;
+  { T::encode(c); } -> CodecOutput;
+  { T::decode(a, b); } -> CodecOutput;
+  { T::decode(c); } -> CodecOutput;
+
   // lazy, so only iterators to avoid lifetime issues.
   { T::make_encoder(a, b); } -> InputAdapter;
   { T::make_decoder(a, b); } -> InputAdapter;
