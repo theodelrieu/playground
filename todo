@@ -33,7 +33,7 @@ I think we have to design the UDT conversion mechanism first, with its concepts 
 
 Goals of UDT mechanism:
 
-* Handle std::* containers
+* Handle Containers.
 * Allow users to define a way to create an instance their type with a pair of iterators.
 * Only one definition for every codec.
 
@@ -41,26 +41,31 @@ A simple struct specialization should do the trick.
 
 ---------------
 
-template <typename T>
-concept CodecOutput = Container<T> || INSERT TRAIT HERE;
+template <typename T, InputAdapter IA>
+concept CodecOutput = requires (IA adapter) {
+  Same<T, decltype(mgs::codecs::codec_output<T>::create(begin(adapter), end(adapter)))>;
+};
 
-template <typename T, CodecOutput Out, Iterable I, Iterator It = result_of_begin_t<Iterable>, Sentinel<Iterator> S = result_of_end_t<Iterable>>
-concept Codec = requires (It a, S b, I const& c) {
+template <typename T, typename Out, Iterable I>
+concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I const& c) {
+  // lazy, so only iterators to avoid lifetime issues.
+  InputAdapter<decltype(T::make_encoder(a, b))>;
+  InputAdapter<decltype(T::make_decoder(a, b))>;
+
+  CodecOutput<Out, decltype(T::make_encoder(a, b))>;
+  CodecOutput<Out, decltype(T::make_decoder(a, b))>;
+
   // eager, user specifies return type.
   Same<Out, decltype(T::encode<Out>(a, b))>;
   Same<Out, decltype(T::encode<Out>(c))>;
   Same<Out, decltype(T::decode<Out>(a, b))>;
   Same<Out, decltype(T::decode<Out>(c))>;
 
-  // eager, default return type.
-  CodecOutput<decltype(T::encode(a, b))>;
-  CodecOutput<decltype(T::encode(c))>;
-  CodecOutput<decltype(T::decode(a, b))>;
-  CodecOutput<decltype(T::decode(c))>;
-
-  // lazy, so only iterators to avoid lifetime issues.
-  InputAdapter<decltype(T::make_encoder(a, b))>;
-  InputAdapter<decltype(T::make_decoder(a, b))>;
+  // eager, default return type, no specific requirement on it.
+  T::encode(a, b);
+  T::encode(c);
+  T::decode(a, b);
+  T::decode(c);
 };
 
 fix concept comments:
