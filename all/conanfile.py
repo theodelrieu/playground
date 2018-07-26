@@ -12,4 +12,5 @@ class ConanMgsAll(ConanFile):
         self.requires("mgs_base64/%s@mgs/testing" % version)
         self.requires("mgs_base64url/%s@mgs/testing" % version)
         self.requires("mgs_base32/%s@mgs/testing" % version)
+        self.requires("mgs_base32hex/%s@mgs/testing" % version)
         self.requires("mgs_base16/%s@mgs/testing" % version)

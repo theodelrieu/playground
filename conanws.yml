@@ -34,6 +34,10 @@ mgs_base32:
     folder: base32
     includedirs: include
 
+mgs_base32hex:
+    folder: base32hex
+    includedirs: include
+
 mgs_base16:
     folder: base16
     includedirs: include
