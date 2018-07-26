@@ -12,9 +12,9 @@ namespace base64url
 inline namespace v1
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using decoder = adapters::transformer_adapter<
+using nopad_decoder = adapters::transformer_adapter<
     base_n::basic_decoder<
-        detail::basic_encoding_traits<base_n::padding_policy::required>>,
+        detail::basic_encoding_traits<base_n::padding_policy::optional>>,
     Iterator,
     Sentinel>;
 }

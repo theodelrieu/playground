@@ -1,5 +1,5 @@
 
-adapt test code for base64/32/16
+base32hex package
 
 test base_n
 
@@ -43,6 +43,7 @@ A simple struct specialization should do the trick.
 
 template <typename T, InputAdapter IA>
 concept CodecOutput = requires (IA adapter) {
+  // users have to make it SFINAE-correct themselves.
   Same<T, decltype(mgs::codecs::codec_output<T>::create(begin(adapter), end(adapter)))>;
 };
 

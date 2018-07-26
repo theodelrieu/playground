@@ -2,14 +2,18 @@
 
 #include <algorithm>
 
+#include <mgs/base_n/padding_policy.hpp>
+
 namespace mgs
+{
+namespace base16
 {
 inline namespace v1
 {
 namespace detail
 {
 template <typename = void>
-struct base16_alphabet
+struct encoding_traits
 {
   using alphabet_t = char const[16];
 
@@ -39,14 +43,16 @@ struct base16_alphabet
   }
 
   static constexpr char const encoding_name[] = "base16";
+  static constexpr auto const padding_policy = base_n::padding_policy::none;
 };
 
 template <typename Dummy>
-constexpr typename base16_alphabet<Dummy>::alphabet_t
-    base16_alphabet<Dummy>::alphabet;
+constexpr typename encoding_traits<Dummy>::alphabet_t
+    encoding_traits<Dummy>::alphabet;
 
 template <typename Dummy>
-constexpr char const base16_alphabet<Dummy>::encoding_name[];
+constexpr char const encoding_traits<Dummy>::encoding_name[];
+}
 }
 }
 }

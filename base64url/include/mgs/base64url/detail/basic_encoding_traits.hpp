@@ -6,14 +6,14 @@
 
 namespace mgs
 {
-namespace base64
+namespace base64url
 {
 inline namespace v1
 {
 namespace detail
 {
 template <base_n::padding_policy PaddingPolicy>
-struct basic_traits
+struct basic_encoding_traits
 {
   using alphabet_t = char const[64];
 
@@ -22,10 +22,11 @@ struct basic_traits
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
-  static constexpr char const encoding_name[] = "base64";
-  static constexpr char const padding_character = '=';
+  static constexpr auto const padding_character = '=';
+  static constexpr char const encoding_name[] = "base64url";
+  static constexpr auto const padding_policy = PaddingPolicy;
 
   static constexpr auto find_char(char c)
   {
@@ -34,14 +35,14 @@ struct basic_traits
 };
 
 template <base_n::padding_policy PaddingPolicy>
-constexpr typename basic_traits<PaddingPolicy>::alphabet_t
-    basic_traits<PaddingPolicy>::alphabet;
+constexpr typename basic_encoding_traits<PaddingPolicy>::alphabet_t
+    basic_encoding_traits<PaddingPolicy>::alphabet;
 
 template <base_n::padding_policy PaddingPolicy>
-constexpr char const basic_traits<PaddingPolicy>::encoding_name[];
+constexpr char const basic_encoding_traits<PaddingPolicy>::encoding_name[];
 
 template <base_n::padding_policy PaddingPolicy>
-constexpr char const basic_traits<PaddingPolicy>::padding_character;
+constexpr char const basic_encoding_traits<PaddingPolicy>::padding_character;
 }
 }
 }

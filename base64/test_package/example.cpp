@@ -2,12 +2,12 @@
 #include <iostream>
 #include <string>
 
-#include <mgs/detail/base64/encoder.hpp>
+#include <mgs/base64/encoder.hpp>
 
 int main(int argc, char const *argv[])
 {
   auto const h = "Hello, World!";
-  mgs::detail::base64_encoder<char const*> enc(h, h + std::strlen(h));
+  mgs::base64::encoder<char const*> enc(h, h + std::strlen(h));
 
   std::cout << std::string(enc.begin(), v.end()) << std::endl;
 }

@@ -2,7 +2,7 @@
 
 #include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/base64url/detail/basic_encoding_traits.hpp>
-#include <mgs/base_n/basic_decoder.hpp>
+#include <mgs/base_n/basic_encoder.hpp>
 #include <mgs/base_n/padding_policy.hpp>
 
 namespace mgs
@@ -12,9 +12,9 @@ namespace base64url
 inline namespace v1
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using decoder = adapters::transformer_adapter<
-    base_n::basic_decoder<
-        detail::basic_encoding_traits<base_n::padding_policy::required>>,
+using nopad_encoder = adapters::transformer_adapter<
+    base_n::basic_encoder<
+        detail::basic_encoding_traits<base_n::padding_policy::none>>,
     Iterator,
     Sentinel>;
 }

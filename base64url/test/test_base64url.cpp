@@ -14,12 +14,10 @@
 
 #include <mgs/base64url/decoder.hpp>
 #include <mgs/base64url/encoder.hpp>
-#include <mgs/base_n/basic_decoder.hpp>
-#include <mgs/base_n/basic_encoder.hpp>
+#include <mgs/base64url/nopad_decoder.hpp>
+#include <mgs/base64url/nopad_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/input_transformer.hpp>
 #include <mgs/meta/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
@@ -133,7 +131,7 @@ TEST_CASE("b64url lazy", "[base64url]")
   }
 }
 
-TEST_CASE("base64url_unpadded", "[base64url]")
+TEST_CASE("base64url_nopad", "[base64url]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s};
   std::vector<std::string> encoded_unpadded{"YWJjZA"s, "YWJjZGU"s};

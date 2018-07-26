@@ -2,14 +2,18 @@
 
 #include <algorithm>
 
+#include <mgs/base_n/padding_policy.hpp>
+
 namespace mgs
+{
+namespace base32
 {
 inline namespace v1
 {
 namespace detail
 {
 template <typename = void>
-struct base32_alphabet
+struct encoding_traits
 {
   using alphabet_t = char const[32];
 
@@ -20,6 +24,7 @@ struct base32_alphabet
 
   static constexpr char const encoding_name[] = "base32";
   static constexpr char const padding_character = '=';
+  static constexpr auto const padding_policy = base_n::padding_policy::required;
 
   static constexpr auto find_char(char c)
   {
@@ -28,14 +33,15 @@ struct base32_alphabet
 };
 
 template <typename Dummy>
-constexpr typename base32_alphabet<Dummy>::alphabet_t
-    base32_alphabet<Dummy>::alphabet;
+constexpr typename encoding_traits<Dummy>::alphabet_t
+    encoding_traits<Dummy>::alphabet;
 
 template <typename Dummy>
-constexpr char const base32_alphabet<Dummy>::encoding_name[];
+constexpr char const encoding_traits<Dummy>::encoding_name[];
 
 template <typename Dummy>
-constexpr char const base32_alphabet<Dummy>::padding_character;
+constexpr char const encoding_traits<Dummy>::padding_character;
+}
 }
 }
 }
