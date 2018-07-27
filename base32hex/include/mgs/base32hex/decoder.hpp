@@ -3,12 +3,12 @@
 #include <ios>
 
 #include <mgs/adapters/transformer_adapter.hpp>
-#include <mgs/base32/detail/encoding_traits.hpp>
+#include <mgs/base32hex/detail/encoding_traits.hpp>
 #include <mgs/base_n/basic_decoder.hpp>
 
 namespace mgs
 {
-namespace base32
+namespace base32hex
 {
 inline namespace v1
 {

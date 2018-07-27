@@ -6,7 +6,7 @@
 
 namespace mgs
 {
-namespace base32
+namespace base32hex
 {
 inline namespace v1
 {
@@ -18,11 +18,11 @@ struct encoding_traits
   using alphabet_t = char const[32];
 
   static constexpr alphabet_t alphabet = {
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-      'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-      'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+      'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'};
 
-  static constexpr char const encoding_name[] = "base32";
+  static constexpr char const encoding_name[] = "base32hex";
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy = base_n::padding_policy::required;
 
