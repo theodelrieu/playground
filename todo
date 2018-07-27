@@ -1,6 +1,3 @@
-
-continue base32hex package
-
 test base_n
 
 base_n/detail/concepts/encoding_traits.hpp
