@@ -35,7 +35,7 @@ struct base2_encoding_traits
   static constexpr char const encoding_name[] = "base2";
   static constexpr auto const padding_policy = base_n::padding_policy::none;
 
-  static constexpr auto find_char(char c)
+  static auto find_char(char c)
   {
     return std::find(std::begin(alphabet), std::end(alphabet), c);
   }

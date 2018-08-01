@@ -1,4 +1,5 @@
-test base_n
+test base_n, with octal too
+find a way to put catch_main somewhere
 
 base_n/detail/concepts/encoding_traits.hpp
 

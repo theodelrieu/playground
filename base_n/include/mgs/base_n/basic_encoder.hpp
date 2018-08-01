@@ -37,7 +37,7 @@ private:
   struct read_result
   {
     std::bitset<nb_input_bits> input_bits;
-    int nb_non_padded_bytes;
+    std::size_t nb_non_padded_bytes;
   };
 
   template <typename Iterator, typename Sentinel>
