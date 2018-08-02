@@ -137,9 +137,9 @@ namespace
 {
 struct octal_encoding_traits
 {
-  using alphabet_t = char const[2];
+  using alphabet_t = char const[8];
 
-  static constexpr alphabet_t alphabet = {'0', '1'};
+  static constexpr alphabet_t alphabet = {'0', '1', '2', '3', '4', '5', '6', '7'};
 
   static constexpr char const encoding_name[] = "octal";
   static constexpr auto const padding_policy = base_n::padding_policy::none;
@@ -168,7 +168,8 @@ using octal_decoder =
 
 TEST_CASE("octal")
 {
-  auto const test = "a"s;
+  auto const test = "abc"s;
 
   octal_encoder<std::string::const_iterator> enc(test.begin(), test.end());
+  std::cout << std::string(enc.begin(), enc.end()) << std::endl;
 }
