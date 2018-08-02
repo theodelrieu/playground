@@ -26,18 +26,15 @@ class basic_encoder
                 "optional padding does not make sense when encoding");
 
 private:
-  static constexpr auto nb_output_bytes = 3u;
-      // detail::encoded_bytes<sizeof(EncodingTraits::alphabet)>();
-
-  static constexpr auto nb_input_bytes = 1u;
-      // detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
-
-  static constexpr auto a = (nb_input_bytes * 8) / nb_output_bytes;
-  static constexpr auto b = nb_output_bytes - a;
+  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
+  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
 
   // TODO try with other weird bases!!
-  static constexpr auto nb_input_bits = (nb_input_bytes * 8) + b;
+  static constexpr auto nb_input_bits =
+      detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
   static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
+
+  static_assert(nb_input_bits % nb_output_bytes == 0, "");
 
   struct read_result
   {

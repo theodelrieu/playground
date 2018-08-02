@@ -21,13 +21,11 @@ template <typename EncodingTraits,
 struct invalid_character_handler
 {
 private:
-  static constexpr auto nb_output_bytes =
-      decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
+  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
 
-  static constexpr auto nb_input_bytes =
-      encoded_bytes<sizeof(EncodingTraits::alphabet)>();
-
-  static constexpr auto nb_output_bits = nb_output_bytes * 8;
+  static constexpr auto nb_output_bits =
+      detail::round_to_multiple_of<nb_output_bytes * 8, nb_input_bytes>();
   static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
 
   template <typename Iterator, typename Sentinel>

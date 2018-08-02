@@ -23,14 +23,14 @@ template <typename EncodingTraits>
 class basic_decoder
 {
 private:
-  static constexpr auto nb_output_bytes =
-      detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
+  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
 
-  static constexpr auto nb_input_bytes =
-      detail::encoded_bytes<sizeof(EncodingTraits::alphabet)>();
-
-  static constexpr auto nb_output_bits = nb_output_bytes * 8;
+  static constexpr auto nb_output_bits =
+      detail::round_to_multiple_of<nb_output_bytes * 8, nb_input_bytes>();
   static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
+
+  static_assert(nb_output_bits % nb_input_bytes == 0, "");
 
   struct read_result
   {
@@ -80,7 +80,7 @@ private:
 
     for (int j = 0; j < res.nb_read_bytes; ++j)
     {
-      auto const shift = (nb_output_bits - 8 - (8 * j));
+      auto const shift = ((nb_output_bytes * 8) - 8 - (8 * j));
       auto const mask_bis = (mask >> (nb_output_bits - 8)) << shift;
       auto const final_value = (res.input_bits & mask_bis) >> shift;
       auto const byte = static_cast<std::uint8_t>(final_value.to_ulong());
