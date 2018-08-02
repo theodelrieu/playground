@@ -1,8 +1,6 @@
 test base_n, with octal too
 octal is broken, find why and fix
-find a way to pad input bits (e.g. octal needs 9 per byte)
 
-find a way to put catch_main somewhere
 
 base_n/detail/concepts/encoding_traits.hpp
 

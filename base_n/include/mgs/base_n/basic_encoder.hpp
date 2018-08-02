@@ -32,8 +32,11 @@ private:
   static constexpr auto nb_input_bytes = 1u;
       // detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
-  static constexpr auto nb_input_bits =
-      (nb_input_bytes * 8) + int((nb_input_bytes * 8) % nb_output_bytes != 0);
+  static constexpr auto a = (nb_input_bytes * 8) / nb_output_bytes;
+  static constexpr auto b = nb_output_bytes - a;
+
+  // TODO try with other weird bases!!
+  static constexpr auto nb_input_bits = (nb_input_bytes * 8) + b;
   static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
 
   struct read_result
