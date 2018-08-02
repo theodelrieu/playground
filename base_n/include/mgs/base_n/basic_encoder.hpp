@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <iostream>
 #include <bitset>
 #include <cstdint>
 #include <limits>
@@ -25,14 +26,14 @@ class basic_encoder
                 "optional padding does not make sense when encoding");
 
 private:
-  static constexpr auto nb_output_bytes =
-      detail::encoded_bytes<sizeof(EncodingTraits::alphabet)>();
+  static constexpr auto nb_output_bytes = 3u;
+      // detail::encoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
-  static constexpr auto nb_input_bytes =
-      detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
+  static constexpr auto nb_input_bytes = 1u;
+      // detail::decoded_bytes<sizeof(EncodingTraits::alphabet)>();
 
   static constexpr auto nb_input_bits = nb_input_bytes * 8;
-  static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
+  static constexpr auto nb_encoded_bits = 3u;
 
   struct read_result
   {
@@ -68,14 +69,18 @@ private:
     std::bitset<nb_input_bits> const mask{
         std::numeric_limits<std::uint64_t>::max()};
 
+    std::cout << "input bits: " << res.input_bits.to_string() << std::endl;
     for (auto j = 0; j < res.nb_non_padded_bytes; ++j)
     {
       auto const shift =
-          (nb_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
+          (nb_input_bits - nb_encoded_bits - (nb_encoded_bits * j) + 1);
+      std::cout << "shifting by " << shift << std::endl;
       auto const mask_bis =
           ((mask >> (nb_input_bits - nb_encoded_bits)) << shift);
       auto const final_value = (res.input_bits & mask_bis) >> shift;
+    std::cout << "shifted bits: " << final_value.to_string() << std::endl;
       auto const index = static_cast<std::uint8_t>(final_value.to_ulong());
+    std::cout << "index: " << (int)index << std::endl;
       *out++ = EncodingTraits::alphabet[index];
     }
 
