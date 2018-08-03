@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstddef>
 
 #include <mgs/base_n/padding_policy.hpp>
 
@@ -12,7 +13,7 @@ inline namespace v1
 {
 namespace detail
 {
-template <base_n::padding_policy PaddingPolicy>
+template <std::size_t In, std::size_t Out, base_n::padding_policy PaddingPolicy>
 struct basic_encoding_traits
 {
   using alphabet_t = char const[64];
@@ -27,6 +28,8 @@ struct basic_encoding_traits
   static constexpr auto const padding_character = '=';
   static constexpr char const encoding_name[] = "base64url";
   static constexpr auto const padding_policy = PaddingPolicy;
+  static constexpr auto const nb_input_bytes = In;
+  static constexpr auto const nb_output_bytes = Out;
 
   static constexpr auto find_char(char c)
   {
@@ -34,15 +37,15 @@ struct basic_encoding_traits
   }
 };
 
-template <base_n::padding_policy PaddingPolicy>
-constexpr typename basic_encoding_traits<PaddingPolicy>::alphabet_t
-    basic_encoding_traits<PaddingPolicy>::alphabet;
+template <std::size_t In, std::size_t Out, base_n::padding_policy PaddingPolicy>
+constexpr typename basic_encoding_traits<In, Out, PaddingPolicy>::alphabet_t
+    basic_encoding_traits<In, Out, PaddingPolicy>::alphabet;
 
-template <base_n::padding_policy PaddingPolicy>
-constexpr char const basic_encoding_traits<PaddingPolicy>::encoding_name[];
+template <std::size_t In, std::size_t Out, base_n::padding_policy PaddingPolicy>
+constexpr char const basic_encoding_traits<In, Out, PaddingPolicy>::encoding_name[];
 
-template <base_n::padding_policy PaddingPolicy>
-constexpr char const basic_encoding_traits<PaddingPolicy>::padding_character;
+template <std::size_t In, std::size_t Out, base_n::padding_policy PaddingPolicy>
+constexpr char const basic_encoding_traits<In, Out, PaddingPolicy>::padding_character;
 }
 }
 }

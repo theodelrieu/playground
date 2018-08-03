@@ -14,7 +14,7 @@ inline namespace v1
 template <typename Iterator, typename Sentinel = Iterator>
 using nopad_encoder = adapters::transformer_adapter<
     base_n::basic_encoder<
-        detail::basic_encoding_traits<base_n::padding_policy::none>>,
+        detail::basic_encoding_traits<3, 4, base_n::padding_policy::none>>,
     Iterator,
     Sentinel>;
 }
