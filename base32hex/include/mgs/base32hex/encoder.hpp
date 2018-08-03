@@ -8,9 +8,9 @@
 
 namespace mgs
 {
-namespace base32hex
-{
 inline namespace v1
+{
+namespace base32hex
 {
 template <typename Iterator, typename Sentinel = Iterator>
 using encoder = adapters::transformer_adapter<

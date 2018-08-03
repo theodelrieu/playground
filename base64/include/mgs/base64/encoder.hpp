@@ -6,9 +6,9 @@
 
 namespace mgs
 {
-namespace base64
-{
 inline namespace v1
+{
+namespace base64
 {
 template <typename Iterator, typename Sentinel = Iterator>
 using encoder = adapters::transformer_adapter<

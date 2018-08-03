@@ -13,9 +13,9 @@
 
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T>
 struct is_iterable_input_adapter

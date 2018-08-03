@@ -7,9 +7,9 @@
 
 namespace mgs
 {
-namespace base64url
-{
 inline namespace v1
+{
+namespace base64url
 {
 namespace detail
 {

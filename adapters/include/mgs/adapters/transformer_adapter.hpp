@@ -12,9 +12,9 @@
 
 namespace mgs
 {
-namespace adapters
-{
 inline namespace v1
+{
+namespace adapters
 {
 template <typename InputTransformer,
           typename UnderlyingIterator,

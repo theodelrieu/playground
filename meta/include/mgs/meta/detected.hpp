@@ -7,9 +7,9 @@
 // http://en.cppreference.com/w/cpp/experimental/is_detected
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 struct nonesuch
 {

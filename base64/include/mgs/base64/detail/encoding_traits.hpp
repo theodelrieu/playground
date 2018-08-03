@@ -7,9 +7,9 @@
 
 namespace mgs
 {
-namespace base64
-{
 inline namespace v1
+{
+namespace base64
 {
 namespace detail
 {
@@ -46,7 +46,7 @@ constexpr char const encoding_traits<In, Out>::encoding_name[];
 
 template <std::size_t In, std::size_t Out>
 constexpr char const encoding_traits<In, Out>::padding_character;
-} // namespace detail
-} // namespace v1
-} // namespace base64
-} // namespace mgs
+}
+}
+}
+}

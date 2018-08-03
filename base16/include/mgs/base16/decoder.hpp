@@ -9,9 +9,9 @@
 
 namespace mgs
 {
-namespace base16
-{
 inline namespace v1
+{
+namespace base16
 {
 template <typename Iterator, typename Sentinel = Iterator>
 using decoder = adapters::transformer_adapter<

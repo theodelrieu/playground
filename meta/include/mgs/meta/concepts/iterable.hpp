@@ -14,9 +14,9 @@
 // }
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 CAN_CALL_STD_FUNC_IMPL(begin)
 CAN_CALL_STD_FUNC_IMPL(end)

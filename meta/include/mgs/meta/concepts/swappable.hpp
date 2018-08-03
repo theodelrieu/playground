@@ -9,9 +9,9 @@
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 CAN_CALL_STD_FUNC_IMPL(swap)
 

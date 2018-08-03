@@ -9,9 +9,9 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T, typename Iterator>
 struct is_sized_sentinel

@@ -7,9 +7,9 @@
 
 namespace mgs
 {
-namespace base16
-{
 inline namespace v1
+{
+namespace base16
 {
 namespace detail
 {

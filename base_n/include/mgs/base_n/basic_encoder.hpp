@@ -14,9 +14,9 @@
 
 namespace mgs
 {
-namespace base_n
-{
 inline namespace v1
+{
+namespace base_n
 {
 template <typename EncodingTraits>
 class basic_encoder
@@ -102,6 +102,6 @@ public:
     return ret;
   }
 };
-} // namespace v1
-} // namespace base_n
-} // namespace mgs
+}
+}
+}

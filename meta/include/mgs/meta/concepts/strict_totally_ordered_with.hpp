@@ -8,9 +8,9 @@
 
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
 template <typename T, typename U>

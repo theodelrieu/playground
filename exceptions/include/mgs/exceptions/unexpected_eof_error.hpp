@@ -4,9 +4,9 @@
 
 namespace mgs
 {
-namespace exceptions
-{
 inline namespace v1
+{
+namespace exceptions
 {
 class unexpected_eof_error : public decode_error
 {

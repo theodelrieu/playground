@@ -10,9 +10,9 @@
 // concept Iterator: http://en.cppreference.com/w/cpp/concept/Iterator
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T>
 struct is_valid_iterator_traits : std::false_type

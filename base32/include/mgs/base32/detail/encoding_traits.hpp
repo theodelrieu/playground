@@ -7,9 +7,9 @@
 
 namespace mgs
 {
-namespace base32
-{
 inline namespace v1
+{
+namespace base32
 {
 namespace detail
 {

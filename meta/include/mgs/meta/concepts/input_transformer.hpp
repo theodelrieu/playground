@@ -30,9 +30,9 @@
 // }
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T, typename Iterator, typename Sentinel, typename = void>
 struct is_input_transformer : std::false_type

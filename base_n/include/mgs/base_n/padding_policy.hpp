@@ -2,9 +2,9 @@
 
 namespace mgs
 {
-namespace base_n
-{
 inline namespace v1
+{
+namespace base_n
 {
 enum class padding_policy : char
 {

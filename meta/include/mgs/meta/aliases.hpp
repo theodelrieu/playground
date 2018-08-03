@@ -4,9 +4,9 @@
 
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T>
 using value_type_t = typename T::value_type;

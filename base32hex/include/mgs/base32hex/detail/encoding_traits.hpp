@@ -6,9 +6,9 @@
 
 namespace mgs
 {
-namespace base32hex
-{
 inline namespace v1
+{
+namespace base32hex
 {
 namespace detail
 {

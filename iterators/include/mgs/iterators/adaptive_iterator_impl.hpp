@@ -4,9 +4,9 @@
 
 namespace mgs
 {
-namespace iterators
-{
 inline namespace v1
+{
+namespace iterators
 {
 // input iterator
 template <typename Adapter, typename Tag>

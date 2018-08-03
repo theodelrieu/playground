@@ -7,9 +7,9 @@
 
 namespace mgs
 {
-namespace base64url
-{
 inline namespace v1
+{
+namespace base64url
 {
 template <typename Iterator, typename Sentinel = Iterator>
 using decoder = adapters::transformer_adapter<

@@ -26,9 +26,9 @@
 
 namespace mgs
 {
-namespace meta
-{
 inline namespace v1
+{
+namespace meta
 {
 template <typename T, typename = void>
 struct is_input_adapter : std::false_type

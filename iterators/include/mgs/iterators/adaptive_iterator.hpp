@@ -8,9 +8,9 @@
 
 namespace mgs
 {
-namespace iterators
-{
 inline namespace v1
+{
+namespace iterators
 {
 namespace detail
 {

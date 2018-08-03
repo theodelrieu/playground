@@ -6,9 +6,9 @@
 
 namespace mgs
 {
-namespace exceptions
-{
 inline namespace v1
+{
+namespace exceptions
 {
 class decode_error : public exception
 {
