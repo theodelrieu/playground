@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <iostream>
 #include <bitset>
 #include <cstdint>
 #include <limits>
@@ -29,23 +28,26 @@ private:
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
   static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
 
-  // TODO try with other weird bases!!
-  static constexpr auto nb_input_bits =
+  static constexpr auto nb_total_input_bits =
       detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
-  static constexpr auto nb_encoded_bits = nb_input_bits / nb_output_bytes;
+  static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
+  static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
 
-  static_assert(nb_input_bits % nb_output_bytes == 0, "");
+  static_assert(nb_total_input_bits % nb_output_bytes == 0, "");
+  static_assert(detail::pow<2, nb_encoded_bits>() ==
+                    sizeof(EncodingTraits::alphabet),
+                "");
 
   struct read_result
   {
-    std::bitset<nb_input_bits> input_bits;
+    std::bitset<nb_total_input_bits> input_bits;
     std::size_t nb_non_padded_bytes;
   };
 
   template <typename Iterator, typename Sentinel>
   read_result read(Iterator& current, Sentinel const end) const
   {
-    std::bitset<nb_input_bits> input_bits;
+    std::bitset<nb_total_input_bits> input_bits;
 
     int i = 0;
     for (; i < nb_input_bytes; ++i)
@@ -55,11 +57,11 @@ private:
       auto byte = static_cast<std::uint8_t>(*current++);
       // shifting on an integer type is a bit dangerous...
       // use bitset instead
-      std::bitset<nb_input_bits> const byte_bits(byte);
-      input_bits |=
-          (byte_bits << ((nb_input_bytes * 8) - 8 - (8 * i)));
+      std::bitset<nb_total_input_bits> const byte_bits(byte);
+      input_bits |= (byte_bits << (nb_total_input_bits - nb_extra_input_bits -
+                                   8 - (8 * i)));
     }
-    auto const nb_bits_read = i * 8;
+    auto const nb_bits_read = (i * 8) + nb_extra_input_bits;
     auto const nb_non_padded_bytes = (nb_bits_read / nb_encoded_bits) +
                                      int((nb_bits_read % nb_encoded_bits) != 0);
     return {std::move(input_bits), nb_non_padded_bytes};
@@ -68,21 +70,17 @@ private:
   template <typename OutputIterator>
   void encode_input_bits(read_result const& res, OutputIterator out) const
   {
-    std::bitset<nb_input_bits> const mask{
+    std::bitset<nb_total_input_bits> const mask{
         std::numeric_limits<std::uint64_t>::max()};
 
-    // std::cout << "input bits: " << res.input_bits.to_string() << std::endl;
     for (auto j = 0; j < res.nb_non_padded_bytes; ++j)
     {
       auto const shift =
-          (nb_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
-      // std::cout << "shifting by " << shift << std::endl;
+          (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
       auto const mask_bis =
-          ((mask >> (nb_input_bits - nb_encoded_bits)) << shift);
+          ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
       auto const final_value = (res.input_bits & mask_bis) >> shift;
-    // std::cout << "shifted bits: " << final_value.to_string() << std::endl;
       auto const index = static_cast<std::uint8_t>(final_value.to_ulong());
-    // std::cout << "index: " << (int)index << std::endl;
       *out++ = EncodingTraits::alphabet[index];
     }
 
@@ -104,6 +102,6 @@ public:
     return ret;
   }
 };
-}
-}
-}
+} // namespace v1
+} // namespace base_n
+} // namespace mgs

@@ -1,6 +1,4 @@
-test base_n, with octal too
-octal is broken, find why and fix
-
+fix other base tests.
 
 base_n/detail/concepts/encoding_traits.hpp
 
