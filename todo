@@ -1,5 +1,13 @@
 base_n/detail/concepts/encoding_traits.hpp
 
+folders in base_n? binary_to_text, number_to_text?
+binary_to_text_basic_encoder?
+base_n::binary_to_text::basic_encoder?
+base_n::binary_to_text_encoder?
+
+base58 takes numbers, or string in reverse order...
+it would change the Codec concept as well, which only deals with binary to text/binary right now
+
 #include <mgs/base64.hpp> // umbrella
 
 #include <mgs/base64/base64.hpp>
