@@ -4,7 +4,7 @@
 
 #include <mgs/base32hex/encoder.hpp>
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
   auto const h = "Hello, World!";
   mgs::base32hex::encoder<char const*> enc(h, h + std::strlen(h));

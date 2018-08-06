@@ -70,9 +70,11 @@ static_assert(
 static_assert(
     !mgs::meta::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
 
-template <template <typename ...> class Adapter, typename Container, typename Iterable>
-void base_n_checks_impl(Container const& source,
-                        Iterable const& expected_output)
+template <template <typename...> class Adapter,
+          typename Container,
+          typename Iterable>
+void binary_to_text_checks_impl(Container const& source,
+                                Iterable const& expected_output)
 {
   using Iterator = mgs::meta::result_of_begin_t<Container>;
   using Sentinel = mgs::meta::result_of_end_t<Container>;
@@ -93,27 +95,27 @@ template <template <typename...> class Adapter,
           typename Container,
           typename Iterable,
           typename Iterable2>
-void base_n_checks(Iterable const& source, Iterable2 const& expected)
+void binary_to_text_checks(Iterable const& source, Iterable2 const& expected)
 {
   using std::begin;
   using std::end;
 
   Container cont(begin(source), end(source));
 
-  base_n_checks_impl<Adapter>(cont, expected);
+  binary_to_text_checks_impl<Adapter>(cont, expected);
 }
 
 template <template <typename...> class Adapter,
           typename Container,
           typename Input,
           typename Output>
-void base_n_checks(std::vector<Input> const& inputs,
-                   std::vector<Output> const& outputs)
+void binary_to_text_checks(std::vector<Input> const& inputs,
+                           std::vector<Output> const& outputs)
 {
   REQUIRE(inputs.size() == outputs.size());
 
   for (auto i = 0; i < inputs.size(); ++i)
-    base_n_checks<Adapter, Container>(inputs[i], outputs[i]);
+    binary_to_text_checks<Adapter, Container>(inputs[i], outputs[i]);
 }
 
 template <template <typename...> class Adapter, typename Input, typename Output>
@@ -124,24 +126,24 @@ void common_checks(std::vector<Input> const& inputs,
   {
     using namespace std::string_literals;
 
-    base_n_checks_impl<Adapter>(""s, ""s);
+    binary_to_text_checks_impl<Adapter>(""s, ""s);
   }
 
   SECTION("RandomAccessIterator")
   {
     SECTION("std::string")
     {
-      base_n_checks<Adapter, std::string>(inputs, outputs);
+      binary_to_text_checks<Adapter, std::string>(inputs, outputs);
     }
 
     SECTION("std::vector")
     {
-      base_n_checks<Adapter, std::vector<char>>(inputs, outputs);
+      binary_to_text_checks<Adapter, std::vector<char>>(inputs, outputs);
     }
 
     SECTION("std::deque")
     {
-      base_n_checks<Adapter, std::deque<char>>(inputs, outputs);
+      binary_to_text_checks<Adapter, std::deque<char>>(inputs, outputs);
     }
   }
 
@@ -149,7 +151,7 @@ void common_checks(std::vector<Input> const& inputs,
   {
     SECTION("std::list")
     {
-      base_n_checks<Adapter, std::list<char>>(inputs, outputs);
+      binary_to_text_checks<Adapter, std::list<char>>(inputs, outputs);
     }
   }
 
@@ -157,7 +159,7 @@ void common_checks(std::vector<Input> const& inputs,
   {
     SECTION("std::forward_list")
     {
-      base_n_checks<Adapter, std::forward_list<char>>(inputs, outputs);
+      binary_to_text_checks<Adapter, std::forward_list<char>>(inputs, outputs);
     }
   }
 }
@@ -207,7 +209,7 @@ void stream_check(std::istream& input, std::istream& output)
   stream_iterable_adapter iterable_input{input};
   stream_iterable_adapter iterable_output{output};
 
-  base_n_checks_impl<Adapter>(iterable_input, iterable_output);
+  binary_to_text_checks_impl<Adapter>(iterable_input, iterable_output);
 }
 
 template <template <typename...> class DecodingAdapter, typename Exception>
@@ -216,5 +218,6 @@ void invalid_input_checks(std::vector<std::string> const& inputs)
   using namespace std::string_literals;
 
   for (auto const& input : inputs)
-    CHECK_THROWS_AS(base_n_checks_impl<DecodingAdapter>(input, ""s), Exception);
+    CHECK_THROWS_AS(binary_to_text_checks_impl<DecodingAdapter>(input, ""s),
+                    Exception);
 }

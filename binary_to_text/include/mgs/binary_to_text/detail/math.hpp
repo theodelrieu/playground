@@ -7,8 +7,6 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace base_n
-{
 namespace binary_to_text
 {
 namespace detail
@@ -34,7 +32,6 @@ constexpr std::size_t pow()
     x *= x;
   }
   return ret;
-}
 }
 }
 }

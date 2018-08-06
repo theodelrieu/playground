@@ -85,7 +85,7 @@ bool operator!=(noop_encoder<T, U> const& lhs,
 }
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
   mgs::iterators::adaptive_iterator<noop_encoder<char*>,
                                     std::input_iterator_tag>

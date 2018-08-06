@@ -1,7 +1,7 @@
-base_n/binary_to_text/detail/concepts/encoding_traits.hpp
+binary_to_text/detail/concepts/encoding_traits.hpp
 
 base58 takes numbers, or string in reverse order...
-it would change the Codec concept as well, which only deals with binary to text/binary right now
+it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
 Having a Numeral/Numeric Codec?
 // codecs

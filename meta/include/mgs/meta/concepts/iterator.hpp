@@ -39,12 +39,12 @@ using dereference_t = decltype(*std::declval<T&>());
 
 template <typename T>
 struct is_iterator
-    : std::integral_constant<
-          bool,
-          is_semiregular<T>::value &&
-              is_valid_iterator_traits<std::iterator_traits<T>>::value &&
-              is_detected<dereference_t, T&>::value &&
-              is_detected_exact<T&, pre_increment_t, T&>::value>
+  : std::integral_constant<
+        bool,
+        is_semiregular<T>::value &&
+            is_valid_iterator_traits<std::iterator_traits<T>>::value &&
+            is_detected<dereference_t, T&>::value &&
+            is_detected_exact<T&, pre_increment_t, T&>::value>
 {
 };
 }

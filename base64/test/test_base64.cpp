@@ -1,9 +1,9 @@
 #include <algorithm>
-#include <iostream>
 #include <chrono>
 #include <deque>
 #include <forward_list>
 #include <fstream>
+#include <iostream>
 #include <iterator>
 #include <list>
 #include <sstream>
@@ -19,7 +19,7 @@
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -110,7 +110,7 @@ TEST_CASE("b64 lazy", "[base64]")
 
     invalid_input_checks<base64::decoder, mgs::exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<base64::decoder, mgs::exceptions::unexpected_eof_error>(
-        invalid_eof);
+    invalid_input_checks<base64::decoder,
+                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
 }

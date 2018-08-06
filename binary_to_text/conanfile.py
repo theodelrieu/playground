@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
 class ConanMgsBaseN(ConanFile):
-    name = "mgs_base_n"
+    name = "mgs_binary_to_text"
     version = "0.1"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"

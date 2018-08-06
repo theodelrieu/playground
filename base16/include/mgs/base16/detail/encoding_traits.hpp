@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 
-#include <mgs/base_n/binary_to_text/padding_policy.hpp>
+#include <mgs/binary_to_text/padding_policy.hpp>
 
 namespace mgs
 {
@@ -48,7 +48,7 @@ struct encoding_traits
 
   static constexpr char const encoding_name[] = "base16";
   static constexpr auto const padding_policy =
-      base_n::binary_to_text::padding_policy::none;
+      binary_to_text::padding_policy::none;
 };
 
 template <std::size_t In, std::size_t Out>

@@ -21,7 +21,7 @@
 #include <mgs/meta/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;

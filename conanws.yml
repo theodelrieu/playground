@@ -18,8 +18,8 @@ mgs_iterators:
     folder: iterators
     includedirs: include
 
-mgs_base_n:
-    folder: base_n
+mgs_binary_to_text:
+    folder: binary_to_text
     includedirs: include
 
 mgs_base64:

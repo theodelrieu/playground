@@ -17,7 +17,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -111,7 +111,7 @@ TEST_CASE("b32 lazy", "[base32]")
 
     invalid_input_checks<base32::decoder, mgs::exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<base32::decoder, mgs::exceptions::unexpected_eof_error>(
-        invalid_eof);
+    invalid_input_checks<base32::decoder,
+                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
 }

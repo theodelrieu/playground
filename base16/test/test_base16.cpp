@@ -17,7 +17,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -41,7 +41,12 @@ TEST_CASE("b16 lazy", "[base16]")
   std::vector<std::string> decoded{
       "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
   std::vector<std::string> encoded{
-      "66"s, "666F"s, "666F6F"s, "666F6F62"s, "666F6F6261"s, "666F6F626172"s,
+      "66"s,
+      "666F"s,
+      "666F6F"s,
+      "666F6F62"s,
+      "666F6F6261"s,
+      "666F6F626172"s,
   };
 
   SECTION("encoding")

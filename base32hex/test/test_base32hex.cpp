@@ -17,7 +17,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -84,12 +84,14 @@ TEST_CASE("base32hex", "[base32hex]")
   {
     SECTION("decode(encode())")
     {
-      back_and_forth_check<base32hex::encoder, base32hex::decoder>(decoded.back());
+      back_and_forth_check<base32hex::encoder, base32hex::decoder>(
+          decoded.back());
     }
 
     SECTION("encode(decode())")
     {
-      back_and_forth_check<base32hex::decoder, base32hex::encoder>(encoded.back());
+      back_and_forth_check<base32hex::decoder, base32hex::encoder>(
+          encoded.back());
     }
   }
 
@@ -109,9 +111,9 @@ TEST_CASE("base32hex", "[base32hex]")
         "="s, "*"s, "V======="s, "ABC====="s, "ABCDEF=="s, "ABCDE@"s};
     std::vector<std::string> invalid_eof{"ABC"s, "ABDHCAV"s};
 
-    invalid_input_checks<base32hex::decoder, mgs::exceptions::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<base32hex::decoder, mgs::exceptions::unexpected_eof_error>(
-        invalid_eof);
+    invalid_input_checks<base32hex::decoder,
+                         mgs::exceptions::invalid_input_error>(invalid_chars);
+    invalid_input_checks<base32hex::decoder,
+                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
 }

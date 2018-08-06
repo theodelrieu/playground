@@ -16,7 +16,7 @@ namespace meta
 {
 template <typename T>
 struct is_byte_integral
-    : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
+  : std::integral_constant<bool, std::is_integral<T>::value && sizeof(T) == 1>
 {
 };
 }

@@ -1,9 +1,9 @@
 #include <algorithm>
-#include <iostream>
 #include <chrono>
 #include <deque>
 #include <forward_list>
 #include <fstream>
+#include <iostream>
 #include <iterator>
 #include <list>
 #include <sstream>
@@ -12,17 +12,17 @@
 
 #include <catch.hpp>
 
-#include <mgs/base_n/binary_to_text/binary_to_text.hpp>
+#include <mgs/binary_to_text.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/iterable_input_adapter.hpp>
 
-#include <test_helpers/base_n.hpp>
+#include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
-using namespace mgs::base_n;
+using namespace mgs::binary_to_text;
 
 namespace
 {
@@ -64,7 +64,7 @@ using base2_decoder = adapters::transformer_adapter<
     Sentinel>;
 }
 
-TEST_CASE("base2", "[base_n]")
+TEST_CASE("base2", "[binary_to_text]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{
@@ -181,7 +181,7 @@ using octal_decoder = adapters::transformer_adapter<
     Sentinel>;
 }
 
-TEST_CASE("octal", "[base_n]")
+TEST_CASE("octal", "[binary_to_text]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{
@@ -288,7 +288,7 @@ using diy_decoder = adapters::transformer_adapter<
     Sentinel>;
 }
 
-TEST_CASE("diy", "[base_n]")
+TEST_CASE("diy", "[binary_to_text]")
 {
   // static constexpr alphabet_t alphabet = {'O', 'U', 'I', 'N'};
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};

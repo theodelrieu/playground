@@ -16,12 +16,12 @@ namespace meta
 {
 template <typename T>
 struct is_input_iterator
-    : std::integral_constant<
-          bool,
-          is_iterator<T>::value &&
-              is_derived_from<
-                  detected_t<iterator_category_t, std::iterator_traits<T>>,
-                  std::input_iterator_tag>::value>
+  : std::integral_constant<
+        bool,
+        is_iterator<T>::value &&
+            is_derived_from<
+                detected_t<iterator_category_t, std::iterator_traits<T>>,
+                std::input_iterator_tag>::value>
 {
 };
 }

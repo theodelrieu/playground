@@ -8,15 +8,13 @@
 
 #include <boost/container/static_vector.hpp>
 
-#include <mgs/base_n/binary_to_text/detail/math.hpp>
-#include <mgs/base_n/binary_to_text/detail/padding_writer.hpp>
-#include <mgs/base_n/binary_to_text/padding_policy.hpp>
+#include <mgs/binary_to_text/detail/math.hpp>
+#include <mgs/binary_to_text/detail/padding_writer.hpp>
+#include <mgs/binary_to_text/padding_policy.hpp>
 
 namespace mgs
 {
 inline namespace v1
-{
-namespace base_n
 {
 namespace binary_to_text
 {
@@ -105,7 +103,6 @@ public:
     return ret;
   }
 };
-}
 }
 }
 }

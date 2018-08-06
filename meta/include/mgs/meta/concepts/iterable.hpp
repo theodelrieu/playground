@@ -31,14 +31,14 @@ struct is_iterable<
     T,
     std::enable_if_t<can_call_begin<T&>::value && can_call_end<T&>::value>>
 {
-  private:
-    // result_of_* are not SFINAE-friendly, hence the enable_if above.
-    using Iterator = result_of_begin_t<T&>;
-    using Sentinel = result_of_end_t<T&>;
+private:
+  // result_of_* are not SFINAE-friendly, hence the enable_if above.
+  using Iterator = result_of_begin_t<T&>;
+  using Sentinel = result_of_end_t<T&>;
 
-  public:
-    static constexpr bool value =
-        is_iterator<Iterator>::value && is_sentinel<Sentinel, Iterator>::value;
+public:
+  static constexpr bool value =
+      is_iterator<Iterator>::value && is_sentinel<Sentinel, Iterator>::value;
 };
 }
 }

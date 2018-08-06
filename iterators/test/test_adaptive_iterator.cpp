@@ -251,7 +251,8 @@ TEST_CASE("adaptive_bidirectional_iterator", "[iterators][adaptive]")
 TEST_CASE("adaptive_random_access_iterator", "[iterators][adaptive]")
 {
   auto const alphabet = "abcdefghijklmnopqrstuvwxyz"s;
-  noop_encoder<decltype(alphabet.begin())> encoder{alphabet.begin(), alphabet.end()};
+  noop_encoder<decltype(alphabet.begin())> encoder{alphabet.begin(),
+                                                   alphabet.end()};
 
   auto current = encoder.begin();
   auto end = encoder.end();

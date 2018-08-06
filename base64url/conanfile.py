@@ -12,7 +12,7 @@ class ConanMgsBase64(ConanFile):
         self.build_requires("mgs_meta/%s@mgs/testing" % self.version)
 
     def requirements(self):
-        self.requires("mgs_base_n/%s@mgs/testing" % self.version)
+        self.requires("mgs_binary_to_text/%s@mgs/testing" % self.version)
         self.requires("mgs_adapters/%s@mgs/testing" % self.version)
 
     def build(self):
