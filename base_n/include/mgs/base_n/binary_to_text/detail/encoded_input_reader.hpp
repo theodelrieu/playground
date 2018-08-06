@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/base_n/padding_policy.hpp>
+#include <mgs/base_n/binary_to_text/padding_policy.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 namespace mgs
@@ -8,6 +8,8 @@ namespace mgs
 inline namespace v1
 {
 namespace base_n
+{
+namespace binary_to_text
 {
 namespace detail
 {
@@ -38,6 +40,7 @@ struct encoded_input_reader<EncodingTraits, padding_policy::optional>
     return *current++;
   }
 };
+}
 }
 }
 }

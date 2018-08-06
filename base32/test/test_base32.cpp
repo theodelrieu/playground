@@ -115,29 +115,3 @@ TEST_CASE("b32 lazy", "[base32]")
         invalid_eof);
   }
 }
-//
-// TEST_CASE("base32hex", "[base32]")
-// {
-//   std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
-//   std::vector<std::string> encoded{
-//       "C4======"s, "C5H0===="s, "C5H66==="s, "C5H66P0="s, "C5H66P35"s};
-//
-//   using Encoder = base_n::basic_encoder<detail::base32hex_encode_traits>;
-//   using Decoder = base_n::basic_decoder<detail::base32hex_decode_traits>;
-//
-//   SECTION("encoding")
-//   {
-//     SECTION("common_checks")
-//     {
-//       common_checks<Encoder>(decoded, encoded);
-//     }
-//   }
-//
-//   SECTION("decoding")
-//   {
-//     SECTION("common_checks")
-//     {
-//       common_checks<Decoder>(encoded, decoded);
-//     }
-//   }
-// }

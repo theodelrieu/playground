@@ -9,6 +9,8 @@ inline namespace v1
 {
 namespace base_n
 {
+namespace binary_to_text
+{
 namespace detail
 {
 template <std::size_t A, std::size_t Multiple>
@@ -32,6 +34,7 @@ constexpr std::size_t pow()
     x *= x;
   }
   return ret;
+}
 }
 }
 }

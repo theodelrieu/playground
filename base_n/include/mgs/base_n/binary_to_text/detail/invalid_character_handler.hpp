@@ -3,8 +3,8 @@
 #include <cassert>
 #include <string>
 
-#include <mgs/base_n/detail/math.hpp>
-#include <mgs/base_n/padding_policy.hpp>
+#include <mgs/base_n/binary_to_text/detail/math.hpp>
+#include <mgs/base_n/binary_to_text/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -13,6 +13,8 @@ namespace mgs
 inline namespace v1
 {
 namespace base_n
+{
+namespace binary_to_text
 {
 namespace detail
 {
@@ -92,6 +94,7 @@ struct invalid_character_handler<EncodingTraits, padding_policy::none>
         "invalid encoded character: '"s + c + "'"};
   }
 };
+}
 }
 }
 }

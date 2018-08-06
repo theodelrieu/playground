@@ -8,16 +8,18 @@
 
 #include <boost/container/static_vector.hpp>
 
-#include <mgs/base_n/detail/encoded_input_reader.hpp>
-#include <mgs/base_n/detail/invalid_character_handler.hpp>
-#include <mgs/base_n/detail/math.hpp>
-#include <mgs/base_n/padding_policy.hpp>
+#include <mgs/base_n/binary_to_text/detail/encoded_input_reader.hpp>
+#include <mgs/base_n/binary_to_text/detail/invalid_character_handler.hpp>
+#include <mgs/base_n/binary_to_text/detail/math.hpp>
+#include <mgs/base_n/binary_to_text/padding_policy.hpp>
 
 namespace mgs
 {
 inline namespace v1
 {
 namespace base_n
+{
+namespace binary_to_text
 {
 template <typename EncodingTraits>
 class basic_decoder
@@ -104,6 +106,7 @@ public:
     return ret;
   }
 };
+}
 }
 }
 }

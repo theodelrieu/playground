@@ -1,12 +1,14 @@
 #pragma once
 
-#include <mgs/base_n/padding_policy.hpp>
+#include <mgs/base_n/binary_to_text/padding_policy.hpp>
 
 namespace mgs
 {
 inline namespace v1
 {
 namespace base_n
+{
+namespace binary_to_text
 {
 namespace detail
 {
@@ -30,6 +32,7 @@ struct padding_writer<EncodingTraits, padding_policy::required>
       *out++ = EncodingTraits::padding_character;
   }
 };
+}
 }
 }
 }
