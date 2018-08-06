@@ -32,7 +32,10 @@ private:
       detail::round_to_multiple_of<nb_output_bytes * 8, nb_input_bytes>();
   static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
 
-  static_assert(nb_output_bits % nb_input_bytes == 0, "");
+  static_assert(nb_output_bits % nb_input_bytes == 0, "The impossible has occurred");
+  static_assert(detail::pow<2, nb_encoded_bits>() ==
+                    sizeof(EncodingTraits::alphabet),
+                "Alphabet size must be a power of 2");
 
   struct read_result
   {
