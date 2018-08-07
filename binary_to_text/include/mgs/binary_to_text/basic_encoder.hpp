@@ -8,6 +8,7 @@
 
 #include <boost/container/static_vector.hpp>
 
+#include <mgs/binary_to_text/detail/concepts/encoding_traits.hpp>
 #include <mgs/binary_to_text/detail/math.hpp>
 #include <mgs/binary_to_text/detail/padding_writer.hpp>
 #include <mgs/binary_to_text/padding_policy.hpp>
@@ -21,8 +22,11 @@ namespace binary_to_text
 template <typename EncodingTraits>
 class basic_encoder
 {
+  using _ = detail::trigger_static_asserts<EncodingTraits>;
+
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
+
 
 private:
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;

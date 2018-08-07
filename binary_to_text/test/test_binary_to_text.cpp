@@ -290,13 +290,11 @@ using diy_decoder = adapters::transformer_adapter<
 
 TEST_CASE("diy", "[binary_to_text]")
 {
-  // static constexpr alphabet_t alphabet = {'O', 'U', 'I', 'N'};
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"OUIOUOUIOIOUIONOUIUO"s,
                                    "OUIOUOUIOIOUIONOUIUOOUIUU"s,
                                    "OUIOUOUIOIOUIONOUIUOOUIUUOUIUI"s};
 
-  // 00 01 00 10 01
   SECTION("encoding")
   {
     SECTION("common_checks")
