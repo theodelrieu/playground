@@ -42,6 +42,10 @@ mgs_base16:
     folder: base16
     includedirs: include
 
+mgs_codec_base:
+    folder: codec_base
+    includedirs: include
+
 mgs_all:
     folder: all
 

@@ -14,3 +14,5 @@ class ConanMgsAll(ConanFile):
         self.requires("mgs_base32/%s@mgs/testing" % version)
         self.requires("mgs_base32hex/%s@mgs/testing" % version)
         self.requires("mgs_base16/%s@mgs/testing" % version)
+        # TODO remove this from all? We'll see later on if users should use it directly or not
+        self.requires("mgs_codec_base/%s@mgs/testing" % version)

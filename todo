@@ -1,7 +1,13 @@
+remove unused includes of containers inside test_*, already in binary_to_text
+split meta/aliases (namespace?)
+
+put meta::is_input_adapter etc in mgs_adapters
+
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
-Having a Numeral/Numeric Codec?
+Rename InputAdapter to BinaryInputAdapter?
+Having a Numeral/Numeric Codec/InputAdapter?
 // codecs
 
 mgs::codecs::base64
@@ -11,15 +17,7 @@ mgs::codecs::base64url_unpadded
 using mgs::codecs::base64;
 
 same UDT conversion system for everyone?
-I think so
-
-// concept codec
-// add default encode/decode template parameter in concept?
-// What if there is no good default?
-
-// concept ByteCodec
-// TODO write down use-cases for UDT conversion
-// Container or not Container, concepts for compatible UDT?
+I think so, if needed we'll adapt the system to be per-codec.
 
 I think we have to design the UDT conversion mechanism first, with its concepts and then go to codecs.
 

@@ -14,17 +14,6 @@ target_link_libraries(mgs_binary_to_text INTERFACE CONAN_PKG::boost_container CO
 include(CTest)
 
 if (BUILD_TESTING)
-  add_library(mgs_binary_to_text_test_helpers INTERFACE)
-  target_include_directories(mgs_binary_to_text_test_helpers INTERFACE test/include)
-  target_link_libraries(mgs_binary_to_text_test_helpers INTERFACE mgs_binary_to_text CONAN_PKG::mgs_adapters CONAN_PKG::catch2)
-
-  install(TARGETS mgs_binary_to_text_test_helpers
-    EXPORT mgs_binary_to_text_test_helpers
-    EXCLUDE_FROM_ALL
-    PUBLIC_HEADER
-      DESTINATION include
-  )
-
   enable_testing()
   add_subdirectory(test)
 endif()
