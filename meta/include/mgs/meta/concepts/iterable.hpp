@@ -2,9 +2,9 @@
 
 #include <type_traits>
 
-#include <mgs/meta/can_call_std.hpp>
 #include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/detail/can_call_std.hpp>
 #include <mgs/meta/detected.hpp>
 
 // template <typename T>
@@ -18,8 +18,8 @@ inline namespace v1
 {
 namespace meta
 {
-CAN_CALL_STD_FUNC_IMPL(begin)
-CAN_CALL_STD_FUNC_IMPL(end)
+CAN_CALL_STD_FUNC_IMPL(begin);
+CAN_CALL_STD_FUNC_IMPL(end);
 
 template <typename T, typename = void>
 struct is_iterable : std::false_type

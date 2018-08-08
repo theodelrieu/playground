@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/meta/can_call_std.hpp>
+#include <mgs/meta/detail/can_call_std.hpp>
 
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
@@ -13,7 +13,7 @@ inline namespace v1
 {
 namespace meta
 {
-CAN_CALL_STD_FUNC_IMPL(swap)
+CAN_CALL_STD_FUNC_IMPL(swap);
 
 // This mess is required since std::swap only got SFINAE-correctness in C++17
 template <typename T>
