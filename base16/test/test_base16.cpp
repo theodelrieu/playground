@@ -1,12 +1,5 @@
-#include <algorithm>
-#include <chrono>
-#include <deque>
-#include <forward_list>
 #include <fstream>
-#include <iterator>
-#include <list>
-#include <sstream>
-#include <type_traits>
+#include <string>
 #include <vector>
 
 #include <catch.hpp>
