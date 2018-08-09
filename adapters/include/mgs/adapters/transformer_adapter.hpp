@@ -4,11 +4,12 @@
 #include <cstdlib>
 #include <type_traits>
 
+#include <mgs/adapters/concepts/input_transformer.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
-#include <mgs/meta/concepts/byte_integral.hpp>
-#include <mgs/meta/concepts/input_iterator.hpp>
-#include <mgs/meta/concepts/input_transformer.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/aliases/types/difference_type.hpp>
+#include <mgs/meta/aliases/types/value_type.hpp>
+#include <mgs/meta/concepts/iterator/input_iterator.hpp>
+#include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 namespace mgs
 {
@@ -21,13 +22,15 @@ template <typename InputTransformer,
           typename Sentinel = UnderlyingIterator>
 class transformer_adapter
 {
-  static_assert(meta::is_input_iterator<UnderlyingIterator>::value,
-                "UnderlyingIterator is not an InputIterator");
-  static_assert(meta::is_sentinel<Sentinel, UnderlyingIterator>::value,
-                "Sentinel is not a Sentinel<UnderlyingIterator>");
-  static_assert(meta::is_input_transformer<InputTransformer,
-                                           UnderlyingIterator,
-                                           Sentinel>::value,
+  static_assert(
+      meta::iterator_concepts::is_input_iterator<UnderlyingIterator>::value,
+      "UnderlyingIterator is not an InputIterator");
+  static_assert(
+      meta::iterator_concepts::is_sentinel<Sentinel, UnderlyingIterator>::value,
+      "Sentinel is not a Sentinel<UnderlyingIterator>");
+  static_assert(concepts::is_input_transformer<InputTransformer,
+                                               UnderlyingIterator,
+                                               Sentinel>::value,
                 "InputTransformer is not an InputTransformer (or "
                 "UnderlyingIterator/Sentinel are invalid)");
 
@@ -43,8 +46,8 @@ public:
   using underlying_sentinel = Sentinel;
 
   using difference_type = std::streamoff;
-  using value_type = typename std::iterator_traits<
-      transformer_value_type_iterator>::value_type;
+  using value_type =
+      meta::type_aliases::value_type<transformer_value_type_iterator>;
 
   transformer_adapter() = default;
   transformer_adapter(UnderlyingIterator const& begin, Sentinel const& end);
@@ -59,7 +62,8 @@ private:
   UnderlyingIterator _current{};
   Sentinel _end{};
   transformer_value_type _transformed{};
-  meta::difference_type_t<std::iterator_traits<transformer_value_type_iterator>>
+  meta::type_aliases::difference_type<
+      std::iterator_traits<transformer_value_type_iterator>>
       _index{0};
 
   void _process_input();

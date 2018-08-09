@@ -3,8 +3,8 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/input_adapter.hpp>
+#include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/meta/concepts/core/derived_from.hpp>
 
 namespace mgs
 {
@@ -14,13 +14,14 @@ namespace iterators
 {
 namespace detail
 {
+  // TODO move this 
 template <typename T>
 using is_bidirectional_tag =
-    meta::is_derived_from<T, std::bidirectional_iterator_tag>;
+    meta::core_concepts::is_derived_from<T, std::bidirectional_iterator_tag>;
 
 template <typename T>
 using is_random_access_tag =
-    meta::is_derived_from<T, std::random_access_iterator_tag>;
+    meta::core_concepts::is_derived_from<T, std::random_access_iterator_tag>;
 }
 
 template <typename Adapter, typename IteratorTag>
@@ -28,7 +29,7 @@ class adaptive_iterator
 {
   // cannot use is_iterable_input_adapter, since adaptive_iterator
   // is used during the definition of input transformers.
-  static_assert(meta::is_input_adapter<Adapter>::value,
+  static_assert(adapters::concepts::is_input_adapter<Adapter>::value,
                 "Adapter is not an InputAdapter");
 
 public:

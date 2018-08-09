@@ -12,17 +12,16 @@
 
 #include <catch.hpp>
 
-#include <mgs/binary_to_text.hpp>
+#include <mgs/binary_to_text/basic_decoder.hpp>
+#include <mgs/binary_to_text/basic_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/iterable_input_adapter.hpp>
+#include <mgs/meta/concepts/core/derived_from.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
-using namespace mgs::binary_to_text;
 
 namespace
 {

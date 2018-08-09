@@ -11,10 +11,7 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/transformer_adapter.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/iterable.hpp>
-#include <mgs/meta/concepts/iterable_input_adapter.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 // streams are not Iterable until C++20.
 struct stream_iterable_adapter
@@ -60,12 +57,13 @@ bool operator!=(sentinel s, std::istreambuf_iterator<char> rhs) noexcept
   return !(s == rhs);
 }
 
-static_assert(
-    mgs::meta::is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
-    "");
+static_assert(mgs::meta::iterator_concepts::
+                  is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
+              "");
 
-static_assert(
-    !mgs::meta::is_sentinel<sentinel, std::vector<char>::iterator>::value, "");
+static_assert(!mgs::meta::iterator_concepts::
+                  is_sentinel<sentinel, std::vector<char>::iterator>::value,
+              "");
 
 template <template <typename...> class Adapter,
           typename Container,

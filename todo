@@ -1,7 +1,6 @@
 split meta/aliases (namespace?)
 
-put meta::is_input_adapter etc in mgs_adapters
-
+where to put umbrella headers??
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
@@ -72,3 +71,16 @@ does not make sense to have iterators specified in a codec!!
 using mgs::codecs::base64;
 
 auto encoder = base64::make_encoder(begin, end);
+
+
+----- Maybe ----
+
+add namespace alias for concepts::core/etc?
+
+then custom ones in meta/specific_package/aliases
+rename concepts folders, use plural (e.g. iterator -> iterators)?, don't know why std used the singular
+package_specific/include/mgs/package_specific/aliases?
+package_specific/include/mgs/package_specific/concepts?
+package_specific/include/mgs/codecs/package_specific.hpp
+
+trigger static asserts for everything??

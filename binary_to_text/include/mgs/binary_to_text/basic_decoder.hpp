@@ -8,7 +8,7 @@
 
 #include <boost/container/static_vector.hpp>
 
-#include <mgs/binary_to_text/detail/concepts/encoding_traits.hpp>
+#include <mgs/binary_to_text/concepts/encoding_traits.hpp>
 #include <mgs/binary_to_text/detail/encoded_input_reader.hpp>
 #include <mgs/binary_to_text/detail/invalid_character_handler.hpp>
 #include <mgs/binary_to_text/detail/math.hpp>
@@ -24,7 +24,7 @@ template <typename EncodingTraits>
 class basic_decoder
 {
 private:
-  using _ = detail::trigger_static_asserts<EncodingTraits>;
+  using _ = concepts::trigger_static_asserts<EncodingTraits>;
 
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
   static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;

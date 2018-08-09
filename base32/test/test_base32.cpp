@@ -8,24 +8,26 @@
 #include <mgs/base32/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/iterable_input_adapter.hpp>
+#include <mgs/meta/concepts/adapters/iterable_input_adapter.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
+namespace adapter_concepts = meta::concepts::iterator;
 
 extern std::vector<std::string> testFilePaths;
 
-static_assert(meta::is_iterable_input_adapter<base32::encoder<char*>>::value,
-              "");
-static_assert(meta::is_iterable_input_adapter<
+static_assert(
+    adapter_concepts::is_iterable_input_adapter<base32::encoder<char*>>::value,
+    "");
+static_assert(adapter_concepts::is_iterable_input_adapter<
                   base32::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(meta::is_iterable_input_adapter<
+static_assert(adapter_concepts::is_iterable_input_adapter<
                   base32::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(meta::is_iterable_input_adapter<
+static_assert(adapter_concepts::is_iterable_input_adapter<
                   base32::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
