@@ -1,4 +1,5 @@
-split meta/aliases (namespace?)
+refactor test_adaptive_iterator
+split packages with concept stuff in package_base
 
 where to put umbrella headers??
 base58 takes numbers, or string in reverse order...

@@ -5,9 +5,10 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/aliases.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/aliases/types/iterator_category.hpp>
+#include <mgs/meta/concepts/core/derived_from.hpp>
+#include <mgs/meta/concepts/iterator/iterator.hpp>
+#include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 #include <mgs/iterators/adaptive_iterator.hpp>
 
@@ -27,11 +28,11 @@ private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
   using iterator = iterators::adaptive_iterator<
       noop_encoder,
-      meta::iterator_category_t<underlying_iterator_traits>>;
+      meta::type_aliases::iterator_category<underlying_iterator_traits>>;
 
   friend iterators::adaptive_iterator<
       noop_encoder,
-      meta::iterator_category_t<underlying_iterator_traits>>;
+      meta::type_aliases::iterator_category<underlying_iterator_traits>>;
 
 public:
   using difference_type = typename underlying_iterator_traits::difference_type;
@@ -93,8 +94,8 @@ template <typename T, typename U>
 bool operator==(noop_encoder<T, U> const& lhs,
                 noop_encoder<T, U> const& rhs) noexcept
 {
-  if (meta::is_derived_from<
-          meta::iterator_category_t<
+  if (meta::core_concepts::is_derived_from<
+          meta::type_aliases::iterator_category<
               typename noop_encoder<T, U>::underlying_iterator_traits>,
           std::forward_iterator_tag>::value)
   {
@@ -197,11 +198,14 @@ TEST_CASE("adaptive_input_iterator", "[iterators][adaptive]")
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::is_iterator<decltype(current)>::value, "");
-  static_assert(meta::is_sentinel<decltype(end), decltype(current)>::value, "");
+  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
+                "");
+  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
+                                                     decltype(current)>::value,
+                "");
   static_assert(
       std::is_same<std::input_iterator_tag,
-                   meta::iterator_category_t<
+                   meta::type_aliases::iterator_category<
                        std::iterator_traits<decltype(current)>>>::value,
       "");
 
@@ -217,11 +221,14 @@ TEST_CASE("adaptive_forward_iterator", "[iterators][adaptive]")
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::is_iterator<decltype(current)>::value, "");
-  static_assert(meta::is_sentinel<decltype(end), decltype(current)>::value, "");
+  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
+                "");
+  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
+                                                     decltype(current)>::value,
+                "");
   static_assert(
       std::is_same<std::forward_iterator_tag,
-                   meta::iterator_category_t<
+                   meta::type_aliases::iterator_category<
                        std::iterator_traits<decltype(current)>>>::value,
       "");
 
@@ -237,11 +244,14 @@ TEST_CASE("adaptive_bidirectional_iterator", "[iterators][adaptive]")
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::is_iterator<decltype(current)>::value, "");
-  static_assert(meta::is_sentinel<decltype(end), decltype(current)>::value, "");
+  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
+                "");
+  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
+                                                     decltype(current)>::value,
+                "");
   static_assert(
       std::is_same<std::bidirectional_iterator_tag,
-                   meta::iterator_category_t<
+                   meta::type_aliases::iterator_category<
                        std::iterator_traits<decltype(current)>>>::value,
       "");
 
@@ -257,11 +267,11 @@ TEST_CASE("adaptive_random_access_iterator", "[iterators][adaptive]")
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::is_iterator<decltype(current)>::value, "");
-  static_assert(meta::is_sentinel<decltype(end), decltype(current)>::value, "");
+  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value, "");
+  static_assert(meta::iterator_concepts::is_sentinel<decltype(end), decltype(current)>::value, "");
   static_assert(
       std::is_same<std::random_access_iterator_tag,
-                   meta::iterator_category_t<
+                   meta::type_aliases::iterator_category<
                        std::iterator_traits<decltype(current)>>>::value,
       "");
 
