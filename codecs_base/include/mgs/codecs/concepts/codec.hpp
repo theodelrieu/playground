@@ -2,6 +2,18 @@
 
 #include <type_traits>
 
+#include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/codecs/aliases/static_member_functions/decode.hpp>
+#include <mgs/codecs/aliases/static_member_functions/encode.hpp>
+#include <mgs/codecs/aliases/static_member_functions/make_decoder.hpp>
+#include <mgs/codecs/aliases/static_member_functions/make_encoder.hpp>
+#include <mgs/meta/call_std/begin.hpp>
+#include <mgs/meta/call_std/end.hpp>
+#include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/meta/detected.hpp>
+
+// TODO CodecOutput
+
 // template <typename T, typename Out, Iterable I>
 // concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I const& c) {
 //   // lazy, so only iterators to avoid lifetime issues.
@@ -31,7 +43,50 @@ struct is_codec : std::false_type
 {
 };
 
-// TODO
+template <typename T, typename Out, typename It>
+struct is_codec<
+    T,
+    Out,
+    It,
+    std::enable_if_t<meta::iterator_concepts::is_iterable<It>::value>>
+{
+private:
+  using I = meta::result_of_begin_t<It>;
+  using S = meta::result_of_end_t<It>;
+
+  using Encoder =
+      meta::detected_t<static_member_function_aliases::make_encoder, T, I, S>;
+
+  using Decoder =
+      meta::detected_t<static_member_function_aliases::make_decoder, T, I, S>;
+
+public:
+  static constexpr auto const value =
+      adapters::concepts::is_input_adapter<Encoder>::value &&
+      adapters::concepts::is_input_adapter<Decoder>::value &&
+      std::is_same<Out,
+                   meta::detected_t<static_member_function_aliases::encode,
+                                    T,
+                                    Out,
+                                    I,
+                                    S>>::value &&
+      std::is_same<Out,
+                   meta::detected_t<static_member_function_aliases::decode,
+                                    T,
+                                    Out,
+                                    I,
+                                    S>>::value &&
+      std::is_same<Out,
+                   meta::detected_t<static_member_function_aliases::encode,
+                                    T,
+                                    Out,
+                                    It const&>>::value &&
+      std::is_same<Out,
+                   meta::detected_t<static_member_function_aliases::decode,
+                                    T,
+                                    Out,
+                                    It const&>>::value;
+};
 }
 }
 }
