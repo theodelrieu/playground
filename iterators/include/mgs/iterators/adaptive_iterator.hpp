@@ -3,7 +3,7 @@
 #include <iterator>
 #include <type_traits>
 
-// #include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/adapters/concepts/input_adapter.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 
 namespace mgs
@@ -14,7 +14,6 @@ namespace iterators
 {
 namespace detail
 {
-  // TODO move this 
 template <typename T>
 using is_bidirectional_tag =
     meta::core_concepts::is_derived_from<T, std::bidirectional_iterator_tag>;
@@ -29,9 +28,9 @@ class adaptive_iterator
 {
   // cannot use is_iterable_input_adapter, since adaptive_iterator
   // is used during the definition of input transformers.
-  // TODO one level of indirection T_T
-  // static_assert(adapters::concepts::is_input_adapter<Adapter>::value,
-  //               "Adapter is not an InputAdapter");
+
+  static_assert(adapters::concepts::is_input_adapter<Adapter>::value,
+                "Adapter is not an InputAdapter");
 
 public:
   using value_type = typename Adapter::value_type;

@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
-class ConanMgsAdapters(ConanFile):
-    name = "mgs_adapters"
+class ConanMgsAdaptersBase(ConanFile):
+    name = "mgs_adapters_base"
     version = "0.1"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
@@ -9,8 +9,6 @@ class ConanMgsAdapters(ConanFile):
 
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)
-        self.requires("mgs_adapters_base/%s@mgs/testing" % self.version)
-        self.requires("mgs_iterators/%s@mgs/testing" % self.version)
 
     def build(self):
         cmake = CMake(self)
