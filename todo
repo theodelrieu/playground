@@ -69,6 +69,7 @@ using mgs::codecs::base64;
 
 auto encoder = base64::make_encoder(begin, end);
 
+add Writable/OutputIterator concepts
 
 ----- Maybe ----
 
