@@ -1,7 +1,3 @@
-refactor test_adaptive_iterator
-split packages with concept stuff in package_base
-
-where to put umbrella headers??
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
@@ -85,3 +81,4 @@ package_specific/include/mgs/package_specific/concepts?
 package_specific/include/mgs/codecs/package_specific.hpp
 
 trigger static asserts for everything??
+where to put umbrella headers? mgs/pkg/pkg.hpp

@@ -7,7 +7,11 @@
 
 #include <mgs/meta/aliases/types/iterator_category.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
+#include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
+#include <mgs/meta/concepts/iterator/forward_iterator.hpp>
+#include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
+#include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 #include <mgs/iterators/adaptive_iterator.hpp>
@@ -122,8 +126,12 @@ bool operator!=(noop_encoder<T, U> const& lhs,
 }
 
 template <typename InputIterator, typename Sentinel>
-void input_iterator_checks(InputIterator current, Sentinel end)
+void iterator_checks(InputIterator current,
+                     Sentinel end,
+                     std::input_iterator_tag)
 {
+  static_assert(
+      meta::iterator_concepts::is_input_iterator<InputIterator>::value, "");
   CHECK(*current == *current);
   CHECK(*current == 'a');
   CHECK(*++current == 'b');
@@ -135,16 +143,20 @@ void input_iterator_checks(InputIterator current, Sentinel end)
 }
 
 template <typename ForwardIterator, typename Sentinel>
-void forward_iterator_checks(ForwardIterator current, Sentinel end)
+void iterator_checks(ForwardIterator current,
+                     Sentinel end,
+                     std::forward_iterator_tag)
 {
-  input_iterator_checks(current, end);
+  static_assert(
+      meta::iterator_concepts::is_forward_iterator<ForwardIterator>::value, "");
+  iterator_checks(current, end, std::input_iterator_tag{});
 
   CHECK(*(current++) == 'a');
   auto copy = current;
   CHECK(copy == current);
   CHECK(++copy == ++current);
   CHECK(ForwardIterator{} == end);
-  // We don't have OutputIterators, only check T const&.
+  // TODO add is_output_iterator and check reference
   using Traits = std::iterator_traits<ForwardIterator>;
   static_assert(std::is_same<typename Traits::reference,
                              const typename Traits::value_type&>::value,
@@ -152,9 +164,14 @@ void forward_iterator_checks(ForwardIterator current, Sentinel end)
 }
 
 template <typename BidirectionalIterator, typename Sentinel>
-void bidirectional_iterator_checks(BidirectionalIterator current, Sentinel end)
+void iterator_checks(BidirectionalIterator current,
+                     Sentinel end,
+                     std::bidirectional_iterator_tag)
 {
-  forward_iterator_checks(current, end);
+  static_assert(meta::iterator_concepts::is_bidirectional_iterator<
+                    BidirectionalIterator>::value,
+                "");
+  iterator_checks(current, end, std::forward_iterator_tag{});
 
   REQUIRE(*current == 'a');
   std::advance(current, 3);
@@ -167,9 +184,14 @@ void bidirectional_iterator_checks(BidirectionalIterator current, Sentinel end)
 }
 
 template <typename RandomAccessIterator, typename Sentinel>
-void random_access_iterator_checks(RandomAccessIterator current, Sentinel end)
+void iterator_checks(RandomAccessIterator current,
+                     Sentinel end,
+                     std::random_access_iterator_tag)
 {
-  bidirectional_iterator_checks(current, end);
+  static_assert(meta::iterator_concepts::is_random_access_iterator<
+                    RandomAccessIterator>::value,
+                "");
+  iterator_checks(current, end, std::bidirectional_iterator_tag{});
 
   CHECK(current < end);
   CHECK(current >= current);
@@ -185,6 +207,27 @@ void random_access_iterator_checks(RandomAccessIterator current, Sentinel end)
   CHECK(current[3] == 'd');
   CHECK(end - current == 26);
 }
+
+template <typename Iterator, typename Sentinel>
+void iterator_checks(Iterator it, Sentinel sent)
+{
+  noop_encoder<Iterator, Sentinel> encoder{it, sent};
+  auto current = encoder.begin();
+  auto end = encoder.end();
+
+  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
+                "");
+  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
+                                                     decltype(current)>::value,
+                "");
+  using encoder_tag = meta::type_aliases::iterator_category<
+      std::iterator_traits<decltype(current)>>;
+  using underlying_tag =
+      meta::type_aliases::iterator_category<std::iterator_traits<Iterator>>;
+  static_assert(std::is_same<underlying_tag, encoder_tag>::value, "");
+
+  iterator_checks(current, end, encoder_tag{});
+}
 }
 
 TEST_CASE("adaptive_input_iterator", "[iterators][adaptive]")
@@ -192,88 +235,29 @@ TEST_CASE("adaptive_input_iterator", "[iterators][adaptive]")
   std::stringstream ss("abcdefghijklmnopqrstuvwxyz");
   std::istreambuf_iterator<char> underlying_begin{ss};
   std::istreambuf_iterator<char> const underlying_end{};
-  noop_encoder<decltype(underlying_begin)> encoder{underlying_begin,
-                                                   underlying_end};
 
-  auto current = encoder.begin();
-  auto end = encoder.end();
-
-  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
-                "");
-  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
-                                                     decltype(current)>::value,
-                "");
-  static_assert(
-      std::is_same<std::input_iterator_tag,
-                   meta::type_aliases::iterator_category<
-                       std::iterator_traits<decltype(current)>>>::value,
-      "");
-
-  input_iterator_checks(current, end);
+  iterator_checks(underlying_begin, underlying_end);
 }
 
 TEST_CASE("adaptive_forward_iterator", "[iterators][adaptive]")
 {
   auto const alphabet = "abcdefghijklmnopqrstuvwxyz"s;
   std::forward_list<char> fl(alphabet.begin(), alphabet.end());
-  noop_encoder<decltype(fl.begin())> encoder{fl.begin(), fl.end()};
 
-  auto current = encoder.begin();
-  auto end = encoder.end();
-
-  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
-                "");
-  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
-                                                     decltype(current)>::value,
-                "");
-  static_assert(
-      std::is_same<std::forward_iterator_tag,
-                   meta::type_aliases::iterator_category<
-                       std::iterator_traits<decltype(current)>>>::value,
-      "");
-
-  forward_iterator_checks(current, end);
+  iterator_checks(fl.begin(), fl.end());
 }
 
 TEST_CASE("adaptive_bidirectional_iterator", "[iterators][adaptive]")
 {
   auto const alphabet = "abcdefghijklmnopqrstuvwxyz"s;
   std::list<char> l(alphabet.begin(), alphabet.end());
-  noop_encoder<decltype(l.begin())> encoder{l.begin(), l.end()};
 
-  auto current = encoder.begin();
-  auto end = encoder.end();
-
-  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
-                "");
-  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
-                                                     decltype(current)>::value,
-                "");
-  static_assert(
-      std::is_same<std::bidirectional_iterator_tag,
-                   meta::type_aliases::iterator_category<
-                       std::iterator_traits<decltype(current)>>>::value,
-      "");
-
-  bidirectional_iterator_checks(current, end);
+  iterator_checks(l.begin(), l.end());
 }
 
 TEST_CASE("adaptive_random_access_iterator", "[iterators][adaptive]")
 {
   auto const alphabet = "abcdefghijklmnopqrstuvwxyz"s;
-  noop_encoder<decltype(alphabet.begin())> encoder{alphabet.begin(),
-                                                   alphabet.end()};
 
-  auto current = encoder.begin();
-  auto end = encoder.end();
-
-  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value, "");
-  static_assert(meta::iterator_concepts::is_sentinel<decltype(end), decltype(current)>::value, "");
-  static_assert(
-      std::is_same<std::random_access_iterator_tag,
-                   meta::type_aliases::iterator_category<
-                       std::iterator_traits<decltype(current)>>>::value,
-      "");
-
-  random_access_iterator_checks(current, end);
+  iterator_checks(alphabet.begin(), alphabet.end());
 }
