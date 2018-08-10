@@ -24,6 +24,8 @@ Goals of UDT mechanism:
 
 A simple struct specialization should do the trick.
 
+Think about UDT as input argument to encode/decode?
+
 ---------------
 
 template <typename T, InputAdapter IA>
@@ -68,8 +70,6 @@ does not make sense to have iterators specified in a codec!!
 using mgs::codecs::base64;
 
 auto encoder = base64::make_encoder(begin, end);
-
-add Writable/OutputIterator concepts
 
 ----- Maybe ----
 

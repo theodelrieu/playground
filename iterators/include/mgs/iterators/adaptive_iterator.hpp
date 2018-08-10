@@ -26,9 +26,6 @@ using is_random_access_tag =
 template <typename Adapter, typename IteratorTag>
 class adaptive_iterator
 {
-  // cannot use is_iterable_input_adapter, since adaptive_iterator
-  // is used during the definition of input transformers.
-
   static_assert(adapters::concepts::is_input_adapter<Adapter>::value,
                 "Adapter is not an InputAdapter");
 
