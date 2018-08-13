@@ -20,8 +20,7 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 {
 };
 }
-}
-namespace comparison_concepts = concepts::comparison;
+};
 }
 }
 }

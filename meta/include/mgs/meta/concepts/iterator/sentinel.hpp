@@ -27,8 +27,7 @@ struct is_sentinel
 {
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

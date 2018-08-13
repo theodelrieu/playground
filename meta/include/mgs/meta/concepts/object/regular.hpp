@@ -23,8 +23,7 @@ struct is_regular
 {
 };
 }
-}
-namespace object_concepts = concepts::object;
+};
 }
 }
 }

@@ -40,8 +40,7 @@ public:
       is_detected<detected::types::reference, traits>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

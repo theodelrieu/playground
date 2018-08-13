@@ -38,8 +38,7 @@ struct is_bidirectional_iterator<
       is_detected_exact<T, detected::operators::post_decrement, T&>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

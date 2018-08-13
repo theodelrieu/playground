@@ -35,8 +35,7 @@ public:
                               T const&>>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

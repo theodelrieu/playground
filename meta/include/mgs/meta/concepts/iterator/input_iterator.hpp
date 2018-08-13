@@ -31,8 +31,7 @@ struct is_input_iterator<T, std::enable_if_t<is_iterator<T>::value>>
       std::input_iterator_tag>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

@@ -32,8 +32,7 @@ struct is_equality_comparable_with<
 {
 };
 }
-}
-namespace comparison_concepts = concepts::comparison;
+};
 }
 }
 }

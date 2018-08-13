@@ -48,7 +48,7 @@ template <typename T>
 struct is_input_adapter<
     T,
     std::enable_if_t<
-        meta::object_concepts::is_regular<T>::value &&
+        meta::concepts::object::is_regular<T>::value &&
         meta::is_detected<meta::detected::types::value_type, T>::value &&
         meta::is_detected<detail::detected::types::underlying_iterator,
                           T>::value &&

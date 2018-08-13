@@ -43,8 +43,7 @@ public:
       is_iterator<Iterator>::value && is_sentinel<Sentinel, Iterator>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

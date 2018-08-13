@@ -23,7 +23,7 @@ template <typename T>
 struct is_iterable_input_adapter
 {
   static constexpr bool value = is_input_adapter<T>::value &&
-                                meta::iterator_concepts::is_iterable<T>::value;
+                                meta::concepts::iterator::is_iterable<T>::value;
 };
 }
 }

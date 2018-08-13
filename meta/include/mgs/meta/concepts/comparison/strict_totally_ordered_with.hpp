@@ -61,8 +61,7 @@ struct is_strict_totally_ordered_with
 {
 };
 }
-}
-namespace comparison_concepts = concepts::comparison;
+};
 }
 }
 }

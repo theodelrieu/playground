@@ -79,8 +79,7 @@ public:
           detected::types::reference<std::iterator_traits<T>>>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

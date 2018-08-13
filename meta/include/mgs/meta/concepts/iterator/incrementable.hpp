@@ -30,8 +30,7 @@ struct is_incrementable
 {
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

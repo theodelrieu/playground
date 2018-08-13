@@ -27,8 +27,7 @@ struct is_semiregular
 {
 };
 }
-}
-namespace object_concepts = concepts::object;
+};
 }
 }
 }

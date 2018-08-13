@@ -32,8 +32,7 @@ struct is_iterator
 {
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

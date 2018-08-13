@@ -43,8 +43,7 @@ struct is_strict_totally_ordered
 {
 };
 }
-}
-namespace comparison_concepts = concepts::comparison;
+};
 }
 }
 }

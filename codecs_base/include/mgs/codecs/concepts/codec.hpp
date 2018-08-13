@@ -15,7 +15,8 @@
 // TODO CodecOutput
 
 // template <typename T, typename Out, Iterable I>
-// concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I const& c) {
+// concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I
+// const& c) {
 //   // lazy, so only iterators to avoid lifetime issues.
 //   InputAdapter<decltype(T::make_encoder(a, b))>;
 //   InputAdapter<decltype(T::make_decoder(a, b))>;
@@ -48,7 +49,7 @@ struct is_codec<
     T,
     Out,
     It,
-    std::enable_if_t<meta::iterator_concepts::is_iterable<It>::value>>
+    std::enable_if_t<meta::concepts::iterator::is_iterable<It>::value>>
 {
 private:
   using I = meta::result_of_begin_t<It>;

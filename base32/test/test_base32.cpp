@@ -4,11 +4,11 @@
 
 #include <catch.hpp>
 
+#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/base32/decoder.hpp>
 #include <mgs/base32/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 

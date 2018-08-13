@@ -57,11 +57,11 @@ bool operator!=(sentinel s, std::istreambuf_iterator<char> rhs) noexcept
   return !(s == rhs);
 }
 
-static_assert(mgs::meta::iterator_concepts::
+static_assert(mgs::meta::concepts::iterator::
                   is_sentinel<sentinel, std::istreambuf_iterator<char>>::value,
               "");
 
-static_assert(!mgs::meta::iterator_concepts::
+static_assert(!mgs::meta::concepts::iterator::
                   is_sentinel<sentinel, std::vector<char>::iterator>::value,
               "");
 

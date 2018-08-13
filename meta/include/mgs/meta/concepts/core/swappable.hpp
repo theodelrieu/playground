@@ -33,8 +33,7 @@ struct is_swappable<T[N]> : is_swappable<T>
 {
 };
 }
-}
-namespace core_concepts = concepts::core;
+};
 }
 }
 }

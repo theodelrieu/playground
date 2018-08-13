@@ -23,10 +23,11 @@ template <typename InputTransformer,
 class transformer_adapter
 {
   static_assert(
-      meta::iterator_concepts::is_input_iterator<UnderlyingIterator>::value,
+      meta::concepts::iterator::is_input_iterator<UnderlyingIterator>::value,
       "UnderlyingIterator is not an InputIterator");
   static_assert(
-      meta::iterator_concepts::is_sentinel<Sentinel, UnderlyingIterator>::value,
+      meta::concepts::iterator::is_sentinel<Sentinel,
+                                            UnderlyingIterator>::value,
       "Sentinel is not a Sentinel<UnderlyingIterator>");
   static_assert(concepts::is_input_transformer<InputTransformer,
                                                UnderlyingIterator,

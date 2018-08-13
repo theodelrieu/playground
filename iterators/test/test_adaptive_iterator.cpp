@@ -5,7 +5,6 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/detected/types/iterator_category.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 #include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
 #include <mgs/meta/concepts/iterator/forward_iterator.hpp>
@@ -13,6 +12,7 @@
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/detected/types/iterator_category.hpp>
 
 #include <mgs/iterators/adaptive_iterator.hpp>
 
@@ -98,7 +98,7 @@ template <typename T, typename U>
 bool operator==(noop_encoder<T, U> const& lhs,
                 noop_encoder<T, U> const& rhs) noexcept
 {
-  if (meta::core_concepts::is_derived_from<
+  if (meta::concepts::core::is_derived_from<
           meta::detected::types::iterator_category<
               typename noop_encoder<T, U>::underlying_iterator_traits>,
           std::forward_iterator_tag>::value)
@@ -131,7 +131,7 @@ void iterator_checks(InputIterator current,
                      std::input_iterator_tag)
 {
   static_assert(
-      meta::iterator_concepts::is_input_iterator<InputIterator>::value, "");
+      meta::concepts::iterator::is_input_iterator<InputIterator>::value, "");
   CHECK(*current == *current);
   CHECK(*current == 'a');
   CHECK(*++current == 'b');
@@ -148,7 +148,8 @@ void iterator_checks(ForwardIterator current,
                      std::forward_iterator_tag)
 {
   static_assert(
-      meta::iterator_concepts::is_forward_iterator<ForwardIterator>::value, "");
+      meta::concepts::iterator::is_forward_iterator<ForwardIterator>::value,
+      "");
   iterator_checks(current, end, std::input_iterator_tag{});
 
   CHECK(*(current++) == 'a');
@@ -168,7 +169,7 @@ void iterator_checks(BidirectionalIterator current,
                      Sentinel end,
                      std::bidirectional_iterator_tag)
 {
-  static_assert(meta::iterator_concepts::is_bidirectional_iterator<
+  static_assert(meta::concepts::iterator::is_bidirectional_iterator<
                     BidirectionalIterator>::value,
                 "");
   iterator_checks(current, end, std::forward_iterator_tag{});
@@ -188,7 +189,7 @@ void iterator_checks(RandomAccessIterator current,
                      Sentinel end,
                      std::random_access_iterator_tag)
 {
-  static_assert(meta::iterator_concepts::is_random_access_iterator<
+  static_assert(meta::concepts::iterator::is_random_access_iterator<
                     RandomAccessIterator>::value,
                 "");
   iterator_checks(current, end, std::bidirectional_iterator_tag{});
@@ -215,10 +216,10 @@ void iterator_checks(Iterator it, Sentinel sent)
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::iterator_concepts::is_iterator<decltype(current)>::value,
+  static_assert(meta::concepts::iterator::is_iterator<decltype(current)>::value,
                 "");
-  static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
-                                                     decltype(current)>::value,
+  static_assert(meta::concepts::iterator::is_sentinel<decltype(end),
+                                                      decltype(current)>::value,
                 "");
   using encoder_tag = meta::detected::types::iterator_category<
       std::iterator_traits<decltype(current)>>;

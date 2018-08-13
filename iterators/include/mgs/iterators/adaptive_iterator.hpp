@@ -16,11 +16,11 @@ namespace detail
 {
 template <typename T>
 using is_bidirectional_tag =
-    meta::core_concepts::is_derived_from<T, std::bidirectional_iterator_tag>;
+    meta::concepts::core::is_derived_from<T, std::bidirectional_iterator_tag>;
 
 template <typename T>
 using is_random_access_tag =
-    meta::core_concepts::is_derived_from<T, std::random_access_iterator_tag>;
+    meta::concepts::core::is_derived_from<T, std::random_access_iterator_tag>;
 }
 
 template <typename Adapter, typename IteratorTag>

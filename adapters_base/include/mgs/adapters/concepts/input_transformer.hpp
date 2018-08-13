@@ -48,12 +48,12 @@ struct is_input_transformer<
     Iterator,
     Sentinel,
     std::enable_if_t<
-        meta::iterator_concepts::is_iterator<Iterator>::value &&
-        meta::iterator_concepts::is_sentinel<Sentinel, Iterator>::value &&
-        meta::object_concepts::is_semiregular<T>::value &&
-        meta::iterator_concepts::is_iterable<
+        meta::concepts::iterator::is_iterator<Iterator>::value &&
+        meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
+        meta::concepts::object::is_semiregular<T>::value &&
+        meta::concepts::iterator::is_iterable<
             meta::detected_t<meta::detected::types::value_type, T>>::value &&
-        meta::object_concepts::is_semiregular<
+        meta::concepts::object::is_semiregular<
             meta::detected_t<meta::detected::types::value_type, T>>::value>>
 {
   using value_type = meta::detected::types::value_type<T>;
@@ -62,10 +62,10 @@ struct is_input_transformer<
 
 public:
   static auto constexpr value =
-      meta::iterator_concepts::is_random_access_iterator<
+      meta::concepts::iterator::is_random_access_iterator<
           value_type_iterator>::value &&
-      meta::iterator_concepts::is_sized_sentinel<value_type_sentinel,
-                                                 value_type_iterator>::value &&
+      meta::concepts::iterator::is_sized_sentinel<value_type_sentinel,
+                                                  value_type_iterator>::value &&
       meta::is_detected_exact<value_type,
                               meta::detected::operators::function_call,
                               T const&,

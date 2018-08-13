@@ -27,7 +27,6 @@ class basic_encoder
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
-
 private:
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
   static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;

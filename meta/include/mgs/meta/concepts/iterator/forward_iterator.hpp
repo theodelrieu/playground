@@ -37,8 +37,7 @@ struct is_forward_iterator<T, std::enable_if_t<is_input_iterator<T>::value>>
       is_sentinel<T, T>::value && is_incrementable<T>::value;
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

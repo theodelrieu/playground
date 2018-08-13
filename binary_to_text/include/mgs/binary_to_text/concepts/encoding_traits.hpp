@@ -24,8 +24,8 @@
 //  UnsignedIntegral<T::nb_input_bytes> &&
 //  UnsignedIntegral<T::nb_output_bytes> &&
 //  Same<padding_policy const, decltype(T::padding_policy) const> &&
-//  (Same<char const, decltype(T::padding_character) const> || T::padding_policy == padding_policy::none) &&
-//  requires (char c) {
+//  (Same<char const, decltype(T::padding_character) const> || T::padding_policy
+//  == padding_policy::none) && requires (char c) {
 //    Same<char const*, T::find(c)>;
 //  };
 

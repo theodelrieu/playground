@@ -25,8 +25,7 @@ struct is_derived_from
 {
 };
 }
-}
-namespace core_concepts = concepts::core;
+};
 }
 }
 }

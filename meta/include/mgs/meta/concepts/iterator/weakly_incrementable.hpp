@@ -28,8 +28,7 @@ struct is_weakly_incrementable
 {
 };
 }
-}
-namespace iterator_concepts = concepts::iterator;
+};
 }
 }
 }

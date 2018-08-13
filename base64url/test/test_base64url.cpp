@@ -4,13 +4,13 @@
 
 #include <catch.hpp>
 
+#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/base64url/decoder.hpp>
 #include <mgs/base64url/encoder.hpp>
 #include <mgs/base64url/nopad_decoder.hpp>
 #include <mgs/base64url/nopad_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 
