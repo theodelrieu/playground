@@ -5,10 +5,10 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
-#include <mgs/base64url/decoder.hpp>
-#include <mgs/base64url/encoder.hpp>
-#include <mgs/base64url/nopad_decoder.hpp>
-#include <mgs/base64url/nopad_encoder.hpp>
+#include <mgs/codecs/base64url/decoder.hpp>
+#include <mgs/codecs/base64url/encoder.hpp>
+#include <mgs/codecs/base64url/nopad_decoder.hpp>
+#include <mgs/codecs/base64url/nopad_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -16,6 +16,7 @@
 
 using namespace std::string_literals;
 using namespace mgs;
+using namespace mgs::codecs;
 namespace adapter_concepts = adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;

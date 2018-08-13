@@ -12,8 +12,8 @@
 
 #include <catch.hpp>
 
-#include <mgs/binary_to_text/basic_decoder.hpp>
-#include <mgs/binary_to_text/basic_encoder.hpp>
+#include <mgs/codecs/binary_to_text/basic_decoder.hpp>
+#include <mgs/codecs/binary_to_text/basic_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
@@ -22,6 +22,7 @@
 
 using namespace std::string_literals;
 using namespace mgs;
+using namespace mgs::codecs;
 
 namespace
 {
