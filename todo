@@ -1,5 +1,9 @@
 think again about UDT
 
+meta/aliases should be meta/detected
+
+in other pkgs, pkg/detail/detected
+
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
