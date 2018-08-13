@@ -1,5 +1,6 @@
 #include <catch.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -11,9 +12,20 @@
 
 using namespace mgs;
 using namespace mgs::codecs;
+using namespace std::string_literals;
 
+// TODO make noop_codec an instantiation of basic_codec
 namespace
 {
+struct invalid_type
+{
+};
+
+struct valid_type
+{
+  std::vector<std::uint8_t> vec;
+};
+
 template <typename UnderlyingIterator, typename Sentinel = UnderlyingIterator>
 class noop_adapter
 {
@@ -165,12 +177,55 @@ public:
 };
 }
 
+namespace mgs
+{
+namespace codecs
+{
+template <>
+struct output_traits<valid_type>
+{
+  template <typename Iterator>
+  static valid_type create(Iterator begin, Iterator end)
+  {
+    return {{begin, end}};
+  }
+};
+}
+}
+
 TEST_CASE("codecs_base", "[codecs_base]")
 {
-  static_assert(concepts::is_codec<noop_codec,
-                                   std::vector<std::uint8_t>,
-                                   std::string>::value,
-                "");
-  auto v = noop_codec::encode<std::vector<std::uint8_t>>("test");
-  CHECK(v.empty());
+  SECTION("codec output")
+  {
+    static_assert(
+        !concepts::is_codec_output<invalid_type, noop_adapter<char*>>::value,
+        "");
+    static_assert(
+        concepts::is_codec_output<valid_type, noop_adapter<char*>>::value, "");
+
+    auto const str = "test"s;
+
+    SECTION("User-defined type")
+    {
+      auto v = noop_codec::encode<valid_type>(str);
+      CHECK(std::equal(v.vec.begin(), v.vec.end(), str.begin(), str.end()));
+
+      auto v2 = noop_codec::encode<valid_type>(str.begin(), str.end());
+      CHECK(v.vec == v2.vec);
+
+      auto v3 = noop_codec::decode<valid_type>(str.begin(), str.end());
+      CHECK(v.vec == v3.vec);
+
+      auto v4 = noop_codec::decode<valid_type>(str);
+      CHECK(v.vec == v4.vec);
+    }
+
+    SECTION("Containers")
+    {
+      auto const input = "test"s;
+
+      auto const encoded = noop_codec::encode<std::string>(input);
+      CHECK(input == encoded);
+    }
+  }
 }
