@@ -1,12 +1,19 @@
-think again about UDT
+// codecs
+
+As a user I want to do:
+
+auto s = mgs::base64::encode(vec);
+
+so base64 must be a type alias.
+
+so, need to move current namespaces to mgs::codecs::
 
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
+
 Rename InputAdapter to BinaryInputAdapter?
 Having a Numeral/Numeric Codec/InputAdapter?
-// codecs
-
 mgs::codecs::base64
 mgs::codecs::base64url
 mgs::codecs::base64url_unpadded
@@ -26,7 +33,7 @@ Goals of UDT mechanism:
 
 A simple struct specialization should do the trick.
 
-Think about UDT as input argument to encode/decode?
+ONLY handle container-like types, since I don't see use-cases for non-container like types...
 
 ---------------
 
