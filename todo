@@ -1,3 +1,5 @@
+Container concepts, needed to support default codec outputs 
+
 // codecs
 
 mgs::base64
@@ -34,6 +36,3 @@ Rename Codec to BinaryCodec?
 
 Rename InputAdapter to BinaryInputAdapter?
 Having a Numeral/Numeric Codec/InputAdapter?
-
-UDT: allow more fine-grain control on which codec one can/cannot convert a certain type.
-Example, decoding a PrivateKey from base32, when it can only be encoded in base64 is problematic.
