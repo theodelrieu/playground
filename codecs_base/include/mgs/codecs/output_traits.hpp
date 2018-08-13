@@ -12,8 +12,8 @@ namespace codecs
 {
 // TODO namespace detail, support types by default (Containers + std::array
 // special case)
-template <typename T>
-struct output_traits<T, std::enable_if_t<sizeof(T) == 0>>
+template <typename Codec, typename T>
+struct output_traits<Codec, T, std::enable_if_t<sizeof(T) == 0>>
 {
   template <typename Iterator, typename Sentinel>
   static T create(Iterator it, Sentinel end)

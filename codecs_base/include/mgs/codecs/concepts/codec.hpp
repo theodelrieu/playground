@@ -13,17 +13,15 @@
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/detected.hpp>
 
-// TODO CodecOutput
-
-// template <typename T, typename Out, Iterable I>
+// template <typename T, CodecOutput<T> Out, Iterable I>
 // concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I
 // const& c) {
 //   // lazy, so only iterators to avoid lifetime issues.
-//   InputAdapter<decltype(T::make_encoder(a, b))>;
-//   InputAdapter<decltype(T::make_decoder(a, b))>;
+//   using Encoder = decltype(T::make_encoder(a, b));
+//   using Decoder = decltype(T::make_encoder(a, b));
 //
-//   CodecOutput<Out, decltype(T::make_encoder(a, b))>;
-//   CodecOutput<Out, decltype(T::make_decoder(a, b))>;
+//   InputAdapter<Encoder>;
+//   InputAdapter<Decoder>;
 //
 //   // eager, user specifies return type.
 //   Same<Out, decltype(T::encode<Out>(a, b))>;
@@ -50,7 +48,8 @@ struct is_codec<
     T,
     Out,
     It,
-    std::enable_if_t<meta::concepts::iterator::is_iterable<It>::value>>
+    std::enable_if_t<meta::concepts::iterator::is_iterable<It>::value &&
+                     is_codec_output<Out, T>::value>>
 {
 private:
   using I = meta::result_of_begin_t<It>;
@@ -68,6 +67,9 @@ private:
                        I,
                        S>;
 
+  using EncoderIterator = meta::detected_t<meta::result_of_begin_t, Encoder>;
+  using DecoderIterator = meta::detected_t<meta::result_of_begin_t, Decoder>;
+
 public:
   static constexpr auto const value =
       adapters::concepts::is_input_adapter<Encoder>::value &&
@@ -79,15 +81,15 @@ public:
           meta::detected_t<detail::detected::static_member_functions::encode,
                            T,
                            Out,
-                           I,
-                           S>>::value &&
+                           EncoderIterator,
+                           EncoderIterator>>::value &&
       std::is_same<
           Out,
           meta::detected_t<detail::detected::static_member_functions::decode,
                            T,
                            Out,
-                           I,
-                           S>>::value &&
+                           DecoderIterator,
+                           DecoderIterator>>::value &&
       std::is_same<
           Out,
           meta::detected_t<detail::detected::static_member_functions::encode,

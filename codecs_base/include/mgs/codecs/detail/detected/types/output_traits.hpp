@@ -16,8 +16,8 @@ namespace detected
 {
 namespace types
 {
-template <typename T>
-using output_traits = output_traits<T>;
+template <typename Codec, typename T>
+using output_traits = output_traits<Codec, T>;
 }
 }
 }
