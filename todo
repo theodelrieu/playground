@@ -6,14 +6,6 @@ auto s = mgs::base64::encode(vec);
 
 so base64 must be a type alias.
 
-so, need to move current namespaces to mgs::codecs::
-
-base58 takes numbers, or string in reverse order...
-it would change the Codec concept as well, which only deals with binary to text right now
-Rename Codec to BinaryCodec?
-
-Rename InputAdapter to BinaryInputAdapter?
-Having a Numeral/Numeric Codec/InputAdapter?
 mgs::codecs::base64
 mgs::codecs::base64url
 mgs::codecs::base64url_unpadded
@@ -76,7 +68,7 @@ does not make sense to have iterators specified in a codec!!
 
 // template template arguments
 
-using mgs::codecs::base64;
+using mgs::base64;
 
 auto encoder = base64::make_encoder(begin, end);
 
@@ -84,3 +76,10 @@ auto encoder = base64::make_encoder(begin, end);
 
 trigger static asserts for everything??
 where to put umbrella headers? mgs/pkg/pkg.hpp
+
+base58 takes numbers, or string in reverse order...
+it would change the Codec concept as well, which only deals with binary to text right now
+Rename Codec to BinaryCodec?
+
+Rename InputAdapter to BinaryInputAdapter?
+Having a Numeral/Numeric Codec/InputAdapter?
