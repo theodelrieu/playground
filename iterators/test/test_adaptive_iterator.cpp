@@ -5,7 +5,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/aliases/types/iterator_category.hpp>
+#include <mgs/meta/detected/types/iterator_category.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 #include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
 #include <mgs/meta/concepts/iterator/forward_iterator.hpp>
@@ -32,11 +32,11 @@ private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
   using iterator = iterators::adaptive_iterator<
       noop_encoder,
-      meta::type_aliases::iterator_category<underlying_iterator_traits>>;
+      meta::detected::types::iterator_category<underlying_iterator_traits>>;
 
   friend iterators::adaptive_iterator<
       noop_encoder,
-      meta::type_aliases::iterator_category<underlying_iterator_traits>>;
+      meta::detected::types::iterator_category<underlying_iterator_traits>>;
 
 public:
   using difference_type = typename underlying_iterator_traits::difference_type;
@@ -99,7 +99,7 @@ bool operator==(noop_encoder<T, U> const& lhs,
                 noop_encoder<T, U> const& rhs) noexcept
 {
   if (meta::core_concepts::is_derived_from<
-          meta::type_aliases::iterator_category<
+          meta::detected::types::iterator_category<
               typename noop_encoder<T, U>::underlying_iterator_traits>,
           std::forward_iterator_tag>::value)
   {
@@ -220,10 +220,10 @@ void iterator_checks(Iterator it, Sentinel sent)
   static_assert(meta::iterator_concepts::is_sentinel<decltype(end),
                                                      decltype(current)>::value,
                 "");
-  using encoder_tag = meta::type_aliases::iterator_category<
+  using encoder_tag = meta::detected::types::iterator_category<
       std::iterator_traits<decltype(current)>>;
   using underlying_tag =
-      meta::type_aliases::iterator_category<std::iterator_traits<Iterator>>;
+      meta::detected::types::iterator_category<std::iterator_traits<Iterator>>;
   static_assert(std::is_same<underlying_tag, encoder_tag>::value, "");
 
   iterator_checks(current, end, encoder_tag{});

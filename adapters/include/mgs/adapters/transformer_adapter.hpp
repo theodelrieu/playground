@@ -6,10 +6,10 @@
 
 #include <mgs/adapters/concepts/input_transformer.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
-#include <mgs/meta/aliases/types/difference_type.hpp>
-#include <mgs/meta/aliases/types/value_type.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/detected/types/difference_type.hpp>
+#include <mgs/meta/detected/types/value_type.hpp>
 
 namespace mgs
 {
@@ -47,7 +47,7 @@ public:
 
   using difference_type = std::streamoff;
   using value_type =
-      meta::type_aliases::value_type<transformer_value_type_iterator>;
+      meta::detected::types::value_type<transformer_value_type_iterator>;
 
   transformer_adapter() = default;
   transformer_adapter(UnderlyingIterator const& begin, Sentinel const& end);
@@ -62,9 +62,8 @@ private:
   UnderlyingIterator _current{};
   Sentinel _end{};
   transformer_value_type _transformed{};
-  meta::type_aliases::difference_type<
-      std::iterator_traits<transformer_value_type_iterator>>
-      _index{0};
+  typename std::iterator_traits<
+      transformer_value_type_iterator>::difference_type _index{0};
 
   void _process_input();
 

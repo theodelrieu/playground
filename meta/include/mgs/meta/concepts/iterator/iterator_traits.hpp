@@ -3,12 +3,12 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/meta/aliases/types/difference_type.hpp>
-#include <mgs/meta/aliases/types/iterator_category.hpp>
-#include <mgs/meta/aliases/types/pointer.hpp>
-#include <mgs/meta/aliases/types/reference.hpp>
-#include <mgs/meta/aliases/types/value_type.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/types/difference_type.hpp>
+#include <mgs/meta/detected/types/iterator_category.hpp>
+#include <mgs/meta/detected/types/pointer.hpp>
+#include <mgs/meta/detected/types/reference.hpp>
+#include <mgs/meta/detected/types/value_type.hpp>
 
 namespace mgs
 {
@@ -33,11 +33,11 @@ private:
 
 public:
   static constexpr auto value =
-      is_detected<aliases::types::value_type, traits>::value &&
-      is_detected<aliases::types::difference_type, traits>::value &&
-      is_detected<aliases::types::pointer, traits>::value &&
-      is_detected<aliases::types::iterator_category, traits>::value &&
-      is_detected<aliases::types::reference, traits>::value;
+      is_detected<detected::types::value_type, traits>::value &&
+      is_detected<detected::types::difference_type, traits>::value &&
+      is_detected<detected::types::pointer, traits>::value &&
+      is_detected<detected::types::iterator_category, traits>::value &&
+      is_detected<detected::types::reference, traits>::value;
 };
 }
 }

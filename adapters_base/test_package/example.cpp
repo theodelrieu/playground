@@ -1,11 +1,6 @@
-#include <mgs/adapters/aliases/types/underlying_iterator.hpp>
-
-struct A
-{
-  using underlying_iterator = char const*;
-};
+#include <mgs/adapters/concepts/input_adapter.hpp>
 
 int main(int argc, char const* argv[])
 {
-  mgs::adapters::type_aliases::underlying_iterator<A> it = "";
+  static_assert(!mgs::adapters::concepts::is_input_adapter<int>::value, "");
 }

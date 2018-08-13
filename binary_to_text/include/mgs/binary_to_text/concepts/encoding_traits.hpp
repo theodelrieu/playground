@@ -3,13 +3,13 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/binary_to_text/aliases/static_data_members/alphabet.hpp>
-#include <mgs/binary_to_text/aliases/static_data_members/encoding_name.hpp>
-#include <mgs/binary_to_text/aliases/static_data_members/nb_input_bytes.hpp>
-#include <mgs/binary_to_text/aliases/static_data_members/nb_output_bytes.hpp>
-#include <mgs/binary_to_text/aliases/static_data_members/padding_character.hpp>
-#include <mgs/binary_to_text/aliases/static_data_members/padding_policy.hpp>
-#include <mgs/binary_to_text/aliases/static_member_functions/find_char.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/alphabet.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/encoding_name.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/nb_input_bytes.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/nb_output_bytes.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/padding_character.hpp>
+#include <mgs/binary_to_text/detail/detected/static_data_members/padding_policy.hpp>
+#include <mgs/binary_to_text/detail/detected/static_member_functions/find_char.hpp>
 #include <mgs/binary_to_text/detail/math.hpp>
 #include <mgs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/detected.hpp>
@@ -45,28 +45,31 @@ struct is_encoding_traits : std::false_type
 template <typename T>
 struct is_encoding_traits<
     T,
-    std::enable_if_t<
-        meta::is_detected_convertible<
-            padding_policy,
-            static_data_member_aliases::padding_policy,
-            T>::value &&
-        std::is_array<
-            meta::detected_t<static_data_member_aliases::alphabet, T>>::value &&
-        std::is_array<
-            meta::detected_t<static_data_member_aliases::encoding_name,
-                             T>>::value &&
-        std::is_unsigned<
-            meta::detected_t<static_data_member_aliases::nb_input_bytes,
-                             T>>::value &&
-        std::is_unsigned<
-            meta::detected_t<static_data_member_aliases::nb_output_bytes,
-                             T>>::value>>
+    std::enable_if_t<meta::is_detected_convertible<
+                         padding_policy,
+                         detail::detected::static_data_members::padding_policy,
+                         T>::value &&
+                     std::is_array<meta::detected_t<
+                         detail::detected::static_data_members::alphabet,
+                         T>>::value &&
+                     std::is_array<meta::detected_t<
+                         detail::detected::static_data_members::encoding_name,
+                         T>>::value &&
+                     std::is_unsigned<meta::detected_t<
+                         detail::detected::static_data_members::nb_input_bytes,
+                         T>>::value &&
+                     std::is_unsigned<meta::detected_t<
+                         detail::detected::static_data_members::nb_output_bytes,
+                         T>>::value>>
 {
 private:
-  using alphabet_t = static_data_member_aliases::alphabet<T>;
-  using encoding_name_t = static_data_member_aliases::encoding_name<T>;
-  using nb_input_bytes_t = static_data_member_aliases::nb_input_bytes<T>;
-  using nb_output_bytes_t = static_data_member_aliases::nb_output_bytes<T>;
+  using alphabet_t = detail::detected::static_data_members::alphabet<T>;
+  using encoding_name_t =
+      detail::detected::static_data_members::encoding_name<T>;
+  using nb_input_bytes_t =
+      detail::detected::static_data_members::nb_input_bytes<T>;
+  using nb_output_bytes_t =
+      detail::detected::static_data_members::nb_output_bytes<T>;
 
 public:
   static constexpr auto const value =
@@ -76,13 +79,14 @@ public:
           sizeof(alphabet_t) &&
       (meta::is_detected_convertible<
            char,
-           static_data_member_aliases::padding_character,
+           detail::detected::static_data_members::padding_character,
            T>::value ||
        T::padding_policy == padding_policy::none) &&
-      meta::is_detected_exact<char const*,
-                              static_member_function_aliases::find_char,
-                              T,
-                              char>::value;
+      meta::is_detected_exact<
+          char const*,
+          detail::detected::static_member_functions::find_char,
+          T,
+          char>::value;
 };
 
 // TODO better name/design
@@ -90,28 +94,32 @@ template <typename T>
 struct static_asserts
 {
   using detected_alphabet =
-      meta::detected_t<static_data_member_aliases::alphabet, T>;
+      meta::detected_t<detail::detected::static_data_members::alphabet, T>;
 
   using detected_encoding_name =
-      meta::detected_t<static_data_member_aliases::encoding_name, T>;
+      meta::detected_t<detail::detected::static_data_members::encoding_name, T>;
 
   using detected_nb_input_bytes =
-      meta::detected_t<static_data_member_aliases::nb_input_bytes, T>;
+      meta::detected_t<detail::detected::static_data_members::nb_input_bytes,
+                       T>;
 
   using detected_nb_output_bytes =
-      meta::detected_t<static_data_member_aliases::nb_output_bytes, T>;
+      meta::detected_t<detail::detected::static_data_members::nb_output_bytes,
+                       T>;
 
   using detected_padding_policy =
-      meta::detected_t<static_data_member_aliases::padding_policy, T>;
+      meta::detected_t<detail::detected::static_data_members::padding_policy,
+                       T>;
 
   using detected_padding_character =
-      meta::detected_t<static_data_member_aliases::padding_character, T>;
+      meta::detected_t<detail::detected::static_data_members::padding_character,
+                       T>;
 
-  static_assert(
-      meta::is_detected_exact<padding_policy const,
-                              static_data_member_aliases::padding_policy,
-                              T const>::value,
-      "padding_policy is missing or of the wrong type");
+  static_assert(meta::is_detected_exact<
+                    padding_policy const,
+                    detail::detected::static_data_members::padding_policy,
+                    T const>::value,
+                "padding_policy is missing or of the wrong type");
 
   static_assert(
       std::is_array<detected_alphabet>::value &&
@@ -135,20 +143,20 @@ struct static_asserts
       std::is_unsigned<detected_nb_output_bytes>::value,
       "nb_output_bytes is missing or not of an unsigned integral type");
 
-  static_assert(
-      meta::is_detected_exact<char const,
-                              static_data_member_aliases::padding_character,
-                              T const>::value ||
-          T::padding_policy == padding_policy::none,
-      "padding_character is missing, set padding_policy to "
-      "padding_policy::none if padding is not required");
+  static_assert(meta::is_detected_exact<
+                    char const,
+                    detail::detected::static_data_members::padding_character,
+                    T const>::value ||
+                    T::padding_policy == padding_policy::none,
+                "padding_character is missing, set padding_policy to "
+                "padding_policy::none if padding is not required");
 
-  static_assert(
-      meta::is_detected_exact<char const*,
-                              static_member_function_aliases::find_char,
-                              T,
-                              char>::value,
-      "static method not found: char const* find_char(char)");
+  static_assert(meta::is_detected_exact<
+                    char const*,
+                    detail::detected::static_member_functions::find_char,
+                    T,
+                    char>::value,
+                "static method not found: char const* find_char(char)");
 
   using trigger = decltype(sizeof(T));
 };

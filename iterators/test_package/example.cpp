@@ -3,7 +3,8 @@
 #include <string>
 
 #include <mgs/iterators/adaptive_iterator.hpp>
-#include <mgs/meta/aliases.hpp>
+#include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/types/iterator_category.hpp>
 
 namespace
 {
@@ -21,7 +22,8 @@ private:
 
   friend mgs::iterators::adaptive_iterator<
       noop_encoder,
-      mgs::meta::iterator_category_t<underlying_iterator_traits>>;
+      mgs::meta::detected::types::iterator_category<
+          underlying_iterator_traits>>;
 
 public:
   using difference_type = typename underlying_iterator_traits::difference_type;

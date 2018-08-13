@@ -2,12 +2,12 @@
 
 #include <type_traits>
 
-#include <mgs/meta/aliases/operators/greater_or_equal_than.hpp>
-#include <mgs/meta/aliases/operators/greater_than.hpp>
-#include <mgs/meta/aliases/operators/less_or_equal_than.hpp>
-#include <mgs/meta/aliases/operators/less_than.hpp>
 #include <mgs/meta/concepts/comparison/equality_comparable.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/operators/greater_or_equal_than.hpp>
+#include <mgs/meta/detected/operators/greater_than.hpp>
+#include <mgs/meta/detected/operators/less_or_equal_than.hpp>
+#include <mgs/meta/detected/operators/less_than.hpp>
 
 namespace mgs
 {
@@ -25,19 +25,19 @@ struct is_strict_totally_ordered
         bool,
         is_equality_comparable<T>::value &&
             is_detected_exact<bool,
-                              aliases::operators::less_than,
+                              detected::operators::less_than,
                               T const&,
                               T const&>::value &&
             is_detected_exact<bool,
-                              aliases::operators::less_or_equal_than,
+                              detected::operators::less_or_equal_than,
                               T const&,
                               T const&>::value &&
             is_detected_exact<bool,
-                              aliases::operators::greater_than,
+                              detected::operators::greater_than,
                               T const&,
                               T const&>::value &&
             is_detected_exact<bool,
-                              aliases::operators::greater_or_equal_than,
+                              detected::operators::greater_or_equal_than,
                               T const&,
                               T const&>::value>
 {

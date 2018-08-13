@@ -2,9 +2,9 @@
 
 #include <type_traits>
 
-#include <mgs/meta/aliases/operators/substraction.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/operators/substraction.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel
 namespace mgs
@@ -22,7 +22,7 @@ struct is_sized_sentinel
 {
 private:
   using difference_type =
-      detected_t<aliases::operators::substraction, T const&, Iterator const&>;
+      detected_t<detected::operators::substraction, T const&, Iterator const&>;
 
 public:
   static constexpr auto value =
@@ -30,7 +30,7 @@ public:
       std::is_integral<difference_type>::value &&
       std::is_signed<difference_type>::value &&
       std::is_same<difference_type,
-                   detected_t<aliases::operators::substraction,
+                   detected_t<detected::operators::substraction,
                               Iterator const&,
                               T const&>>::value;
 };

@@ -2,10 +2,10 @@
 
 #include <type_traits>
 
-#include <mgs/meta/aliases/operators/post_increment.hpp>
-#include <mgs/meta/aliases/operators/pre_increment.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/operators/post_increment.hpp>
+#include <mgs/meta/detected/operators/pre_increment.hpp>
 
 namespace mgs
 {
@@ -22,9 +22,9 @@ struct is_weakly_incrementable
   : std::integral_constant<
         bool,
         object::is_semiregular<T>::value &&
-            is_detected_exact<T&, aliases::operators::pre_increment, T&>::
+            is_detected_exact<T&, detected::operators::pre_increment, T&>::
                 value &&
-            is_detected<aliases::operators::post_increment, T&>::value>
+            is_detected<detected::operators::post_increment, T&>::value>
 {
 };
 }

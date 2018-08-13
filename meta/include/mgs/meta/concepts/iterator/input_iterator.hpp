@@ -3,10 +3,10 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/meta/aliases/types/iterator_category.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/types/iterator_category.hpp>
 
 namespace mgs
 {
@@ -27,7 +27,7 @@ template <typename T>
 struct is_input_iterator<T, std::enable_if_t<is_iterator<T>::value>>
 {
   static constexpr auto const value = core::is_derived_from<
-      detected_t<aliases::types::iterator_category, std::iterator_traits<T>>,
+      detected_t<detected::types::iterator_category, std::iterator_traits<T>>,
       std::input_iterator_tag>::value;
 };
 }

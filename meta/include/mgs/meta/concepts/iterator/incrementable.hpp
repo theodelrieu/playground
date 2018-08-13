@@ -2,10 +2,10 @@
 
 #include <type_traits>
 
-#include <mgs/meta/aliases/operators/post_increment.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/concepts/object/regular.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/operators/post_increment.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Incrementable
 
@@ -24,7 +24,7 @@ struct is_incrementable
   : std::integral_constant<
         bool,
         object::is_regular<T>::value &&
-            is_detected_exact<T, aliases::operators::post_increment, T&>::
+            is_detected_exact<T, detected::operators::post_increment, T&>::
                 value &&
             is_weakly_incrementable<T>::value>
 {

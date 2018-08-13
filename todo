@@ -1,9 +1,5 @@
 think again about UDT
 
-meta/aliases should be meta/detected
-
-in other pkgs, pkg/detail/detected
-
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
 Rename Codec to BinaryCodec?
@@ -78,14 +74,6 @@ using mgs::codecs::base64;
 auto encoder = base64::make_encoder(begin, end);
 
 ----- Maybe ----
-
-add namespace alias for concepts::core/etc?
-
-then custom ones in meta/specific_package/aliases
-rename concepts folders, use plural (e.g. iterator -> iterators)?, don't know why std used the singular
-package_specific/include/mgs/package_specific/aliases?
-package_specific/include/mgs/package_specific/concepts?
-package_specific/include/mgs/codecs/package_specific.hpp
 
 trigger static asserts for everything??
 where to put umbrella headers? mgs/pkg/pkg.hpp

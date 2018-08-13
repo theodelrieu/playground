@@ -3,10 +3,10 @@
 #include <type_traits>
 
 #include <mgs/adapters/concepts/input_adapter.hpp>
-#include <mgs/codecs/aliases/static_member_functions/decode.hpp>
-#include <mgs/codecs/aliases/static_member_functions/encode.hpp>
-#include <mgs/codecs/aliases/static_member_functions/make_decoder.hpp>
-#include <mgs/codecs/aliases/static_member_functions/make_encoder.hpp>
+#include <mgs/codecs/detail/detected/static_member_functions/decode.hpp>
+#include <mgs/codecs/detail/detected/static_member_functions/encode.hpp>
+#include <mgs/codecs/detail/detected/static_member_functions/make_decoder.hpp>
+#include <mgs/codecs/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>
@@ -55,37 +55,47 @@ private:
   using S = meta::result_of_end_t<It>;
 
   using Encoder =
-      meta::detected_t<static_member_function_aliases::make_encoder, T, I, S>;
+      meta::detected_t<detail::detected::static_member_functions::make_encoder,
+                       T,
+                       I,
+                       S>;
 
   using Decoder =
-      meta::detected_t<static_member_function_aliases::make_decoder, T, I, S>;
+      meta::detected_t<detail::detected::static_member_functions::make_decoder,
+                       T,
+                       I,
+                       S>;
 
 public:
   static constexpr auto const value =
       adapters::concepts::is_input_adapter<Encoder>::value &&
       adapters::concepts::is_input_adapter<Decoder>::value &&
-      std::is_same<Out,
-                   meta::detected_t<static_member_function_aliases::encode,
-                                    T,
-                                    Out,
-                                    I,
-                                    S>>::value &&
-      std::is_same<Out,
-                   meta::detected_t<static_member_function_aliases::decode,
-                                    T,
-                                    Out,
-                                    I,
-                                    S>>::value &&
-      std::is_same<Out,
-                   meta::detected_t<static_member_function_aliases::encode,
-                                    T,
-                                    Out,
-                                    It const&>>::value &&
-      std::is_same<Out,
-                   meta::detected_t<static_member_function_aliases::decode,
-                                    T,
-                                    Out,
-                                    It const&>>::value;
+      std::is_same<
+          Out,
+          meta::detected_t<detail::detected::static_member_functions::encode,
+                           T,
+                           Out,
+                           I,
+                           S>>::value &&
+      std::is_same<
+          Out,
+          meta::detected_t<detail::detected::static_member_functions::decode,
+                           T,
+                           Out,
+                           I,
+                           S>>::value &&
+      std::is_same<
+          Out,
+          meta::detected_t<detail::detected::static_member_functions::encode,
+                           T,
+                           Out,
+                           It const&>>::value &&
+      std::is_same<
+          Out,
+          meta::detected_t<detail::detected::static_member_functions::decode,
+                           T,
+                           Out,
+                           It const&>>::value;
 };
 }
 }
