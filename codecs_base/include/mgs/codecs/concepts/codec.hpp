@@ -3,6 +3,7 @@
 #include <type_traits>
 
 #include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/decode.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/encode.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/make_decoder.hpp>
@@ -71,6 +72,8 @@ public:
   static constexpr auto const value =
       adapters::concepts::is_input_adapter<Encoder>::value &&
       adapters::concepts::is_input_adapter<Decoder>::value &&
+      is_codec_output<Out, Encoder>::value &&
+      is_codec_output<Out, Decoder>::value &&
       std::is_same<
           Out,
           meta::detected_t<detail::detected::static_member_functions::encode,

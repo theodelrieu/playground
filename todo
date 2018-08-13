@@ -32,7 +32,7 @@ ONLY handle container-like types, since I don't see use-cases for non-container 
 template <typename T, InputAdapter IA>
 concept CodecOutput = requires (IA adapter) {
   // users have to make it SFINAE-correct themselves.
-  Same<T, decltype(mgs::codecs::codec_output<T>::create(begin(adapter), end(adapter)))>;
+  Same<T, decltype(mgs::codecs::output_traits<T>::create(begin(adapter), end(adapter)))>;
 };
 
 template <typename T, typename Out, Iterable I>
