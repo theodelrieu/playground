@@ -13,6 +13,8 @@
 #include <mgs/codecs/binary_to_text/detail/invalid_character_handler.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/meta/concepts/iterator/input_iterator.hpp>
+#include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 namespace mgs
 {
@@ -22,10 +24,16 @@ namespace codecs
 {
 namespace binary_to_text
 {
-template <typename EncodingTraits>
+template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_decoder
 {
 private:
+  static_assert(meta::concepts::iterator::is_input_iterator<Iterator>::value,
+                "Iterator is not an InputIterator");
+  static_assert(
+      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value,
+      "Sentinel is not a Sentinel<Iterator>");
+
   using _ = concepts::trigger_static_asserts<EncodingTraits>;
 
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
@@ -41,14 +49,37 @@ private:
                     sizeof(EncodingTraits::alphabet),
                 "Alphabet size must be a power of 2");
 
+public:
+  using value_type =
+      boost::container::static_vector<std::uint8_t, nb_output_bytes>;
+  using underlying_iterator = Iterator;
+  using underlying_sentinel = Sentinel;
+
+  basic_decoder() = default;
+
+  basic_decoder(Iterator begin, Sentinel end)
+    : _current(std::move(begin)), _end(std::move(end))
+  {
+  }
+
+  value_type operator()()
+  {
+    if (_current == _end)
+      return {};
+    auto const res = read();
+
+    value_type ret;
+    decode_input_bits(res, std::back_inserter(ret));
+    return ret;
+  }
+
   struct read_result
   {
     std::bitset<nb_output_bits> input_bits;
     std::size_t nb_read_bytes;
   };
 
-  template <typename Iterator, typename Sentinel>
-  read_result read(Iterator& current, Sentinel const sent) const
+  read_result read()
   {
     std::bitset<nb_output_bits> input_bits;
 
@@ -62,13 +93,13 @@ private:
       auto const alph_end = end(EncodingTraits::alphabet);
 
       auto const c =
-          detail::encoded_input_reader<EncodingTraits>::read(current, sent);
+          detail::encoded_input_reader<EncodingTraits>::read(_current, _end);
       auto const index_it = EncodingTraits::find_char(c);
 
       if (index_it == alph_end)
       {
         detail::invalid_character_handler<EncodingTraits>::handle(
-            i, c, current, sent);
+            i, c, _current, _end);
         break;
       }
 
@@ -97,21 +128,8 @@ private:
     }
   }
 
-public:
-  using value_type =
-      boost::container::static_vector<std::uint8_t, nb_output_bytes>;
-
-  template <typename Iterator, typename Sentinel>
-  value_type operator()(Iterator& current, Sentinel const end) const
-  {
-    assert(current != end);
-
-    auto const res = read(current, end);
-
-    value_type ret;
-    decode_input_bits(res, std::back_inserter(ret));
-    return ret;
-  }
+  Iterator _current{};
+  Sentinel _end{};
 };
 }
 }

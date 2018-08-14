@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <mgs/adapters/transformer_adapter.hpp>
@@ -27,27 +28,36 @@ struct valid_type
   std::vector<std::uint8_t> vec;
 };
 
+template <typename Iterator, typename Sentinel>
 class noop_transformer
 {
 public:
+  using underlying_iterator = Iterator;
+  using underlying_sentinel = Sentinel;
   using value_type = std::vector<std::uint8_t>;
 
-  template <typename Iterator, typename Sentinel>
-  value_type operator()(Iterator& begin, Sentinel end) const
+  noop_transformer() = default;
+
+  noop_transformer(Iterator begin, Sentinel end)
+    : _current(std::move(begin)), _end(std::move(end))
   {
-    value_type v;
-    v.reserve(std::distance(begin, end));
-    while (begin != end)
-      v.push_back(*begin++);
-    return v;
   }
+
+  value_type operator()()
+  {
+    return {_current, _end};
+  }
+
+private:
+  Iterator _current{};
+  Sentinel _end{};
 };
 
 class noop_codec
 {
   template <typename Iterator, typename Sentinel>
   using adapter =
-      adapters::transformer_adapter<noop_transformer, Iterator, Sentinel>;
+      adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>;
 
 public:
   template <typename Iterator, typename Sentinel>

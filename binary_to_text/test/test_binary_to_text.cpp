@@ -53,15 +53,13 @@ constexpr char const base2_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_encoder = adapters::transformer_adapter<
-    binary_to_text::basic_encoder<base2_encoding_traits<1, 8>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_encoder<Iterator, Sentinel, base2_encoding_traits<1, 8>>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_decoder = adapters::transformer_adapter<
-    binary_to_text::basic_decoder<base2_encoding_traits<8, 1>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_decoder<Iterator, Sentinel, base2_encoding_traits<8, 1>>>;
 }
 
 TEST_CASE("base2", "[binary_to_text]")
@@ -170,15 +168,13 @@ constexpr char const octal_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using octal_encoder = adapters::transformer_adapter<
-    binary_to_text::basic_encoder<octal_encoding_traits<1, 3>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_encoder<Iterator, Sentinel, octal_encoding_traits<1, 3>>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using octal_decoder = adapters::transformer_adapter<
-    binary_to_text::basic_decoder<octal_encoding_traits<3, 1>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_decoder<Iterator, Sentinel, octal_encoding_traits<3, 1>>>;
 }
 
 TEST_CASE("octal", "[binary_to_text]")
@@ -277,15 +273,13 @@ constexpr char const diy_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using diy_encoder = adapters::transformer_adapter<
-    binary_to_text::basic_encoder<diy_encoding_traits<1, 5>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_encoder<Iterator, Sentinel, diy_encoding_traits<1, 5>>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using diy_decoder = adapters::transformer_adapter<
-    binary_to_text::basic_decoder<diy_encoding_traits<5, 1>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_decoder<Iterator, Sentinel, diy_encoding_traits<5, 1>>>;
 }
 
 TEST_CASE("diy", "[binary_to_text]")

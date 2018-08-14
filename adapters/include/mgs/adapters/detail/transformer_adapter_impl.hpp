@@ -9,33 +9,25 @@ inline namespace v1
 {
 namespace adapters
 {
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
-    transformer_adapter(UnderlyingIterator const& beg, Sentinel const& end)
-  : _current(beg), _end(end)
+template <typename InputTransformer>
+transformer_adapter<InputTransformer>::transformer_adapter(
+    typename InputTransformer::underlying_iterator begin,
+    typename InputTransformer::underlying_sentinel end)
+  : InputTransformer(std::move(begin), std::move(end))
 {
-  if (_current != _end)
-    _process_input();
+  _process_input();
 }
 
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::get()
-    const -> value_type const&
+template <typename InputTransformer>
+auto transformer_adapter<InputTransformer>::get() const -> value_type const&
 {
   using std::begin;
 
   return *(begin(_transformed) + _index);
 }
 
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-void transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
-    seek_forward(difference_type n)
+template <typename InputTransformer>
+void transformer_adapter<InputTransformer>::seek_forward(difference_type n)
 {
   assert(n > 0);
 
@@ -48,49 +40,34 @@ void transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
   {
     ++_index;
     if ((begin(_transformed) + _index) == end_it)
-    {
-      if (_current != _end)
-        _process_input();
-      else
-        assert(n == 0);
-    }
+      _process_input();
   }
 }
 
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-void transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
-    _process_input()
+template <typename InputTransformer>
+void transformer_adapter<InputTransformer>::_process_input()
 {
-  assert(_current != _end);
   using std::begin;
 
-  _transformed = InputTransformer{}(_current, _end);
+  _transformed = static_cast<InputTransformer&>(*this)();
   _index = 0;
 }
 
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::
-    begin() const -> iterator
+template <typename InputTransformer>
+auto transformer_adapter<InputTransformer>::begin() const -> iterator
 {
   return iterator{*this};
 }
 
-template <typename InputTransformer,
-          typename UnderlyingIterator,
-          typename Sentinel>
-auto transformer_adapter<InputTransformer, UnderlyingIterator, Sentinel>::end()
-    const -> iterator
+template <typename InputTransformer>
+auto transformer_adapter<InputTransformer>::end() const -> iterator
 {
   return iterator{{}};
 }
 
-template <typename T, typename U, typename V>
-bool operator==(transformer_adapter<T, U, V> const& lhs,
-                transformer_adapter<T, U, V> const& rhs)
+template <typename T>
+bool operator==(transformer_adapter<T> const& lhs,
+                transformer_adapter<T> const& rhs)
 {
   using std::begin;
   using std::end;
@@ -107,13 +84,12 @@ bool operator==(transformer_adapter<T, U, V> const& lhs,
     return lhs_transformed_current == lhs_transformed_end &&
            rhs_transformed_current == rhs_transformed_end;
   }
-  return std::tie(lhs._current, lhs._index) ==
-         std::tie(rhs._current, rhs._index);
+  return std::tie(lhs._index) == std::tie(rhs._index);
 }
 
-template <typename T, typename U, typename V>
-bool operator!=(transformer_adapter<T, U, V> const& lhs,
-                transformer_adapter<T, U, V> const& rhs)
+template <typename T>
+bool operator!=(transformer_adapter<T> const& lhs,
+                transformer_adapter<T> const& rhs)
 {
   return !(lhs == rhs);
 }

@@ -12,6 +12,8 @@
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/detail/padding_writer.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/meta/concepts/iterator/input_iterator.hpp>
+#include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 namespace mgs
 {
@@ -21,15 +23,21 @@ namespace codecs
 {
 namespace binary_to_text
 {
-template <typename EncodingTraits>
+template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
+private:
+  static_assert(meta::concepts::iterator::is_input_iterator<Iterator>::value,
+                "Iterator is not an InputIterator");
+  static_assert(
+      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value,
+      "Sentinel is not a Sentinel<Iterator>");
+
   using _ = concepts::trigger_static_asserts<EncodingTraits>;
 
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
-private:
   static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
   static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
 
@@ -44,23 +52,45 @@ private:
                     sizeof(EncodingTraits::alphabet),
                 "Alphabet size must be a power of 2");
 
+public:
+  using value_type = boost::container::static_vector<char, nb_output_bytes>;
+  using underlying_iterator = Iterator;
+  using underlying_sentinel = Sentinel;
+
+  basic_encoder() = default;
+
+  basic_encoder(Iterator begin, Sentinel end)
+    : _current(std::move(begin)), _end(std::move(end))
+  {
+  }
+
+  value_type operator()()
+  {
+    if (_current == _end)
+      return {};
+    auto const res = read();
+    value_type ret;
+    encode_input_bits(res, std::back_inserter(ret));
+    return ret;
+  }
+
+private:
   struct read_result
   {
     std::bitset<nb_total_input_bits> input_bits;
     std::size_t nb_non_padded_bytes;
   };
 
-  template <typename Iterator, typename Sentinel>
-  read_result read(Iterator& current, Sentinel const end) const
+  read_result read()
   {
     std::bitset<nb_total_input_bits> input_bits;
 
     int i = 0;
     for (; i < nb_input_bytes; ++i)
     {
-      if (current == end)
+      if (_current == _end)
         break;
-      auto byte = static_cast<std::uint8_t>(*current++);
+      auto byte = static_cast<std::uint8_t>(*_current++);
       // shifting on an integer type is a bit dangerous...
       // use bitset instead
       std::bitset<nb_total_input_bits> const byte_bits(byte);
@@ -94,19 +124,8 @@ private:
         out, nb_output_bytes - res.nb_non_padded_bytes);
   }
 
-public:
-  using value_type = boost::container::static_vector<char, nb_output_bytes>;
-
-  template <typename Iterator, typename Sentinel>
-  value_type operator()(Iterator& current, Sentinel const end) const
-  {
-    assert(current != end);
-
-    auto const res = read(current, end);
-    value_type ret;
-    encode_input_bits(res, std::back_inserter(ret));
-    return ret;
-  }
+  Iterator _current{};
+  Sentinel _end{};
 };
 }
 }

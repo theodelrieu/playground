@@ -20,8 +20,6 @@
 //  requires Regular<T>;
 //  typename T::value_type;
 //  typename T::difference_type;
-//  typename T::underlying_iterator;
-//  typename T::underlying_sentinel;
 //  requires Constructible<T, T::underlying_iterator, T::underlying_sentinel>;
 //  requires(typename T::difference_type n) {
 //     v.get();
@@ -50,10 +48,6 @@ struct is_input_adapter<
     std::enable_if_t<
         meta::concepts::object::is_regular<T>::value &&
         meta::is_detected<meta::detected::types::value_type, T>::value &&
-        meta::is_detected<detail::detected::types::underlying_iterator,
-                          T>::value &&
-        meta::is_detected<detail::detected::types::underlying_sentinel,
-                          T>::value &&
         meta::is_detected<meta::detected::types::difference_type, T>::value>>
 {
 private:
@@ -62,10 +56,6 @@ private:
 
 public:
   static auto constexpr value =
-      std::is_constructible<
-          T,
-          detail::detected::types::underlying_iterator<T>,
-          detail::detected::types::underlying_sentinel<T>>::value &&
       meta::is_detected<detail::detected::member_functions::get,
                         T const&>::value &&
       meta::is_detected_exact<void,

@@ -14,9 +14,8 @@ namespace base64
 {
 template <typename Iterator, typename Sentinel = Iterator>
 using encoder = adapters::transformer_adapter<
-    binary_to_text::basic_encoder<detail::encoding_traits<3, 4>>,
-    Iterator,
-    Sentinel>;
+    binary_to_text::
+        basic_encoder<Iterator, Sentinel, detail::encoding_traits<3, 4>>>;
 }
 }
 }
