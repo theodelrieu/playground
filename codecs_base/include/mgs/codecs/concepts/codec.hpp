@@ -13,7 +13,8 @@
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/detected.hpp>
 
-// template <typename T, CodecOutput<T> Out, Iterable I>
+// FIXME BinaryCodec
+// template <typename T, Iterable I, typename EncodedOut, typename DecodedOut = EncodedOut>
 // concept Codec = requires (result_of_begin_t<I> a, result_of_end_t<I> b, I
 // const& c) {
 //   // lazy, so only iterators to avoid lifetime issues.
@@ -23,6 +24,8 @@
 //   InputAdapter<Encoder>;
 //   InputAdapter<Decoder>;
 //
+//   EncodedOutput<EncodedOut, T, result_of_begin_t<Encoder>>;
+//   DecodedOutput<DecodedOut, T, result_of_begin_t<Decoder>>;
 //   // eager, user specifies return type.
 //   Same<Out, decltype(T::encode<Out>(a, b))>;
 //   Same<Out, decltype(T::encode<Out>(c))>;
