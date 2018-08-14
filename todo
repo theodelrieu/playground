@@ -1,4 +1,4 @@
-EncodedOutput: typename T, typename Codec, typename Iterator
+CodecOutput: typename T, typename Iterator
 
 Container concepts, needed to support default codec outputs
 
@@ -45,10 +45,11 @@ iterators already embed their nature (i.e. encoding/decoding) thanks to the Inpu
 then in user specializations:
 
 template <typename T>
-struct output_traits<my_container<T>, mgs::base64>
+struct output_traits<my_container<T>>
 {
   template <typename T, typename Iterator, typename Sentinel>
-  static my_container<T> create(mgs::base64::encoder<Iterator, Sentinel>::iterator it, decltype(it) end)
+  static my_container<T> create(typename mgs::base64::encoder<Iterator, Sentinel>::iterator it, decltype(it) end)
   {
+    // ...
   }
 };
