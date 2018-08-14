@@ -3,13 +3,15 @@
 #include <type_traits>
 
 #include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/meta/detected/types/iterator.hpp>
 
 // template <typename T>
-// concept IterableInputAdapter = requires(T const&) {
-//    requires InputAdapter<T>;
-//    requires Iterable<T>;
-//  }
+// concept IterableInputAdapter =
+//   InputAdapter<T> &&
+//   Iterable<T> &&
+//   Same<T::iterator, result_of_begin_t<T>>;
 
 namespace mgs
 {
@@ -19,11 +21,20 @@ namespace adapters
 {
 namespace concepts
 {
-template <typename T>
-struct is_iterable_input_adapter
+template <typename T, typename = void>
+struct is_iterable_input_adapter : std::false_type
 {
-  static constexpr bool value = is_input_adapter<T>::value &&
-                                meta::concepts::iterator::is_iterable<T>::value;
+};
+
+template <typename T>
+struct is_iterable_input_adapter<
+    T,
+    std::enable_if_t<is_input_adapter<T>::value &&
+                     meta::concepts::iterator::is_iterable<T>::value>>
+{
+  static constexpr bool value =
+      std::is_same<meta::detected_t<meta::detected::types::iterator, T>,
+                   meta::result_of_begin_t<T>>::value;
 };
 }
 }

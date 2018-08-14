@@ -2,23 +2,14 @@
 
 #include <type_traits>
 
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/create.hpp>
-#include <mgs/codecs/detail/detected/static_member_functions/make_decoder.hpp>
-#include <mgs/codecs/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/codecs/detail/detected/types/output_traits.hpp>
-#include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/call_std/end.hpp>
+#include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 
-// Note that Codec is a typename, not a concept.
-// This is because CodecOutput is a requirement of Codec concept,
-// so we have to redeclare some Codec requirements here as well.
-
-// template <typename T, typename Codec>
-// concept CodecOutput = requires (Codec const& codec) {
-//   TODO finish concept comment
-//   Same<T, decltype(output_traits<Codec, T>::create(begin(adapter), end(adapter)))>;
+// template <typename T, Iterator I>
+// concept CodecOutput = requires (I begin, I end) {
+//   Same<T, decltype(output_traits<T>::create(begin, end))>;
 // };
 
 namespace mgs
@@ -29,52 +20,30 @@ namespace codecs
 {
 namespace concepts
 {
-template <typename T, typename Codec, typename = void>
+template <typename T, typename InputIterator, typename = void>
 struct is_codec_output : std::false_type
 {
 };
 
-template <typename T, typename Codec>
+template <typename T, typename InputIterator>
 struct is_codec_output<
     T,
-    Codec,
+    InputIterator,
     std::enable_if_t<
-        adapters::concepts::is_iterable_input_adapter<meta::detected_t<
-            detail::detected::static_member_functions::make_encoder,
-            Codec,
-            char const*,
-            char const*>>::value &&
-        adapters::concepts::is_iterable_input_adapter<meta::detected_t<
-            detail::detected::static_member_functions::make_decoder,
-            Codec,
-            char const*,
-            char const*>>::value>>
+        meta::concepts::iterator::is_input_iterator<InputIterator>::value>>
 {
 private:
   using output_traits_t =
-      meta::detected_t<detail::detected::types::output_traits, Codec, T>;
-
-  using encoder_t = detail::detected::static_member_functions::
-      make_encoder<Codec, char const*, char const*>;
-  using decoder_t = detail::detected::static_member_functions::
-      make_decoder<Codec, char const*, char const*>;
-
-  using encode_output_t =
-      meta::detected_t<detail::detected::static_member_functions::create,
-                       output_traits_t,
-                       meta::result_of_begin_t<encoder_t const&>,
-                       meta::result_of_end_t<encoder_t const&>>;
-
-  using decode_output_t =
-      meta::detected_t<detail::detected::static_member_functions::create,
-                       output_traits_t,
-                       meta::result_of_begin_t<decoder_t const&>,
-                       meta::result_of_end_t<decoder_t const&>>;
+      meta::detected_t<detail::detected::types::output_traits, T>;
 
 public:
-  static constexpr auto const value =
-      std::is_same<encode_output_t, decode_output_t>::value &&
-      std::is_same<encode_output_t, T>::value;
+  static constexpr auto const value = std::is_same<
+      meta::detected_t<detail::detected::static_member_functions::create,
+                       output_traits_t,
+                       T,
+                       InputIterator,
+                       InputIterator>,
+      T>::value;
 };
 }
 }

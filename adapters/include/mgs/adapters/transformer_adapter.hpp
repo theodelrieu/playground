@@ -35,9 +35,6 @@ class transformer_adapter
                 "InputTransformer is not an InputTransformer (or "
                 "UnderlyingIterator/Sentinel are invalid)");
 
-  using iterator = iterators::adaptive_iterator<transformer_adapter,
-                                                std::input_iterator_tag>;
-
   using transformer_value_type = typename InputTransformer::value_type;
   using transformer_value_type_iterator =
       meta::result_of_begin_t<transformer_value_type>;
@@ -45,6 +42,8 @@ class transformer_adapter
 public:
   using underlying_iterator = UnderlyingIterator;
   using underlying_sentinel = Sentinel;
+  using iterator = iterators::adaptive_iterator<transformer_adapter,
+                                                std::input_iterator_tag>;
 
   using difference_type = std::streamoff;
   using value_type =
