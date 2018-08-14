@@ -15,13 +15,11 @@ namespace codecs
 template <typename T>
 struct output_traits<T, std::enable_if_t<sizeof(T) == 0>>
 {
-  template <typename Iterator, typename Sentinel>
-  static T create(Iterator it, Sentinel end)
+  template <typename Iterator>
+  static T create(Iterator it, Iterator end)
   {
     static_assert(meta::concepts::iterator::is_iterator<Iterator>::value,
                   "Iterator is not an iterator");
-    static_assert(meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value,
-                  "Sentinel is not an sentinel");
     return {};
   }
 };

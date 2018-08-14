@@ -40,7 +40,6 @@ public:
   static constexpr auto const value = std::is_same<
       meta::detected_t<detail::detected::static_member_functions::create,
                        output_traits_t,
-                       T,
                        InputIterator,
                        InputIterator>,
       T>::value;

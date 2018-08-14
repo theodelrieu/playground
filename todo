@@ -1,3 +1,10 @@
+it's very easy to mess up the Iterator& in input transformers...
+
+How to be efficient and safe? Is it too low level to be safe?
+Also, it's not verry STL-like to pass iterators by reference...
+Pass them directly from adapter to transformer and only store them in transformer? it would also fix the stateful transformer case
+Note: must privately inherit from InputTransformer in transformer_adapter for EBO
+
 CodecOutput: typename T, typename Iterator
 
 Container concepts, needed to support default codec outputs

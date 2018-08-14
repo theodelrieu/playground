@@ -16,8 +16,8 @@ namespace detected
 {
 namespace types
 {
-template <typename Codec, typename T>
-using output_traits = output_traits<Codec, T>;
+template <typename T>
+using output_traits = ::mgs::codecs::output_traits<T>;
 }
 }
 }
