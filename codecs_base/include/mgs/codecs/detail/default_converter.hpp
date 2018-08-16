@@ -6,8 +6,8 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/meta/concepts/container/container.hpp>
 #include <mgs/exceptions/exception.hpp>
+#include <mgs/meta/concepts/container/container.hpp>
 
 namespace mgs
 {

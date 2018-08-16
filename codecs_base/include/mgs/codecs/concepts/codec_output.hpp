@@ -3,7 +3,7 @@
 #include <type_traits>
 
 #include <mgs/codecs/detail/detected/static_member_functions/create.hpp>
-#include <mgs/codecs/detail/detected/types/output_traits.hpp>
+#include <mgs/codecs/output_traits_fwd.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 
@@ -32,14 +32,9 @@ struct is_codec_output<
     std::enable_if_t<
         meta::concepts::iterator::is_input_iterator<InputIterator>::value>>
 {
-private:
-  using output_traits_t =
-      meta::detected_t<detail::detected::types::output_traits, T>;
-
-public:
   static constexpr auto const value = std::is_same<
       meta::detected_t<detail::detected::static_member_functions::create,
-                       output_traits_t,
+                       output_traits<T>,
                        InputIterator,
                        InputIterator>,
       T>::value;

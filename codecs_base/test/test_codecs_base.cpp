@@ -4,13 +4,13 @@
 #include <cstdint>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/meta/concepts/container/container.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -159,12 +159,20 @@ TEST_CASE("codecs_base", "[codecs_base]")
       CHECK(v.vec == v4.vec);
     }
 
-    // SECTION("Containers")
-    // {
-    //   auto const input = "test"s;
-    //
-    //   auto const encoded = noop_codec::encode<std::string>(input);
-    //   CHECK(input == encoded);
-    // }
+    SECTION("Containers")
+    {
+      auto const input = "test"s;
+
+      {
+        auto const encoded = noop_codec::encode<std::string>(input);
+        CHECK(input == encoded);
+      }
+      {
+        auto const encoded =
+            noop_codec::encode<std::vector<std::uint8_t>>(input);
+        CHECK(std::equal(
+            encoded.begin(), encoded.end(), input.begin(), input.end()));
+      }
+    }
   }
 }
