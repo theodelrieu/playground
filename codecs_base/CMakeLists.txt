@@ -9,7 +9,7 @@ conan_basic_setup(TARGETS)
 
 add_library(mgs_codecs_base INTERFACE)
 target_include_directories(mgs_codecs_base INTERFACE include)
-target_link_libraries(mgs_codecs_base INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::mgs_meta)
+target_link_libraries(mgs_codecs_base INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::exceptions CONAN_PKG::mgs_meta)
 
 include(CTest)
 
