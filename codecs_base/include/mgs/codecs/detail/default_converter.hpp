@@ -18,16 +18,13 @@ namespace codecs
 namespace detail
 {
 template <typename T, typename = void>
-struct default_converter;
-
-template <typename T>
-struct default_converter<
-    T,
-    std::enable_if_t<meta::concepts::container::is_container<T>::value>>
+struct default_converter
 {
   template <typename Iterator,
+            typename U = T,
             typename = std::enable_if_t<
-                std::is_constructible<T, Iterator, Iterator>::value>>
+                meta::concepts::container::is_container<U>::value &&
+                std::is_constructible<U, Iterator, Iterator>::value>>
   static T create(Iterator begin, Iterator end)
   {
     return T(std::move(begin), std::move(end));
@@ -46,7 +43,12 @@ struct default_converter<std::array<C, N>>
     std::array<C, N> ret;
 
     for (std::size_t i = 0; i < N; ++i)
+    {
+        // FIXME use unexpected_eof_error? Remove encoding_name from traits?
+      if (begin == end)
+        throw exceptions::exception("unexpected end of input");
       ret[i] = *begin++;
+    }
     if (begin != end)
       throw exceptions::exception("output buffer is too small");
     return ret;

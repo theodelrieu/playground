@@ -2,6 +2,9 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <deque>
+#include <forward_list>
+#include <list>
 #include <string>
 #include <utility>
 
@@ -9,6 +12,7 @@
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
+#include <mgs/exceptions/exception.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
 #include <mgs/meta/concepts/container/container.hpp>
 
@@ -110,6 +114,13 @@ public:
     return noop_codec::decode<T>(begin(it), end(it));
   }
 };
+
+template <typename T, typename Input>
+void check_output_container(Input const& input)
+{
+  auto const output = noop_codec::encode<T>(input);
+  CHECK(std::equal(output.begin(), output.end(), input.begin(), input.end()));
+}
 }
 
 namespace mgs
@@ -127,9 +138,6 @@ struct output_traits<valid_type>
 };
 }
 }
-
-template <typename T>
-struct S;
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {
@@ -163,15 +171,24 @@ TEST_CASE("codecs_base", "[codecs_base]")
     {
       auto const input = "test"s;
 
+      SECTION("Sequence")
       {
-        auto const encoded = noop_codec::encode<std::string>(input);
-        CHECK(input == encoded);
+        check_output_container<std::string>(input);
+        check_output_container<std::vector<char>>(input);
+        check_output_container<std::vector<std::uint8_t>>(input);
+        check_output_container<std::list<char>>(input);
+        check_output_container<std::deque<std::uint8_t>>(input);
+        // forward_list does not have a size member function, therefore it's not really a Container...
+        // check_output_container<std::forward_list<char>>(input);
+        check_output_container<std::array<std::uint8_t, 4>>(input);
       }
+
+      SECTION("std::array out of bounds")
       {
-        auto const encoded =
-            noop_codec::encode<std::vector<std::uint8_t>>(input);
-        CHECK(std::equal(
-            encoded.begin(), encoded.end(), input.begin(), input.end()));
+        CHECK_THROWS_AS((check_output_container<std::array<char, 3>>(input)),
+                        exceptions::exception);
+        CHECK_THROWS_AS((check_output_container<std::array<char, 5>>(input)),
+                        exceptions::exception);
       }
     }
   }
