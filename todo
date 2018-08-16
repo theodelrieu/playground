@@ -1,6 +1,4 @@
-only support a single for all UDT mechanism
-
-note in doc that only sequence, associative, and unordered associative containers are supported
+refactor codecs_base tests
 
 // codecs
 
@@ -54,4 +52,7 @@ struct output_traits<my_container<T>>
   }
 };
 
+note in doc that only sequence, associative, and unordered associative containers are supported
 binary_to_text basic_encoder/basic_decoder could be refactored together...
+
+Look again where SFINAE correctness might make sense.
