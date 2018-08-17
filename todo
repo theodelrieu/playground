@@ -1,9 +1,6 @@
 refactor codecs_base tests
 remove is_container, the std container concepts are broken.
 only require value_type, is_constructible from 2 Iterators
-do not support array at all, let users decide if they want an exception or not?
-or have a fast (std::copy) version that is not safe?
-WHAT TO DO
 
 // codecs
 
