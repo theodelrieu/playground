@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/exceptions/exception.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 
 namespace mgs
 {
@@ -44,13 +44,12 @@ struct default_converter<std::array<C, N>>
 
     for (std::size_t i = 0; i < N; ++i)
     {
-        // FIXME use unexpected_eof_error? Remove encoding_name from traits?
       if (begin == end)
-        throw exceptions::exception("unexpected end of input");
+        throw exceptions::unexpected_eof_error("output buffer is too large");
       ret[i] = *begin++;
     }
     if (begin != end)
-      throw exceptions::exception("output buffer is too small");
+      throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }
 };

@@ -30,7 +30,6 @@ struct basic_encoding_traits
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
   static constexpr auto const padding_character = '=';
-  static constexpr char const encoding_name[] = "base64url";
   static constexpr auto const padding_policy = PaddingPolicy;
   static constexpr auto const nb_input_bytes = In;
   static constexpr auto const nb_output_bytes = Out;
@@ -46,12 +45,6 @@ template <std::size_t In,
           binary_to_text::padding_policy PaddingPolicy>
 constexpr typename basic_encoding_traits<In, Out, PaddingPolicy>::alphabet_t
     basic_encoding_traits<In, Out, PaddingPolicy>::alphabet;
-
-template <std::size_t In,
-          std::size_t Out,
-          binary_to_text::padding_policy PaddingPolicy>
-constexpr char const
-    basic_encoding_traits<In, Out, PaddingPolicy>::encoding_name[];
 
 template <std::size_t In,
           std::size_t Out,

@@ -33,7 +33,6 @@ struct base2_encoding_traits
 
   static constexpr alphabet_t alphabet = {'0', '1'};
 
-  static constexpr char const encoding_name[] = "base2";
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
   static constexpr auto const nb_input_bytes = In;
@@ -48,8 +47,6 @@ struct base2_encoding_traits
 template <std::size_t In, std::size_t Out>
 constexpr typename base2_encoding_traits<In, Out>::alphabet_t
     base2_encoding_traits<In, Out>::alphabet;
-template <std::size_t In, std::size_t Out>
-constexpr char const base2_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_encoder = adapters::transformer_adapter<
@@ -148,7 +145,6 @@ struct octal_encoding_traits
   static constexpr alphabet_t alphabet = {
       '0', '1', '2', '3', '4', '5', '6', '7'};
 
-  static constexpr char const encoding_name[] = "octal";
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
   static constexpr auto const nb_input_bytes = In;
@@ -163,8 +159,6 @@ struct octal_encoding_traits
 template <std::size_t In, std::size_t Out>
 constexpr typename octal_encoding_traits<In, Out>::alphabet_t
     octal_encoding_traits<In, Out>::alphabet;
-template <std::size_t In, std::size_t Out>
-constexpr char const octal_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using octal_encoder = adapters::transformer_adapter<
@@ -253,7 +247,6 @@ struct diy_encoding_traits
 
   static constexpr alphabet_t alphabet = {'O', 'U', 'I', 'N'};
 
-  static constexpr char const encoding_name[] = "diy";
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
   static constexpr auto const nb_input_bytes = In;
@@ -268,8 +261,6 @@ struct diy_encoding_traits
 template <std::size_t In, std::size_t Out>
 constexpr typename diy_encoding_traits<In, Out>::alphabet_t
     diy_encoding_traits<In, Out>::alphabet;
-template <std::size_t In, std::size_t Out>
-constexpr char const diy_encoding_traits<In, Out>::encoding_name[];
 
 template <typename Iterator, typename Sentinel = Iterator>
 using diy_encoder = adapters::transformer_adapter<

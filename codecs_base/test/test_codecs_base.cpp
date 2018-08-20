@@ -12,7 +12,7 @@
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/exceptions/exception.hpp>
+#include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
 
 using namespace mgs;
@@ -184,9 +184,9 @@ TEST_CASE("codecs_base", "[codecs_base]")
       SECTION("std::array out of bounds")
       {
         CHECK_THROWS_AS((check_output_container<std::array<char, 3>>(input)),
-                        exceptions::exception);
+                        exceptions::unexpected_eof_error);
         CHECK_THROWS_AS((check_output_container<std::array<char, 5>>(input)),
-                        exceptions::exception);
+                        exceptions::unexpected_eof_error);
       }
     }
   }

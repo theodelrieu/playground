@@ -48,7 +48,6 @@ struct encoding_traits
     return std::find(std::begin(alphabet), std::end(alphabet), c);
   }
 
-  static constexpr char const encoding_name[] = "base16";
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
 };
@@ -56,9 +55,6 @@ struct encoding_traits
 template <std::size_t In, std::size_t Out>
 constexpr typename encoding_traits<In, Out>::alphabet_t
     encoding_traits<In, Out>::alphabet;
-
-template <std::size_t In, std::size_t Out>
-constexpr char const encoding_traits<In, Out>::encoding_name[];
 }
 }
 }

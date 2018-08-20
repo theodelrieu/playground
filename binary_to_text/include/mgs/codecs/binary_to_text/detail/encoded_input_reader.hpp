@@ -22,8 +22,7 @@ struct encoded_input_reader
   {
     if (current == sent)
     {
-      throw exceptions::unexpected_eof_error{EncodingTraits::encoding_name,
-                                             "unexpected end of input"};
+      throw exceptions::unexpected_eof_error{"unexpected end of input"};
     }
     return *current++;
   }
