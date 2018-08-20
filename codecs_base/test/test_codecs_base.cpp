@@ -1,4 +1,5 @@
 #include <catch.hpp>
+#include <iostream>
 
 #include <algorithm>
 #include <cstdint>
@@ -139,6 +140,16 @@ struct output_traits<valid_type>
     return {{begin, end}};
   }
 };
+
+template <typename T>
+struct output_traits<std::vector<T>>
+{
+  template <typename Iterator>
+  static std::vector<T> create(Iterator begin, Iterator end)
+  {
+    return {begin, end};
+  }
+};
 }
 }
 
@@ -155,7 +166,7 @@ TEST_CASE("codecs_base", "[codecs_base]")
     static_assert(
         concepts::is_codec_output<valid_type, Encoder::iterator>::value, "");
 
-    SECTION("User-defined type")
+    SECTION("User-defined types")
     {
       auto v = noop_codec::encode<valid_type>(str);
       CHECK(std::equal(v.vec.begin(), v.vec.end(), str.begin(), str.end()));

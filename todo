@@ -42,18 +42,6 @@ Having a Numeral/Numeric Codec/InputAdapter?
 
 iterators already embed their nature (i.e. encoding/decoding) thanks to the InputAdapter parameter.
 
-then in user specializations:
-
-template <typename T>
-struct output_traits<my_container<T>>
-{
-  template <typename T, typename Iterator, typename Sentinel>
-  static my_container<T> create(typename mgs::base64::encoder<Iterator, Sentinel>::iterator it, decltype(it) end)
-  {
-    // ...
-  }
-};
-
 note in doc that only sequence, associative, and unordered associative containers are supported
 binary_to_text basic_encoder/basic_decoder could be refactored together...
 
