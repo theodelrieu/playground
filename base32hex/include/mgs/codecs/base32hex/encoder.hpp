@@ -15,9 +15,17 @@ namespace codecs
 namespace base32hex
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using encoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_encoder<Iterator, Sentinel, detail::encoding_traits<5, 8>>>;
+class encoder
+  : public adapters::transformer_adapter<
+        binary_to_text::
+            basic_encoder<Iterator, Sentinel, detail::encoding_traits<5, 8>>>
+{
+public:
+  using adapters::transformer_adapter<binary_to_text::basic_encoder<
+      Iterator,
+      Sentinel,
+      detail::encoding_traits<5, 8>>>::transformer_adapter;
+};
 }
 }
 }
