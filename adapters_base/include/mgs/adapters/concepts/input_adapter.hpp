@@ -48,7 +48,8 @@ struct is_input_adapter<
     std::enable_if_t<
         meta::concepts::object::is_regular<T>::value &&
         meta::is_detected<meta::detected::types::value_type, T>::value &&
-        meta::is_detected<meta::detected::types::difference_type, T>::value>>
+        std::is_signed<meta::detected_t<meta::detected::types::difference_type,
+                                        T>>::value>>
 {
 private:
   using value_type = meta::detected::types::value_type<T>;

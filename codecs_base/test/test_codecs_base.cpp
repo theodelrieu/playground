@@ -14,6 +14,7 @@
 #include <utility>
 
 #include <mgs/adapters/transformer_adapter.hpp>
+#include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
@@ -24,7 +25,6 @@ using namespace mgs;
 using namespace mgs::codecs;
 using namespace std::string_literals;
 
-// TODO make noop_codec an instantiation of basic_codec
 namespace
 {
 struct invalid_type
@@ -64,60 +64,16 @@ private:
   Sentinel _end{};
 };
 
-class noop_codec
+// TODO put back Iterator/Sentinel into transformer_adapter? not sure...
+template <typename Iterator, typename Sentinel>
+class noop_adapter
+  : public adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>
 {
-
-public:
-  template <typename Iterator, typename Sentinel>
-  using encoder =
-      adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>;
-
-  template <typename Iterator, typename Sentinel>
-  using decoder =
-      adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>;
-
-  template <typename Iterator, typename Sentinel>
-  static auto make_encoder(Iterator it, Sentinel sent)
-  {
-    return encoder<Iterator, Sentinel>(it, sent);
-  }
-
-  template <typename Iterator, typename Sentinel>
-  static auto make_decoder(Iterator it, Sentinel sent)
-  {
-    return decoder<Iterator, Sentinel>(it, sent);
-  }
-
-  template <typename T, typename Iterator, typename Sentinel>
-  static auto encode(Iterator it, Sentinel sent)
-  {
-    auto enc = make_encoder(it, sent);
-    return output_traits<T>::create(enc.begin(), enc.end());
-  }
-
-  template <typename T, typename Iterator, typename Sentinel>
-  static auto decode(Iterator it, Sentinel sent)
-  {
-    auto dec = make_decoder(it, sent);
-    return output_traits<T>::create(dec.begin(), dec.end());
-  }
-
-  template <typename T, typename Iterable>
-  static auto encode(Iterable const& it)
-  {
-    using std::begin;
-    using std::end;
-    return noop_codec::encode<T>(begin(it), end(it));
-  }
-
-  template <typename T, typename Iterable>
-  static auto decode(Iterable const& it)
-  {
-    using std::begin;
-    using std::end;
-    return noop_codec::decode<T>(begin(it), end(it));
-  }
+  using adapters::transformer_adapter<
+      noop_transformer<Iterator, Sentinel>>::transformer_adapter;
 };
+
+using noop_codec = codecs::basic_codec<noop_adapter, noop_adapter>;
 
 template <typename T, typename Input>
 void check_output_container(Input const& input)
