@@ -14,14 +14,24 @@ namespace codecs
 namespace base64url
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using nopad_decoder =
-    adapters::transformer_adapter<binary_to_text::basic_decoder<
+class nopad_decoder
+  : public adapters::transformer_adapter<binary_to_text::basic_decoder<
         Iterator,
         Sentinel,
         detail::basic_encoding_traits<
             4,
             3,
-            binary_to_text::padding_policy::optional>>>;
+            binary_to_text::padding_policy::optional>>>
+{
+public:
+  using adapters::transformer_adapter<binary_to_text::basic_decoder<
+      Iterator,
+      Sentinel,
+      detail::basic_encoding_traits<
+          4,
+          3,
+          binary_to_text::padding_policy::optional>>>::transformer_adapter;
+};
 }
 }
 }
