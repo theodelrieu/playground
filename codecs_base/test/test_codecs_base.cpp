@@ -5,7 +5,11 @@
 #include <deque>
 #include <forward_list>
 #include <list>
+#include <map>
+#include <set>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
 #include <mgs/adapters/transformer_adapter.hpp>
@@ -179,6 +183,42 @@ TEST_CASE("codecs_base", "[codecs_base]")
         check_output_container<std::deque<std::uint8_t>>(input);
         check_output_container<std::forward_list<char>>(input);
         check_output_container<std::array<std::uint8_t, 4>>(input);
+      }
+
+      SECTION("Associative")
+      {
+        static_assert(!concepts::is_codec_output<std::map<char, char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(!concepts::is_codec_output<std::multimap<char, char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(!concepts::is_codec_output<std::multiset<char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(!concepts::is_codec_output<std::set<char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(!concepts::is_codec_output<std::unordered_map<char, char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(
+            !concepts::is_codec_output<std::unordered_multimap<char, char>,
+                                       Encoder::iterator>::value,
+            "");
+
+        static_assert(!concepts::is_codec_output<std::unordered_multiset<char>,
+                                                 Encoder::iterator>::value,
+                      "");
+
+        static_assert(!concepts::is_codec_output<std::unordered_set<char>,
+                                                 Encoder::iterator>::value,
+                      "");
       }
 
       SECTION("std::array out of bounds")

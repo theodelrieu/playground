@@ -7,6 +7,8 @@
 #include <utility>
 
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/meta/detected.hpp>
+#include <mgs/meta/detected/types/key_type.hpp>
 
 namespace mgs
 {
@@ -24,7 +26,10 @@ struct default_converter
             typename = std::enable_if_t<
                 (std::is_copy_constructible<U>::value ||
                  std::is_move_constructible<U>::value) &&
-                std::is_constructible<U, Iterator, Iterator>::value>>
+                std::is_constructible<U, Iterator, Iterator>::value &&
+                // Associative containers' range constructors are not
+                // SFINAE-friendly...
+                !meta::is_detected<meta::detected::types::key_type, U>::value>>
   static T create(Iterator begin, Iterator end)
   {
     return T(std::move(begin), std::move(end));
