@@ -21,10 +21,13 @@ template <typename CodecTraits>
 class basic_codec
 {
   template <typename Iterator, typename Sentinel>
-  using encoder = typename CodecTraits::template encoder<Iterator, Sentinel>;
+  using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
+                                                     std::declval<Sentinel>()));
 
+  // TODO SFINAE + detected + codec_traits concept
   template <typename Iterator, typename Sentinel>
-  using decoder = typename CodecTraits::template decoder<Iterator, Sentinel>;
+  using decoder = decltype(CodecTraits::make_decoder(std::declval<Iterator>(),
+                                                     std::declval<Sentinel>()));
 
   using default_encoded_output = typename CodecTraits::default_encoded_output;
   using default_decoded_output = typename CodecTraits::default_decoded_output;
@@ -36,9 +39,9 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value>>
-  static encoder<Iterator, Sentinel> make_encoder(Iterator begin, Sentinel end)
+  static auto make_encoder(Iterator begin, Sentinel end)
   {
-    return {std::move(begin), std::move(end)};
+    return CodecTraits::make_encoder(std::move(begin), std::move(end));
   }
 
   template <
@@ -47,9 +50,9 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value>>
-  static decoder<Iterator, Sentinel> make_decoder(Iterator begin, Sentinel end)
+  static auto make_decoder(Iterator begin, Sentinel end)
   {
-    return {std::move(begin), std::move(end)};
+    return CodecTraits::make_decoder(std::move(begin), std::move(end));
   }
 
   template <
@@ -66,7 +69,7 @@ public:
               meta::result_of_begin_t<encoder<Iterator, Sentinel>>>::value>>
   static auto encode(Iterator it, Sentinel sent)
   {
-    auto enc = make_encoder(it, sent);
+    auto enc = CodecTraits::make_encoder(it, sent);
     return output_traits<T>::create(enc.begin(), enc.end());
   }
 
@@ -84,7 +87,7 @@ public:
               meta::result_of_begin_t<decoder<Iterator, Sentinel>>>::value>>
   static auto decode(Iterator it, Sentinel sent)
   {
-    auto dec = make_decoder(it, sent);
+    auto dec = CodecTraits::make_decoder(it, sent);
     return output_traits<T>::create(dec.begin(), dec.end());
   }
 

@@ -1,6 +1,3 @@
-avoid aliases with template template parameters
-delegate make_encoder/make_decoder to CodecTraits!
-
 TEST META!!
 every trait should be sfinae friendly 100%.
 

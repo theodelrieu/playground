@@ -78,10 +78,14 @@ struct noop_codec_traits
   using default_decoded_output = std::string;
 
   template <typename Iterator, typename Sentinel>
-  using encoder = noop_adapter<Iterator, Sentinel>;
+  static auto make_encoder(Iterator begin, Sentinel end){
+    return noop_adapter<Iterator, Sentinel>(std::move(begin), std::move(end));
+  }
 
   template <typename Iterator, typename Sentinel>
-  using decoder = noop_adapter<Iterator, Sentinel>;
+  static auto make_decoder(Iterator begin, Sentinel end){
+    return noop_adapter<Iterator, Sentinel>(std::move(begin), std::move(end));
+  }
 };
 
 using noop_codec = codecs::basic_codec<noop_codec_traits>;
