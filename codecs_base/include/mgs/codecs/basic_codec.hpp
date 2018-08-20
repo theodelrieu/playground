@@ -17,11 +17,18 @@ inline namespace v1
 {
 namespace codecs
 {
-template <
-    template <typename Iterator, typename Sentinel, typename...> class Encoder,
-    template <typename Iterator, typename Sentinel, typename...> class Decoder>
+template <typename CodecTraits>
 class basic_codec
 {
+  template <typename Iterator, typename Sentinel>
+  using encoder = typename CodecTraits::template encoder<Iterator, Sentinel>;
+
+  template <typename Iterator, typename Sentinel>
+  using decoder = typename CodecTraits::template decoder<Iterator, Sentinel>;
+
+  using default_encoded_output = typename CodecTraits::default_encoded_output;
+  using default_decoded_output = typename CodecTraits::default_decoded_output;
+
 public:
   template <
       typename Iterator,
@@ -29,7 +36,7 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value>>
-  static Encoder<Iterator, Sentinel> make_encoder(Iterator begin, Sentinel end)
+  static encoder<Iterator, Sentinel> make_encoder(Iterator begin, Sentinel end)
   {
     return {std::move(begin), std::move(end)};
   }
@@ -40,23 +47,23 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value>>
-  static Decoder<Iterator, Sentinel> make_decoder(Iterator begin, Sentinel end)
+  static decoder<Iterator, Sentinel> make_decoder(Iterator begin, Sentinel end)
   {
     return {std::move(begin), std::move(end)};
   }
 
   template <
-      typename T,
-      typename Iterator,
-      typename Sentinel,
+      typename T = default_encoded_output,
+      typename Iterator = void,
+      typename Sentinel = void,
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
           adapters::concepts::is_iterable_input_adapter<
-              Encoder<Iterator, Sentinel>>::value &&
+              encoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<
               T,
-              meta::result_of_begin_t<Encoder<Iterator, Sentinel>>>::value>>
+              meta::result_of_begin_t<encoder<Iterator, Sentinel>>>::value>>
   static auto encode(Iterator it, Sentinel sent)
   {
     auto enc = make_encoder(it, sent);
@@ -64,25 +71,25 @@ public:
   }
 
   template <
-      typename T,
-      typename Iterator,
-      typename Sentinel,
+      typename T = default_decoded_output,
+      typename Iterator = void,
+      typename Sentinel = void,
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
           adapters::concepts::is_iterable_input_adapter<
-              Decoder<Iterator, Sentinel>>::value &&
+              decoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<
               T,
-              meta::result_of_begin_t<Decoder<Iterator, Sentinel>>>::value>>
+              meta::result_of_begin_t<decoder<Iterator, Sentinel>>>::value>>
   static auto decode(Iterator it, Sentinel sent)
   {
     auto dec = make_decoder(it, sent);
     return output_traits<T>::create(dec.begin(), dec.end());
   }
 
-  template <typename T,
-            typename Iterable,
+  template <typename T = default_encoded_output,
+            typename Iterable = void,
             typename = std::enable_if_t<
                 meta::concepts::iterator::is_iterable<Iterable>::value>>
   static auto encode(Iterable const& it) -> decltype(basic_codec::encode<T>(
@@ -94,8 +101,8 @@ public:
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
-  template <typename T,
-            typename Iterable,
+  template <typename T = default_decoded_output,
+            typename Iterable = void,
             typename = std::enable_if_t<
                 meta::concepts::iterator::is_iterable<Iterable>::value>>
   static auto decode(Iterable const& it) -> decltype(basic_codec::decode<T>(

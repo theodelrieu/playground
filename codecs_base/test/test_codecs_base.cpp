@@ -64,7 +64,6 @@ private:
   Sentinel _end{};
 };
 
-// TODO put back Iterator/Sentinel into transformer_adapter? not sure...
 template <typename Iterator, typename Sentinel>
 class noop_adapter
   : public adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>
@@ -73,7 +72,19 @@ class noop_adapter
       noop_transformer<Iterator, Sentinel>>::transformer_adapter;
 };
 
-using noop_codec = codecs::basic_codec<noop_adapter, noop_adapter>;
+struct noop_codec_traits
+{
+  using default_encoded_output = std::string;
+  using default_decoded_output = std::string;
+
+  template <typename Iterator, typename Sentinel>
+  using encoder = noop_adapter<Iterator, Sentinel>;
+
+  template <typename Iterator, typename Sentinel>
+  using decoder = noop_adapter<Iterator, Sentinel>;
+};
+
+using noop_codec = codecs::basic_codec<noop_codec_traits>;
 
 template <typename T, typename Input>
 void check_output_container(Input const& input)

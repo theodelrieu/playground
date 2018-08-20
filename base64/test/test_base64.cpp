@@ -111,7 +111,7 @@ TEST_CASE("base64 low level", "[base64]")
 
 TEST_CASE("base64 codec", "[base64]")
 {
-  auto b64str = mgs::base64::encode<std::string>("abcde"s);
+  auto b64str = mgs::base64::encode("abcde"s);
 
   CHECK(b64str == "YWJjZGU="s);
 }
