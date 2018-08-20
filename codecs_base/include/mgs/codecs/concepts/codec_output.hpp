@@ -3,7 +3,7 @@
 #include <type_traits>
 
 #include <mgs/codecs/detail/detected/static_member_functions/create.hpp>
-#include <mgs/codecs/output_traits_fwd.hpp>
+#include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 
