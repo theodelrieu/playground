@@ -1,6 +1,4 @@
 refactor codecs_base tests
-remove is_container, the std container concepts are broken.
-only require value_type, is_constructible from 2 Iterators
 
 // codecs
 
@@ -11,6 +9,8 @@ mgs::base64url_unpadded
 using mgs::base64;
 
 ---------------
+
+replace std::is_same with is_detected_exact
 
 fix concept comments:
 

@@ -14,7 +14,6 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/exception.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
-#include <mgs/meta/concepts/container/container.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -178,8 +177,7 @@ TEST_CASE("codecs_base", "[codecs_base]")
         check_output_container<std::vector<std::uint8_t>>(input);
         check_output_container<std::list<char>>(input);
         check_output_container<std::deque<std::uint8_t>>(input);
-        // forward_list does not have a size member function, therefore it's not really a Container...
-        // check_output_container<std::forward_list<char>>(input);
+        check_output_container<std::forward_list<char>>(input);
         check_output_container<std::array<std::uint8_t, 4>>(input);
       }
 

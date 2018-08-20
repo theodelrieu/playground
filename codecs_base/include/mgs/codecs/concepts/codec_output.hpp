@@ -20,24 +20,16 @@ namespace codecs
 {
 namespace concepts
 {
-template <typename T, typename InputIterator, typename = void>
-struct is_codec_output : std::false_type
-{
-};
-
 template <typename T, typename InputIterator>
-struct is_codec_output<
-    T,
-    InputIterator,
-    std::enable_if_t<
-        meta::concepts::iterator::is_input_iterator<InputIterator>::value>>
+struct is_codec_output
 {
-  static constexpr auto const value = std::is_same<
-      meta::detected_t<detail::detected::static_member_functions::create,
-                       output_traits<T>,
-                       InputIterator,
-                       InputIterator>,
-      T>::value;
+  static constexpr auto const value =
+      meta::concepts::iterator::is_input_iterator<InputIterator>::value &&
+      meta::is_detected_exact<T,
+                              detail::detected::static_member_functions::create,
+                              output_traits<T>,
+                              InputIterator,
+                              InputIterator>::value;
 };
 }
 }

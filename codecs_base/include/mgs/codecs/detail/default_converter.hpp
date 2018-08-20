@@ -1,13 +1,12 @@
 #pragma once
 
-#include <iterator>
 #include <array>
 #include <cstddef>
+#include <iterator>
 #include <type_traits>
 #include <utility>
 
 #include <mgs/exceptions/exception.hpp>
-#include <mgs/meta/concepts/container/container.hpp>
 
 namespace mgs
 {
@@ -23,7 +22,8 @@ struct default_converter
   template <typename Iterator,
             typename U = T,
             typename = std::enable_if_t<
-                meta::concepts::container::is_container<U>::value &&
+                (std::is_copy_constructible<U>::value ||
+                 std::is_move_constructible<U>::value) &&
                 std::is_constructible<U, Iterator, Iterator>::value>>
   static T create(Iterator begin, Iterator end)
   {
