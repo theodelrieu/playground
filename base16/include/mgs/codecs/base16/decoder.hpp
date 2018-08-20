@@ -16,9 +16,17 @@ namespace codecs
 namespace base16
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using decoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_decoder<Iterator, Sentinel, detail::encoding_traits<2, 1>>>;
+class decoder
+  : public adapters::transformer_adapter<
+        binary_to_text::
+            basic_decoder<Iterator, Sentinel, detail::encoding_traits<2, 1>>>
+{
+public:
+  using adapters::transformer_adapter<binary_to_text::basic_decoder<
+      Iterator,
+      Sentinel,
+      detail::encoding_traits<2, 1>>>::transformer_adapter;
+};
 }
 }
 }
