@@ -13,9 +13,17 @@ namespace codecs
 namespace base64
 {
 template <typename Iterator, typename Sentinel = Iterator>
-using encoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_encoder<Iterator, Sentinel, detail::encoding_traits<3, 4>>>;
+class encoder
+  : public adapters::transformer_adapter<
+        binary_to_text::
+            basic_encoder<Iterator, Sentinel, detail::encoding_traits<3, 4>>>
+{
+public:
+  using adapters::transformer_adapter<binary_to_text::basic_encoder<
+      Iterator,
+      Sentinel,
+      detail::encoding_traits<3, 4>>>::transformer_adapter;
+};
 }
 }
 }
