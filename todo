@@ -16,25 +16,12 @@ using mgs::base64;
 
 ---------------
 
-use begin/end instead of .begin on input_adapters
-
 replace std::is_same with is_detected_exact
 
 fix concept comments:
 
 template <typename T>
 concept A = B<T> && requires()... use Same where needed
-
-maybe pass encoder/decoder as template template arguments to basic_codec??
-then inherit privately from basic_codec to have different symbols (long aliases are not fun to see in stacks)
-
-does not make sense to have iterators specified in a codec!!
-
-// template template arguments
-
-using mgs::base64;
-
-auto encoder = base64::make_encoder(begin, end);
 
 // static asserts
 
@@ -64,7 +51,6 @@ put cmake targets in mgs namespace
 ----- Maybe ----
 
 trigger static asserts for everything??
-where to put umbrella headers? mgs/pkg/pkg.hpp
 
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
@@ -72,8 +58,6 @@ Rename Codec to BinaryCodec?
 
 Rename InputAdapter to BinaryInputAdapter?
 Having a Numeral/Numeric Codec/InputAdapter?
-
-iterators already embed their nature (i.e. encoding/decoding) thanks to the InputAdapter parameter.
 
 note in doc that only sequence containers are supported
 binary_to_text basic_encoder/basic_decoder could be refactored together...
@@ -83,8 +67,6 @@ Look again where SFINAE correctness might make sense.
 
 basic_input_adapter -> input_adapter instead of iterable?
 use fwd files between iterator and input adapter
-support giving encoder/decoder to create? if we add custom distance on input_adapters?
-use tag dispatch instead of having a patchwork of both solutions in one function
 
 add checks on encoding_traits (padding_character && padding_policy == none)
 
