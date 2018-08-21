@@ -11,6 +11,8 @@ using mgs::base64;
 
 ---------------
 
+use begin/end instead of .begin on input_adapters
+
 replace std::is_same with is_detected_exact
 
 fix concept comments:
@@ -66,7 +68,14 @@ Having a Numeral/Numeric Codec/InputAdapter?
 
 iterators already embed their nature (i.e. encoding/decoding) thanks to the InputAdapter parameter.
 
-note in doc that only sequence, associative, and unordered associative containers are supported
+note in doc that only sequence containers are supported
 binary_to_text basic_encoder/basic_decoder could be refactored together...
 
 Look again where SFINAE correctness might make sense.
+
+
+basic_input_adapter -> input_adapter instead of iterable?
+support giving encoder/decoder to create? if we add custom distance on input_adapters?
+use tag dispatch instead of having a patchwork of both solutions in one function
+
+add checks on encoding_traits (padding_character && padding_policy == none)

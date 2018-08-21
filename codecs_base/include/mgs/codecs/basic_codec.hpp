@@ -4,7 +4,7 @@
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
-#include <mgs/codecs/output_traits_fwd.hpp>
+#include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>

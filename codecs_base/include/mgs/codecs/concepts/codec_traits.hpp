@@ -8,7 +8,7 @@
 #include <mgs/meta/detected.hpp>
 
 // template <typename T, Iterator I>
-// concept CodecOutput = requires (I begin, I end) {
+// concept CodecTraits = requires (I begin, I end) {
 //   Same<T, decltype(output_traits<T>::create(begin, end))>;
 // };
 
