@@ -20,6 +20,7 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
+#include <test_helpers/codecs_base.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -88,14 +89,7 @@ struct noop_codec_traits
   }
 };
 
-using noop_codec = codecs::basic_codec<noop_codec_traits>;
-
-template <typename T, typename Input>
-void check_output_container(Input const& input)
-{
-  auto const output = noop_codec::encode<T>(input);
-  CHECK(std::equal(output.begin(), output.end(), input.begin(), input.end()));
-}
+using noop_codec = mgs::codecs::basic_codec<noop_codec_traits>;
 }
 
 namespace mgs
@@ -158,13 +152,47 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
       SECTION("Sequence")
       {
-        check_output_container<std::string>(input);
-        check_output_container<std::vector<char>>(input);
-        check_output_container<std::vector<std::uint8_t>>(input);
-        check_output_container<std::list<char>>(input);
-        check_output_container<std::deque<std::uint8_t>>(input);
-        check_output_container<std::forward_list<char>>(input);
-        check_output_container<std::array<std::uint8_t, 4>>(input);
+        SECTION("std::string")
+        {
+          test_helpers::run_codec_tests<std::string>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::vector<char>")
+        {
+          test_helpers::run_codec_tests<std::vector<char>>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::vector<std::uint8_t>")
+        {
+          test_helpers::run_codec_tests<std::vector<std::uint8_t>>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::list<char>")
+        {
+          test_helpers::run_codec_tests<std::list<char>>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::forward_list<char>")
+        {
+          test_helpers::run_codec_tests<std::forward_list<char>>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::deque<std::uint8_t>")
+        {
+          test_helpers::run_codec_tests<std::deque<std::uint8_t>>(
+              noop_codec{}, "test"s, "test"s);
+        }
+
+        SECTION("std::array<std::uint8_t, 4>")
+        {
+          test_helpers::run_codec_tests<std::array<std::uint8_t, 4>>(
+              noop_codec{}, "test"s, "test"s);
+        }
       }
 
       SECTION("Associative")
@@ -205,9 +233,13 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
       SECTION("std::array out of bounds")
       {
-        CHECK_THROWS_AS((check_output_container<std::array<char, 3>>(input)),
+        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input)),
                         exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((check_output_container<std::array<char, 5>>(input)),
+        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input)),
+                        exceptions::unexpected_eof_error);
+        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input)),
+                        exceptions::unexpected_eof_error);
+        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input)),
                         exceptions::unexpected_eof_error);
       }
     }

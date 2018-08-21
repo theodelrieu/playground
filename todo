@@ -59,6 +59,8 @@ Then from the top-level requirement, trigger static_assert_t:
 
 trigger_static_asserts<is_iterator, T>;
 
+put cmake targets in mgs namespace
+
 ----- Maybe ----
 
 trigger static asserts for everything??
@@ -85,3 +87,5 @@ support giving encoder/decoder to create? if we add custom distance on input_ada
 use tag dispatch instead of having a patchwork of both solutions in one function
 
 add checks on encoding_traits (padding_character && padding_policy == none)
+
+namespace mgs::test_helpers
