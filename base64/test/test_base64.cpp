@@ -111,7 +111,52 @@ TEST_CASE("base64 low level", "[base64]")
 
 TEST_CASE("base64 codec", "[base64]")
 {
-  auto b64str = mgs::base64::encode("abcde"s);
+  SECTION("encode")
+  {
+    auto const input = "abcde"s;
 
-  CHECK(b64str == "YWJjZGU="s);
+    SECTION("default type: std::string")
+    {
+      auto const b64str = mgs::base64::encode(input);
+
+      CHECK(b64str == "YWJjZGU="s);
+
+      auto const b64vec = mgs::base64::encode<std::vector<std::uint8_t>>(input);
+      CHECK(std::equal(
+          b64str.begin(), b64str.end(), b64vec.begin(), b64vec.end()));
+    }
+
+    SECTION("make_encoder")
+    {
+      auto encoder = mgs::base64::make_encoder(input.begin(), input.end());
+      std::string b64str(encoder.begin(), encoder.end());
+
+      CHECK(b64str == "YWJjZGU="s);
+    }
+  }
+
+  SECTION("decode")
+  {
+    auto const input = "YWJjZGU="s;
+
+    SECTION("default type: std::vector<std::uint8_t>")
+    {
+      auto const decoded_str = mgs::base64::decode<std::string>(input);
+      auto const decoded_vec = mgs::base64::decode(input);
+
+      CHECK(decoded_str == "abcde"s);
+      CHECK(std::equal(decoded_str.begin(),
+                       decoded_str.end(),
+                       decoded_vec.begin(),
+                       decoded_vec.end()));
+    }
+
+    SECTION("make_decoder")
+    {
+      auto decoder = mgs::base64::make_decoder(input.begin(), input.end());
+      std::string decoded_str(decoder.begin(), decoder.end());
+
+      CHECK(decoded_str == "abcde"s);
+    }
+  }
 }
