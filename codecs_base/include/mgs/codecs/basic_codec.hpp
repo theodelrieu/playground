@@ -69,8 +69,11 @@ public:
               meta::result_of_begin_t<encoder<Iterator, Sentinel>>>::value>>
   static auto encode(Iterator it, Sentinel sent)
   {
+    using std::begin;
+    using std::end;
+
     auto enc = CodecTraits::make_encoder(it, sent);
-    return output_traits<T>::create(enc.begin(), enc.end());
+    return output_traits<T>::create(begin(enc), end(enc));
   }
 
   template <
@@ -87,8 +90,11 @@ public:
               meta::result_of_begin_t<decoder<Iterator, Sentinel>>>::value>>
   static auto decode(Iterator it, Sentinel sent)
   {
+    using std::begin;
+    using std::end;
+
     auto dec = CodecTraits::make_decoder(it, sent);
-    return output_traits<T>::create(dec.begin(), dec.end());
+    return output_traits<T>::create(begin(dec), end(dec));
   }
 
   template <typename T = default_encoded_output,
@@ -101,6 +107,7 @@ public:
   {
     using std::begin;
     using std::end;
+
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
@@ -114,6 +121,7 @@ public:
   {
     using std::begin;
     using std::end;
+
     return basic_codec::decode<T>(begin(it), end(it));
   }
 };
