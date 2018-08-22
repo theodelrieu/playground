@@ -1,7 +1,8 @@
 Mandatory
 ----------
 
-* Remove boost dependency (use our own static_vector)  
+* Merge binary_to_text basic_encoder/basic_decoder
+* Remove boost dependency (replace static_vector)  
 * Provide FindXXX.cmake for every installable package
 * Benchmark!
 
