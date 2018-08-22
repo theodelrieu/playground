@@ -5,17 +5,18 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/base32hex.hpp>
 #include <mgs/codecs/base32hex/decoder.hpp>
 #include <mgs/codecs/base32hex/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
+#include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs;
 using namespace mgs::codecs;
-namespace adapter_concepts = adapters::concepts;
+namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -112,4 +113,10 @@ TEST_CASE("base32hex", "[base32hex]")
     invalid_input_checks<base32hex::decoder,
                          mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
+}
+
+TEST_CASE("base32hex codec", "[base32hex]")
+{
+  test_helpers::run_codec_tests<std::string>(
+      mgs::base32hex{}, "abcde"s, "C5H66P35"s);
 }
