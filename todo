@@ -1,7 +1,9 @@
 Mandatory
 ----------
 
-Benchmark!
+* Remove boost dependency (use our own static_vector)  
+* Provide FindXXX.cmake for every installable package
+* Benchmark!
 
 Later
 -----
