@@ -6,11 +6,10 @@
 #include <limits>
 #include <utility>
 
-#include <boost/container/static_vector.hpp>
-
 #include <mgs/codecs/binary_to_text/concepts/encoding_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/detail/padding_writer.hpp>
+#include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
@@ -53,7 +52,7 @@ private:
                 "Alphabet size must be a power of 2");
 
 public:
-  using value_type = boost::container::static_vector<char, nb_output_bytes>;
+  using value_type = detail::static_vector<char, nb_output_bytes>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 

@@ -13,7 +13,6 @@ class ConanMgsBaseN(ConanFile):
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)
         self.requires("mgs_exceptions/%s@mgs/testing" % self.version)
-        self.requires("boost_container/1.66.0@bincrafters/stable")
 
     def build(self):
         cmake = CMake(self)

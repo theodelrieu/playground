@@ -9,7 +9,7 @@ conan_basic_setup(TARGETS)
 
 add_library(mgs_binary_to_text INTERFACE)
 target_include_directories(mgs_binary_to_text INTERFACE include)
-target_link_libraries(mgs_binary_to_text INTERFACE CONAN_PKG::boost_container CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions)
+target_link_libraries(mgs_binary_to_text INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions)
 
 include(CTest)
 
