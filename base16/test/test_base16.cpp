@@ -5,17 +5,18 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/base16.hpp>
 #include <mgs/codecs/base16/decoder.hpp>
 #include <mgs/codecs/base16/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
+#include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs;
 using namespace mgs::codecs;
-namespace adapter_concepts = adapters::concepts;
+namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -32,7 +33,7 @@ static_assert(adapter_concepts::is_iterable_input_adapter<
                   base16::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("b16 lazy", "[base16]")
+TEST_CASE("base16 lazy", "[base16]")
 {
   std::vector<std::string> decoded{
       "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
@@ -133,4 +134,10 @@ TEST_CASE("b16 lazy", "[base16]")
     invalid_input_checks<base16::decoder,
                          mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
+}
+
+TEST_CASE("base16 codec", "[base16]")
+{
+  test_helpers::run_codec_tests<std::string>(
+      mgs::base16{}, "foobar"s, "666F6F626172"s);
 }
