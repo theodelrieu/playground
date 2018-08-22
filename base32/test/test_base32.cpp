@@ -9,13 +9,14 @@
 #include <mgs/codecs/base32/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/base32.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
+#include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs;
 using namespace mgs::codecs;
-namespace adapter_concepts = adapters::concepts;
+namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -110,4 +111,10 @@ TEST_CASE("b32 lazy", "[base32]")
     invalid_input_checks<base32::decoder,
                          mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
+}
+
+TEST_CASE("base32 codec", "[base32]")
+{
+  test_helpers::run_codec_tests<std::string>(
+      mgs::base32{}, "abcde"s, "MFRGGZDF"s);
 }
