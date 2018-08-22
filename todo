@@ -1,3 +1,12 @@
+Mandatory
+----------
+
+Define codecs for every package.
+Benchmark!
+
+Later
+-----
+
 Try again to add an API to optionally get the exact encoded/decoded size.
 Useful for sequence containers (string/vector)
 Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
@@ -5,16 +14,6 @@ Then pass the InputAdapter to output_traits::create;
 
 TEST META!!
 every trait should be sfinae friendly 100%.
-
-// codecs
-
-mgs::base64
-mgs::base64url
-mgs::base64url_unpadded
-
-using mgs::base64;
-
----------------
 
 replace std::is_same with is_detected_exact
 
@@ -46,7 +45,9 @@ Then from the top-level requirement, trigger static_assert_t:
 
 trigger_static_asserts<is_iterator, T>;
 
+remove build_requirements, investigate Conan local workflow features
 put cmake targets in mgs namespace
+add a cmake/ folder with reusable content
 
 ----- Maybe ----
 

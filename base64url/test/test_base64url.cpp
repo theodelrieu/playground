@@ -5,6 +5,7 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/base64url.hpp>
 #include <mgs/codecs/base64url/decoder.hpp>
 #include <mgs/codecs/base64url/encoder.hpp>
 #include <mgs/codecs/base64url/nopad_decoder.hpp>
@@ -13,11 +14,11 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
+#include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs;
 using namespace mgs::codecs;
-namespace adapter_concepts = adapters::concepts;
+namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -141,4 +142,16 @@ TEST_CASE("base64url_nopad", "[base64url]")
   {
     common_checks<base64url::nopad_decoder>(encoded_padded, decoded);
   }
+}
+
+TEST_CASE("base64url codec", "[base64url]")
+{
+  test_helpers::run_codec_tests<std::string>(
+      mgs::base64url{}, "abcde"s, "YWJjZGU="s);
+}
+
+TEST_CASE("base64url_nopad codec", "[base64url]")
+{
+  test_helpers::run_codec_tests<std::string>(
+      mgs::base64url_nopad{}, "abcde"s, "YWJjZGU"s);
 }
