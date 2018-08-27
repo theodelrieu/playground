@@ -7,7 +7,8 @@ class ConanMgsIterators(ConanFile):
     exports_sources = "include/*", "CMakeLists.txt"
 
     def build_requirements(self):
-        self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+        if self.develop:
+            self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
 
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)

@@ -8,8 +8,9 @@ class ConanMgsCodecsBase(ConanFile):
 
     # only useful for local dev (tests)
     def build_requirements(self):
-        self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
-        self.build_requires("mgs_adapters/%s@mgs/testing" % self.version)
+        if self.develop:
+            self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+            self.build_requires("mgs_adapters/%s@mgs/testing" % self.version)
 
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)

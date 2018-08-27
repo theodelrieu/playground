@@ -1,15 +1,11 @@
 cmake_minimum_required(VERSION 3.1.2)
-project(mgs_codecs_base)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_EXTENSIONS OFF)
+project(codecs_base VERSION 0.1 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
-add_library(mgs_codecs_base INTERFACE)
-target_include_directories(mgs_codecs_base INTERFACE include)
-target_link_libraries(mgs_codecs_base INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta)
+add_library(codecs_base INTERFACE)
+target_link_libraries(codecs_base INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta)
 
 include(CTest)
 
@@ -18,8 +14,6 @@ if (BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-install(TARGETS mgs_codecs_base
-  EXPORT mgs_codecs_base
-)
+include(MgsExportAndInstallTarget)
 
-install(DIRECTORY include DESTINATION .)
+mgs_export_and_install_target(codecs_base)
