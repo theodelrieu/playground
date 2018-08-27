@@ -1,6 +1,4 @@
-macro(mgs_create_and_install_target _project_name)
-  add_library(${_project_name} INTERFACE)
-
+macro(mgs_export_and_install_target _project_name)
   set(_targets_file_name "${_project_name}-targets")
   install(TARGETS ${_project_name} EXPORT ${_targets_file_name}
     COMPONENT ${_project_name}
