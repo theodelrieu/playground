@@ -49,6 +49,15 @@ macro(mgs_export_and_install_target _project_name)
       ${_project_name}
   )
 
+  # Always install mgs-config.cmake
+  find_file(_mgs_config_file mgs-config.cmake HINTS ${CMAKE_MODULE_PATH})
+  install(
+    FILES
+      ${_mgs_config_file}
+    DESTINATION
+      lib/cmake/mgs/
+  )
+
   unset(ConfigPackageLocation)
   unset(MGS_TARGETS_FILEPATH)
   unset(_targets_file_name)

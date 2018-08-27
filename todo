@@ -1,7 +1,8 @@
 Mandatory
 ----------
 
-* Provide FindXXX.cmake for every installable package
+* Provide XXX-config.cmake for every installable package
+* Provide mgs-config.cmake inside MgsExportAndInstall.cmake (no need to generate it, it simply loops on folders and find components)
 * Benchmark!
 
 Later
