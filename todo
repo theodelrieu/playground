@@ -15,8 +15,6 @@ Then pass the InputAdapter to output_traits::create;
 TEST META!!
 every trait should be sfinae friendly 100%.
 
-replace std::is_same with is_detected_exact
-
 fix concept comments:
 
 template <typename T>

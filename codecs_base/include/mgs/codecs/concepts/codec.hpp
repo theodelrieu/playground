@@ -92,32 +92,28 @@ public:
       adapters::concepts::is_iterable_input_adapter<Decoder>::value &&
       is_codec_output<EncodedOut, EncoderIterator>::value &&
       is_codec_output<DecodedOut, DecoderIterator>::value &&
-      std::is_same<
-          EncodedOut,
-          meta::detected_t<detail::detected::static_member_functions::encode,
-                           T,
-                           EncodedOut,
-                           EncoderIterator,
-                           EncoderIterator>>::value &&
-      std::is_same<
-          DecodedOut,
-          meta::detected_t<detail::detected::static_member_functions::decode,
-                           T,
-                           DecodedOut,
-                           DecoderIterator,
-                           DecoderIterator>>::value &&
-      std::is_same<
-          EncodedOut,
-          meta::detected_t<detail::detected::static_member_functions::encode,
-                           T,
-                           EncodedOut,
-                           Iterable const&>>::value &&
-      std::is_same<
-          DecodedOut,
-          meta::detected_t<detail::detected::static_member_functions::decode,
-                           T,
-                           DecodedOut,
-                           Iterable const&>>::value;
+      meta::is_detected_exact<EncodedOut,
+                              detail::detected::static_member_functions::encode,
+                              T,
+                              EncodedOut,
+                              EncoderIterator,
+                              EncoderIterator>::value &&
+      meta::is_detected_exact<DecodedOut,
+                              detail::detected::static_member_functions::decode,
+                              T,
+                              DecodedOut,
+                              DecoderIterator,
+                              DecoderIterator>::value &&
+      meta::is_detected_exact<EncodedOut,
+                              detail::detected::static_member_functions::encode,
+                              T,
+                              EncodedOut,
+                              Iterable const&>::value &&
+      meta::is_detected_exact<DecodedOut,
+                              detail::detected::static_member_functions::decode,
+                              T,
+                              DecodedOut,
+                              Iterable const&>::value;
 };
 }
 }
