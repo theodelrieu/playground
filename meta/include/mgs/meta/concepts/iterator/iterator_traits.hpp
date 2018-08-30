@@ -39,6 +39,9 @@ public:
       is_detected<detected::types::iterator_category, traits>::value &&
       is_detected<detected::types::reference, traits>::value;
 };
+
+template <typename T, typename = std::enable_if_t<is_iterator_traits<T>::value>>
+using IteratorTraits = T;
 }
 };
 }

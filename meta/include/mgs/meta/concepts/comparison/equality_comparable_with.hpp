@@ -31,6 +31,11 @@ struct is_equality_comparable_with<
   : std::true_type
 {
 };
+
+template <typename T,
+          typename U,
+          typename = std::enable_if_t<is_equality_comparable_with<T, U>::value>>
+using EqualityComparableWith = T;
 }
 };
 }

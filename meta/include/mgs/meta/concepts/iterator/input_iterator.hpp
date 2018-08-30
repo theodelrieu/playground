@@ -30,6 +30,9 @@ struct is_input_iterator<T, std::enable_if_t<is_iterator<T>::value>>
       detected_t<detected::types::iterator_category, std::iterator_traits<T>>,
       std::input_iterator_tag>::value;
 };
+
+template <typename T, typename = std::enable_if_t<is_input_iterator<T>::value>>
+using InputIterator = T;
 }
 };
 }

@@ -37,6 +37,10 @@ struct is_bidirectional_iterator<
       is_detected_exact<T&, detected::operators::pre_decrement, T&>::value &&
       is_detected_exact<T, detected::operators::post_decrement, T&>::value;
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_bidirectional_iterator<T>::value>>
+using BidirectionalIterator = T;
 }
 };
 }

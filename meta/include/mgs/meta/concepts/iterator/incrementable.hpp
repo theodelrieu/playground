@@ -29,6 +29,9 @@ struct is_incrementable
             is_weakly_incrementable<T>::value>
 {
 };
+
+template <typename T, typename = std::enable_if_t<is_incrementable<T>::value>>
+using Incrementable = T;
 }
 };
 }

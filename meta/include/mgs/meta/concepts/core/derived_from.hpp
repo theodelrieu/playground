@@ -24,6 +24,11 @@ struct is_derived_from
                                                    std::remove_cv_t<U>*>::value>
 {
 };
+
+template <typename T,
+          typename U,
+          typename = std::enable_if_t<is_derived_from<T, U>::value>>
+using DerivedFrom = T;
 }
 };
 }

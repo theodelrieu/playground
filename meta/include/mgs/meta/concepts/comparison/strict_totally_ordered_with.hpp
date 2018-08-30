@@ -60,6 +60,12 @@ struct is_strict_totally_ordered_with
                               T const&>::value>
 {
 };
+
+template <typename T,
+          typename U,
+          typename =
+              std::enable_if_t<is_strict_totally_ordered_with<T, U>::value>>
+using StrictTotallyOrderedWith = T;
 }
 };
 }

@@ -78,6 +78,10 @@ public:
                      difference_type const>,
           detected::types::reference<std::iterator_traits<T>>>::value;
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_random_access_iterator<T>::value>>
+using RandomAccessIterator = T;
 }
 };
 }

@@ -37,6 +37,12 @@ struct is_weakly_equality_comparable_with<
                                          bool>::value>> : std::true_type
 {
 };
+
+template <typename T,
+          typename U,
+          typename =
+              std::enable_if_t<is_weakly_equality_comparable_with<T, U>::value>>
+using WeaklyEqualityComparableWith = T;
 }
 };
 }

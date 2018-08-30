@@ -26,6 +26,11 @@ struct is_sentinel
             comparison::is_weakly_equality_comparable_with<T, Iterator>::value>
 {
 };
+
+template <typename T,
+          typename Iterator,
+          typename = std::enable_if_t<is_sentinel<T, Iterator>::value>>
+using Sentinel = T;
 }
 };
 }

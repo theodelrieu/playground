@@ -31,6 +31,9 @@ struct is_iterator
             is_detected<detected::operators::dereference, T&>::value>
 {
 };
+
+template <typename T, typename = std::enable_if_t<is_iterator<T>::value>>
+using Iterator = T;
 }
 };
 }

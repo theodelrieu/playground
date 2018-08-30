@@ -32,6 +32,9 @@ struct is_semiregular<T, std::enable_if_t<sizeof(T) != 0>>
                                core::is_swappable<T>::value>
 {
 };
+
+template <typename T, typename = std::enable_if_t<is_semiregular<T>::value>>
+using Semiregular = T;
 }
 };
 }

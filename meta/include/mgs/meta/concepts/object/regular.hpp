@@ -22,6 +22,9 @@ struct is_regular
                                comparison::is_equality_comparable<T>::value>
 {
 };
+
+template <typename T, typename = std::enable_if_t<is_regular<T>::value>>
+using Regular = T;
 }
 };
 }

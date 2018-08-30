@@ -42,6 +42,10 @@ struct is_strict_totally_ordered
                               T const&>::value>
 {
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_strict_totally_ordered<T>::value>>
+using StrictTotallyOrdered = T;
 }
 };
 }

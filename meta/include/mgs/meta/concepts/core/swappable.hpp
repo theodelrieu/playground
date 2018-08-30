@@ -32,6 +32,9 @@ template <typename T, std::size_t N>
 struct is_swappable<T[N]> : is_swappable<T>
 {
 };
+
+template <typename T, typename = std::enable_if_t<is_swappable<T>::value>>
+using Swappable = T;
 }
 };
 }

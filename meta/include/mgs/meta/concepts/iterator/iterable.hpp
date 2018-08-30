@@ -42,6 +42,9 @@ public:
   static constexpr bool value =
       is_iterator<Iterator>::value && is_sentinel<Sentinel, Iterator>::value;
 };
+
+template <typename T, typename = std::enable_if_t<is_iterable<T>::value>>
+using Iterable = T;
 }
 };
 }

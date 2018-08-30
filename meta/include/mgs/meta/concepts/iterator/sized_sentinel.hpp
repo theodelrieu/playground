@@ -34,6 +34,11 @@ public:
                               Iterator const&,
                               T const&>>::value;
 };
+
+template <typename T,
+          typename Iterator,
+          typename = std::enable_if_t<is_sized_sentinel<T, Iterator>::value>>
+using SizedSentinel = T;
 }
 };
 }

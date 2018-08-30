@@ -27,6 +27,10 @@ struct is_weakly_incrementable
             is_detected<detected::operators::post_increment, T&>::value>
 {
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_weakly_incrementable<T>::value>>
+using WeaklyIncrementable = T;
 }
 };
 }

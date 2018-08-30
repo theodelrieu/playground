@@ -36,6 +36,10 @@ struct is_forward_iterator<T, std::enable_if_t<is_input_iterator<T>::value>>
                             std::forward_iterator_tag>::value &&
       is_sentinel<T, T>::value && is_incrementable<T>::value;
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_forward_iterator<T>::value>>
+using ForwardIterator = T;
 }
 };
 }
