@@ -7,19 +7,6 @@ Mandatory
 Later
 -----
 
-Try again to add an API to optionally get the exact encoded/decoded size.
-Useful for sequence containers (string/vector)
-Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
-Then pass the InputAdapter to output_traits::create;
-
-TEST META!!
-every trait should be sfinae friendly 100%.
-
-fix concept comments:
-
-template <typename T>
-concept A = B<T> && requires()... use Same where needed
-
 // static asserts
 
 Design the trigger_static_assert system, then make everything SFINAE-friendly.
@@ -42,6 +29,19 @@ Then from the top-level requirement, trigger static_assert_t:
 * then for each requirement, trigger static_assert_t;
 
 trigger_static_asserts<is_iterator, T>;
+
+Try again to add an API to optionally get the exact encoded/decoded size.
+Useful for sequence containers (string/vector)
+Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
+Then pass the InputAdapter to output_traits::create;
+
+TEST META!!
+every trait should be sfinae friendly 100%.
+
+fix concept comments:
+
+template <typename T>
+concept A = B<T> && requires()... use Same where needed
 
 remove build_requirements, investigate Conan local workflow features
 put cmake targets in mgs namespace
