@@ -38,6 +38,8 @@ Then pass the InputAdapter to output_traits::create;
 TEST META!!
 every trait should be sfinae friendly 100%.
 
+build_require catch2 everywhere
+
 fix concept comments:
 
 template <typename T>

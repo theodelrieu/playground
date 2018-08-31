@@ -10,23 +10,9 @@
 #include <mgs/codecs/base16/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/core/derived_from.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 #include <test_helpers/codecs_base.hpp>
-
-struct a{};
-
-using LOL = mgs::meta::detail::collect_static_asserts<
-    mgs::meta::concepts::object::is_regular<a>>::type;
-
-template <typename>
-struct S;
-
-S<LOL> l2;
-// auto _ = mgs::meta::trigger_static_asserts<
-//     mgs::meta::concepts::object::is_regular<a>>();
 
 using namespace std::string_literals;
 using namespace mgs::codecs;
