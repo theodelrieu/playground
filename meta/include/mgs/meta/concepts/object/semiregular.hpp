@@ -18,6 +18,8 @@ namespace object
 template <typename T, typename = void>
 struct is_semiregular : std::false_type
 {
+  //FIXME do everything??? is_default_constructible etc??
+  using requirements = std::tuple<core::is_swappable<T>>;
 };
 
 // is_default_constructible fails to compile if T is an incomplete type

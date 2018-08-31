@@ -31,12 +31,42 @@ struct collect_requirements<T,
                          typename SubRequirements::requirements>::type{}...));
 };
 
+template <typename... U>
+struct filter_requirements_impl;
+
+template <>
+struct filter_requirements_impl<>
+{
+  using type = std::tuple<>;
+};
+
+template <typename Requirement, typename... Tail>
+struct filter_requirements_impl<Requirement, Tail...>
+{
+  using type = decltype(
+      std::tuple_cat(std::conditional_t<!Requirement::value,
+                                        std::tuple<Requirement>,
+                                        std::tuple<>>{},
+                     typename filter_requirements_impl<Tail...>::type{}));
+};
+
+template <typename T>
+struct filter_requirements;
+
+template <typename ...Requirements>
+struct filter_requirements<std::tuple<Requirements...>>
+{
+  using type = typename filter_requirements_impl<Requirements...>::type;
+};
+
 template <typename Requirement>
 struct collect_failed_requirements
 {
   using AllRequirements =
       typename collect_requirements<Requirement,
                                     typename Requirement::requirements>::type;
+
+  using type = typename filter_requirements<AllRequirements>::type;
 };
 
 template <typename Requirement>

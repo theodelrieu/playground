@@ -70,3 +70,5 @@ use fwd files between iterator and input adapter
 add checks on encoding_traits (padding_character && padding_policy == none)
 
 namespace mgs::test_helpers
+
+add metaprog lib dependency? (e.g. brigand)

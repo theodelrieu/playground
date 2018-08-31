@@ -18,6 +18,7 @@ namespace comparison
 template <typename T, typename U, typename = void>
 struct is_weakly_equality_comparable_with : std::false_type
 {
+  using requirements = std::tuple<>;
 };
 
 template <typename T, typename U>

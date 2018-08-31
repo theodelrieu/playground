@@ -16,13 +16,15 @@
 #include <test_helpers/binary_to_text.hpp>
 #include <test_helpers/codecs_base.hpp>
 
+struct a{};
+
 using LOL = mgs::meta::detail::collect_failed_requirements<
-    mgs::meta::concepts::object::is_regular<int>>::AllRequirements;
+    mgs::meta::concepts::object::is_regular<a>>::type;
 
 template <typename>
 struct S;
 
-S<LOL> l;
+S<LOL> l2;
 
 using namespace std::string_literals;
 using namespace mgs::codecs;

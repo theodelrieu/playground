@@ -19,8 +19,14 @@ namespace concepts
 namespace core
 {
 // This mess is required since std::swap only got SFINAE-correctness in C++17
+template <typename T, typename = void>
+struct is_swappable: std::false_type{
+  // FIXME
+  using requirements = std::tuple<>;
+};
+
 template <typename T>
-struct is_swappable
+struct is_swappable<T, std::enable_if_t<sizeof(T&) != 0>>
   : std::integral_constant<bool,
                            can_call_swap<T&, T&>::value &&
                                (!would_call_std_swap<T&, T&>::value ||
