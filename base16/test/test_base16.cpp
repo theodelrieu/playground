@@ -16,6 +16,14 @@
 #include <test_helpers/binary_to_text.hpp>
 #include <test_helpers/codecs_base.hpp>
 
+using LOL = mgs::meta::detail::collect_failed_requirements<
+    mgs::meta::concepts::object::is_regular<int>>::AllRequirements;
+
+template <typename>
+struct S;
+
+S<LOL> l;
+
 using namespace std::string_literals;
 using namespace mgs::codecs;
 namespace adapter_concepts = mgs::adapters::concepts;

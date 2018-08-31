@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/meta/concepts/core/swappable.hpp>
@@ -31,6 +32,7 @@ struct is_semiregular<T, std::enable_if_t<sizeof(T) != 0>>
                                std::is_destructible<T>::value &&
                                core::is_swappable<T>::value>
 {
+  using requirements = std::tuple<core::is_swappable<T>>;
 };
 
 template <typename T, typename = std::enable_if_t<is_semiregular<T>::value>>

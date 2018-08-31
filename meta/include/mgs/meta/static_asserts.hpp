@@ -10,48 +10,39 @@ namespace meta
 {
 namespace detail
 {
-template <typename Requirement, typename T, typename = void>
-struct trigger_static_asserts;
+template <typename T, typename SubRequirements, typename = void>
+struct collect_requirements;
+
+template <typename T>
+struct collect_requirements<T, std::tuple<>>
+{
+  using type = std::tuple<T>;
+};
+
+template <typename T, typename... SubRequirements>
+struct collect_requirements<T,
+                            std::tuple<SubRequirements...>,
+                            std::enable_if_t<sizeof...(SubRequirements) != 0>>
+{
+  using type = decltype(
+      std::tuple_cat(std::tuple<T>{},
+                     typename collect_requirements<
+                         SubRequirements,
+                         typename SubRequirements::requirements>::type{}...));
+};
 
 template <typename Requirement>
-struct trigger_static_asserts<Requirement, std::tuple<>>
+struct collect_failed_requirements
 {
-  using _ = typename Requirement::static_assert_t;
+  using AllRequirements =
+      typename collect_requirements<Requirement,
+                                    typename Requirement::requirements>::type;
 };
 
-template <typename Requirement, typename Requirements, typename Seq>
-struct trigger_static_asserts_impl;
-
-template <typename Requirement, typename... Requirements, std::size_t... N>
-struct trigger_static_asserts_impl<Requirement,
-                                   std::tuple<Requirements...>,
-                                   std::index_sequence<N...>>
-{
-  using _ =
-      std::tuple<typename Requirement::static_assert_t,
-                 typename std::tuple_element_t<N, std::tuple<Requirements...>>::
-                     static_assert_t...>;
-};
-
-template <typename Requirement, typename... Requirements>
-struct trigger_static_asserts<Requirement,
-                              std::tuple<Requirements...>,
-                              std::enable_if_t<sizeof...(Requirements) != 0>>
-  : trigger_static_asserts_impl<
-        Requirement,
-        std::tuple<Requirements...>,
-        decltype(std::make_index_sequence<sizeof...(Requirements)>())>
-{
-};
+template <typename Requirement>
+using collect_failed_requirements_t =
+    typename collect_failed_requirements<Requirement>::type;
 }
-
-template <typename Requirement>
-struct trigger_static_asserts
-{
-  using _ = typename detail::trigger_static_asserts<
-      Requirement,
-      typename Requirement::requirements>::_{};
-};
 }
 }
 }

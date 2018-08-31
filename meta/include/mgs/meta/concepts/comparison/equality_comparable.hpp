@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
@@ -18,6 +19,8 @@ namespace comparison
 template <typename T>
 struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 {
+  // FIXME
+  using requirements = std::tuple<is_weakly_equality_comparable_with<T, T>>;
 };
 
 template <typename T,

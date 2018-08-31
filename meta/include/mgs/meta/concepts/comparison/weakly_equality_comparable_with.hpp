@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 #include <utility>
 
@@ -36,6 +37,7 @@ struct is_weakly_equality_comparable_with<
                                                   std::declval<T const&>()),
                                          bool>::value>> : std::true_type
 {
+  using requirements = std::tuple<>;
 };
 
 template <typename T,

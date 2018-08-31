@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 
@@ -26,6 +27,8 @@ struct is_swappable
                                 (std::is_move_assignable<T>::value &&
                                  std::is_move_constructible<T>::value))>
 {
+  //FIXME
+  using requirements = std::tuple<>;
 };
 
 template <typename T, std::size_t N>
