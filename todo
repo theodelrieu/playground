@@ -40,6 +40,8 @@ every trait should be sfinae friendly 100%.
 
 build_require catch2 everywhere
 
+add *_v 
+
 fix concept comments:
 
 template <typename T>
