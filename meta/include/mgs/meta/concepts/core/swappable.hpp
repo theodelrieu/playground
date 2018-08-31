@@ -23,6 +23,11 @@ template <typename T, typename = void>
 struct is_swappable: std::false_type{
   // FIXME
   using requirements = std::tuple<>;
+
+  struct static_assert_t
+  {
+    static_assert(sizeof(T) == 0, "T is not Swappable");
+  };
 };
 
 template <typename T>
@@ -35,6 +40,11 @@ struct is_swappable<T, std::enable_if_t<sizeof(T&) != 0>>
 {
   //FIXME
   using requirements = std::tuple<>;
+
+  struct static_assert_t
+  {
+    static_assert(is_swappable::value, "T is not Swappable");
+  };
 };
 
 template <typename T, std::size_t N>

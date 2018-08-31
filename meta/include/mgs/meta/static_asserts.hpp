@@ -25,10 +25,10 @@ struct collect_requirements<T,
                             std::enable_if_t<sizeof...(SubRequirements) != 0>>
 {
   using type = decltype(
-      std::tuple_cat(std::tuple<T>{},
-                     typename collect_requirements<
+      std::tuple_cat(typename collect_requirements<
                          SubRequirements,
-                         typename SubRequirements::requirements>::type{}...));
+                         typename SubRequirements::requirements>::type{}...,
+                     std::tuple<T>{}));
 };
 
 template <typename... U>
@@ -53,7 +53,7 @@ struct filter_requirements_impl<Requirement, Tail...>
 template <typename T>
 struct filter_requirements;
 
-template <typename ...Requirements>
+template <typename... Requirements>
 struct filter_requirements<std::tuple<Requirements...>>
 {
   using type = typename filter_requirements_impl<Requirements...>::type;
@@ -69,9 +69,37 @@ struct collect_failed_requirements
   using type = typename filter_requirements<AllRequirements>::type;
 };
 
+template <typename T>
+struct collect_static_asserts_impl;
+
+template <typename... FailedRequirements>
+struct collect_static_asserts_impl<std::tuple<FailedRequirements...>>
+{
+  using type = std::tuple<typename FailedRequirements::static_assert_t...>;
+};
+
 template <typename Requirement>
-using collect_failed_requirements_t =
-    typename collect_failed_requirements<Requirement>::type;
+struct collect_static_asserts
+{
+  using failed_requirements =
+      typename collect_failed_requirements<Requirement>::type;
+
+  using type = typename collect_static_asserts_impl<failed_requirements>::type;
+};
+
+template <typename Requirement>
+struct trigger_static_asserts
+{
+  static constexpr auto _ =
+      typename detail::collect_static_asserts<Requirement>::type{};
+};
+}
+
+template <typename Requirement>
+constexpr int trigger_static_asserts()
+{
+  (void)detail::trigger_static_asserts<Requirement>{};
+  return 0;
 }
 }
 }

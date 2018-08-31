@@ -19,6 +19,10 @@ template <typename T, typename U, typename = void>
 struct is_weakly_equality_comparable_with : std::false_type
 {
   using requirements = std::tuple<>;
+  struct static_assert_t
+  {
+    static_assert(sizeof(T) == 0, "T is not WeaklyEqualityComparable with U");
+  };
 };
 
 template <typename T, typename U>
@@ -39,6 +43,12 @@ struct is_weakly_equality_comparable_with<
                                          bool>::value>> : std::true_type
 {
   using requirements = std::tuple<>;
+
+  struct static_assert_t
+  {
+    static_assert(is_weakly_equality_comparable_with::value,
+                  "T is not WeaklyEqualityComparable with U");
+  };
 };
 
 template <typename T,

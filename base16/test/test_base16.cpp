@@ -18,13 +18,15 @@
 
 struct a{};
 
-using LOL = mgs::meta::detail::collect_failed_requirements<
+using LOL = mgs::meta::detail::collect_static_asserts<
     mgs::meta::concepts::object::is_regular<a>>::type;
 
 template <typename>
 struct S;
 
 S<LOL> l2;
+// auto _ = mgs::meta::trigger_static_asserts<
+//     mgs::meta::concepts::object::is_regular<a>>();
 
 using namespace std::string_literals;
 using namespace mgs::codecs;
