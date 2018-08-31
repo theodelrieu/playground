@@ -18,6 +18,7 @@ struct derived : base
 {
 };
 
+// FIXME parameterize expected requirements, put in meta_test_helpers
 template <typename Requirement>
 void generate_static_asserts_tests()
 {
