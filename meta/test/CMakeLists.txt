@@ -1,13 +1,21 @@
 cmake_minimum_required(VERSION 3.1.2)
 
-function(add_meta_test name)
-  add_executable(test_${name}
-    test_${name}.cpp
+function(create_meta_tests)
+  set(filenames "")
+  foreach (name ${ARGN})
+    list(APPEND filenames test_${name}.cpp)
+  endforeach()
+
+  add_executable(test_meta
+    ${filenames}
     $<TARGET_OBJECTS:catch_main>
   )
-  target_link_libraries(test_${name} mgs_meta CONAN_PKG::catch2)
+  target_link_libraries(test_meta mgs_meta CONAN_PKG::catch2)
 
-  add_test(NAME test_${name} COMMAND test_${name})
+  add_test(NAME test_meta COMMAND test_meta)
 endfunction()
 
-add_meta_test(derived_from)
+create_meta_tests(
+  derived_from
+  complete_type
+)

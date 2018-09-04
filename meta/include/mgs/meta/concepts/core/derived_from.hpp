@@ -5,8 +5,8 @@
 
 #include <mgs/meta/detected.hpp>
 
+#include <mgs/meta/concepts/core/complete_type.hpp>
 #include <mgs/meta/concepts/object/regular.hpp>
-#include <mgs/meta/void_t.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/DerivedFrom
 
@@ -29,7 +29,9 @@ struct is_derived_from_impl : std::false_type
 
 // Derived must be a complete type.
 template <typename Derived, typename Base>
-struct is_derived_from_impl<Derived, Base, void_t<decltype(sizeof(Derived))>>
+struct is_derived_from_impl<Derived,
+                            Base,
+                            std::enable_if_t<is_complete_type<Derived>::value>>
 {
   static constexpr auto const value =
       std::is_base_of<Base, Derived>::value &&
@@ -38,16 +40,13 @@ struct is_derived_from_impl<Derived, Base, void_t<decltype(sizeof(Derived))>>
 }
 
 template <typename Derived, typename Base>
-struct is_derived_from
+struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
 {
-  static constexpr auto const value =
-      detail::is_derived_from_impl<Derived, Base>::value;
-
   using requirements = std::tuple<>;
 
   struct static_assert_t
   {
-    static_assert(value, "Derived is not derived from Base");
+    static_assert(is_derived_from::value, "Derived is not derived from Base");
   };
 };
 
