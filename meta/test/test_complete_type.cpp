@@ -8,17 +8,6 @@
 using namespace mgs::meta;
 namespace core_concepts = concepts::core;
 
-namespace
-{
-struct base
-{
-};
-
-struct derived : base
-{
-};
-}
-
 TEST_CASE("CompleteType", "[meta][concepts][core]")
 {
   static_assert(core_concepts::is_complete_type<int>::value, "");
