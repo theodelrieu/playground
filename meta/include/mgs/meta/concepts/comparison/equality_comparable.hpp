@@ -19,7 +19,6 @@ namespace comparison
 template <typename T>
 struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 {
-  // FIXME
   using requirements = std::tuple<is_weakly_equality_comparable_with<T, T>>;
 
   struct static_assert_t

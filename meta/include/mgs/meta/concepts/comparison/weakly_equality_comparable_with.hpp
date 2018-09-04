@@ -4,6 +4,8 @@
 #include <type_traits>
 #include <utility>
 
+#include <mgs/meta/concepts/core/complete_type.hpp>
+
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/WeaklyEqualityComparableWith
 namespace mgs
 {
@@ -15,18 +17,15 @@ namespace concepts
 {
 namespace comparison
 {
-template <typename T, typename U, typename = void>
-struct is_weakly_equality_comparable_with : std::false_type
+namespace detail
 {
-  using requirements = std::tuple<>;
-  struct static_assert_t
-  {
-    static_assert(sizeof(T) == 0, "T is not WeaklyEqualityComparable with U");
-  };
+template <typename T, typename U, typename = void>
+struct is_weakly_equality_comparable_with_impl : std::false_type
+{
 };
 
 template <typename T, typename U>
-struct is_weakly_equality_comparable_with<
+struct is_weakly_equality_comparable_with_impl<
     T,
     U,
     std::enable_if_t<std::is_convertible<decltype(std::declval<T const&>() ==
@@ -41,6 +40,12 @@ struct is_weakly_equality_comparable_with<
                      std::is_convertible<decltype(std::declval<U const&>() !=
                                                   std::declval<T const&>()),
                                          bool>::value>> : std::true_type
+{
+};
+}
+
+template <typename T, typename U>
+struct is_weakly_equality_comparable_with : detail::is_weakly_equality_comparable_with_impl<T, U>
 {
   using requirements = std::tuple<>;
 

@@ -16,7 +16,8 @@ function(create_meta_tests)
 endfunction()
 
 create_meta_tests(
-  derived_from
   complete_type
+  derived_from
+  equality_comparable
   swappable
 )

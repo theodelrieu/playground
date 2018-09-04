@@ -14,7 +14,7 @@ void generate_failed_requirements_tests(
           Requirement>::type;
 
   static_assert(
-      std::is_same<std::tuple<ExpectedFailedRequirements..., Requirement>,
+      std::is_same<std::tuple<Requirement, ExpectedFailedRequirements...>,
                    failed_requirements>::value,
       "Mismatch when comparing failed requirements");
 }

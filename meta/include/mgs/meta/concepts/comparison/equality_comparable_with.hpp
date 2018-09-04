@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/meta/concepts/comparison/equality_comparable.hpp>
@@ -16,20 +17,32 @@ namespace concepts
 {
 namespace comparison
 {
-template <typename T, typename U, typename = void>
-struct is_equality_comparable_with : std::false_type
+namespace detail
+{
+template <typename T, typename U>
+struct is_equality_comparable_with_impl
+  : std::integral_constant<bool,
+                           is_equality_comparable<T>::value &&
+                               is_equality_comparable<U>::value &&
+                               is_weakly_equality_comparable_with<T, U>::value>
 {
 };
+}
 
 template <typename T, typename U>
-struct is_equality_comparable_with<
-    T,
-    U,
-    std::enable_if_t<is_equality_comparable<T>::value &&
-                     is_equality_comparable<U>::value &&
-                     is_weakly_equality_comparable_with<T, U>::value>>
-  : std::true_type
+struct is_equality_comparable_with : detail::is_equality_comparable_with_impl<T, U>
 {
+  // We could use something like brigand::all, but it's tedious to reimplement.
+  // Maybe use a TMP library?
+  using requirements = std::tuple<is_equality_comparable<T>,
+                                  is_equality_comparable<U>,
+                                  is_weakly_equality_comparable_with<T, U>>;
+
+  struct static_assert_t
+  {
+    static_assert(is_equality_comparable_with::value,
+                  "T is not EqualityComparableWith U");
+  };
 };
 
 template <typename T,

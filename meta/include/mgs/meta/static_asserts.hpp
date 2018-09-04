@@ -25,10 +25,10 @@ struct collect_requirements<T,
                             std::enable_if_t<sizeof...(SubRequirements) != 0>>
 {
   using type = decltype(
-      std::tuple_cat(typename collect_requirements<
+      std::tuple_cat(std::tuple<T>{},
+                     typename collect_requirements<
                          SubRequirements,
-                         typename SubRequirements::requirements>::type{}...,
-                     std::tuple<T>{}));
+                         typename SubRequirements::requirements>::type{}...));
 };
 
 template <typename... U>
