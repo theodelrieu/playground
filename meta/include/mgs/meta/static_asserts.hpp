@@ -69,13 +69,14 @@ struct collect_failed_requirements
   using type = typename filter_requirements<AllRequirements>::type;
 };
 
-template <typename T>
+template <typename Requirement, typename T>
 struct collect_static_asserts_impl;
 
-template <typename... FailedRequirements>
-struct collect_static_asserts_impl<std::tuple<FailedRequirements...>>
+template <typename Requirement, typename... FailedRequirements>
+struct collect_static_asserts_impl<Requirement, std::tuple<FailedRequirements...>>
 {
-  using type = std::tuple<typename FailedRequirements::static_assert_t...>;
+  using type = std::tuple<typename Requirement::static_assert_t,
+                          typename FailedRequirements::static_assert_t...>;
 };
 
 template <typename Requirement>
@@ -84,7 +85,8 @@ struct collect_static_asserts
   using failed_requirements =
       typename collect_failed_requirements<Requirement>::type;
 
-  using type = typename collect_static_asserts_impl<failed_requirements>::type;
+  using type = typename collect_static_asserts_impl<Requirement,
+                                                    failed_requirements>::type;
 };
 
 template <typename Requirement>

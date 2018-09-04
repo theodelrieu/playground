@@ -9,11 +9,6 @@ Later
 
 // static asserts
 
-Hijack detected to have static_assert_t too? Might be too generic.
-So, make a has_* trait for each detected? Then in message:
-
-"T has not method X or signature is invalid."
-
 Design the trigger_static_assert system, then make everything SFINAE-friendly.
 Look at how sqlpp11 does it.
 Having an intermediate step that returns a std::tuple<meta::static_asserts::dereference_operator, ...>?
