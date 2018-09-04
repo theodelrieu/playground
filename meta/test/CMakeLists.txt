@@ -10,4 +10,4 @@ function(add_meta_test name)
   add_test(NAME test_${name} COMMAND test_${name})
 endfunction()
 
-add_meta_test(core_concepts)
+add_meta_test(derived_from)

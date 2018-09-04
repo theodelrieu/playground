@@ -98,8 +98,7 @@ struct trigger_static_asserts
 template <typename Requirement>
 constexpr int trigger_static_asserts()
 {
-  (void)detail::trigger_static_asserts<Requirement>{};
-  return 0;
+  return (void)detail::trigger_static_asserts<Requirement>{}, 0;
 }
 }
 }
