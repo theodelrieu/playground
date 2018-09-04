@@ -33,6 +33,7 @@ TEST_CASE("DerivedFrom", "[meta][concepts][core]")
 
     static_assert(!core_concepts::is_derived_from<int, int>::value, "");
     static_assert(!core_concepts::is_derived_from<derived, void>::value, "");
+    static_assert(!core_concepts::is_derived_from<void, base>::value, "");
   }
 
   generate_failed_requirements_tests<core_concepts::is_derived_from<int, int>>(
