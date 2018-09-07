@@ -58,8 +58,8 @@ TEST_CASE("Iterator", "[meta][concepts][iterator]")
   static_assert(iterator_concepts::is_iterator<output_iterator>::value, "");
 
   static_assert(!iterator_concepts::is_iterator<char>::value, "");
-  static_assert(!iterator_concepts::is_iterator_traits<void>::value, "");
-  static_assert(!iterator_concepts::is_iterator_traits<struct incomplete>::value, "");
+  static_assert(!iterator_concepts::is_iterator<void>::value, "");
+  static_assert(!iterator_concepts::is_iterator<struct incomplete>::value, "");
 
   static_assert(!iterator_concepts::is_iterator<non_dereferencable_iterator>::value, "");
   static_assert(!iterator_concepts::is_iterator<non_weakly_incrementable_iterator>::value, "");
