@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/core/swappable.hpp>
+#include <mgs/meta/concepts/core/complete_type.hpp>
 
 namespace mgs
 {
@@ -15,23 +16,16 @@ namespace concepts
 {
 namespace object
 {
-template <typename T, typename = void>
-struct is_semiregular : std::false_type
+namespace detail
 {
-  //FIXME do everything??? is_default_constructible etc??
-  using requirements = std::tuple<core::is_swappable<T>>;
-
-  struct static_assert_t
-  {
-    static_assert(sizeof(T) == 0, "T is not Semiregular");
-  };
+template <typename T, typename = void>
+struct is_semiregular_impl : std::false_type
+{
 };
 
-// is_default_constructible fails to compile if T is an incomplete type
 template <typename T>
-struct is_semiregular<T, std::enable_if_t<sizeof(T) != 0>>
+struct is_semiregular_impl<T, std::enable_if_t<core::is_complete_type<T>::value>>
   : std::integral_constant<bool,
-  !std::is_same<void, T>::value &&
                            std::is_default_constructible<T>::value &&
                                std::is_copy_constructible<T>::value &&
                                std::is_move_constructible<T>::value &&
@@ -39,6 +33,13 @@ struct is_semiregular<T, std::enable_if_t<sizeof(T) != 0>>
                                std::is_move_assignable<T>::value &&
                                std::is_destructible<T>::value &&
                                core::is_swappable<T>::value>
+{
+};
+}
+
+
+template <typename T>
+struct is_semiregular : detail::is_semiregular_impl<T>
 {
   using requirements = std::tuple<core::is_swappable<T>>;
 
