@@ -20,6 +20,7 @@ create_meta_tests(
   derived_from
   equality_comparable
   incrementable
+  iterator
   iterator_traits
   regular
   semiregular
