@@ -5,7 +5,6 @@
 #include <mgs/meta/concepts/comparison/equality_comparable.hpp>
 #include <mgs/meta/concepts/comparison/strict_totally_ordered.hpp>
 #include <mgs/meta/concepts/comparison/strict_totally_ordered_with.hpp>
-#include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include "meta_test_helpers.hpp"
@@ -48,10 +47,8 @@ TEST_CASE("StrictTotallyOrdered", "[meta][concepts][comparison]")
 
   generate_failed_requirements_tests<
       comparison_concepts::is_strict_totally_ordered<almost_correct>>(
-      std::tuple<comparison_concepts::is_equality_comparable<almost_correct>,
-                 comparison_concepts::is_weakly_equality_comparable_with<
-                     almost_correct,
-                     almost_correct>>{});
+      std::tuple<
+          comparison_concepts::is_equality_comparable<almost_correct>>{});
 }
 
 TEST_CASE("StrictTotallyOrderedWith", "[meta][concepts][comparison]")
@@ -71,9 +68,7 @@ TEST_CASE("StrictTotallyOrderedWith", "[meta][concepts][comparison]")
 
   generate_failed_requirements_tests<
       comparison_concepts::is_strict_totally_ordered_with<almost_correct, int>>(
-      std::tuple<comparison_concepts::is_strict_totally_ordered<almost_correct>,
-                 comparison_concepts::is_equality_comparable<almost_correct>,
-                 comparison_concepts::is_weakly_equality_comparable_with<
-                     almost_correct,
-                     almost_correct>>{});
+      std::tuple<
+          comparison_concepts::is_strict_totally_ordered<almost_correct>,
+          comparison_concepts::is_equality_comparable<almost_correct>>{});
 }

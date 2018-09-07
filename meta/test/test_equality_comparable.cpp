@@ -70,9 +70,7 @@ TEST_CASE("EqualityComparable", "[meta][concepts][comparison]")
       !comparison_concepts::is_equality_comparable<fake_sentinel>::value, "");
 
   generate_failed_requirements_tests<
-      comparison_concepts::is_equality_comparable<void>>(
-      std::tuple<comparison_concepts::
-                     is_weakly_equality_comparable_with<void, void>>{});
+      comparison_concepts::is_equality_comparable<void>>(std::tuple<>{});
 }
 
 TEST_CASE("EqualityComparableWith", "[meta][concepts][comparison]")
@@ -107,9 +105,6 @@ TEST_CASE("EqualityComparableWith", "[meta][concepts][comparison]")
   generate_failed_requirements_tests<
       comparison_concepts::is_equality_comparable_with<int, fake_sentinel>>(
       std::tuple<comparison_concepts::is_equality_comparable<fake_sentinel>,
-                 comparison_concepts::is_weakly_equality_comparable_with<
-                     fake_sentinel,
-                     fake_sentinel>,
                  comparison_concepts::
                      is_weakly_equality_comparable_with<int, fake_sentinel>>{});
 }

@@ -3,7 +3,6 @@
 #include <catch.hpp>
 
 #include <mgs/meta/concepts/comparison/equality_comparable.hpp>
-#include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/concepts/core/swappable.hpp>
 #include <mgs/meta/concepts/object/regular.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
@@ -56,10 +55,8 @@ TEST_CASE("Semiregular", "[meta][concepts][object]")
 
   generate_failed_requirements_tests<
       object_concepts::is_regular<almost_regular>>(
-      std::tuple<comparison_concepts::is_equality_comparable<almost_regular>,
-                 comparison_concepts::is_weakly_equality_comparable_with<
-                     almost_regular,
-                     almost_regular>>{});
+      std::tuple<
+          comparison_concepts::is_equality_comparable<almost_regular>>{});
 
   generate_failed_requirements_tests<
       object_concepts::is_regular<almost_semiregular>>(
