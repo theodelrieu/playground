@@ -14,9 +14,6 @@ Useful for sequence containers (string/vector)
 Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
 Then pass the InputAdapter to output_traits::create;
 
-TEST META!!
-every trait should be sfinae friendly 100%.
-
 build_require catch2 everywhere
 
 add *_v 
@@ -31,8 +28,6 @@ put cmake targets in mgs namespace
 add a cmake/ folder with reusable content
 
 ----- Maybe ----
-
-trigger static asserts for everything??
 
 base58 takes numbers, or string in reverse order...
 it would change the Codec concept as well, which only deals with binary to text right now
@@ -53,5 +48,3 @@ use fwd files between iterator and input adapter
 add checks on encoding_traits (padding_character && padding_policy == none)
 
 namespace mgs::test_helpers
-
-add metaprog lib dependency? (e.g. brigand)

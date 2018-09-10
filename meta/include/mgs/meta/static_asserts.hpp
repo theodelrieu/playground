@@ -98,7 +98,8 @@ constexpr int print_static_asserts()
 template <typename Head, typename...Tail>
 constexpr auto print_static_asserts() -> std::enable_if_t<sizeof...(Tail) != 0, int>
 {
-  return print_static_asserts<Tail...>() + Head::trigger();
+  constexpr auto i = Head::trigger();
+  return i + print_static_asserts<Tail...>();
 }
 
 template <typename Requirements>
