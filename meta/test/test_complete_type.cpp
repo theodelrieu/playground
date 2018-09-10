@@ -15,6 +15,5 @@ TEST_CASE("CompleteType", "[meta][concepts][core]")
   static_assert(!core_concepts::is_complete_type<struct incomplete>::value, "");
   static_assert(!core_concepts::is_complete_type<void>::value, "");
 
-  generate_failed_requirements_tests<core_concepts::is_complete_type<void>>(
-      std::tuple<>{});
+  generate_failed_requirements_tests<core_concepts::is_complete_type<void>>();
 }

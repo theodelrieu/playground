@@ -53,15 +53,13 @@ struct is_iterator : detail::is_iterator_impl<T>
     static constexpr auto const has_dereference =
         is_detected<detected::operators::dereference, T&>::value;
 
-    static constexpr int trigger_static_asserts()
+    static constexpr int trigger()
     {
       static_assert(is_iterator::value, "T is not an Iterator");
       static_assert(has_dereference,
                     "Missing or invalid operator: '/* any */ operator*()'");
-      return 0;
+      return 1;
     }
-
-    static constexpr auto _ = trigger_static_asserts();
   };
 };
 

@@ -5,16 +5,15 @@
 
 #include <mgs/meta/static_asserts.hpp>
 
-template <typename Requirement, typename... ExpectedFailedRequirements>
-void generate_failed_requirements_tests(
-    std::tuple<ExpectedFailedRequirements...>)
+template <typename Requirement, typename ExpectedFailedRequirements = std::tuple<>>
+void generate_failed_requirements_tests()
 {
   using failed_requirements =
       typename mgs::meta::detail::collect_failed_requirements<
           Requirement>::type;
 
-  static_assert(
-      std::is_same<std::tuple<Requirement, ExpectedFailedRequirements...>,
-                   failed_requirements>::value,
-      "Mismatch when comparing failed requirements");
+  using combined = decltype(
+      std::tuple_cat(std::tuple<Requirement>{}, ExpectedFailedRequirements{}));
+  static_assert(std::is_same<combined, failed_requirements>::value,
+                "Mismatch when comparing failed requirements");
 }

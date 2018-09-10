@@ -54,11 +54,11 @@ TEST_CASE("Semiregular", "[meta][concepts][object]")
   static_assert(!object_concepts::is_regular<struct incomplete>::value, "");
 
   generate_failed_requirements_tests<
-      object_concepts::is_regular<almost_regular>>(
+      object_concepts::is_regular<almost_regular>,
       std::tuple<
-          comparison_concepts::is_equality_comparable<almost_regular>>{});
+          comparison_concepts::is_equality_comparable<almost_regular>>>();
 
   generate_failed_requirements_tests<
-      object_concepts::is_regular<almost_semiregular>>(
-      std::tuple<object_concepts::is_semiregular<almost_semiregular>>{});
+      object_concepts::is_regular<almost_semiregular>,
+      std::tuple<object_concepts::is_semiregular<almost_semiregular>>>();
 }

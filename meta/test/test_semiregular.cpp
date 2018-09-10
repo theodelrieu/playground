@@ -108,10 +108,10 @@ TEST_CASE("Semiregular", "[meta][concepts][object]")
   static_assert(!object_concepts::is_semiregular<non_swappable>::value, "");
 
   generate_failed_requirements_tests<
-      object_concepts::is_semiregular<non_swappable>>(
-      std::tuple<core_concepts::is_swappable<non_swappable>>{});
+      object_concepts::is_semiregular<non_swappable>,
+      std::tuple<core_concepts::is_swappable<non_swappable>>>();
 
   // other types have a swap overload
   generate_failed_requirements_tests<
-      object_concepts::is_semiregular<non_destructible>>(std::tuple<>{});
+      object_concepts::is_semiregular<non_destructible>>();
 }

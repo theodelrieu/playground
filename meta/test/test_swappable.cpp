@@ -40,6 +40,5 @@ TEST_CASE("Swappable", "[meta][concepts][core]")
   static_assert(!core_concepts::is_swappable<void>::value, "");
   static_assert(!core_concepts::is_swappable<not_swappable>::value, "");
 
-  generate_failed_requirements_tests<core_concepts::is_swappable<void>>(
-      std::tuple<>{});
+  generate_failed_requirements_tests<core_concepts::is_swappable<void>>();
 }

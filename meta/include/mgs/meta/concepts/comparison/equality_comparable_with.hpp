@@ -40,8 +40,12 @@ struct is_equality_comparable_with : detail::is_equality_comparable_with_impl<T,
 
   struct static_assert_t
   {
-    static_assert(is_equality_comparable_with::value,
-                  "T is not EqualityComparableWith U");
+    static constexpr int trigger()
+    {
+      static_assert(is_equality_comparable_with::value,
+                    "T is not EqualityComparableWith U");
+      return 1;
+    }
   };
 };
 

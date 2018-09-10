@@ -53,7 +53,11 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 
   struct static_assert_t
   {
-    static_assert(is_swappable::value, "T is not Swappable");
+    static constexpr int trigger()
+    {
+      static_assert(is_swappable::value, "T is not Swappable");
+      return 1;
+    }
   };
 };
 

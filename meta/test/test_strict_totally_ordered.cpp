@@ -46,9 +46,9 @@ TEST_CASE("StrictTotallyOrdered", "[meta][concepts][comparison]")
                 "");
 
   generate_failed_requirements_tests<
-      comparison_concepts::is_strict_totally_ordered<almost_correct>>(
+      comparison_concepts::is_strict_totally_ordered<almost_correct>,
       std::tuple<
-          comparison_concepts::is_equality_comparable<almost_correct>>{});
+          comparison_concepts::is_equality_comparable<almost_correct>>>();
 }
 
 TEST_CASE("StrictTotallyOrderedWith", "[meta][concepts][comparison]")
@@ -67,8 +67,8 @@ TEST_CASE("StrictTotallyOrderedWith", "[meta][concepts][comparison]")
       "");
 
   generate_failed_requirements_tests<
-      comparison_concepts::is_strict_totally_ordered_with<almost_correct, int>>(
+      comparison_concepts::is_strict_totally_ordered_with<almost_correct, int>,
       std::tuple<
           comparison_concepts::is_strict_totally_ordered<almost_correct>,
-          comparison_concepts::is_equality_comparable<almost_correct>>{});
+          comparison_concepts::is_equality_comparable<almost_correct>>>();
 }

@@ -38,7 +38,11 @@ struct is_complete_type : detail::is_complete_type_impl<T>
 
   struct static_assert_t
   {
-    static_assert(is_complete_type::value, "T is not a complete type");
+    static constexpr int trigger()
+    {
+      static_assert(is_complete_type::value, "T is not a complete type");
+      return 1;
+    }
   };
 };
 

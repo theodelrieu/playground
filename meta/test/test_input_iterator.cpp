@@ -76,12 +76,12 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_input_iterator<void>::value, "");
   static_assert(!iterator_concepts::is_input_iterator<struct incomplete>::value, "");
 
-  generate_failed_requirements_tests<iterator_concepts::is_input_iterator<int>>(
+  generate_failed_requirements_tests<
+      iterator_concepts::is_input_iterator<int>,
       std::tuple<
           iterator_concepts::is_iterator<int>,
-          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>{});
+          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>>();
 
   generate_failed_requirements_tests<
-      iterator_concepts::is_input_iterator<invalid_reference_iterator>>(
-      std::tuple<>{});
+      iterator_concepts::is_input_iterator<invalid_reference_iterator>>();
 }

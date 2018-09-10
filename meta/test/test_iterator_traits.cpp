@@ -55,5 +55,5 @@ TEST_CASE("IteratorTraits", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_iterator_traits<struct incomplete>::value, "");
 
   generate_failed_requirements_tests<
-      iterator_concepts::is_iterator_traits<int>>(std::tuple<>{});
+      iterator_concepts::is_iterator_traits<int>>();
 }

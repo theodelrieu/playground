@@ -46,7 +46,11 @@ struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
 
   struct static_assert_t
   {
-    static_assert(is_derived_from::value, "Derived is not derived from Base");
+    static constexpr int trigger()
+    {
+      static_assert(is_derived_from::value, "Derived is not derived from Base");
+      return 1;
+    }
   };
 };
 

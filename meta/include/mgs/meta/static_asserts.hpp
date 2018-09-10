@@ -89,18 +89,36 @@ struct collect_static_asserts
                                                     failed_requirements>::type;
 };
 
-template <typename Requirement>
-struct trigger_static_asserts
+template <typename Head>
+constexpr int print_static_asserts()
 {
-  static constexpr auto _ =
-      typename detail::collect_static_asserts<Requirement>::type{};
+  return Head::trigger();
+}
+
+template <typename Head, typename...Tail>
+constexpr auto print_static_asserts() -> std::enable_if_t<sizeof...(Tail) != 0, int>
+{
+  return print_static_asserts<Tail...>() + Head::trigger();
+}
+
+template <typename Requirements>
+struct trigger_static_asserts;
+
+template <typename ...Requirements>
+struct trigger_static_asserts<std::tuple<Requirements...>>
+{
+  static constexpr auto trigger()
+  {
+    return print_static_asserts<Requirements...>();
+  }
 };
 }
 
 template <typename Requirement>
 constexpr int trigger_static_asserts()
 {
-  return (void)detail::trigger_static_asserts<Requirement>{}, 0;
+  return detail::trigger_static_asserts<
+      typename detail::collect_static_asserts<Requirement>::type>::trigger();
 }
 }
 }

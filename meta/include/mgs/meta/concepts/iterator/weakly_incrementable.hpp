@@ -46,12 +46,15 @@ struct is_weakly_incrementable : detail::is_weakly_incrementable_impl<T>
   struct static_assert_t
   {
     static constexpr auto const has_pre_increment =
-        is_detected_exact<T&, detected::operators::pre_increment, T&>::value;
+        is_detected_exact<std::add_lvalue_reference_t<T>,
+                          detected::operators::pre_increment,
+                          std::add_lvalue_reference_t<T>>::value;
 
     static constexpr auto const has_post_increment =
-        is_detected<detected::operators::post_increment, T&>::value;
+        is_detected<detected::operators::post_increment,
+                    std::add_lvalue_reference_t<T>>::value;
 
-    static constexpr int trigger_static_asserts()
+    static constexpr int trigger()
     {
       static_assert(is_weakly_incrementable::value,
                     "T is not WeaklyIncrementable");
@@ -61,10 +64,8 @@ struct is_weakly_incrementable : detail::is_weakly_incrementable_impl<T>
       static_assert(
           has_post_increment,
           "Missing or invalid operator: '/* any */ operator++(int)'");
-      return 0;
+      return 1;
     }
-
-    static constexpr auto _ = trigger_static_asserts();
   };
 };
 

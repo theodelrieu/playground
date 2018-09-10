@@ -25,6 +25,7 @@ create_meta_tests(
   iterator_traits
   regular
   semiregular
+  sentinel
   strict_totally_ordered
   swappable
 )

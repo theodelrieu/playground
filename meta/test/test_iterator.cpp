@@ -64,16 +64,16 @@ TEST_CASE("Iterator", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_iterator<non_dereferencable_iterator>::value, "");
   static_assert(!iterator_concepts::is_iterator<non_weakly_incrementable_iterator>::value, "");
 
-  generate_failed_requirements_tests<iterator_concepts::is_iterator<int>>(
+  generate_failed_requirements_tests<
+      iterator_concepts::is_iterator<int>,
       std::tuple<
-          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>{});
+          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>>();
 
   generate_failed_requirements_tests<
-      iterator_concepts::is_iterator<non_dereferencable_iterator>>(
-      std::tuple<>{});
+      iterator_concepts::is_iterator<non_dereferencable_iterator>>();
 
   generate_failed_requirements_tests<
-      iterator_concepts::is_iterator<non_weakly_incrementable_iterator>>(
+      iterator_concepts::is_iterator<non_weakly_incrementable_iterator>,
       std::tuple<iterator_concepts::is_weakly_incrementable<
-          non_weakly_incrementable_iterator>>{});
+          non_weakly_incrementable_iterator>>>();
 }

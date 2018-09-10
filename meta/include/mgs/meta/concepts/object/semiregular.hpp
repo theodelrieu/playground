@@ -45,7 +45,11 @@ struct is_semiregular : detail::is_semiregular_impl<T>
 
   struct static_assert_t
   {
-    static_assert(is_semiregular::value, "T is not Semiregular");
+    static constexpr int trigger()
+    {
+      static_assert(is_semiregular::value, "T is not Semiregular");
+      return 1;
+    }
   };
 };
 

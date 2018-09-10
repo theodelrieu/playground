@@ -23,7 +23,11 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 
   struct static_assert_t
   {
-    static_assert(is_equality_comparable::value, "T is not EqualityComparable");
+    static constexpr int trigger()
+    {
+      static_assert(is_equality_comparable::value, "T is not EqualityComparable");
+      return 1;
+    }
   };
 };
 

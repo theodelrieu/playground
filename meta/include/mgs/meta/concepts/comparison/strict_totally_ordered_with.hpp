@@ -133,7 +133,7 @@ struct is_strict_totally_ordered_with
                           U const&,
                           T const&>::value;
 
-    static constexpr int trigger_static_asserts()
+    static constexpr int trigger()
     {
       static_assert(is_strict_totally_ordered_with::value,
                     "T is not StrictTotallyOrderedWith U");
@@ -162,10 +162,8 @@ struct is_strict_totally_ordered_with
       static_assert(
           has_greater_or_equal_than_t_u,
           "Missing or invalid operator: 'bool operator>=(U const&, T const&)'");
-      return 0;
+      return 1;
     };
-
-    static constexpr auto _ = trigger_static_asserts();
   };
 };
 

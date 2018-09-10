@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
@@ -25,6 +26,19 @@ struct is_sentinel
         object::is_semiregular<T>::value && is_iterator<Iterator>::value &&
             comparison::is_weakly_equality_comparable_with<T, Iterator>::value>
 {
+  using requirements =
+      std::tuple<object::is_semiregular<T>,
+                 is_iterator<Iterator>,
+                 comparison::is_weakly_equality_comparable_with<T, Iterator>>;
+
+  struct static_assert_t
+  {
+    static constexpr int trigger()
+    {
+      static_assert(is_sentinel::value, "T is not a Sentinel<Iterator>");
+      return 1;
+    }
+  };
 };
 
 template <typename T,

@@ -52,7 +52,12 @@ struct is_iterator_traits : detail::is_iterator_traits_impl<T>
 
   struct static_assert_t
   {
-    static_assert(is_iterator_traits::value, "T is not a valid IteratorTraits");
+    static constexpr int trigger()
+    {
+      static_assert(is_iterator_traits::value,
+                    "T is not a valid IteratorTraits");
+      return 1;
+    }
   };
 };
 

@@ -27,7 +27,11 @@ struct is_regular
 
   struct static_assert_t
   {
-    static_assert(value, "T is not Regular");
+    static constexpr int trigger()
+    {
+      static_assert(value, "T is not Regular");
+      return 1;
+    }
   };
 };
 
