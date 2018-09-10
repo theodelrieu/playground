@@ -48,6 +48,10 @@ TEST_CASE("IteratorTraits", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_iterator_traits<std::iterator_traits<invalid_iterator>>::value, "");
   static_assert(!iterator_concepts::is_iterator_traits<int>::value, "");
   static_assert(!iterator_concepts::is_iterator_traits<void>::value, "");
+  static_assert(!iterator_concepts::is_iterator_traits<std::iterator_traits<void*>>::value, "");
+  static_assert(!iterator_concepts::is_iterator_traits<std::iterator_traits<void>>::value, "");
+  static_assert(!iterator_concepts::is_iterator_traits<std::iterator_traits<struct incomplete>>::value, "");
+  static_assert(!iterator_concepts::is_iterator_traits<std::iterator_traits<struct incomplete*>>::value, "");
   static_assert(!iterator_concepts::is_iterator_traits<struct incomplete>::value, "");
 
   generate_failed_requirements_tests<

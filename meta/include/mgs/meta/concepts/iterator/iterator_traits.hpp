@@ -4,6 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
+#include <mgs/meta/concepts/core/complete_type.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
@@ -23,13 +24,15 @@ namespace iterator
 {
 namespace detail
 {
-template <typename T>
+template <typename T, typename = void>
 struct is_iterator_traits_impl : std::false_type
 {
 };
 
 template <typename T>
-struct is_iterator_traits_impl<std::iterator_traits<T>>
+struct is_iterator_traits_impl<
+    std::iterator_traits<T>,
+    std::enable_if_t<core::is_complete_type<std::remove_pointer_t<T>>::value>>
 {
   using traits = std::iterator_traits<T>;
 
