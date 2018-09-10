@@ -7,28 +7,7 @@ Mandatory
 Later
 -----
 
-// static asserts
-
-Design the trigger_static_assert system, then make everything SFINAE-friendly.
-Look at how sqlpp11 does it.
-Having an intermediate step that returns a std::tuple<meta::static_asserts::dereference_operator, ...>?
-Might have to refactor everything in meta...
-maybe in each is_* struct?
-each requirement would have the following structure:
-
-struct requirement
-{
-  using requirements = std::tuple<Requirements...>; // can be empty
-  static constexpr value = Requirements::value && ... && true;
-  using static_assert_t = /* ... */;
-};
-
-Then from the top-level requirement, trigger static_assert_t:
-
-* trigger on value == false;
-* then for each requirement, trigger static_assert_t;
-
-trigger_static_asserts<is_iterator, T>;
+Fix every usage of T& in meta/concepts (where relevant)
 
 Try again to add an API to optionally get the exact encoded/decoded size.
 Useful for sequence containers (string/vector)
