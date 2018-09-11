@@ -94,6 +94,15 @@ struct trigger_static_asserts<std::tuple<Requirements...>>
     return print_static_asserts<Requirements...>();
   }
 };
+
+template <>
+struct trigger_static_asserts<std::tuple<>>
+{
+  static constexpr auto trigger()
+  {
+    return 0;
+  }
+};
 }
 
 template <typename Requirement>
