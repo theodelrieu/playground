@@ -34,7 +34,6 @@ private:
   // no need to check nonesuch, is_sentinel will fail anyway.
   using difference_type = detected_t<detected::types::difference_type, traits>;
 
-  // detected_t<detected::operators::substraction, T const&, Iterator const&>;
   static constexpr auto const has_it_sent_substraction =
       is_detected_exact<difference_type,
                         detected::operators::substraction,

@@ -50,11 +50,17 @@ private:
                         lvalue_ref,
                         difference_type const>::value;
 
-  static constexpr auto const has_addition =
+  static constexpr auto const has_addition_t_dt =
       is_detected_exact<T,
                         detected::operators::addition,
                         T const,
                         difference_type const>::value;
+
+  static constexpr auto const has_addition_dt_t =
+      is_detected_exact<T,
+                        detected::operators::addition,
+                        difference_type const,
+                        T const>::value;
 
   static constexpr auto const has_substraction =
       is_detected_exact<T,
@@ -83,8 +89,8 @@ public:
       is_bidirectional_iterator<T>::value &&
       comparison::is_strict_totally_ordered<T>::value &&
       is_sized_sentinel<T, T>::value && has_correct_tag &&
-      has_addition_assignment && has_addition && has_substraction &&
-      has_substraction_assignment && has_array_subscript;
+      has_addition_assignment && has_addition_t_dt && has_addition_dt_t &&
+      has_substraction && has_substraction_assignment && has_array_subscript;
 
   static constexpr int trigger_static_asserts()
   {
@@ -95,9 +101,13 @@ public:
     static_assert(has_addition_assignment,
                   "Missing or invalid operator: 'T& "
                   "operator+=(std::iterator_traits<T>::difference_type)'");
-    static_assert(has_addition,
+    static_assert(has_addition_t_dt,
                   "Missing or invalid operator: 'T operator+(T const&, "
                   "std::iterator_traits<T>::difference_type)'");
+    static_assert(has_addition_dt_t,
+                  "Missing or invalid operator: 'T "
+                  "operator+(std::iterator_traits<T>::difference_type, T "
+                  "const&)'");
     static_assert(has_substraction_assignment,
                   "Missing or invalid operator: 'T "
                   "operator-=(std::iterator_traits<T>::difference_type)'");
