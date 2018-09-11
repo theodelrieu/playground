@@ -26,6 +26,7 @@ create_meta_tests(
   iterable
   iterator
   iterator_traits
+  random_access_iterator
   regular
   semiregular
   sentinel

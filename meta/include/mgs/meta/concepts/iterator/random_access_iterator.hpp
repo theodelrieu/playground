@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iterator>
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/meta/concepts/comparison/strict_totally_ordered.hpp>
@@ -15,6 +16,8 @@
 #include <mgs/meta/detected/operators/substraction_assignment.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
 
+// https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator
+
 namespace mgs
 {
 inline namespace v1
@@ -25,58 +28,88 @@ namespace concepts
 {
 namespace iterator
 {
-template <typename T, typename = void>
-struct is_random_access_iterator : std::false_type
-{
-};
-
 template <typename T>
-struct is_random_access_iterator<
-    T,
-    std::enable_if_t<
-        is_bidirectional_iterator<T>::value &&
-        core::is_derived_from<detected_t<detected::types::iterator_category,
-                                         std::iterator_traits<T>>,
-                              std::random_access_iterator_tag>::value>>
+struct is_random_access_iterator
 {
 private:
-  using difference_type =
-      detected::types::difference_type<std::iterator_traits<T>>;
+  using traits =
+      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
+                         std::iterator_traits<T>,
+                         nonesuch>;
 
-public:
-  static auto constexpr value =
-      comparison::is_strict_totally_ordered<T>::value &&
-      is_sized_sentinel<T, T>::value &&
-      is_detected_exact<T&,
+  using lvalue_ref = std::add_lvalue_reference_t<T>;
+  using difference_type = detected_t<detected::types::difference_type, traits>;
+
+  static constexpr auto const has_correct_tag = core::is_derived_from<
+      detected_t<detected::types::iterator_category, traits>,
+      std::random_access_iterator_tag>::value;
+
+  static constexpr auto const has_addition_assignment =
+      is_detected_exact<lvalue_ref,
                         detected::operators::addition_assignment,
-                        T&,
-                        difference_type const>::value &&
+                        lvalue_ref,
+                        difference_type const>::value;
+
+  static constexpr auto const has_addition =
       is_detected_exact<T,
                         detected::operators::addition,
                         T const,
-                        difference_type const>::value &&
-      is_detected_exact<T,
-                        detected::operators::addition,
-                        difference_type const,
-                        T const>::value &&
+                        difference_type const>::value;
+
+  static constexpr auto const has_substraction =
       is_detected_exact<T,
                         detected::operators::substraction,
                         T const,
-                        difference_type const>::value &&
-      is_detected_exact<T&,
+                        difference_type const>::value;
+
+  static constexpr auto const has_substraction_assignment =
+      is_detected_exact<lvalue_ref,
                         detected::operators::substraction_assignment,
-                        T&,
-                        difference_type const>::value &&
-      std::is_convertible<
-          detected_t<detected::operators::array_subscript,
-                     T const,
-                     difference_type const>,
-          detected::types::reference<std::iterator_traits<T>>>::value &&
-      std::is_convertible<
-          detected_t<detected::operators::array_subscript,
-                     T,
-                     difference_type const>,
-          detected::types::reference<std::iterator_traits<T>>>::value;
+                        lvalue_ref,
+                        difference_type const>::value;
+
+  static constexpr auto const has_array_subscript = std::is_convertible<
+      detected_t<detected::operators::array_subscript,
+                 T const,
+                 difference_type const>,
+      detected_t<detected::types::reference, traits>>::value;
+
+public:
+  using requirements = std::tuple<is_bidirectional_iterator<T>,
+                                  comparison::is_strict_totally_ordered<T>,
+                                  is_sized_sentinel<T, T>>;
+
+  static auto constexpr value =
+      is_bidirectional_iterator<T>::value &&
+      comparison::is_strict_totally_ordered<T>::value &&
+      is_sized_sentinel<T, T>::value && has_correct_tag &&
+      has_addition_assignment && has_addition && has_substraction &&
+      has_substraction_assignment && has_array_subscript;
+
+  static constexpr int trigger_static_asserts()
+  {
+    static_assert(value, "T is not a RandomAccessIterator");
+    static_assert(has_correct_tag,
+                  "'std::iterator_traits<T>::iterator_category' is not derived "
+                  "from 'std::random_access_iterator_tag'");
+    static_assert(has_addition_assignment,
+                  "Missing or invalid operator: 'T& "
+                  "operator+=(std::iterator_traits<T>::difference_type)'");
+    static_assert(has_addition,
+                  "Missing or invalid operator: 'T operator+(T const&, "
+                  "std::iterator_traits<T>::difference_type)'");
+    static_assert(has_substraction_assignment,
+                  "Missing or invalid operator: 'T "
+                  "operator-=(std::iterator_traits<T>::difference_type)'");
+    static_assert(has_substraction,
+                  "Missing or invalid operator: 'T operator-(T const&, "
+                  "std::iterator_traits<T>::difference_type)'");
+    static_assert(has_array_subscript,
+                  "Missing or invalid operator: "
+                  "'std::iterator_traits<T>::reference "
+                  "operator[](std::iterator_traits<T>::difference_type)'");
+    return 1;
+  }
 };
 
 template <typename T,
