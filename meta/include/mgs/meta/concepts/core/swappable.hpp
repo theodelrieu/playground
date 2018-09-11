@@ -33,7 +33,7 @@ struct is_swappable_impl<
     T,
     std::enable_if_t<is_complete_type<T>::value && !std::is_array<T>::value>>
   : std::integral_constant<bool,
-                           can_call_swap<T&, T&>::value &&
+                           is_detected<result_of_swap, T&, T&>::value &&
                                (!would_call_std_swap<T&, T&>::value ||
                                 (std::is_move_assignable<T>::value &&
                                  std::is_move_constructible<T>::value))>
@@ -53,6 +53,7 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 
   static constexpr int trigger_static_asserts()
   {
+    // TODO more asserts
     static_assert(is_swappable::value, "T is not Swappable");
     return 1;
   }

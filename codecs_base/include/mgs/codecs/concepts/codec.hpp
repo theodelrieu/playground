@@ -18,8 +18,8 @@
 //           Iterable I,
 //           typename EncodedOut,
 //           typename DecodedOut = EncodedOut>
-// concept Codec = requires (result_of_begin_t<I> a,
-//                           result_of_end_t<I> b,
+// concept Codec = requires (result_of_begin<I> a,
+//                           result_of_end<I> b,
 //                           I const& c)
 // {
 //   // lazy, so only iterators to avoid lifetime issues.
@@ -29,8 +29,8 @@
 //   IterableInputAdapter<Encoder>;
 //   IterableInputAdapter<Decoder>;
 //
-//   EncodedOutput<EncodedOut, result_of_begin_t<Encoder>>;
-//   DecodedOutput<DecodedOut, result_of_begin_t<Decoder>>;
+//   EncodedOutput<EncodedOut, result_of_begin<Encoder>>;
+//   DecodedOutput<DecodedOut, result_of_begin<Decoder>>;
 //
 //   // eager, user specifies return type.
 //   Same<EncodedOut, decltype(T::encode<EncodedOut>(a, b))>;
@@ -68,8 +68,8 @@ struct is_codec<
     std::enable_if_t<meta::concepts::iterator::is_iterable<Iterable>::value>>
 {
 private:
-  using I = meta::result_of_begin_t<Iterable>;
-  using S = meta::result_of_end_t<Iterable>;
+  using I = meta::result_of_begin<Iterable>;
+  using S = meta::result_of_end<Iterable>;
 
   using Encoder =
       meta::detected_t<detail::detected::static_member_functions::make_encoder,
@@ -83,8 +83,8 @@ private:
                        I,
                        S>;
 
-  using EncoderIterator = meta::detected_t<meta::result_of_begin_t, Encoder>;
-  using DecoderIterator = meta::detected_t<meta::result_of_begin_t, Decoder>;
+  using EncoderIterator = meta::detected_t<meta::result_of_begin, Encoder>;
+  using DecoderIterator = meta::detected_t<meta::result_of_begin, Decoder>;
 
 public:
   static constexpr auto const value =

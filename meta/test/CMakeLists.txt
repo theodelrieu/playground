@@ -21,6 +21,7 @@ create_meta_tests(
   equality_comparable
   incrementable
   input_iterator
+  iterable
   iterator
   iterator_traits
   regular

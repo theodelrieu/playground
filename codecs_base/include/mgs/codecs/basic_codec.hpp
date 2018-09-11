@@ -66,7 +66,7 @@ public:
               encoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<
               T,
-              meta::result_of_begin_t<encoder<Iterator, Sentinel>>>::value>>
+              meta::result_of_begin<encoder<Iterator, Sentinel>>>::value>>
   static auto encode(Iterator it, Sentinel sent)
   {
     using std::begin;
@@ -87,7 +87,8 @@ public:
               decoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<
               T,
-              meta::result_of_begin_t<decoder<Iterator, Sentinel>>>::value>>
+              meta::detected_t<meta::result_of_begin,
+                               decoder<Iterator, Sentinel>>>::value>>
   static auto decode(Iterator it, Sentinel sent)
   {
     using std::begin;
@@ -102,8 +103,8 @@ public:
             typename = std::enable_if_t<
                 meta::concepts::iterator::is_iterable<Iterable>::value>>
   static auto encode(Iterable const& it) -> decltype(basic_codec::encode<T>(
-      std::declval<meta::result_of_begin_t<Iterable const&>>(),
-      std::declval<meta::result_of_end_t<Iterable const&>>()))
+      std::declval<meta::result_of_begin<Iterable const&>>(),
+      std::declval<meta::result_of_end<Iterable const&>>()))
   {
     using std::begin;
     using std::end;
@@ -116,8 +117,8 @@ public:
             typename = std::enable_if_t<
                 meta::concepts::iterator::is_iterable<Iterable>::value>>
   static auto decode(Iterable const& it) -> decltype(basic_codec::decode<T>(
-      std::declval<meta::result_of_begin_t<Iterable const&>>(),
-      std::declval<meta::result_of_end_t<Iterable const&>>()))
+      std::declval<meta::result_of_begin<Iterable const&>>(),
+      std::declval<meta::result_of_end<Iterable const&>>()))
   {
     using std::begin;
     using std::end;

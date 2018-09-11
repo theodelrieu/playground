@@ -71,8 +71,8 @@ template <template <typename...> class Adapter,
 void binary_to_text_checks_impl(Container const& source,
                                 Iterable const& expected_output)
 {
-  using Iterator = mgs::meta::result_of_begin_t<Container>;
-  using Sentinel = mgs::meta::result_of_end_t<Container>;
+  using Iterator = mgs::meta::result_of_begin<Container>;
+  using Sentinel = mgs::meta::result_of_end<Container>;
 
   using std::begin;
   using std::end;

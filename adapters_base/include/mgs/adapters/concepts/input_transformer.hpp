@@ -24,10 +24,10 @@
 //   Iterator<I> &&
 //   Sentinel<S, I> &&
 //   Constructible<T, I, S> &&
-//   RandomAccessIterator<result_of_begin_t<typename T::value_type>> &&
+//   RandomAccessIterator<result_of_begin<typename T::value_type>> &&
 //   SizedSentinel<
-//     result_of_end_t<typename T::value_type>,
-//     result_of_begin_t<typename T::value_type>> &&
+//     result_of_end<typename T::value_type>,
+//     result_of_begin<typename T::value_type>> &&
 //   requires (T& a, I it, S sent) {
 //     Same<typename T::value_type, decltype(a(it, sent))>;
 //   }
@@ -62,9 +62,9 @@ struct is_input_transformer<
 
   using value_type = meta::detected_t<meta::detected::types::value_type, T>;
   using value_type_iterator =
-      meta::detected_t<meta::result_of_begin_t, value_type const&>;
+      meta::detected_t<meta::result_of_begin, value_type const&>;
   using value_type_sentinel =
-      meta::detected_t<meta::result_of_end_t, value_type const&>;
+      meta::detected_t<meta::result_of_end, value_type const&>;
 
 public:
   static auto constexpr value =
