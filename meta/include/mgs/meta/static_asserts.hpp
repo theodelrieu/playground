@@ -69,37 +69,18 @@ struct collect_failed_requirements
   using type = typename filter_requirements<AllRequirements>::type;
 };
 
-template <typename Requirement, typename T>
-struct collect_static_asserts_impl;
-
-template <typename Requirement, typename... FailedRequirements>
-struct collect_static_asserts_impl<Requirement, std::tuple<FailedRequirements...>>
-{
-  using type = std::tuple<typename Requirement::static_assert_t,
-                          typename FailedRequirements::static_assert_t...>;
-};
-
 template <typename Requirement>
-struct collect_static_asserts
-{
-  using failed_requirements =
-      typename collect_failed_requirements<Requirement>::type;
-
-  using type = typename collect_static_asserts_impl<Requirement,
-                                                    failed_requirements>::type;
-};
-
-template <typename Head>
 constexpr int print_static_asserts()
 {
-  return Head::trigger();
+  return Requirement::trigger_static_asserts();
 }
 
-template <typename Head, typename...Tail>
-constexpr auto print_static_asserts() -> std::enable_if_t<sizeof...(Tail) != 0, int>
+template <typename Requirement, typename... Requirements>
+constexpr auto print_static_asserts()
+    -> std::enable_if_t<sizeof...(Requirements) != 0, int>
 {
-  constexpr auto i = Head::trigger();
-  return i + print_static_asserts<Tail...>();
+  constexpr auto i = Requirement::trigger_static_asserts();
+  return i + print_static_asserts<Requirements...>();
 }
 
 template <typename Requirements>
@@ -119,7 +100,8 @@ template <typename Requirement>
 constexpr int trigger_static_asserts()
 {
   return detail::trigger_static_asserts<
-      typename detail::collect_static_asserts<Requirement>::type>::trigger();
+      typename detail::collect_failed_requirements<Requirement>::type>::
+      trigger();
 }
 }
 }

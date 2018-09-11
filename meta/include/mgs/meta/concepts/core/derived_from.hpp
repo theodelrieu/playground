@@ -44,14 +44,11 @@ struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_derived_from::value, "Derived is not derived from Base");
-      return 1;
-    }
-  };
+    static_assert(is_derived_from::value, "Derived is not derived from Base");
+    return 1;
+  }
 };
 
 template <typename Derived,

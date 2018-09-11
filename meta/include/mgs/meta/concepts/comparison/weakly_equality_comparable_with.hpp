@@ -49,15 +49,12 @@ struct is_weakly_equality_comparable_with : detail::is_weakly_equality_comparabl
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_weakly_equality_comparable_with::value,
-                    "T is not WeaklyEqualityComparable with U");
-      return 1;
-    }
-  };
+    static_assert(is_weakly_equality_comparable_with::value,
+                  "T is not WeaklyEqualityComparable with U");
+    return 1;
+  }
 };
 
 template <typename T,

@@ -50,15 +50,11 @@ struct is_iterator_traits : detail::is_iterator_traits_impl<T>
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_iterator_traits::value,
-                    "T is not a valid IteratorTraits");
-      return 1;
-    }
-  };
+    static_assert(is_iterator_traits::value, "T is not a valid IteratorTraits");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_iterator_traits<T>::value>>

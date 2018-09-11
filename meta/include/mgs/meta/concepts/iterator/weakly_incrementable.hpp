@@ -42,31 +42,25 @@ template <typename T>
 struct is_weakly_incrementable : detail::is_weakly_incrementable_impl<T>
 {
   using requirements = std::tuple<object::is_semiregular<T>>;
+  static constexpr auto const has_pre_increment =
+      is_detected_exact<std::add_lvalue_reference_t<T>,
+                        detected::operators::pre_increment,
+                        std::add_lvalue_reference_t<T>>::value;
 
-  struct static_assert_t
+  static constexpr auto const has_post_increment =
+      is_detected<detected::operators::post_increment,
+                  std::add_lvalue_reference_t<T>>::value;
+
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr auto const has_pre_increment =
-        is_detected_exact<std::add_lvalue_reference_t<T>,
-                          detected::operators::pre_increment,
-                          std::add_lvalue_reference_t<T>>::value;
-
-    static constexpr auto const has_post_increment =
-        is_detected<detected::operators::post_increment,
-                    std::add_lvalue_reference_t<T>>::value;
-
-    static constexpr int trigger()
-    {
-      static_assert(is_weakly_incrementable::value,
-                    "T is not WeaklyIncrementable");
-      static_assert(
-          has_pre_increment,
-          "Missing or invalid operator: 'T& operator++()'");
-      static_assert(
-          has_post_increment,
-          "Missing or invalid operator: '/* any */ operator++(int)'");
-      return 1;
-    }
-  };
+    static_assert(is_weakly_incrementable::value,
+                  "T is not WeaklyIncrementable");
+    static_assert(has_pre_increment,
+                  "Missing or invalid operator: 'T& operator++()'");
+    static_assert(has_post_increment,
+                  "Missing or invalid operator: '/* any */ operator++(int)'");
+    return 1;
+  }
 };
 
 template <typename T,

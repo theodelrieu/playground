@@ -21,14 +21,11 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_equality_comparable::value, "T is not EqualityComparable");
-      return 1;
-    }
-  };
+    static_assert(is_equality_comparable::value, "T is not EqualityComparable");
+    return 1;
+  }
 };
 
 template <typename T,

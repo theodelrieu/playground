@@ -36,14 +36,11 @@ struct is_complete_type : detail::is_complete_type_impl<T>
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_complete_type::value, "T is not a complete type");
-      return 1;
-    }
-  };
+    static_assert(is_complete_type::value, "T is not a complete type");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_complete_type<T>::value>>

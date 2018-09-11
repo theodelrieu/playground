@@ -43,14 +43,11 @@ struct is_semiregular : detail::is_semiregular_impl<T>
 {
   using requirements = std::tuple<core::is_swappable<T>>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_semiregular::value, "T is not Semiregular");
-      return 1;
-    }
-  };
+    static_assert(is_semiregular::value, "T is not Semiregular");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_semiregular<T>::value>>

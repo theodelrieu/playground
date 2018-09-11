@@ -32,21 +32,16 @@ struct is_equality_comparable_with_impl
 template <typename T, typename U>
 struct is_equality_comparable_with : detail::is_equality_comparable_with_impl<T, U>
 {
-  // We could use something like brigand::all, but it's tedious to reimplement.
-  // Maybe use a TMP library?
   using requirements = std::tuple<is_equality_comparable<T>,
                                   is_equality_comparable<U>,
                                   is_weakly_equality_comparable_with<T, U>>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_equality_comparable_with::value,
-                    "T is not EqualityComparableWith U");
-      return 1;
-    }
-  };
+    static_assert(is_equality_comparable_with::value,
+                  "T is not EqualityComparableWith U");
+    return 1;
+  }
 };
 
 template <typename T,

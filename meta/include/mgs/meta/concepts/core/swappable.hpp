@@ -51,14 +51,11 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 {
   using requirements = std::tuple<>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(is_swappable::value, "T is not Swappable");
-      return 1;
-    }
-  };
+    static_assert(is_swappable::value, "T is not Swappable");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_swappable<T>::value>>

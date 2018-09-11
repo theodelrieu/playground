@@ -25,14 +25,11 @@ struct is_regular
   using requirements =
       std::tuple<is_semiregular<T>, comparison::is_equality_comparable<T>>;
 
-  struct static_assert_t
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr int trigger()
-    {
-      static_assert(value, "T is not Regular");
-      return 1;
-    }
-  };
+    static_assert(value, "T is not Regular");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_regular<T>::value>>

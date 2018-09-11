@@ -42,23 +42,22 @@ struct is_incrementable_impl<T,
 template <typename T>
 struct is_incrementable : detail::is_incrementable_impl<T>
 {
-  using requirements = std::tuple<object::is_regular<T>, is_weakly_incrementable<T>>;
+  using requirements =
+      std::tuple<object::is_regular<T>, is_weakly_incrementable<T>>;
+  using lvalue_ref = std::add_lvalue_reference_t<T>;
 
-  struct static_assert_t
+  static constexpr auto const has_post_increment =
+      is_detected_exact<lvalue_ref,
+                        detected::operators::post_increment,
+                        lvalue_ref>::value;
+
+  static constexpr int trigger_static_asserts()
   {
-    static constexpr auto const has_post_increment =
-        is_detected_exact<T&, detected::operators::post_increment, T&>::value;
-
-    static constexpr int trigger()
-    {
-      static_assert(is_incrementable::value,
-                    "T is not Incrementable");
-      static_assert(
-          has_post_increment,
-          "Missing or invalid operator: 'T& operator++(int)'");
-      return 1;
-    }
-  };
+    static_assert(is_incrementable::value, "T is not Incrementable");
+    static_assert(has_post_increment,
+                  "Missing or invalid operator: 'T& operator++(int)'");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_incrementable<T>::value>>

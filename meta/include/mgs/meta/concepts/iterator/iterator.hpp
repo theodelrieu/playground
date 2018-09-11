@@ -48,19 +48,17 @@ struct is_iterator : detail::is_iterator_impl<T>
   using requirements = std::tuple<is_iterator_traits<std::iterator_traits<T>>,
                                   is_weakly_incrementable<T>>;
 
-  struct static_assert_t
-  {
-    static constexpr auto const has_dereference =
-        is_detected<detected::operators::dereference, T&>::value;
+  static constexpr auto const has_dereference =
+      is_detected<detected::operators::dereference,
+                  std::add_lvalue_reference_t<T>>::value;
 
-    static constexpr int trigger()
-    {
-      static_assert(is_iterator::value, "T is not an Iterator");
-      static_assert(has_dereference,
-                    "Missing or invalid operator: '/* any */ operator*()'");
-      return 1;
-    }
-  };
+  static constexpr int trigger_static_asserts()
+  {
+    static_assert(is_iterator::value, "T is not an Iterator");
+    static_assert(has_dereference,
+                  "Missing or invalid operator: '/* any */ operator*()'");
+    return 1;
+  }
 };
 
 template <typename T, typename = std::enable_if_t<is_iterator<T>::value>>
