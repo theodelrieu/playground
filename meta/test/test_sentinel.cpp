@@ -52,8 +52,6 @@ template <typename T>
 bool operator!=(non_semiregular, T*);
 }
 
-// au
-
 TEST_CASE("Sentinel", "[meta][concepts][iterator]")
 {
   static_assert(iterator_concepts::is_sentinel<char*, char*>::value, "");

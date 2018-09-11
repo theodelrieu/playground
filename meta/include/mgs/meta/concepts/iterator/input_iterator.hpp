@@ -56,7 +56,11 @@ struct is_input_iterator : detail::is_input_iterator_impl<T>
 {
   using requirements = std::tuple<is_iterator<T>>;
 
-  using traits = std::iterator_traits<T>;
+  using traits =
+      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
+                         std::iterator_traits<T>,
+                         nonesuch>;
+
   using value_type = detected_t<detected::types::value_type, traits>;
   using lvalue_ref = std::add_lvalue_reference_t<T>;
 

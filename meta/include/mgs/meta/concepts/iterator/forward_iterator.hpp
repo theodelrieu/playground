@@ -27,14 +27,18 @@ template <typename T>
 struct is_forward_iterator
 {
   using requirements = std::tuple<is_input_iterator<T>, is_sentinel<T, T>, is_incrementable<T>>;
+  using traits =
+      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
+                         std::iterator_traits<T>,
+                         nonesuch>;
 
   static constexpr auto const has_correct_tag = core::is_derived_from<
-      detected_t<detected::types::iterator_category, std::iterator_traits<T>>,
+      detected_t<detected::types::iterator_category, traits>,
       std::forward_iterator_tag>::value;
 
   // since we don't have OutputIterator concept, do not check it reference is T& or T const&.
-  static constexpr auto const has_correct_reference = std::is_reference<
-      detected_t<detected::types::reference, std::iterator_traits<T>>>::value;
+  static constexpr auto const has_correct_reference =
+      std::is_reference<detected_t<detected::types::reference, traits>>::value;
 
   static constexpr auto const value =
       is_input_iterator<T>::value && has_correct_tag && has_correct_reference &&

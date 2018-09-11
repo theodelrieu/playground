@@ -84,4 +84,11 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
 
   generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<invalid_reference_iterator>>();
+
+  generate_failed_requirements_tests<
+      iterator_concepts::is_input_iterator<void*>,
+      std::tuple<
+          iterator_concepts::is_iterator<void*>,
+          iterator_concepts::is_iterator_traits<std::iterator_traits<void*>>,
+          iterator_concepts::is_weakly_incrementable<void*>>>();
 }

@@ -29,6 +29,7 @@ create_meta_tests(
   regular
   semiregular
   sentinel
+  sized_sentinel
   strict_totally_ordered
   swappable
 )

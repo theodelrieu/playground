@@ -25,9 +25,13 @@ struct is_bidirectional_iterator
 {
   using requirements = std::tuple<is_forward_iterator<T>>;
   using lvalue_ref = std::add_lvalue_reference_t<T>;
+  using traits =
+      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
+                         std::iterator_traits<T>,
+                         nonesuch>;
 
   static constexpr auto const has_correct_tag = core::is_derived_from<
-      detected_t<detected::types::iterator_category, std::iterator_traits<T>>,
+      detected_t<detected::types::iterator_category, traits>,
       std::bidirectional_iterator_tag>::value;
 
   static constexpr auto const has_pre_decrement =

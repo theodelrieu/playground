@@ -18,6 +18,7 @@ build_require catch2 everywhere
 
 add *_v 
 
+remove every detail from concepts, do everything in one struct 
 private/public in traits
 
 fix concept comments:
