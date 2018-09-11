@@ -19,6 +19,7 @@ create_meta_tests(
   complete_type
   derived_from
   equality_comparable
+  forward_iterator
   incrementable
   input_iterator
   iterable

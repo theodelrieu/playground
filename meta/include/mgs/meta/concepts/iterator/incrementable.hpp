@@ -47,15 +47,14 @@ struct is_incrementable : detail::is_incrementable_impl<T>
   using lvalue_ref = std::add_lvalue_reference_t<T>;
 
   static constexpr auto const has_post_increment =
-      is_detected_exact<lvalue_ref,
-                        detected::operators::post_increment,
-                        lvalue_ref>::value;
+      is_detected_exact<T, detected::operators::post_increment, lvalue_ref>::
+          value;
 
   static constexpr int trigger_static_asserts()
   {
     static_assert(is_incrementable::value, "T is not Incrementable");
     static_assert(has_post_increment,
-                  "Missing or invalid operator: 'T& operator++(int)'");
+                  "Missing or invalid operator: 'T operator++(int)'");
     return 1;
   }
 };
