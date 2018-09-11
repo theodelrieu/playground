@@ -1,7 +1,10 @@
 #include <iterator>
 #include <tuple>
+#include <iostream>
 
 #include <catch.hpp>
+
+#include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
 
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>

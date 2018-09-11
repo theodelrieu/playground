@@ -19,6 +19,7 @@ build_require catch2 everywhere
 add *_v 
 
 remove every detail from concepts, do everything in one struct 
+write a custom sfinae friendly iterator_traits
 private/public in traits
 
 fix concept comments:
