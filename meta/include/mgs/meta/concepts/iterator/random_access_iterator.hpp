@@ -15,6 +15,7 @@
 #include <mgs/meta/detected/operators/substraction.hpp>
 #include <mgs/meta/detected/operators/substraction_assignment.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator
 
@@ -32,10 +33,7 @@ template <typename T>
 struct is_random_access_iterator
 {
 private:
-  using traits =
-      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
-                         std::iterator_traits<T>,
-                         nonesuch>;
+  using traits = meta::iterator_traits<T>;
 
   using lvalue_ref = std::add_lvalue_reference_t<T>;
   using difference_type = detected_t<detected::types::difference_type, traits>;

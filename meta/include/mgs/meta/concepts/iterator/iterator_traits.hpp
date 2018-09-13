@@ -11,6 +11,7 @@
 #include <mgs/meta/detected/types/pointer.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 namespace mgs
 {
@@ -24,17 +25,15 @@ namespace iterator
 {
 namespace detail
 {
-template <typename T, typename = void>
+template <typename T>
 struct is_iterator_traits_impl : std::false_type
 {
 };
 
 template <typename T>
-struct is_iterator_traits_impl<
-    std::iterator_traits<T>,
-    std::enable_if_t<core::is_complete_type<std::remove_pointer_t<T>>::value>>
+struct is_iterator_traits_impl<meta::iterator_traits<T>>
 {
-  using traits = std::iterator_traits<T>;
+  using traits = meta::iterator_traits<T>;
 
   static constexpr auto value =
       is_detected<detected::types::value_type, traits>::value &&
@@ -42,6 +41,12 @@ struct is_iterator_traits_impl<
       is_detected<detected::types::pointer, traits>::value &&
       is_detected<detected::types::iterator_category, traits>::value &&
       is_detected<detected::types::reference, traits>::value;
+};
+
+template <typename T>
+struct is_iterator_traits_impl<std::iterator_traits<T>>
+  : is_iterator_traits_impl<meta::iterator_traits<T>>
+{
 };
 }
 

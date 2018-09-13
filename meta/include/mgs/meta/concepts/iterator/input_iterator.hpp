@@ -8,6 +8,7 @@
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator
 // Note: inspired from the above link, without CommonReference/Readable etc...
@@ -56,10 +57,7 @@ struct is_input_iterator : detail::is_input_iterator_impl<T>
 {
   using requirements = std::tuple<is_iterator<T>>;
 
-  using traits =
-      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
-                         std::iterator_traits<T>,
-                         nonesuch>;
+  using traits = meta::iterator_traits<T>;
 
   using value_type = detected_t<detected::types::value_type, traits>;
   using lvalue_ref = std::add_lvalue_reference_t<T>;

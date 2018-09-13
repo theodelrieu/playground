@@ -6,6 +6,7 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/substraction.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel
 namespace mgs
@@ -26,10 +27,7 @@ private:
       std::add_lvalue_reference_t<std::add_const_t<T>>;
   using iterator_lvalue_const_ref =
       std::add_lvalue_reference_t<std::add_const_t<Iterator>>;
-  using traits = std::conditional_t<
-      is_iterator_traits<std::iterator_traits<Iterator>>::value,
-      std::iterator_traits<Iterator>,
-      nonesuch>;
+  using traits = meta::iterator_traits<Iterator>;
 
   // no need to check nonesuch, is_sentinel will fail anyway.
   using difference_type = detected_t<detected::types::difference_type, traits>;

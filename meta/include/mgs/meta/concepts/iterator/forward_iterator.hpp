@@ -10,6 +10,7 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/named_req/ForwardIterator
 
@@ -27,10 +28,7 @@ template <typename T>
 struct is_forward_iterator
 {
   using requirements = std::tuple<is_input_iterator<T>, is_sentinel<T, T>, is_incrementable<T>>;
-  using traits =
-      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
-                         std::iterator_traits<T>,
-                         nonesuch>;
+  using traits = meta::iterator_traits<T>;
 
   static constexpr auto const has_correct_tag = core::is_derived_from<
       detected_t<detected::types::iterator_category, traits>,

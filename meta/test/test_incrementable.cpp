@@ -105,6 +105,8 @@ TEST_CASE("Incrementable", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_incrementable<non_post_incrementable>::value, "");
   static_assert(!iterator_concepts::is_incrementable<non_pre_incrementable>::value, "");
   static_assert(!iterator_concepts::is_incrementable<non_semiregular>::value, "");
+  static_assert(!iterator_concepts::is_incrementable<void*>::value, "");
+  static_assert(!iterator_concepts::is_incrementable<int (*)()>::value, "");
 
   generate_failed_requirements_tests<
       iterator_concepts::is_incrementable<non_regular>,

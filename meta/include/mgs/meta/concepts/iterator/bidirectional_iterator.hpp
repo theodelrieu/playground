@@ -9,6 +9,7 @@
 #include <mgs/meta/detected/operators/post_decrement.hpp>
 #include <mgs/meta/detected/operators/pre_decrement.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 namespace mgs
 {
@@ -25,10 +26,7 @@ struct is_bidirectional_iterator
 {
   using requirements = std::tuple<is_forward_iterator<T>>;
   using lvalue_ref = std::add_lvalue_reference_t<T>;
-  using traits =
-      std::conditional_t<is_iterator_traits<std::iterator_traits<T>>::value,
-                         std::iterator_traits<T>,
-                         nonesuch>;
+  using traits = meta::iterator_traits<T>;
 
   static constexpr auto const has_correct_tag = core::is_derived_from<
       detected_t<detected::types::iterator_category, traits>,
