@@ -2,7 +2,6 @@ macro(mgs_export_and_install_target _project_name)
   set(_targets_file_name "${_project_name}-targets")
   install(TARGETS ${_project_name} EXPORT ${_targets_file_name}
     COMPONENT ${_project_name}
-    INCLUDES DESTINATION include
   )
 
   install(DIRECTORY include DESTINATION . COMPONENT ${_project_name})
@@ -49,11 +48,17 @@ macro(mgs_export_and_install_target _project_name)
       ${_project_name}
   )
 
-  # Always install mgs-config.cmake
+  # Always install mgs-config-version.cmake
   find_file(_mgs_config_file mgs-config.cmake HINTS ${CMAKE_MODULE_PATH})
+  write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/mgs-config-version.cmake"
+    # Will change to SameMajorVersion once 1.0 is released.
+    COMPATIBILITY SameMinorVersion
+  )
   install(
     FILES
       ${_mgs_config_file}
+      "${CMAKE_CURRENT_BINARY_DIR}/mgs-config-version.cmake"
     DESTINATION
       lib/cmake/mgs/
   )

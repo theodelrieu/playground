@@ -10,7 +10,7 @@ function(create_meta_tests)
     ${filenames}
     $<TARGET_OBJECTS:catch_main>
   )
-  target_link_libraries(test_meta mgs_meta CONAN_PKG::catch2)
+  target_link_libraries(test_meta meta CONAN_PKG::catch2)
 
   add_test(NAME test_meta COMMAND test_meta)
 endfunction()

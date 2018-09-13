@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.2)
-project(base16)
+project(base16 VERSION 0.1 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)

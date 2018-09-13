@@ -8,8 +8,9 @@ class ConanMgsMeta(ConanFile):
     settings = "os", "build_type", "arch", "compiler"
 
     def build_requirements(self):
-        self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
-        self.build_requires("catch2/2.2.2@bincrafters/stable")
+        if self.develop:
+            self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+            self.build_requires("catch2/2.2.2@bincrafters/stable")
 
     def build(self):
         cmake = CMake(self)
