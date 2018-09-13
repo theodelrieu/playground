@@ -21,7 +21,6 @@ add *_v
 better name for call_std
 
 remove every detail from concepts, do everything in one struct 
-test every detected with void/void* to look for other GCC bugs
 write a custom sfinae friendly iterator_traits
 private/public in traits
 
