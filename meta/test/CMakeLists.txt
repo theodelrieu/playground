@@ -19,6 +19,7 @@ create_meta_tests(
   bidirectional_iterator
   complete_type
   derived_from
+  detected
   equality_comparable
   forward_iterator
   incrementable
