@@ -7,25 +7,20 @@ Mandatory
 Later
 -----
 
-Fix every usage of T& in meta/concepts (where relevant)
-
 Try again to add an API to optionally get the exact encoded/decoded size.
 Useful for sequence containers (string/vector)
 Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
 Then pass the InputAdapter to output_traits::create;
 
-build_require catch2 everywhere
-
-add *_v 
-
-better name for call_std
-
-private/public in traits?
-
-fix concept comments:
+usage:
 
 template <typename T>
-concept A = B<T> && requires()... use Same where needed
+auto create(InputAdapter<T>);
+
+template <typename T>
+auto create(SizedInputAdapter<T>);
+
+build_require catch2 everywhere
 
 remove build_requirements, investigate Conan local workflow features
 put cmake targets in mgs namespace
