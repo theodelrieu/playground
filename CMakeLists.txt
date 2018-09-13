@@ -6,5 +6,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules;${CMAKE_MODULE_
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-enable_testing()
+if (BUILD_TESTING)
+  enable_testing()
+endif()
+
 include(${CMAKE_CURRENT_BINARY_DIR}/conanws.cmake)

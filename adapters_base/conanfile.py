@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 class ConanMgsAdaptersBase(ConanFile):
     name = "mgs_adapters_base"
     version = "0.1"
-    generators = "cmake"
+    generators = "cmake_find_package"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"
 

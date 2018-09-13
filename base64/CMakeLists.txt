@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.3)
 project(base64 VERSION 0.1 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)

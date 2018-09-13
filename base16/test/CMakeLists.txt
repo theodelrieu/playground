@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.3)
 
 add_executable(test_base16 test_base16.cpp $<TARGET_OBJECTS:catch_main>)
 target_link_libraries(test_base16 mgs_base16 mgs_binary_to_text_test_helpers mgs_codecs_base_test_helpers CONAN_PKG::mgs_meta)

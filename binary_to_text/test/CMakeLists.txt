@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.3)
 
 add_library(mgs_binary_to_text_test_helpers INTERFACE)
 target_include_directories(mgs_binary_to_text_test_helpers INTERFACE include)
