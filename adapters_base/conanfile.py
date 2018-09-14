@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 class ConanMgsAdaptersBase(ConanFile):
     name = "mgs_adapters_base"
     version = "0.1"
-    generators = "cmake_find_package"
+    generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"
 
@@ -12,6 +12,7 @@ class ConanMgsAdaptersBase(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["CMAKE_MODULE_PATH"] = "/home/theo/Projects/playground/cmake/Modules"
         cmake.configure()
         cmake.install()
 

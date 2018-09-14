@@ -8,12 +8,15 @@ class ConanMgsMeta(ConanFile):
     settings = "os", "build_type", "arch", "compiler"
 
     def build_requirements(self):
-        if self.develop:
-            self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
-            self.build_requires("catch2/2.2.2@bincrafters/stable")
+        pass
+        # if self.develop:
+        #     self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+        #     self.build_requires("catch2/2.2.2@bincrafters/stable")
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["BUILD_TESTING"] = "OFF"
+        cmake.definitions["CMAKE_MODULE_PATH"] = "/home/theo/Projects/playground/cmake/Modules"
         cmake.configure()
         cmake.install()
 
