@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.3)
-project(binary_to_text VERSION 0.1 LANGUAGES CXX)
+project(binary_to_text2 VERSION 0.1 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 add_library(binary_to_text INTERFACE)
+target_include_directories(binary_to_text INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(binary_to_text INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions)
 
 include(CTest)

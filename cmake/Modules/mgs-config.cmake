@@ -41,7 +41,7 @@ function(fix_interface_link_libraries component)
       conan_target_to_component(${_conan_lib} dependency_component)
       list(APPEND _new_libs "mgs::${dependency_component}")
     endforeach()
-    set_target_properties("mgs::${component}" PROPERTIES INTERFACE_LINK_LIBRARIES ${_new_libs})
+    set_target_properties("mgs::${component}" PROPERTIES INTERFACE_LINK_LIBRARIES "${_new_libs}")
   endif()
 endfunction()
 
