@@ -29,7 +29,7 @@ class transformer_adapter : private InputTransformer
       typename InputTransformer::underlying_sentinel;
   using transformer_value_type = typename InputTransformer::value_type;
   using transformer_value_type_iterator =
-      meta::result_of_begin_t<transformer_value_type>;
+      meta::result_of_begin<transformer_value_type>;
 
 public:
   using iterator = iterators::adaptive_iterator<transformer_adapter,
