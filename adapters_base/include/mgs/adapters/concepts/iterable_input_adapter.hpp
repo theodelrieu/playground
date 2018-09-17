@@ -33,7 +33,7 @@ struct is_iterable_input_adapter<
                      meta::concepts::iterator::is_iterable<T>::value>>
 {
   static constexpr bool value =
-      meta::is_detected_exact<meta::result_of_begin_t<T>,
+      meta::is_detected_exact<meta::result_of_begin<T>,
                               meta::detected::types::iterator,
                               T>::value;
 };

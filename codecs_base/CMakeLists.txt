@@ -5,6 +5,11 @@ include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 add_library(codecs_base INTERFACE)
+target_include_directories(codecs_base INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(codecs_base INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta)
 
 include(CTest)
