@@ -5,6 +5,11 @@ include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 add_library(adapters INTERFACE)
+target_include_directories(adapters INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(adapters INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_iterators CONAN_PKG::mgs_adapters_base)
 
 include(MgsExportAndInstallTarget)

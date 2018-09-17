@@ -12,7 +12,6 @@ class ConanMgsAdaptersBase(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["CMAKE_MODULE_PATH"] = "/home/theo/Projects/playground/cmake/Modules"
         cmake.configure()
         cmake.install()
 
