@@ -1,7 +1,6 @@
 Mandatory
 ----------
 
-* Handle find_library(mgs), generate mgs::mgs target
 * Benchmark!
 
 Later
