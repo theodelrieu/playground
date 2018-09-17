@@ -11,7 +11,7 @@
 // concept IterableInputAdapter =
 //   InputAdapter<T> &&
 //   Iterable<T> &&
-//   Same<T::iterator, result_of_begin_t<T>>;
+//   Same<T::iterator, result_of_begin<T>>;
 
 namespace mgs
 {

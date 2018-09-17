@@ -43,7 +43,7 @@ bool operator==(regular const&, regular const&);
 bool operator!=(regular const&, regular const&);
 }
 
-TEST_CASE("Semiregular", "[meta][concepts][object]")
+TEST_CASE("Regular", "[meta][concepts][object]")
 {
   static_assert(object_concepts::is_regular<int>::value, "");
   static_assert(!object_concepts::is_regular<semiregular>::value, "");

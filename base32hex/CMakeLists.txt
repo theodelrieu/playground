@@ -5,6 +5,10 @@ include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 add_library(base32hex INTERFACE)
+target_include_directories(base32hex INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 target_link_libraries(base32hex INTERFACE CONAN_PKG::mgs_binary_to_text CONAN_PKG::mgs_codecs_base CONAN_PKG::mgs_adapters)
 
 include(CTest)
