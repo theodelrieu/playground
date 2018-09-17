@@ -7,7 +7,12 @@ conan_basic_setup(TARGETS)
 include(MgsExportAndInstallTarget)
 
 add_library(iterators INTERFACE)
-target_link_libraries(iterators INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_adapters_base)
+target_include_directories(iterators INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(iterators INTERFACE CONAN_PKG::mgs_adapters_base CONAN_PKG::mgs_meta)
 
 include(CTest)
 

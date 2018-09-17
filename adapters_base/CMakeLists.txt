@@ -12,7 +12,6 @@ target_include_directories(adapters_base INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-add_library(mgs::meta ALIAS CONAN_PKG::mgs_meta)
-target_link_libraries(adapters_base INTERFACE mgs::meta)
+target_link_libraries(adapters_base INTERFACE CONAN_PKG::mgs_meta)
 
 mgs_export_and_install_target(adapters_base)

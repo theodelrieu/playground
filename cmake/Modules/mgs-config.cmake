@@ -14,7 +14,7 @@ set(_supported_components
 )
 
 function(conan_target_to_component target output)
-  string(REPLACE mgs:: "" _out ${target})
+  string(REPLACE CONAN_PKG::mgs_ "" _out ${target})
   set(${output} ${_out} PARENT_SCOPE)
 endfunction()
 
@@ -28,6 +28,20 @@ function(get_component_dependencies component output)
       list(APPEND _out ${dependency_component})
     endforeach()
     set(${output} ${_out} PARENT_SCOPE)
+  endif()
+endfunction()
+
+
+function(fix_interface_link_libraries component)
+  get_target_property(libs "mgs::${component}" INTERFACE_LINK_LIBRARIES)
+
+  if (libs)
+    set(_new_libs)
+    foreach(_conan_lib ${libs})
+      conan_target_to_component(${_conan_lib} dependency_component)
+      list(APPEND _new_libs "mgs::${dependency_component}")
+    endforeach()
+    set_target_properties("mgs::${component}" PROPERTIES INTERFACE_LINK_LIBRARIES ${_new_libs})
   endif()
 endfunction()
 
@@ -67,6 +81,8 @@ while (NOT ${_done})
 
       list(APPEND _mgs_FOUND_COMPONENTS ${_comp})
       get_component_dependencies(${_comp} _deps)
+      # replace every CONAN_PKG::mgs_* by mgs::* in INTERFACE_LINK_LIBRARIES
+      fix_interface_link_libraries(${_comp})
       foreach(_dep ${_deps})
         if (NOT ${_dep} IN_LIST _mgs_FOUND_COMPONENTS)
           list(APPEND _current_missing_components ${_dep})
@@ -78,5 +94,8 @@ while (NOT ${_done})
 endwhile()
 
 if (mgs_FOUND)
-  message(STATUS "Found mgs ${mgs_VERSION}, components:\n    ${_mgs_FOUND_COMPONENTS}")
+  message(STATUS "Found mgs ${mgs_VERSION}, components:")
+  foreach (_comp ${_mgs_FOUND_COMPONENTS})
+    message(STATUS "  ${_comp}")
+  endforeach()
 endif()
