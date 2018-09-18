@@ -7,6 +7,9 @@ class ConanMgsAdapters(ConanFile):
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"
 
+    def build_requirements(self):
+        self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
+
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)
         self.requires("mgs_adapters_base/%s@mgs/testing" % self.version)

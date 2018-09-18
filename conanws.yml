@@ -6,6 +6,9 @@ mgs_exceptions:
     folder: exceptions
     includedirs: include
 
+mgs_cmake:
+    folder: cmake
+
 mgs_adapters_base:
     folder: adapters_base
     includedirs: include

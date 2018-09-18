@@ -16,8 +16,6 @@ usage:
 
 build_require catch2 everywhere
 
-remove build_requirements, investigate Conan local workflow features
-
 ----- Maybe ----
 
 base58 takes numbers, or string in reverse order...
