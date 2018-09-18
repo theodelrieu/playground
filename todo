@@ -12,18 +12,11 @@ Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer a
 Then pass the InputAdapter to output_traits::create;
 
 usage:
-
-template <typename T>
-auto create(InputAdapter<T>);
-
-template <typename T>
-auto create(SizedInputAdapter<T>);
+....
 
 build_require catch2 everywhere
 
 remove build_requirements, investigate Conan local workflow features
-put cmake targets in mgs namespace
-add a cmake/ folder with reusable content
 
 ----- Maybe ----
 
