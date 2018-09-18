@@ -32,7 +32,7 @@ def run_conan(*args):
 def main():
     for pkg in PACKAGES:
         run_conan("export", pkg, "mgs/testing")
-    run_conan("create", "all", "mgs/testing", "--build", "missing")
+    run_conan("create", "all", "mgs/testing", "--build")
 
 
 if __name__ == "__main__":
