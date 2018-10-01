@@ -112,6 +112,30 @@ public:
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
+  template <typename T = default_encoded_output,
+            typename U = void,
+            std::size_t N = 0,
+            std::enable_if_t<!std::is_same<std::remove_const_t<U>, char>::value,
+                             int> = 0>
+  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
+      std::declval<meta::result_of_begin<decltype(tab)>>(),
+      std::declval<meta::result_of_end<decltype(tab)>>()))
+  {
+    return basic_codec::encode<T>(std::begin(tab), std::end(tab));
+  }
+
+  template <typename T = default_encoded_output,
+            typename U = void,
+            std::size_t N = 0,
+            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
+                             int> = 0>
+  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
+      std::declval<meta::result_of_begin<decltype(tab)>>(),
+      std::declval<meta::result_of_end<decltype(tab)>>()))
+  {
+    return basic_codec::encode<T>(std::string(tab));
+  }
+
   template <typename T = default_decoded_output,
             typename Iterable = void,
             typename = std::enable_if_t<
@@ -124,6 +148,30 @@ public:
     using std::end;
 
     return basic_codec::decode<T>(begin(it), end(it));
+  }
+
+  template <typename T = default_encoded_output,
+            typename U = void,
+            std::size_t N = 0,
+            std::enable_if_t<!std::is_same<std::remove_const_t<U>, char>::value,
+                             int> = 0>
+  static auto decode(U (&tab)[N]) -> decltype(basic_codec::decode<T>(
+      std::declval<meta::result_of_begin<decltype(tab)>>(),
+      std::declval<meta::result_of_end<decltype(tab)>>()))
+  {
+    return basic_codec::decode<T>(std::begin(tab), std::end(tab));
+  }
+
+  template <typename T = default_decoded_output,
+            typename U = void,
+            std::size_t N = 0,
+            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
+                             int> = 0>
+  static auto decode(U (&tab)[N]) -> decltype(basic_codec::decode<T>(
+      std::declval<meta::result_of_begin<decltype(tab)>>(),
+      std::declval<meta::result_of_end<decltype(tab)>>()))
+  {
+    return basic_codec::decode<T>(std::string(tab));
   }
 };
 }
