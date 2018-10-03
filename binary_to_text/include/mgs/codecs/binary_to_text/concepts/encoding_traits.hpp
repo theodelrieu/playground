@@ -74,12 +74,14 @@ public:
            char,
            detail::detected::static_data_members::padding_character,
            T>::value ||
-       T::padding_policy == padding_policy::none) &&
-      meta::is_detected_exact<
-          char const*,
-          detail::detected::static_member_functions::find_char,
-          T,
-          char>::value;
+       T::padding_policy == padding_policy::none);
+  // FIXME
+  //  T::padding_policy == padding_policy::none) &&
+  // meta::is_detected_exact<
+  //     char const*,
+  //     detail::detected::static_member_functions::find_char,
+  //     T,
+  //     char>::value;
 };
 
 // TODO better name/design
@@ -136,13 +138,14 @@ struct static_asserts
                 "padding_character is missing, set padding_policy to "
                 "padding_policy::none if padding is not required");
 
-  static_assert(meta::is_detected_exact<
-                    char const*,
-                    detail::detected::static_member_functions::find_char,
-                    T,
-                    char>::value,
-                "static method not found: char const* find_char(char)");
-
+  // FIXME
+  // static_assert(meta::is_detected_exact<
+  //                   char const*,
+  //                   detail::detected::static_member_functions::find_char,
+  //                   T,
+  //                   char>::value,
+  //               "static method not found: char const* find_char(char)");
+  //
   using trigger = decltype(sizeof(T));
 };
 

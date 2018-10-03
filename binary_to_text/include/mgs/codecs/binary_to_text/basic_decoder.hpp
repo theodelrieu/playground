@@ -92,17 +92,16 @@ public:
 
       auto const c =
           detail::encoded_input_reader<EncodingTraits>::read(_current, _end);
-      auto const index_it = EncodingTraits::find_char(c);
+      auto const index = EncodingTraits::find_char(c);
 
-      if (index_it == alph_end)
+      if (index == -1)
       {
         detail::invalid_character_handler<EncodingTraits>::handle(
             i, c, _current, _end);
         break;
       }
 
-      std::bitset<nb_output_bits> const decoded_byte_bits(
-          std::distance(alph_begin, index_it));
+      std::bitset<nb_output_bits> const decoded_byte_bits(index);
 
       input_bits |= (decoded_byte_bits << (nb_output_bits - nb_encoded_bits -
                                            (nb_encoded_bits * i)));
