@@ -76,6 +76,33 @@ public:
     return output_traits<T>::create(begin(enc), end(enc));
   }
 
+  template <typename T = default_encoded_output,
+            typename Iterable = void,
+            typename = std::enable_if_t<
+                meta::concepts::iterator::is_iterable<Iterable>::value>>
+  static auto encode(Iterable const& it) -> decltype(basic_codec::encode<T>(
+      std::declval<meta::result_of_begin<Iterable const&>>(),
+      std::declval<meta::result_of_end<Iterable const&>>()))
+  {
+    using std::begin;
+    using std::end;
+
+    return basic_codec::encode<T>(begin(it), end(it));
+  }
+
+  template <typename T = default_encoded_output,
+            typename U = void,
+            std::size_t N = 0,
+            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
+                             int> = 0>
+  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
+      std::declval<meta::result_of_begin<decltype(tab)>>(),
+      std::declval<meta::result_of_end<decltype(tab)>>()))
+  {
+    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
+    return basic_codec::encode<T>(std::begin(tab), end_it);
+  }
+
   template <
       typename T = default_decoded_output,
       typename Iterator = void,
@@ -98,43 +125,6 @@ public:
     return output_traits<T>::create(begin(dec), end(dec));
   }
 
-  template <typename T = default_encoded_output,
-            typename Iterable = void,
-            typename = std::enable_if_t<
-                meta::concepts::iterator::is_iterable<Iterable>::value>>
-  static auto encode(Iterable const& it) -> decltype(basic_codec::encode<T>(
-      std::declval<meta::result_of_begin<Iterable const&>>(),
-      std::declval<meta::result_of_end<Iterable const&>>()))
-  {
-    using std::begin;
-    using std::end;
-
-    return basic_codec::encode<T>(begin(it), end(it));
-  }
-
-  template <typename T = default_encoded_output,
-            typename U = void,
-            std::size_t N = 0,
-            std::enable_if_t<!std::is_same<std::remove_const_t<U>, char>::value,
-                             int> = 0>
-  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
-      std::declval<meta::result_of_begin<decltype(tab)>>(),
-      std::declval<meta::result_of_end<decltype(tab)>>()))
-  {
-    return basic_codec::encode<T>(std::begin(tab), std::end(tab));
-  }
-
-  template <typename T = default_encoded_output,
-            typename U = void,
-            std::size_t N = 0,
-            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
-                             int> = 0>
-  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
-      std::declval<meta::result_of_begin<decltype(tab)>>(),
-      std::declval<meta::result_of_end<decltype(tab)>>()))
-  {
-    return basic_codec::encode<T>(std::string(tab));
-  }
 
   template <typename T = default_decoded_output,
             typename Iterable = void,
@@ -150,18 +140,6 @@ public:
     return basic_codec::decode<T>(begin(it), end(it));
   }
 
-  template <typename T = default_encoded_output,
-            typename U = void,
-            std::size_t N = 0,
-            std::enable_if_t<!std::is_same<std::remove_const_t<U>, char>::value,
-                             int> = 0>
-  static auto decode(U (&tab)[N]) -> decltype(basic_codec::decode<T>(
-      std::declval<meta::result_of_begin<decltype(tab)>>(),
-      std::declval<meta::result_of_end<decltype(tab)>>()))
-  {
-    return basic_codec::decode<T>(std::begin(tab), std::end(tab));
-  }
-
   template <typename T = default_decoded_output,
             typename U = void,
             std::size_t N = 0,
@@ -171,7 +149,8 @@ public:
       std::declval<meta::result_of_begin<decltype(tab)>>(),
       std::declval<meta::result_of_end<decltype(tab)>>()))
   {
-    return basic_codec::decode<T>(std::string(tab));
+    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
+    return basic_codec::decode<T>(std::begin(tab), end_it);
   }
 };
 }

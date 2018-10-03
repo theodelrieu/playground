@@ -1,7 +1,6 @@
 Mandatory
 ----------
 
-* Fix char[]
 * Benchmark!
 
 Later
@@ -14,6 +13,7 @@ Then pass the InputAdapter to output_traits::create;
 
 Refactor basic_codec, with priority tag.
 Add encoded_output must be copyable
+Might be a good idea to add a basic_codec in binary_to_text to handle '\0' there
 
 usage:
 ....
