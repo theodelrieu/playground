@@ -34,19 +34,6 @@ void transformer_adapter<InputTransformer>::read_block()
 }
 
 template <typename InputTransformer>
-std::size_t transformer_adapter<InputTransformer>::output_size() const
-{
-  auto const input_nb = this->_end - this->_current;
-  if (input_nb) {
-    auto const l = std::ldiv(input_nb * 8, 6);
-    auto const l2 = l.quot + (l.rem > 0);
-    return l2 + (l2 % 3)  + _transformed.size();
-  }
-  else return _transformed.size();
-  // return div.quot * 4 + (div.rem * 4);
-}
-
-template <typename InputTransformer>
 auto const& transformer_adapter<InputTransformer>::block() const
 {
   return _transformed;

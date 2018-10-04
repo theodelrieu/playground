@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 #include <algorithm>
 #include <array>
@@ -53,6 +54,66 @@ public:
     T end;
 
 };
+
+template <std::size_t InputBytes, std::size_t OutputBytes>
+struct find_good_name;
+
+
+template <>
+struct find_good_name<3, 4>
+{
+  template <typename EncodingTraits, typename T>
+  static auto read_input(T const& input)
+  {
+    auto const nb_loop_iterations = std::div(input.size(), 6);
+
+    static_vector<char, 256> ret;
+    ret.resize(nb_loop_iterations.quot * 8);
+
+    std::bitset<48> const mask(0x3F);
+    auto i = 0, j = 0;
+    for (; i < nb_loop_iterations.quot * 6; i += 6, j += 8)
+    {
+      std::bitset<48> bits;
+      bits |= ((std::bitset<48>(input[i])) << 48 - 8);
+      bits |= ((std::bitset<48>(input[i + 1])) << 48 - 16);
+      bits |= ((std::bitset<48>(input[i + 2])) << 48 - 24);
+      bits |= ((std::bitset<48>(input[i + 3])) << 48 - 32);
+      bits |= ((std::bitset<48>(input[i + 4])) << 48 - 40);
+      bits |= ((std::bitset<48>(input[i + 5])));
+
+      ret[j] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
+      ret[j + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
+      ret[j + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
+      ret[j + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
+      ret[j + 4] = EncodingTraits::alphabet[((bits >> 18) & mask).to_ulong()];
+      ret[j + 5] = EncodingTraits::alphabet[((bits >> 12) & mask).to_ulong()];
+      ret[j + 6] = EncodingTraits::alphabet[((bits >> 6) & mask).to_ulong()];
+      ret[j + 7] = EncodingTraits::alphabet[(bits & mask).to_ulong()];
+    }
+
+    if (nb_loop_iterations.rem)
+    {
+      std::bitset<48> bits;
+
+      for (auto k = 0; k < nb_loop_iterations.rem; ++k)
+        bits |= ((std::bitset<48>(input[i + k])) << (40 - (8 * k)));
+
+      auto const nb_non_padded_bytes =
+          ((nb_loop_iterations.rem * 8) / 6) +
+          int(((nb_loop_iterations.rem * 8) % 6) != 0);
+
+      for (auto k = 0; k < nb_non_padded_bytes; ++k)
+      {
+        ret.push_back(EncodingTraits::alphabet[((bits >> (42 - (6 * k))) & mask)
+                                                   .to_ulong()]);
+      }
+      detail::padding_writer<EncodingTraits>::write(
+          std::back_inserter(ret), 4 - (nb_non_padded_bytes % 4));
+    }
+    return ret;
+  }
+};
 }
 
 template <typename Iterator, typename Sentinel, typename EncodingTraits>
@@ -83,9 +144,22 @@ private:
   static_assert(detail::pow<2, nb_encoded_bits>() ==
                     sizeof(EncodingTraits::alphabet),
                 "Alphabet size must be a power of 2");
+  static_assert(nb_output_bytes % 2 == 0,
+                "nb_output_bytes must be a power of two");
+  static_assert(nb_output_bytes <= 8, "nb_output_bytes must be <= 8");
+
+  static constexpr auto nb_bytes_to_read =
+      (256 / nb_output_bytes) * nb_input_bytes;
+
+  // TODO
+  // nb_output_bytes must be a power of 2
+  // (256 / nb_output_bytes) * nb_input_bytes = nb_input_bytes_to_read
+  // assert nb_output_bytes <= 8
+  // nb read_bytes per loop + nb bytes to encode per loop: *= 8 /
+  // nb_output_bytes
+
 
 public:
-  // TODO assert 256 < nb_input_bytes or smth like that
   using value_type = detail::static_vector<char, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
@@ -104,19 +178,13 @@ public:
     return read_input();
   }
 
-protected:
-  struct read_result
-  {
-    std::bitset<nb_total_input_bits> input_bits;
-    std::size_t nb_non_padded_bytes;
-  };
-
+private:
   template <typename I, typename S>
-  value_type read_input_impl(I& current, S end, std::input_iterator_tag)
+  auto read_input_impl(I& current, S end, std::input_iterator_tag)
   {
-    value_type ret;
+    detail::static_vector<unsigned char, nb_bytes_to_read> ret;
     auto i = 0;
-    for (; i < 192; ++i)
+    for (; i < nb_bytes_to_read; ++i)
     {
       if (current == end)
         break;
@@ -128,8 +196,7 @@ protected:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
-    // 192 because max encoded output is 256
-    auto dist = std::min(192l, end - current);
+    auto const dist = std::min(static_cast<long int>(nb_bytes_to_read), end - current);
 
     detail::span<I> s{current, current + dist};
     current += dist;
@@ -142,58 +209,9 @@ protected:
         _current,
         _end,
         typename std::iterator_traits<Iterator>::iterator_category{});
-    auto const nb_loop_iterations = std::div(input.size(), 6);
 
-    value_type ret;
-    ret.resize(nb_loop_iterations.quot * 8);
-    // FIXME make it work for other than base64
-    auto i = 0, j = 0;
-    for (; i < nb_loop_iterations.quot * 6; i += 6, j += 8)
-    {
-      std::bitset<48> bits;
-      bits |= ((std::bitset<48>(input[i])) << 48 - 8);
-      bits |= ((std::bitset<48>(input[i + 1])) << 48 - 16);
-      bits |= ((std::bitset<48>(input[i + 2])) << 48 - 24);
-      bits |= ((std::bitset<48>(input[i + 3])) << 48 - 32);
-      bits |= ((std::bitset<48>(input[i + 4])) << 48 - 40);
-      bits |= ((std::bitset<48>(input[i + 5])));
-
-      std::bitset<48> mask(0x3F);
-
-      ret[j] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
-      ret[j + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
-      ret[j + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
-      ret[j + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
-      ret[j + 4] = EncodingTraits::alphabet[((bits >> 18) & mask).to_ulong()];
-      ret[j + 5] = EncodingTraits::alphabet[((bits >> 12) & mask).to_ulong()];
-      ret[j + 6] = EncodingTraits::alphabet[((bits >> 6) & mask).to_ulong()];
-      ret[j + 7] = EncodingTraits::alphabet[(bits & mask).to_ulong()];
-    }
-    if (nb_loop_iterations.rem){
-    std::bitset<48> bits;
-
-    for (auto k = 0; k < nb_loop_iterations.rem; ++k)
-    {
-      bits |= ((std::bitset<48>(input[i + k])) << (40 - (8 * k)));
-    }
-    auto const nb_non_padded_bytes = ((nb_loop_iterations.rem * 8 )/ nb_encoded_bits) +
-                                     int(((nb_loop_iterations.rem * 8) % nb_encoded_bits) != 0);
-
-  //     auto const shift =
-  //         (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
-  //     auto const mask_bis =
-  //         ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
-    for (auto k = 0; k < nb_non_padded_bytes; ++k)
-    {
-      ret.push_back(
-          EncodingTraits::alphabet[((bits >> (42 - (6 * k))) & std::bitset<48>(0x3F))
-                                       .to_ulong()]);
-    }
-    for (auto k = 0; k < nb_output_bytes - (nb_non_padded_bytes % nb_output_bytes); ++k)
-      ret.push_back('=');
-    }
-    return ret;
-    // FIXME padding
+    return detail::find_good_name<nb_input_bytes, nb_output_bytes>::
+        template read_input<EncodingTraits>(input);
   }
 
   template <typename I, typename S, typename T>
