@@ -8,6 +8,7 @@ Later
 
 Must refine InputAdapter/Transformer requirements, to provide underlying buffer
 
+max_size or exact_size?
 Try again to add an API to optionally get the exact encoded/decoded size.
 Useful for sequence containers (string/vector)
 Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.

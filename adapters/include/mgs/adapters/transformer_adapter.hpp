@@ -45,6 +45,7 @@ public:
 
   value_type const& get() const;
   void seek_forward(difference_type n);
+  std::size_t output_size() const;
 
   void read_block();
   auto const& block() const;

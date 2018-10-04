@@ -104,7 +104,7 @@ public:
     return read_input();
   }
 
-private:
+protected:
   struct read_result
   {
     std::bitset<nb_total_input_bits> input_bits;

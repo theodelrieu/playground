@@ -51,6 +51,10 @@ TEST_CASE("wip")
   {
   auto const s = foo();
   //YWJjZGVmZ2hpamtsbW5vcHE
+  // auto const s = "abcdef"s;
+  auto enc = mgs::base64::make_encoder(s.begin(), s.end());
+  std::cout << enc.output_size() << std::endl;
+  std::cout << mgs::base64::encode(s).size() << std::endl;
   std::cout << mgs::base64::encode(s) << std::endl;
   }
 

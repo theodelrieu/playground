@@ -72,14 +72,14 @@ struct default_converter<std::string>
   template <typename InputAdapter>
   static std::string create(InputAdapter& adapter)
   {
-    std::string s;
+    std::string s(adapter.output_size(), 0);
 
-    while (adapter.block().size())
+    for (auto size = 0u; adapter.block().size() != 0;)
     {
-      auto const old_size = s.size();
-      s.resize(s.size() + adapter.block().size());
-      std::memcpy(&*(s.begin() + old_size), adapter.block().begin(), adapter.block().size());
+      auto const bsize = adapter.block().size();
+      std::memcpy(&*(s.begin() + size), adapter.block().begin(), bsize);
       adapter.read_block();
+      size += bsize;
     }
     return s;
   }
