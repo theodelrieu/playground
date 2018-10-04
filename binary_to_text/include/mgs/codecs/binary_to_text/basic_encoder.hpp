@@ -86,8 +86,7 @@ private:
 
 public:
   // TODO assert 256 < nb_input_bytes or smth like that
-  // MAGIC VALUE FOR B64, can divide by nb_encoded_bits (6) and 8
-  using value_type = detail::static_vector<char, 240>;
+  using value_type = detail::static_vector<char, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
@@ -117,7 +116,7 @@ private:
   {
     value_type ret;
     auto i = 0;
-    for (; i < 240; ++i)
+    for (; i < 192; ++i)
     {
       if (current == end)
         break;
@@ -129,7 +128,8 @@ private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
-    auto dist = std::min(240l, end - current);
+    // 192 because max encoded output is 256
+    auto dist = std::min(192l, end - current);
 
     detail::span<I> s{current, current + dist};
     current += dist;
@@ -147,8 +147,8 @@ private:
     value_type ret;
     ret.resize(nb_loop_iterations.quot * 8);
     // FIXME make it work for other than base64
-    auto i = 0;
-    for (; i < nb_loop_iterations.quot; i += 6)
+    auto i = 0, j = 0;
+    for (; i < nb_loop_iterations.quot * 6; i += 6, j += 8)
     {
       std::bitset<48> bits;
       bits |= ((std::bitset<48>(input[i])) << 48 - 8);
@@ -160,21 +160,21 @@ private:
 
       std::bitset<48> mask(0x3F);
 
-      ret[i] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
-      ret[i + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
-      ret[i + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
-      ret[i + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
-      ret[i + 4] = EncodingTraits::alphabet[((bits >> 18) & mask).to_ulong()];
-      ret[i + 5] = EncodingTraits::alphabet[((bits >> 12) & mask).to_ulong()];
-      ret[i + 6] = EncodingTraits::alphabet[((bits >> 6) & mask).to_ulong()];
-      ret[i + 7] = EncodingTraits::alphabet[(bits & mask).to_ulong()];
+      ret[j] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
+      ret[j + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
+      ret[j + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
+      ret[j + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
+      ret[j + 4] = EncodingTraits::alphabet[((bits >> 18) & mask).to_ulong()];
+      ret[j + 5] = EncodingTraits::alphabet[((bits >> 12) & mask).to_ulong()];
+      ret[j + 6] = EncodingTraits::alphabet[((bits >> 6) & mask).to_ulong()];
+      ret[j + 7] = EncodingTraits::alphabet[(bits & mask).to_ulong()];
     }
     if (nb_loop_iterations.rem){
     std::bitset<48> bits;
 
-    for (auto j = 0; j < nb_loop_iterations.rem; ++j)
+    for (auto k = 0; k < nb_loop_iterations.rem; ++k)
     {
-      bits |= ((std::bitset<48>(input[i + j])) << (40 - (8 * j)));
+      bits |= ((std::bitset<48>(input[i + k])) << (40 - (8 * k)));
     }
     auto const nb_non_padded_bytes = ((nb_loop_iterations.rem * 8 )/ nb_encoded_bits) +
                                      int(((nb_loop_iterations.rem * 8) % nb_encoded_bits) != 0);
@@ -183,13 +183,13 @@ private:
   //         (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
   //     auto const mask_bis =
   //         ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
-    for (auto j = 0; j < nb_non_padded_bytes; ++j)
+    for (auto k = 0; k < nb_non_padded_bytes; ++k)
     {
       ret.push_back(
-          EncodingTraits::alphabet[((bits >> (42 - (6 * j))) & std::bitset<48>(0x3F))
+          EncodingTraits::alphabet[((bits >> (42 - (6 * k))) & std::bitset<48>(0x3F))
                                        .to_ulong()]);
     }
-    for (auto j = 0; j < nb_output_bytes - (nb_non_padded_bytes % nb_output_bytes); ++j)
+    for (auto k = 0; k < nb_output_bytes - (nb_non_padded_bytes % nb_output_bytes); ++k)
       ret.push_back('=');
     }
     return ret;

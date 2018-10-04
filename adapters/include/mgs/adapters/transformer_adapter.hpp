@@ -46,6 +46,8 @@ public:
   value_type const& get() const;
   void seek_forward(difference_type n);
 
+  void read_block();
+  auto const& block() const;
   iterator begin() const;
   iterator end() const;
 

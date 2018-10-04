@@ -64,16 +64,14 @@ public:
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
           adapters::concepts::is_iterable_input_adapter<
               encoder<Iterator, Sentinel>>::value &&
-          concepts::is_codec_output<
-              T,
-              meta::result_of_begin<encoder<Iterator, Sentinel>>>::value>>
+          concepts::is_codec_output<T, encoder<Iterator, Sentinel>>::value>>
   static auto encode(Iterator it, Sentinel sent)
   {
     using std::begin;
     using std::end;
 
     auto enc = CodecTraits::make_encoder(it, sent);
-    return output_traits<T>::create(begin(enc), end(enc));
+    return output_traits<T>::create(enc);
   }
 
   template <typename T = default_encoded_output,
@@ -112,17 +110,14 @@ public:
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
           adapters::concepts::is_iterable_input_adapter<
               decoder<Iterator, Sentinel>>::value &&
-          concepts::is_codec_output<
-              T,
-              meta::detected_t<meta::result_of_begin,
-                               decoder<Iterator, Sentinel>>>::value>>
+          concepts::is_codec_output<T, decoder<Iterator, Sentinel>>::value>>
   static auto decode(Iterator it, Sentinel sent)
   {
     using std::begin;
     using std::end;
 
     auto dec = CodecTraits::make_decoder(it, sent);
-    return output_traits<T>::create(begin(dec), end(dec));
+    return output_traits<T>::create(dec);
   }
 
 

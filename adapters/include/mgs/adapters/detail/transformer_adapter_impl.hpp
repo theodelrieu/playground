@@ -27,6 +27,18 @@ auto transformer_adapter<InputTransformer>::get() const -> value_type const&
 }
 
 template <typename InputTransformer>
+void transformer_adapter<InputTransformer>::read_block()
+{
+  _process_input();
+}
+
+template <typename InputTransformer>
+auto const& transformer_adapter<InputTransformer>::block() const
+{
+  return _transformed;
+}
+
+template <typename InputTransformer>
 void transformer_adapter<InputTransformer>::seek_forward(difference_type n)
 {
   assert(n > 0);

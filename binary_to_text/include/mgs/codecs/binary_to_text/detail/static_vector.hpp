@@ -39,7 +39,7 @@ public:
 
   void resize(std::size_t n)
   {
-    assert(n < N);
+    assert(n <= N);
     _index = n;
   }
 

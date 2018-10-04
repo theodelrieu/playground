@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 
 #include <array>
 #include <cstddef>
@@ -7,6 +8,7 @@
 #include <utility>
 
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/key_type.hpp>
 
@@ -21,8 +23,9 @@ namespace detail
 template <typename T, typename = void>
 struct default_converter
 {
-  template <typename Iterator,
+  template <typename InputAdapter,
             typename U = T,
+            typename Iterator = meta::result_of_begin<InputAdapter&>,
             typename = std::enable_if_t<
                 (std::is_copy_constructible<U>::value ||
                  std::is_move_constructible<U>::value) &&
@@ -30,23 +33,27 @@ struct default_converter
                 // Associative containers' range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, U>::value>>
-  static T create(Iterator begin, Iterator end)
+  static T create(InputAdapter& adapter)
   {
-    return T(std::move(begin), std::move(end));
+    return T(adapter.begin(), adapter.end());
   }
 };
 
 template <typename C, std::size_t N>
 struct default_converter<std::array<C, N>>
 {
-  template <typename Iterator,
+  template <typename InputAdapter,
+            typename Iterator = meta::result_of_begin<InputAdapter&>,
             typename = std::enable_if_t<std::is_convertible<
                 typename std::iterator_traits<Iterator>::value_type,
                 C>::value>>
-  static std::array<C, N> create(Iterator begin, Iterator end)
+  static std::array<C, N> create(InputAdapter& adapter)
   {
     std::array<C, N> ret;
+    // TODO optimize this one
 
+    auto begin = adapter.begin();
+    auto end = adapter.end();
     for (std::size_t i = 0; i < N; ++i)
     {
       if (begin == end)
@@ -56,6 +63,25 @@ struct default_converter<std::array<C, N>>
     if (begin != end)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
+  }
+};
+
+template <>
+struct default_converter<std::string>
+{
+  template <typename InputAdapter>
+  static std::string create(InputAdapter& adapter)
+  {
+    std::string s;
+
+    while (adapter.block().size())
+    {
+      auto const old_size = s.size();
+      s.resize(s.size() + adapter.block().size());
+      std::memcpy(&*(s.begin() + old_size), adapter.block().begin(), adapter.block().size());
+      adapter.read_block();
+    }
+    return s;
   }
 };
 }

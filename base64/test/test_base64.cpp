@@ -1,4 +1,5 @@
 #include <fstream>
+#include <random>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -34,27 +35,36 @@ static_assert(adapter_concepts::is_iterable_input_adapter<
                   base64::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
+auto foo()
+{
+  std::vector<std::uint8_t> data(512);
+  std::mt19937 gen{};
+  std::uniform_int_distribution<> dis(0, 255);
+
+  std::generate(data.begin(), data.end(), [&] { return dis(gen); });
+
+  return data;
+  }
+
 TEST_CASE("wip")
 {
   {
-  auto const s = "abcdef"s;
-  base64::encoder<std::string::const_iterator> enc(s.begin(), s.end());
-  std::string encoded(enc.begin(), enc.end());
-  std::cout << encoded << std::endl;
+  auto const s = foo();
+  //YWJjZGVmZ2hpamtsbW5vcHE
+  std::cout << mgs::base64::encode(s) << std::endl;
   }
 
   {
-  auto const s = "abcde"s;
-  base64::encoder<std::string::const_iterator> enc(s.begin(), s.end());
-  std::string encoded(enc.begin(), enc.end());
-  std::cout << encoded << std::endl;
+  // auto const s = "abcde"s;
+  // base64::encoder<std::string::const_iterator> enc(s.begin(), s.end());
+  // auto l = mgs::base64::encode(s);
+  // std::cout << l << std::endl;
   }
 
   {
-  auto const s = "abcd"s;
-  base64::encoder<std::string::const_iterator> enc(s.begin(), s.end());
-  std::string encoded(enc.begin(), enc.end());
-  std::cout << encoded << std::endl;
+  // auto const s = "abcd"s;
+  // base64::encoder<std::string::const_iterator> enc(s.begin(), s.end());
+  // std::string encoded(enc.begin(), enc.end());
   }
 //   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
 //   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
