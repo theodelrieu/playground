@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cassert>
 #include <cstddef>
 #include <type_traits>
 
@@ -20,7 +21,7 @@ class static_vector
 {
   static_assert(std::is_integral<T>::value, "");
   static_assert(sizeof(T) == 1, "");
-  static_assert(N > 0 && N < 256, "");
+  static_assert(N > 0 && N <= 256, "");
 
 public:
   using value_type = T;
@@ -29,6 +30,29 @@ public:
   {
     assert(_index + 1 <= N);
     _array[_index++] = c;
+  }
+
+  std::size_t size() const
+  {
+    return _index;
+  }
+
+  void resize(std::size_t n)
+  {
+    assert(n < N);
+    _index = n;
+  }
+
+  T& operator[](std::size_t n)
+  {
+    assert(n <= _index);
+    return _array[n];
+  }
+
+  T const& operator[](std::size_t n) const
+  {
+    assert(n <= _index);
+    return _array[n];
   }
 
   T* begin()
@@ -53,7 +77,7 @@ public:
 
 private:
   std::array<T, N> _array;
-  char _index{0};
+  std::size_t _index{0};
 };
 }
 }

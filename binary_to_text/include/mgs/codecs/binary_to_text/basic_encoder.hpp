@@ -1,8 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <utility>
 
@@ -22,6 +24,37 @@ namespace codecs
 {
 namespace binary_to_text
 {
+namespace detail
+{
+  // WIP
+template <typename T>
+class span
+{
+public:
+  span(T begin, T const end) : begin(begin), end(end)
+  {
+  }
+  auto& operator[](std::size_t n)
+  {
+    return begin[n];
+  }
+
+  std::size_t size() const
+  {
+    return end - begin;
+  }
+
+  auto const& operator[](std::size_t n) const
+  {
+    return begin[n];
+  }
+  private:
+    T begin;
+    T end;
+
+};
+}
+
 template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
@@ -52,7 +85,9 @@ private:
                 "Alphabet size must be a power of 2");
 
 public:
-  using value_type = detail::static_vector<char, nb_output_bytes>;
+  // TODO assert 256 < nb_input_bytes or smth like that
+  // MAGIC VALUE FOR B64, can divide by nb_encoded_bits (6) and 8
+  using value_type = detail::static_vector<char, 240>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
@@ -67,10 +102,7 @@ public:
   {
     if (_current == _end)
       return {};
-    auto const res = read();
-    value_type ret;
-    encode_input_bits(res, std::back_inserter(ret));
-    return ret;
+    return read_input();
   }
 
 private:
@@ -80,52 +112,156 @@ private:
     std::size_t nb_non_padded_bytes;
   };
 
-  read_result read()
+  template <typename I, typename S>
+  value_type read_input_impl(I& current, S end, std::input_iterator_tag)
   {
-    std::bitset<nb_total_input_bits> input_bits;
-
-    int i = 0;
-    for (; i < nb_input_bytes; ++i)
+    value_type ret;
+    auto i = 0;
+    for (; i < 240; ++i)
     {
-      if (_current == _end)
+      if (current == end)
         break;
-      auto byte = static_cast<std::uint8_t>(*_current++);
-      // shifting on an integer type is a bit dangerous...
-      // use bitset instead
-      std::bitset<nb_total_input_bits> const byte_bits(byte);
-      input_bits |= (byte_bits << (nb_total_input_bits - nb_extra_input_bits -
-                                   8 - (8 * i)));
+      ret.push_back(*current++);
     }
-    auto const nb_bits_read = (i * 8) + nb_extra_input_bits;
-    auto const nb_non_padded_bytes = (nb_bits_read / nb_encoded_bits) +
-                                     int((nb_bits_read % nb_encoded_bits) != 0);
-    return {std::move(input_bits), nb_non_padded_bytes};
+    return ret;
   }
 
-  template <typename OutputIterator>
-  void encode_input_bits(read_result const& res, OutputIterator out) const
+  template <typename I, typename S>
+  auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
-    std::bitset<nb_total_input_bits> const mask{
-        std::numeric_limits<std::uint64_t>::max()};
+    auto dist = std::min(240l, end - current);
 
-    for (auto j = 0; j < res.nb_non_padded_bytes; ++j)
-    {
-      auto const shift =
-          (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
-      auto const mask_bis =
-          ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
-      auto const final_value = (res.input_bits & mask_bis) >> shift;
-      auto const index = static_cast<std::uint8_t>(final_value.to_ulong());
-      *out++ = EncodingTraits::alphabet[index];
-    }
-
-    detail::padding_writer<EncodingTraits>::write(
-        out, nb_output_bytes - res.nb_non_padded_bytes);
+    detail::span<I> s{current, current + dist};
+    current += dist;
+    return s;
   }
 
+  value_type read_input()
+  {
+    auto const input = read_input_impl(
+        _current,
+        _end,
+        typename std::iterator_traits<Iterator>::iterator_category{});
+    auto const nb_loop_iterations = std::div(input.size(), 6);
+
+    value_type ret;
+    ret.resize(nb_loop_iterations.quot * 8);
+    // FIXME make it work for other than base64
+    auto i = 0;
+    for (; i < nb_loop_iterations.quot; i += 6)
+    {
+      std::bitset<48> bits;
+      bits |= ((std::bitset<48>(input[i])) << 48 - 8);
+      bits |= ((std::bitset<48>(input[i + 1])) << 48 - 16);
+      bits |= ((std::bitset<48>(input[i + 2])) << 48 - 24);
+      bits |= ((std::bitset<48>(input[i + 3])) << 48 - 32);
+      bits |= ((std::bitset<48>(input[i + 4])) << 48 - 40);
+      bits |= ((std::bitset<48>(input[i + 5])));
+
+      std::bitset<48> mask(0x3F);
+
+      ret[i] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
+      ret[i + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
+      ret[i + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
+      ret[i + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
+      ret[i + 4] = EncodingTraits::alphabet[((bits >> 18) & mask).to_ulong()];
+      ret[i + 5] = EncodingTraits::alphabet[((bits >> 12) & mask).to_ulong()];
+      ret[i + 6] = EncodingTraits::alphabet[((bits >> 6) & mask).to_ulong()];
+      ret[i + 7] = EncodingTraits::alphabet[(bits & mask).to_ulong()];
+    }
+    if (nb_loop_iterations.rem){
+    std::bitset<48> bits;
+
+    for (auto j = 0; j < nb_loop_iterations.rem; ++j)
+    {
+      bits |= ((std::bitset<48>(input[i + j])) << (40 - (8 * j)));
+    }
+    auto const nb_non_padded_bytes = ((nb_loop_iterations.rem * 8 )/ nb_encoded_bits) +
+                                     int(((nb_loop_iterations.rem * 8) % nb_encoded_bits) != 0);
+
+  //     auto const shift =
+  //         (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
+  //     auto const mask_bis =
+  //         ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
+    for (auto j = 0; j < nb_non_padded_bytes; ++j)
+    {
+      ret.push_back(
+          EncodingTraits::alphabet[((bits >> (42 - (6 * j))) & std::bitset<48>(0x3F))
+                                       .to_ulong()]);
+    }
+    for (auto j = 0; j < nb_output_bytes - (nb_non_padded_bytes % nb_output_bytes); ++j)
+      ret.push_back('=');
+    }
+    return ret;
+    // FIXME padding
+  }
+
+  template <typename I, typename S, typename T>
+  friend bool operator==(basic_encoder<I, S, T> const&,
+                         basic_encoder<I, S, T> const&);
+
+  // read_result read()
+  // {
+  //   std::bitset<nb_total_input_bits> input_bits;
+  //
+  //   int i = 0;
+  //   for (; i < nb_input_bytes; ++i)
+  //   {
+  //     if (_current == _end)
+  //       break;
+  //     auto byte = static_cast<std::uint8_t>(*_current++);
+  //     // shifting on an integer type is a bit dangerous...
+  //     // use bitset instead
+  //     std::bitset<nb_total_input_bits> const byte_bits(byte);
+  //     input_bits |= (byte_bits << (nb_total_input_bits - nb_extra_input_bits -
+  //                                  8 - (8 * i)));
+  //   }
+  //   auto const nb_bits_read = (i * 8) + nb_extra_input_bits;
+  //   auto const nb_non_padded_bytes = (nb_bits_read / nb_encoded_bits) +
+  //                                    int((nb_bits_read % nb_encoded_bits) != 0);
+  //   return {std::move(input_bits), nb_non_padded_bytes};
+  // }
+  //
+  // template <typename OutputIterator>
+  // void encode_input_bits(read_result const& res, OutputIterator out) const
+  // {
+  //   std::bitset<nb_total_input_bits> const mask{
+  //       std::numeric_limits<std::uint64_t>::max()};
+  //
+  //   for (auto j = 0; j < res.nb_non_padded_bytes; ++j)
+  //   {
+  //     auto const shift =
+  //         (nb_total_input_bits - nb_encoded_bits - (nb_encoded_bits * j));
+  //     auto const mask_bis =
+  //         ((mask >> (nb_total_input_bits - nb_encoded_bits)) << shift);
+  //     auto const final_value = (res.input_bits & mask_bis) >> shift;
+  //     auto const index = static_cast<std::uint8_t>(final_value.to_ulong());
+  //     *out++ = EncodingTraits::alphabet[index];
+  //   }
+  //
+  //   detail::padding_writer<EncodingTraits>::write(
+  //       out, nb_output_bytes - res.nb_non_padded_bytes);
+  // }
+  //
   Iterator _current{};
   Sentinel _end{};
 };
+
+template <typename I, typename S, typename T>
+bool operator==(basic_encoder<I, S, T> const& lhs,
+                basic_encoder<I, S, T> const& rhs)
+{
+  return (lhs._current == lhs._end || rhs._current == rhs._end) ?
+             (lhs._current == lhs._end && rhs._current == rhs._end) :
+             lhs._current == rhs._current;
+}
+
+template <typename I, typename S, typename T>
+bool operator!=(basic_encoder<I, S, T> const& lhs,
+                basic_encoder<I, S, T> const& rhs)
+{
+  return !(lhs == rhs);
+}
 }
 }
 }
