@@ -60,15 +60,15 @@ public:
   {
   }
 
-  value_type operator()()
+  void operator()(value_type& output)
   {
-    if (_current == _end)
-      return {};
-    auto const res = read();
+    output.resize(0);
+    if (_current != _end)
+    {
+      auto const res = read();
 
-    value_type ret;
-    decode_input_bits(res, std::back_inserter(ret));
-    return ret;
+      decode_input_bits(res, std::back_inserter(output));
+    }
   }
 
   struct read_result

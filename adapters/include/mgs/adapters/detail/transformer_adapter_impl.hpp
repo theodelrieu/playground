@@ -62,7 +62,7 @@ void transformer_adapter<InputTransformer>::_process_input()
 {
   using std::begin;
 
-  _transformed = static_cast<InputTransformer&>(*this)();
+  static_cast<InputTransformer&>(*this)(_transformed);
   _index = 0;
 }
 

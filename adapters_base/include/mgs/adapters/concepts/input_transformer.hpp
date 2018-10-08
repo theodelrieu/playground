@@ -77,10 +77,10 @@ public:
       meta::concepts::iterator::is_random_access_iterator<
           value_type_iterator>::value &&
       meta::concepts::iterator::is_sized_sentinel<value_type_sentinel,
-                                                  value_type_iterator>::value &&
-      meta::is_detected_exact<value_type,
-                              meta::detected::operators::function_call,
-                              T&>::value;
+                                                  value_type_iterator>::value;
+      // meta::is_detected_exact<value_type,
+      //                         meta::detected::operators::function_call,
+      //                         T&>::value;
 };
 }
 }
