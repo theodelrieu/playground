@@ -67,12 +67,12 @@ public:
 
   T* end()
   {
-    return &_array[_index];
+    return &_array[0] + _index;
   }
 
   T const* end() const
   {
-    return &_array[_index];
+    return &_array[0] + _index;
   }
 
 private:

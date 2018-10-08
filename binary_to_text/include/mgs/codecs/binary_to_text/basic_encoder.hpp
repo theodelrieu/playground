@@ -41,8 +41,20 @@ struct find_good_name
   static auto read_input(T const& input)
   {
     auto const nb_loop_iterations = std::ldiv(input.size(), nb_input_bytes);
+    auto const nb_non_padded_bytes =
+        (((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) +
+         (((8 * nb_loop_iterations.rem) % nb_encoded_bits) > 0)) %
+        nb_output_bytes;
+    auto const nb_padded_bytes =
+        (nb_output_bytes - nb_non_padded_bytes) % nb_output_bytes;
+
+    std::bitset<nb_total_input_bits> const mask(pow<2, nb_encoded_bits>() - 1);
+    constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
 
     static_vector<char, 256> ret;
+    // FIXME handle no padding
+    ret.resize((nb_loop_iterations.quot * nb_output_bytes) +
+               nb_non_padded_bytes + nb_padded_bytes);
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
       std::bitset<nb_total_input_bits> input_bits;
@@ -54,24 +66,18 @@ struct find_good_name
              << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * j)));
       }
 
-      constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
-
-      decltype(input_bits) mask;
-      mask.flip();
-      mask = (mask << shift) >> shift;
       for (auto j = 0u; j < nb_output_bytes; ++j)
       {
         auto const index = static_cast<std::uint8_t>(
             ((input_bits >> (shift - (j * nb_encoded_bits))) & mask)
                 .to_ulong());
-        ret.push_back(EncodingTraits::alphabet[index]);
+        ret[i * nb_output_bytes + j] = EncodingTraits::alphabet[index];
       }
     }
 
     if (nb_loop_iterations.rem)
     {
       std::bitset<nb_total_input_bits> input_bits;
-      auto const nb_non_padded_bytes = nb_loop_iterations.rem + 1;
 
       for (auto i = 0u; i < nb_loop_iterations.rem; ++i)
       {
@@ -81,23 +87,17 @@ struct find_good_name
              << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * i)));
       }
 
-      constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
-
-      decltype(input_bits) mask;
-      mask.flip();
-      mask = (mask << shift) >> shift;
-
       for (auto i = 0u; i < nb_loop_iterations.rem + 1; ++i)
       {
         auto const index = static_cast<std::uint8_t>(
             ((input_bits >> (shift - (i * nb_encoded_bits))) & mask)
                 .to_ulong());
-        ret.push_back(EncodingTraits::alphabet[index]);
+        ret[nb_loop_iterations.quot * nb_output_bytes + i] =
+            EncodingTraits::alphabet[index];
       }
 
-      padding_writer<EncodingTraits>::write(
-          std::back_inserter(ret),
-          nb_output_bytes - ((nb_loop_iterations.rem + 1) % nb_output_bytes));
+      padding_writer<EncodingTraits>::write(ret.end() - nb_padded_bytes,
+                                            nb_padded_bytes);
     }
     return ret;
   }
