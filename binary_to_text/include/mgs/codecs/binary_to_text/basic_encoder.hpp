@@ -27,37 +27,39 @@ namespace binary_to_text
 {
 namespace detail
 {
-template <std::size_t InputBytes, std::size_t OutputBytes>
+template <typename EncodingTraits>
 struct find_good_name
 {
+  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
+  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
   static constexpr auto nb_total_input_bits =
-      detail::round_to_multiple_of<InputBytes * 8, OutputBytes>();
+      detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
   static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
-  static constexpr auto nb_encoded_bits = nb_total_input_bits / OutputBytes;
+  static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
 
-  template <typename EncodingTraits, typename T>
+  template <typename T>
   static auto read_input(T const& input)
   {
-    auto const nb_loop_iterations = std::ldiv(input.size(), InputBytes);
+    auto const nb_loop_iterations = std::ldiv(input.size(), nb_input_bytes);
 
     static_vector<char, 256> ret;
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
-      std::bitset<InputBytes * 8> input_bits;
+      std::bitset<nb_total_input_bits> input_bits;
 
-      for (auto j = 0u; j < InputBytes; ++j)
+      for (auto j = 0u; j < nb_input_bytes; ++j)
       {
         input_bits |=
-            (decltype(input_bits)(input[(i * InputBytes) + j])
+            (decltype(input_bits)(input[(i * nb_input_bytes) + j])
              << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * j)));
       }
 
-      constexpr auto shift = (InputBytes * 8) - nb_encoded_bits;
+      constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
 
       decltype(input_bits) mask;
       mask.flip();
       mask = (mask << shift) >> shift;
-      for (auto j = 0u; j < OutputBytes; ++j)
+      for (auto j = 0u; j < nb_output_bytes; ++j)
       {
         auto const index = static_cast<std::uint8_t>(
             ((input_bits >> (shift - (j * nb_encoded_bits))) & mask)
@@ -65,8 +67,39 @@ struct find_good_name
         ret.push_back(EncodingTraits::alphabet[index]);
       }
     }
-      return ret;
-      // TODO padding
+
+    if (nb_loop_iterations.rem)
+    {
+      std::bitset<nb_total_input_bits> input_bits;
+      auto const nb_non_padded_bytes = nb_loop_iterations.rem + 1;
+
+      for (auto i = 0u; i < nb_loop_iterations.rem; ++i)
+      {
+        input_bits |=
+            (decltype(input_bits)(
+                 input[nb_loop_iterations.quot * nb_input_bytes + i])
+             << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * i)));
+      }
+
+      constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
+
+      decltype(input_bits) mask;
+      mask.flip();
+      mask = (mask << shift) >> shift;
+
+      for (auto i = 0u; i < nb_loop_iterations.rem + 1; ++i)
+      {
+        auto const index = static_cast<std::uint8_t>(
+            ((input_bits >> (shift - (i * nb_encoded_bits))) & mask)
+                .to_ulong());
+        ret.push_back(EncodingTraits::alphabet[index]);
+      }
+
+      padding_writer<EncodingTraits>::write(
+          std::back_inserter(ret),
+          nb_output_bytes - ((nb_loop_iterations.rem + 1) % nb_output_bytes));
+    }
+    return ret;
   }
 };
 
@@ -221,8 +254,7 @@ private:
         _end,
         typename std::iterator_traits<Iterator>::iterator_category{});
 
-    return detail::find_good_name<nb_input_bytes, nb_output_bytes>::
-        template read_input<EncodingTraits>(input);
+    return detail::find_good_name<EncodingTraits>::read_input(input);
   }
 
   template <typename I, typename S, typename T>
