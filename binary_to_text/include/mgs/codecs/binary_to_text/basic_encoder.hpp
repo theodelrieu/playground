@@ -66,13 +66,18 @@ struct find_good_name
              << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * j)));
       }
 
-      for (auto j = 0u; j < nb_output_bytes; ++j)
-      {
-        auto const index = static_cast<std::uint8_t>(
-            ((input_bits >> (shift - (j * nb_encoded_bits))) & mask)
-                .to_ulong());
-        ret[i * nb_output_bytes + j] = EncodingTraits::alphabet[index];
-      }
+//       ret[j] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
+//       ret[j + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
+//       ret[j + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
+//       ret[j + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
+      ret[i * nb_output_bytes] =
+          EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
+      ret[i * nb_output_bytes + 1] =
+          EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
+      ret[i * nb_output_bytes + 2] =
+          EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
+      ret[i * nb_output_bytes + 3] =
+          EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
     }
 
     if (nb_loop_iterations.rem)
