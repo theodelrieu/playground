@@ -40,11 +40,11 @@ struct bitshift_traits
 };
 
 template <typename BitshiftTraits, typename RandomAccessIterator>
-auto input_to_bitset(RandomAccessIterator it)
+auto input_to_bitset(RandomAccessIterator it, std::size_t n)
 {
   std::bitset<BitshiftTraits::nb_total_input_bits> input_bits;
 
-  for (auto i = 0u; i < BitshiftTraits::nb_input_bytes; ++i)
+  for (auto i = 0u; i < n; ++i)
   {
     decltype(input_bits) bits(it[i]);
     input_bits |= (bits << (BitshiftTraits::nb_total_input_bits -
@@ -56,33 +56,37 @@ auto input_to_bitset(RandomAccessIterator it)
 template <typename EncodingTraits,
           std::size_t InputBytes = EncodingTraits::nb_input_bytes,
           std::size_t OutputBytes = EncodingTraits::nb_output_bytes>
-struct output_encoder
+struct output_fast_encoder;
+
+template <typename EncodingTraits>
+struct output_slow_encoder
 {
-  using BitshiftTraits = bitshift_traits<InputBytes, OutputBytes>;
+  using BitshiftTraits = bitshift_traits<EncodingTraits::nb_input_bytes,
+                                         EncodingTraits::nb_output_bytes>;
 
   template <typename OutputIterator>
   static void encode(
       std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
-      OutputIterator out)
+      OutputIterator out,
+      std::size_t n)
   {
     static std::bitset<BitshiftTraits::nb_total_input_bits> const mask(
         pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+
     for (auto i = 0u; i < BitshiftTraits::nb_output_bytes; ++i)
     {
-      auto const index = static_cast<std::uint8_t>(
+      auto const index =
           ((input_bits >>
             (BitshiftTraits::shift - (i * BitshiftTraits::nb_encoded_bits))) &
            mask)
-              .to_ulong());
+              .to_ulong();
       out[i] = EncodingTraits::alphabet[index];
     }
   }
 };
 
-
-
 template <typename EncodingTraits>
-struct output_encoder<EncodingTraits, 3, 4>
+struct output_fast_encoder<EncodingTraits, 3, 4>
 {
   using BitshiftTraits = bitshift_traits<3, 4>;
 
@@ -91,14 +95,12 @@ struct output_encoder<EncodingTraits, 3, 4>
       std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
       OutputIterator out)
   {
-    static std::bitset<BitshiftTraits::nb_total_input_bits> const mask(
+    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
         pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
 
     out[0] = EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
-    out[1]= 
-        EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
-    out[2] =
-        EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
+    out[1] = EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
+    out[2] = EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
     out[3] = EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
   }
 };
@@ -106,58 +108,46 @@ struct output_encoder<EncodingTraits, 3, 4>
 template <typename EncodingTraits>
 struct find_good_name
 {
-  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
-  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
-  static constexpr auto nb_total_input_bits =
-      detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
-  static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
-  static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
-  static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
-  using BitshiftTraits = bitshift_traits<nb_input_bytes, nb_output_bytes>;
+  using BitshiftTraits = bitshift_traits<EncodingTraits::nb_input_bytes,
+                                         EncodingTraits::nb_output_bytes>;
 
   template <typename T>
   static void read_input(T const& input, static_vector<char, 256>& output)
   {
-    static std::bitset<nb_total_input_bits> const mask(pow<2, nb_encoded_bits>() - 1);
+    static std::bitset<BitshiftTraits::nb_total_input_bits> const mask(
+        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
 
-    auto const nb_loop_iterations = std::ldiv(input.size(), nb_input_bytes);
+    auto const nb_loop_iterations =
+        std::ldiv(input.size(), BitshiftTraits::nb_input_bytes);
+    output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_output_bytes);
 
-    output.resize(nb_loop_iterations.quot * nb_output_bytes);
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
-      auto const input_bits = input_to_bitset<BitshiftTraits>(input.begin() + i * nb_input_bytes);
-      output_encoder<EncodingTraits>::encode(
-          input_bits, output.begin() + (i * nb_output_bytes));
+      auto const input_bits = input_to_bitset<BitshiftTraits>(
+          input.begin() + (i * BitshiftTraits::nb_input_bytes),
+          BitshiftTraits::nb_input_bytes);
+
+      output_fast_encoder<EncodingTraits>::encode(
+          input_bits, output.begin() + (i * BitshiftTraits::nb_output_bytes));
     }
 
     if (nb_loop_iterations.rem)
     {
       auto const nb_non_padded_bytes =
-          ((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) + 1;
-      auto const nb_padded_bytes = (nb_output_bytes - nb_non_padded_bytes);
+          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_encoded_bits) +
+          1;
+      auto const nb_padded_bytes =
+          BitshiftTraits::nb_output_bytes - nb_non_padded_bytes;
+
+      auto const input_bits = input_to_bitset<BitshiftTraits>(
+          input.begin() +
+              (nb_loop_iterations.quot * BitshiftTraits::nb_input_bytes),
+          nb_loop_iterations.rem);
+
+      auto const old_size = output.size();
       output.resize(output.size() + nb_padded_bytes + nb_non_padded_bytes);
-      // FIXME handle no padding
-
-
-      std::bitset<nb_total_input_bits> input_bits;
-
-      for (auto i = 0u; i < nb_loop_iterations.rem; ++i)
-      {
-        input_bits |=
-            (decltype(input_bits)(
-                 input[nb_loop_iterations.quot * nb_input_bytes + i])
-             << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * i)));
-      }
-
-      for (auto i = 0u; i < nb_loop_iterations.rem + 1; ++i)
-      {
-        auto const index = static_cast<std::uint8_t>(
-            ((input_bits >> (shift - (i * nb_encoded_bits))) & mask)
-                .to_ulong());
-        output[nb_loop_iterations.quot * nb_output_bytes + i] =
-            EncodingTraits::alphabet[index];
-      }
-
+      output_slow_encoder<EncodingTraits>::encode(
+          input_bits, output.begin() + old_size, nb_non_padded_bytes);
       padding_writer<EncodingTraits>::write(output.end() - nb_padded_bytes,
                                             nb_padded_bytes);
     }
