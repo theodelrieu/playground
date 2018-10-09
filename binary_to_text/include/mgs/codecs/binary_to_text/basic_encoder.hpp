@@ -27,6 +27,42 @@ namespace binary_to_text
 {
 namespace detail
 {
+  template <typename EncodingTraits,
+          std::size_t InputBytes = EncodingTraits::nb_input_bytes,
+          std::size_t OutputBytes = EncodingTraits::nb_output_bytes>
+struct output_encoder
+{
+  static constexpr auto nb_input_bytes = InputBytes;
+  static constexpr auto nb_output_bytes = OutputBytes;
+  static constexpr auto nb_total_input_bits =
+      detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
+  static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
+  static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
+  static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
+
+  template <std::size_t N, typename OutputIterator>
+  static void encode(std::bitset<N> const& input_bits,
+                     OutputIterator out,
+                     std::bitset<N> const& mask)
+  {
+    for (auto i = 0u; i < nb_output_bytes; ++i)
+    {
+      auto const index = static_cast<std::uint8_t>(
+          ((input_bits >> (shift - (i * nb_encoded_bits))) & mask).to_ulong());
+      *(out + i) = EncodingTraits::alphabet[index];
+    }
+    //
+    // out[0] = EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
+    // out[1]= 
+    //     EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
+    // out[2] =
+    //     EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
+    // out[3] = EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
+  }
+};
+
+
+
 template <typename EncodingTraits>
 struct find_good_name
 {
@@ -36,13 +72,14 @@ struct find_good_name
       detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
   static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
   static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
+  static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
 
   template <typename T>
   static void read_input(T const& input, static_vector<char, 256>& output)
   {
+    static std::bitset<nb_total_input_bits> const mask(pow<2, nb_encoded_bits>() - 1);
+
     auto const nb_loop_iterations = std::ldiv(input.size(), nb_input_bytes);
-    std::bitset<nb_total_input_bits> const mask(pow<2, nb_encoded_bits>() - 1);
-    constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
 
     output.resize(nb_loop_iterations.quot * nb_output_bytes);
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
@@ -56,18 +93,8 @@ struct find_good_name
              << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * j)));
       }
 
-//       ret[j] = EncodingTraits::alphabet[((bits >> 42) & mask).to_ulong()];
-//       ret[j + 1] = EncodingTraits::alphabet[((bits >> 36) & mask).to_ulong()];
-//       ret[j + 2] = EncodingTraits::alphabet[((bits >> 30) & mask).to_ulong()];
-//       ret[j + 3] = EncodingTraits::alphabet[((bits >> 24) & mask).to_ulong()];
-      output[i * nb_output_bytes] =
-          EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
-      output[i * nb_output_bytes + 1] =
-          EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
-      output[i * nb_output_bytes + 2] =
-          EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
-      output[i * nb_output_bytes + 3] =
-          EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
+      output_encoder<EncodingTraits>::encode(
+          input_bits, output.begin() + (i * nb_output_bytes), mask);
     }
 
     if (nb_loop_iterations.rem)
