@@ -73,11 +73,8 @@ struct find_good_name
     if (nb_loop_iterations.rem)
     {
       auto const nb_non_padded_bytes =
-          (((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) +
-           (((8 * nb_loop_iterations.rem) % nb_encoded_bits) > 0)) %
-          nb_output_bytes;
-      auto const nb_padded_bytes =
-          (nb_output_bytes - nb_non_padded_bytes) % nb_output_bytes;
+          ((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) + 1;
+      auto const nb_padded_bytes = (nb_output_bytes - nb_non_padded_bytes);
       output.resize(output.size() + nb_padded_bytes + nb_non_padded_bytes);
       // FIXME handle no padding
 
