@@ -41,19 +41,10 @@ struct find_good_name
   static void read_input(T const& input, static_vector<char, 256>& output)
   {
     auto const nb_loop_iterations = std::ldiv(input.size(), nb_input_bytes);
-    auto const nb_non_padded_bytes =
-        (((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) +
-         (((8 * nb_loop_iterations.rem) % nb_encoded_bits) > 0)) %
-        nb_output_bytes;
-    auto const nb_padded_bytes =
-        (nb_output_bytes - nb_non_padded_bytes) % nb_output_bytes;
-
     std::bitset<nb_total_input_bits> const mask(pow<2, nb_encoded_bits>() - 1);
     constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
 
-    // FIXME handle no padding
-    output.resize((nb_loop_iterations.quot * nb_output_bytes) +
-                  nb_non_padded_bytes + nb_padded_bytes);
+    output.resize(nb_loop_iterations.quot * nb_output_bytes);
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
       std::bitset<nb_total_input_bits> input_bits;
@@ -81,6 +72,16 @@ struct find_good_name
 
     if (nb_loop_iterations.rem)
     {
+      auto const nb_non_padded_bytes =
+          (((8 * (nb_loop_iterations.rem)) / nb_encoded_bits) +
+           (((8 * nb_loop_iterations.rem) % nb_encoded_bits) > 0)) %
+          nb_output_bytes;
+      auto const nb_padded_bytes =
+          (nb_output_bytes - nb_non_padded_bytes) % nb_output_bytes;
+      output.resize(output.size() + nb_padded_bytes + nb_non_padded_bytes);
+      // FIXME handle no padding
+
+
       std::bitset<nb_total_input_bits> input_bits;
 
       for (auto i = 0u; i < nb_loop_iterations.rem; ++i)
