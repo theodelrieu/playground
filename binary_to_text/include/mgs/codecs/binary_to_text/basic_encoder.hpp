@@ -27,10 +27,8 @@ namespace binary_to_text
 {
 namespace detail
 {
-  template <typename EncodingTraits,
-          std::size_t InputBytes = EncodingTraits::nb_input_bytes,
-          std::size_t OutputBytes = EncodingTraits::nb_output_bytes>
-struct output_encoder
+template <std::size_t InputBytes, std::size_t OutputBytes>
+struct bitshift_traits
 {
   static constexpr auto nb_input_bytes = InputBytes;
   static constexpr auto nb_output_bytes = OutputBytes;
@@ -39,29 +37,71 @@ struct output_encoder
   static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
   static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
   static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
+};
 
-  template <std::size_t N, typename OutputIterator>
-  static void encode(std::bitset<N> const& input_bits,
-                     OutputIterator out,
-                     std::bitset<N> const& mask)
+template <typename BitshiftTraits, typename RandomAccessIterator>
+auto input_to_bitset(RandomAccessIterator it)
+{
+  std::bitset<BitshiftTraits::nb_total_input_bits> input_bits;
+
+  for (auto i = 0u; i < BitshiftTraits::nb_input_bytes; ++i)
   {
-    for (auto i = 0u; i < nb_output_bytes; ++i)
+    decltype(input_bits) bits(it[i]);
+    input_bits |= (bits << (BitshiftTraits::nb_total_input_bits -
+                            BitshiftTraits::nb_extra_input_bits - 8 - (8 * i)));
+  }
+  return input_bits;
+}
+
+template <typename EncodingTraits,
+          std::size_t InputBytes = EncodingTraits::nb_input_bytes,
+          std::size_t OutputBytes = EncodingTraits::nb_output_bytes>
+struct output_encoder
+{
+  using BitshiftTraits = bitshift_traits<InputBytes, OutputBytes>;
+
+  template <typename OutputIterator>
+  static void encode(
+      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
+      OutputIterator out)
+  {
+    static std::bitset<BitshiftTraits::nb_total_input_bits> const mask(
+        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+    for (auto i = 0u; i < BitshiftTraits::nb_output_bytes; ++i)
     {
       auto const index = static_cast<std::uint8_t>(
-          ((input_bits >> (shift - (i * nb_encoded_bits))) & mask).to_ulong());
-      *(out + i) = EncodingTraits::alphabet[index];
+          ((input_bits >>
+            (BitshiftTraits::shift - (i * BitshiftTraits::nb_encoded_bits))) &
+           mask)
+              .to_ulong());
+      out[i] = EncodingTraits::alphabet[index];
     }
-    //
-    // out[0] = EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
-    // out[1]= 
-    //     EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
-    // out[2] =
-    //     EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
-    // out[3] = EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
   }
 };
 
 
+
+template <typename EncodingTraits>
+struct output_encoder<EncodingTraits, 3, 4>
+{
+  using BitshiftTraits = bitshift_traits<3, 4>;
+
+  template <typename OutputIterator>
+  static void encode(
+      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
+      OutputIterator out)
+  {
+    static std::bitset<BitshiftTraits::nb_total_input_bits> const mask(
+        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+
+    out[0] = EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
+    out[1]= 
+        EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
+    out[2] =
+        EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
+    out[3] = EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
+  }
+};
 
 template <typename EncodingTraits>
 struct find_good_name
@@ -73,6 +113,7 @@ struct find_good_name
   static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
   static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
   static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
+  using BitshiftTraits = bitshift_traits<nb_input_bytes, nb_output_bytes>;
 
   template <typename T>
   static void read_input(T const& input, static_vector<char, 256>& output)
@@ -84,17 +125,9 @@ struct find_good_name
     output.resize(nb_loop_iterations.quot * nb_output_bytes);
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
-      std::bitset<nb_total_input_bits> input_bits;
-
-      for (auto j = 0u; j < nb_input_bytes; ++j)
-      {
-        input_bits |=
-            (decltype(input_bits)(input[(i * nb_input_bytes) + j])
-             << (nb_total_input_bits - nb_extra_input_bits - 8 - (8 * j)));
-      }
-
+      auto const input_bits = input_to_bitset<BitshiftTraits>(input.begin() + i * nb_input_bytes);
       output_encoder<EncodingTraits>::encode(
-          input_bits, output.begin() + (i * nb_output_bytes), mask);
+          input_bits, output.begin() + (i * nb_output_bytes));
     }
 
     if (nb_loop_iterations.rem)
