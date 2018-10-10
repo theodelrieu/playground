@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <iterator>
 
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 
@@ -40,12 +41,15 @@ struct encoding_traits
   static constexpr auto const nb_input_bytes = In;
   static constexpr auto const nb_output_bytes = Out;
 
-  static constexpr auto find_char(char c)
+  static constexpr int find_char(char c)
   {
     // toupper is meh...
     if (c >= 'a' && c <= 'z')
       c -= 32;
-    return std::find(std::begin(alphabet), std::end(alphabet), c);
+    auto it = std::find(std::begin(alphabet), std::end(alphabet), c);
+    if (it == std::end(alphabet))
+      return -1;
+    return std::distance(std::begin(alphabet), it);
   }
 
   static constexpr auto const padding_policy =

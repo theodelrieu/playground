@@ -12,8 +12,7 @@
 #include <mgs/codecs/binary_to_text/detail/bitset_utils.hpp>
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
-#include <mgs/codecs/binary_to_text/detail/output_fast_encoder.hpp>
-#include <mgs/codecs/binary_to_text/detail/output_slow_encoder.hpp>
+#include <mgs/codecs/binary_to_text/detail/output_encoder.hpp>
 #include <mgs/codecs/binary_to_text/detail/padding_writer.hpp>
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
@@ -124,7 +123,7 @@ private:
           input.begin() + (i * BitshiftTraits::nb_input_bytes),
           BitshiftTraits::nb_input_bytes);
 
-      detail::output_fast_encoder<EncodingTraits>::encode(
+      detail::output_encoder<EncodingTraits>::encode(
           input_bits, output.begin() + (i * BitshiftTraits::nb_output_bytes));
     }
 
@@ -143,7 +142,7 @@ private:
 
       auto const old_size = output.size();
       output.resize(output.size() + nb_non_padded_bytes);
-      detail::output_slow_encoder<EncodingTraits>::encode(
+      detail::output_encoder<EncodingTraits>::encode(
           input_bits, output.begin() + old_size, nb_non_padded_bytes);
       detail::padding_writer<EncodingTraits>::write(std::back_inserter(output),
                                                     nb_padded_bytes);
