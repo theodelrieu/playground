@@ -142,11 +142,11 @@ private:
           nb_loop_iterations.rem);
 
       auto const old_size = output.size();
-      output.resize(output.size() + nb_padded_bytes + nb_non_padded_bytes);
+      output.resize(output.size() + nb_non_padded_bytes);
       detail::output_slow_encoder<EncodingTraits>::encode(
           input_bits, output.begin() + old_size, nb_non_padded_bytes);
-      detail::padding_writer<EncodingTraits>::write(
-          output.end() - nb_padded_bytes, nb_padded_bytes);
+      detail::padding_writer<EncodingTraits>::write(std::back_inserter(output),
+                                                    nb_padded_bytes);
     }
   }
 
