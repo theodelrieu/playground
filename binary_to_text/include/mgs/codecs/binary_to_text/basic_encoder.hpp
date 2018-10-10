@@ -9,10 +9,14 @@
 #include <utility>
 
 #include <mgs/codecs/binary_to_text/concepts/encoding_traits.hpp>
+#include <mgs/codecs/binary_to_text/detail/bitset_utils.hpp>
+#include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
+#include <mgs/codecs/binary_to_text/detail/output_fast_encoder.hpp>
+#include <mgs/codecs/binary_to_text/detail/output_slow_encoder.hpp>
 #include <mgs/codecs/binary_to_text/detail/padding_writer.hpp>
-#include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
+#include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
@@ -25,98 +29,6 @@ namespace codecs
 {
 namespace binary_to_text
 {
-namespace detail
-{
-template <std::size_t InputBytes, std::size_t OutputBytes>
-struct bitshift_traits
-{
-  static constexpr auto nb_input_bytes = InputBytes;
-  static constexpr auto nb_output_bytes = OutputBytes;
-  static constexpr auto nb_total_input_bits =
-      detail::round_to_multiple_of<nb_input_bytes * 8, nb_output_bytes>();
-  static constexpr auto nb_extra_input_bits = nb_total_input_bits % 8;
-  static constexpr auto nb_encoded_bits = nb_total_input_bits / nb_output_bytes;
-  static constexpr auto shift = nb_total_input_bits - nb_encoded_bits;
-};
-
-template <typename BitshiftTraits, typename RandomAccessIterator>
-auto input_to_bitset(RandomAccessIterator it, std::size_t n)
-{
-  std::bitset<BitshiftTraits::nb_total_input_bits> input_bits;
-
-  for (auto i = 0u; i < n; ++i)
-  {
-    decltype(input_bits) bits(it[i]);
-    input_bits |= (bits << (BitshiftTraits::nb_total_input_bits -
-                            BitshiftTraits::nb_extra_input_bits - 8 - (8 * i)));
-  }
-  return input_bits;
-}
-
-template <typename EncodingTraits>
-struct output_slow_encoder
-{
-  using BitshiftTraits = bitshift_traits<EncodingTraits::nb_input_bytes,
-                                         EncodingTraits::nb_output_bytes>;
-
-  template <typename OutputIterator>
-  static void encode(
-      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
-      OutputIterator out,
-      std::size_t n)
-  {
-    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
-        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
-
-    for (auto i = 0u; i < BitshiftTraits::nb_output_bytes; ++i)
-    {
-      auto const index =
-          ((input_bits >>
-            (BitshiftTraits::shift - (i * BitshiftTraits::nb_encoded_bits))) &
-           mask)
-              .to_ulong();
-      out[i] = EncodingTraits::alphabet[index];
-    }
-  }
-};
-
-template <typename EncodingTraits,
-          std::size_t InputBytes = EncodingTraits::nb_input_bytes,
-          std::size_t OutputBytes = EncodingTraits::nb_output_bytes>
-struct output_fast_encoder
-{
-  using BitshiftTraits = bitshift_traits<InputBytes, OutputBytes>;
-
-  template <typename OutputIterator>
-  static void encode(
-      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
-      OutputIterator out)
-  {
-    output_slow_encoder<EncodingTraits>::encode(input_bits, out, OutputBytes);
-  }
-};
-
-template <typename EncodingTraits>
-struct output_fast_encoder<EncodingTraits, 3, 4>
-{
-  using BitshiftTraits = bitshift_traits<3, 4>;
-
-  template <typename OutputIterator>
-  static void encode(
-      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
-      OutputIterator out)
-  {
-    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
-        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
-
-    out[0] = EncodingTraits::alphabet[((input_bits >> 18) & mask).to_ulong()];
-    out[1] = EncodingTraits::alphabet[((input_bits >> 12) & mask).to_ulong()];
-    out[2] = EncodingTraits::alphabet[((input_bits >> 6) & mask).to_ulong()];
-    out[3] = EncodingTraits::alphabet[((input_bits & mask).to_ulong())];
-  }
-};
-}
-
 template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
