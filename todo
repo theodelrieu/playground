@@ -2,6 +2,7 @@ Mandatory
 ----------
 
 * Benchmark!
+* no hardcoded constants in basic_encoder
 
 Later
 -----
