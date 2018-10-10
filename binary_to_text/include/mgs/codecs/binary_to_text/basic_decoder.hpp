@@ -87,9 +87,6 @@ public:
     auto i = 0;
     for (; i < nb_input_bytes; ++i)
     {
-      auto const alph_begin = begin(EncodingTraits::alphabet);
-      auto const alph_end = end(EncodingTraits::alphabet);
-
       auto const c =
           detail::encoded_input_reader<EncodingTraits>::read(_current, _end);
       auto const index = EncodingTraits::find_char(c);
