@@ -49,11 +49,15 @@ private:
 
   static_assert(BitshiftTraits::nb_total_input_bits % BitshiftTraits::nb_output_bytes == 0,
                 "The impossible has occurred");
+  static_assert(detail::is_power_of_2<sizeof(EncodingTraits::alphabet)>(),
+                "Alphabet size must be a power of 2");
   static_assert(detail::pow<2, BitshiftTraits::nb_encoded_bits>() ==
                     sizeof(EncodingTraits::alphabet),
-                "Alphabet size must be a power of 2");
-  static_assert(BitshiftTraits::nb_output_bytes % 2 == 0,
+                "Invalid alphabet size");
+  static_assert(detail::is_power_of_2<EncodingTraits::nb_output_bytes>,
                 "nb_output_bytes must be a power of two");
+  static_assert(EncodingTraits::nb_output_bytes < 256,
+                "nb_output_bytes must be lower than 256");
 
   static constexpr auto nb_bytes_to_read =
       (256 / BitshiftTraits::nb_output_bytes) * BitshiftTraits::nb_input_bytes;

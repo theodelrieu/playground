@@ -65,6 +65,16 @@ public:
     return &_array[0];
   }
 
+  T* data() 
+  {
+    return begin();
+  }
+
+  T const* data() const
+  {
+    return begin();
+  }
+
   T* end()
   {
     return &_array[0] + _index;

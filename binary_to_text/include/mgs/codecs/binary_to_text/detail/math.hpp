@@ -30,6 +30,12 @@ constexpr std::size_t log2()
   return ret;
 }
 
+template <std::size_t N>
+constexpr std::size_t is_power_of_2()
+{
+  return N != 0 && ((N & (N - 1)) == 0);
+}
+
 template <std::size_t X, std::size_t N>
 constexpr std::size_t pow()
 {

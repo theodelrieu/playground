@@ -38,9 +38,14 @@ struct base2_encoding_traits
   static constexpr auto const nb_input_bytes = In;
   static constexpr auto const nb_output_bytes = Out;
 
-  static auto find_char(char c)
+  static int find_char(char c)
   {
-    return std::find(std::begin(alphabet), std::end(alphabet), c);
+    auto const begin = std::begin(alphabet);
+    auto const end = std::end(alphabet);
+    auto it = std::find(begin, end, c);
+    if (it == end)
+      return -1;
+    return std::distance(begin, it);
   }
 };
 
@@ -150,9 +155,14 @@ struct octal_encoding_traits
   static constexpr auto const nb_input_bytes = In;
   static constexpr auto const nb_output_bytes = Out;
 
-  static auto find_char(char c)
+  static int find_char(char c)
   {
-    return std::find(std::begin(alphabet), std::end(alphabet), c);
+    auto const begin = std::begin(alphabet);
+    auto const end = std::end(alphabet);
+    auto it = std::find(begin, end, c);
+    if (it == end)
+      return -1;
+    return std::distance(begin, it);
   }
 };
 
@@ -252,9 +262,14 @@ struct diy_encoding_traits
   static constexpr auto const nb_input_bytes = In;
   static constexpr auto const nb_output_bytes = Out;
 
-  static auto find_char(char c)
+  static int find_char(char c)
   {
-    return std::find(std::begin(alphabet), std::end(alphabet), c);
+    auto const begin = std::begin(alphabet);
+    auto const end = std::end(alphabet);
+    auto it = std::find(begin, end, c);
+    if (it == end)
+      return -1;
+    return std::distance(begin, it);
   }
 };
 

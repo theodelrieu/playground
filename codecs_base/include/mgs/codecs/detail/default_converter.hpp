@@ -78,7 +78,7 @@ struct default_converter<std::string>
     {
       auto const old_size = s.size();
       s.resize(old_size + bsize);
-      std::memcpy(&*(s.begin() + old_size), adapter.block().begin(), bsize);
+      std::memcpy(&*(s.begin() + old_size), adapter.block().data(), bsize);
       adapter.read_block();
     }
     return s;

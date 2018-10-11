@@ -52,12 +52,11 @@ public:
   {
   }
 
-  value_type operator()()
+  void operator()(std::vector<std::uint8_t>& out)
   {
-    value_type ret;
+    out.clear();
     while (_current != _end)
-      ret.push_back(*_current++);
-    return ret;
+      out.push_back(*_current++);
   }
 
 private:
@@ -99,20 +98,20 @@ namespace codecs
 template <>
 struct output_traits<valid_type>
 {
-  template <typename Iterator>
-  static valid_type create(Iterator begin, Iterator end)
+  template <typename InputAdapter>
+  static valid_type create(InputAdapter& adapter)
   {
-    return {{begin, end}};
+    return {{adapter.begin(), adapter.end()}};
   }
 };
 
 template <typename T>
 struct output_traits<std::vector<T>>
 {
-  template <typename Iterator>
-  static std::vector<T> create(Iterator begin, Iterator end)
+  template <typename InputAdapter>
+  static std::vector<T> create(InputAdapter& adapter)
   {
-    return {begin, end};
+    return {adapter.begin(), adapter.end()};
   }
 };
 }
@@ -126,10 +125,8 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
     using Encoder = decltype(noop_codec::make_encoder(str.begin(), str.end()));
 
-    static_assert(
-        !concepts::is_codec_output<invalid_type, Encoder::iterator>::value, "");
-    static_assert(
-        concepts::is_codec_output<valid_type, Encoder::iterator>::value, "");
+    static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");
+    static_assert(concepts::is_codec_output<valid_type, Encoder>::value, "");
 
     SECTION("C arrays")
     {
