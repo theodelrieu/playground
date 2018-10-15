@@ -3,6 +3,7 @@
 #include <cassert>
 #include <string>
 
+#include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
@@ -23,12 +24,7 @@ template <typename EncodingTraits,
 struct invalid_character_handler
 {
 private:
-  static constexpr auto nb_output_bytes = EncodingTraits::nb_output_bytes;
-  static constexpr auto nb_input_bytes = EncodingTraits::nb_input_bytes;
-
-  static constexpr auto nb_output_bits =
-      detail::round_to_multiple_of<nb_output_bytes * 8, nb_input_bytes>();
-  static constexpr auto nb_encoded_bits = nb_output_bits / nb_input_bytes;
+  using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
   template <typename Iterator, typename Sentinel>
   static void expect_padding_bytes(Iterator& current, Sentinel const end, int n)
@@ -68,11 +64,11 @@ public:
                                             c + "'"};
     }
     // find out if padding character is at a correct position
-    auto const res = std::div(i * nb_encoded_bits, 8);
-    if (res.quot == 0 || res.rem >= nb_encoded_bits)
+    auto const res = std::div(i * BitshiftTraits::nb_index_bits, 8);
+    if (res.quot == 0 || res.rem >= BitshiftTraits::nb_index_bits)
       throw exceptions::invalid_input_error{"invalid encoded input"};
     if (current != sent)
-      expect_padding_bytes(current, sent, nb_input_bytes - i - 1);
+      expect_padding_bytes(current, sent, BitshiftTraits::nb_encoded_bytes - i - 1);
   }
 };
 

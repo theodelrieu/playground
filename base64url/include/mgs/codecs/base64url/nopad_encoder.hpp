@@ -18,15 +18,13 @@ class nopad_encoder
   : public adapters::transformer_adapter<binary_to_text::basic_encoder<
         Iterator,
         Sentinel,
-        detail::
-            basic_encoding_traits<3, 4, binary_to_text::padding_policy::none>>>
+        detail::basic_encoding_traits<binary_to_text::padding_policy::none>>>
 {
 public:
   using adapters::transformer_adapter<binary_to_text::basic_encoder<
       Iterator,
       Sentinel,
-      detail::
-          basic_encoding_traits<3, 4, binary_to_text::padding_policy::none>>>::
+      detail::basic_encoding_traits<binary_to_text::padding_policy::none>>>::
       transformer_adapter;
 };
 }

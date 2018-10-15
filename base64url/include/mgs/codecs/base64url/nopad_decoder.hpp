@@ -19,8 +19,6 @@ class nopad_decoder
         Iterator,
         Sentinel,
         detail::basic_encoding_traits<
-            4,
-            3,
             binary_to_text::padding_policy::optional>>>
 {
 public:
@@ -28,8 +26,6 @@ public:
       Iterator,
       Sentinel,
       detail::basic_encoding_traits<
-          4,
-          3,
           binary_to_text::padding_policy::optional>>>::transformer_adapter;
 };
 }

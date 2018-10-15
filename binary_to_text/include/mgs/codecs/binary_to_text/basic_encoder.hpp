@@ -43,24 +43,23 @@ private:
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
-  using BitshiftTraits =
-      detail::bitshift_traits<EncodingTraits::nb_input_bytes,
-                              EncodingTraits::nb_output_bytes>;
+  using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-  static_assert(BitshiftTraits::nb_total_input_bits % BitshiftTraits::nb_output_bytes == 0,
+  static_assert(BitshiftTraits::nb_total_decoded_bits %
+                        BitshiftTraits::nb_encoded_bytes ==
+                    0,
                 "The impossible has occurred");
   static_assert(detail::is_power_of_2<sizeof(EncodingTraits::alphabet)>(),
                 "Alphabet size must be a power of 2");
-  static_assert(detail::pow<2, BitshiftTraits::nb_encoded_bits>() ==
+  static_assert(detail::pow<2, BitshiftTraits::nb_index_bits>() ==
                     sizeof(EncodingTraits::alphabet),
                 "Invalid alphabet size");
-  static_assert(detail::is_power_of_2<EncodingTraits::nb_output_bytes>,
-                "nb_output_bytes must be a power of two");
-  static_assert(EncodingTraits::nb_output_bytes < 256,
-                "nb_output_bytes must be lower than 256");
+  static_assert(EncodingTraits::nb_encoded_bytes < 256,
+                "nb_encoded_bytes must be lower than 256");
 
   static constexpr auto nb_bytes_to_read =
-      (256 / BitshiftTraits::nb_output_bytes) * BitshiftTraits::nb_input_bytes;
+      (256 / BitshiftTraits::nb_encoded_bytes) *
+      BitshiftTraits::nb_decoded_bytes;
 
 public:
   using value_type = detail::static_vector<char, 256>;
@@ -100,13 +99,15 @@ private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
-    auto const dist = std::min(static_cast<long int>(nb_bytes_to_read), end - current);
+    auto const dist =
+        std::min(static_cast<long int>(nb_bytes_to_read), end - current);
 
     detail::span<I> s{current, current + dist};
     current += dist;
     return s;
   }
 
+  // TODO better name
   void read_input(value_type& output)
   {
     auto const input = read_input_impl(
@@ -114,34 +115,34 @@ private:
         _end,
         typename std::iterator_traits<Iterator>::iterator_category{});
 
-    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
-        detail::pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+        detail::pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
     auto const nb_loop_iterations =
-        std::ldiv(input.size(), BitshiftTraits::nb_input_bytes);
-    output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_output_bytes);
+        std::ldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
+    output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes);
 
     for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
     {
-      auto const input_bits = detail::input_to_bitset<BitshiftTraits>(
-          input.begin() + (i * BitshiftTraits::nb_input_bytes),
-          BitshiftTraits::nb_input_bytes);
+      auto const input_bits = detail::decoded_to_bitset<BitshiftTraits>(
+          input.begin() + (i * BitshiftTraits::nb_decoded_bytes),
+          BitshiftTraits::nb_decoded_bytes);
 
       detail::output_encoder<EncodingTraits>::encode(
-          input_bits, output.begin() + (i * BitshiftTraits::nb_output_bytes));
+          input_bits, output.begin() + (i * BitshiftTraits::nb_encoded_bytes));
     }
 
     if (nb_loop_iterations.rem)
     {
       auto const nb_non_padded_bytes =
-          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_encoded_bits) +
+          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_index_bits) +
           1;
       auto const nb_padded_bytes =
-          BitshiftTraits::nb_output_bytes - nb_non_padded_bytes;
+          BitshiftTraits::nb_encoded_bytes - nb_non_padded_bytes;
 
-      auto const input_bits = detail::input_to_bitset<BitshiftTraits>(
+      auto const input_bits = detail::decoded_to_bitset<BitshiftTraits>(
           input.begin() +
-              (nb_loop_iterations.quot * BitshiftTraits::nb_input_bytes),
+              (nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes),
           nb_loop_iterations.rem);
 
       auto const old_size = output.size();

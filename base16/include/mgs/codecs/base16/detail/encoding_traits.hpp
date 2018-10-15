@@ -16,7 +16,6 @@ namespace base16
 {
 namespace detail
 {
-template <std::size_t In, std::size_t Out>
 struct encoding_traits
 {
   using alphabet_t = char const[16];
@@ -38,10 +37,10 @@ struct encoding_traits
                                           'E',
                                           'F'};
 
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_encoded_bytes = 2;
+  static constexpr auto const nb_decoded_bytes = 1;
 
-  static constexpr int find_char(char c)
+  static int find_char(char c)
   {
     // toupper is meh...
     if (c >= 'a' && c <= 'z')
@@ -56,9 +55,7 @@ struct encoding_traits
       binary_to_text::padding_policy::none;
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename encoding_traits<In, Out>::alphabet_t
-    encoding_traits<In, Out>::alphabet;
+constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
 }
 }
 }

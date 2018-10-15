@@ -15,7 +15,6 @@ namespace base64
 {
 namespace detail
 {
-template <std::size_t In, std::size_t Out>
 struct encoding_traits
 {
   using alphabet_t = char const[64];
@@ -48,8 +47,8 @@ struct encoding_traits
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::required;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_encoded_bytes = 4;
+  static constexpr auto const nb_decoded_bytes = 3;
 
   static constexpr auto find_char(char c)
   {
@@ -57,16 +56,9 @@ struct encoding_traits
   }
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename encoding_traits<In, Out>::alphabet_t
-    encoding_traits<In, Out>::alphabet;
-
-template <std::size_t In, std::size_t Out>
-constexpr char const encoding_traits<In, Out>::padding_character;
-
-template <std::size_t In, std::size_t Out>
-constexpr typename encoding_traits<In, Out>::lookup_table_t
-    encoding_traits<In, Out>::lookup_table;
+constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
+constexpr char const encoding_traits::padding_character;
+constexpr encoding_traits::lookup_table_t encoding_traits::lookup_table;
 }
 }
 }

@@ -19,23 +19,22 @@ namespace detail
 template <typename EncodingTraits>
 struct output_encoder
 {
-  using BitshiftTraits = bitshift_traits<EncodingTraits::nb_input_bytes,
-                                         EncodingTraits::nb_output_bytes>;
+  using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
   template <typename OutputIterator>
   static void encode(
-      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
+      std::bitset<BitshiftTraits::nb_total_decoded_bits> const& decoded_bits,
       OutputIterator out,
       std::size_t n)
   {
-    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
-        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+        pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
-    for (auto i = 0u; i < BitshiftTraits::nb_output_bytes; ++i)
+    for (auto i = 0u; i < BitshiftTraits::nb_encoded_bytes; ++i)
     {
       auto const index =
-          ((input_bits >>
-            (BitshiftTraits::shift - (i * BitshiftTraits::nb_encoded_bits))) &
+          ((decoded_bits >> (BitshiftTraits::encoded_shift -
+                             (i * BitshiftTraits::nb_index_bits))) &
            mask)
               .to_ulong();
       out[i] = EncodingTraits::alphabet[index];
@@ -44,17 +43,17 @@ struct output_encoder
 
   template <typename OutputIterator>
   static void encode(
-      std::bitset<BitshiftTraits::nb_total_input_bits> const& input_bits,
+      std::bitset<BitshiftTraits::nb_total_decoded_bits> const& decoded_bits,
       OutputIterator out)
   {
-    constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
-        pow<2, BitshiftTraits::nb_encoded_bits>() - 1);
+    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+        pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
-    for (auto i = 0u; i < BitshiftTraits::nb_output_bytes; ++i)
+    for (auto i = 0u; i < BitshiftTraits::nb_encoded_bytes; ++i)
     {
       auto const index =
-          ((input_bits >>
-            (BitshiftTraits::shift - (i * BitshiftTraits::nb_encoded_bits))) &
+          ((decoded_bits >> (BitshiftTraits::encoded_shift -
+                             (i * BitshiftTraits::nb_index_bits))) &
            mask)
               .to_ulong();
       out[i] = EncodingTraits::alphabet[index];

@@ -26,7 +26,6 @@ using namespace mgs::codecs;
 
 namespace
 {
-template <std::size_t In, std::size_t Out>
 struct base2_encoding_traits
 {
   using alphabet_t = char const[2];
@@ -35,8 +34,8 @@ struct base2_encoding_traits
 
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_decoded_bytes = 1;
+  static constexpr auto const nb_encoded_bytes = 8;
 
   static int find_char(char c)
   {
@@ -49,19 +48,15 @@ struct base2_encoding_traits
   }
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename base2_encoding_traits<In, Out>::alphabet_t
-    base2_encoding_traits<In, Out>::alphabet;
+constexpr base2_encoding_traits::alphabet_t base2_encoding_traits::alphabet;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_encoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_encoder<Iterator, Sentinel, base2_encoding_traits<1, 8>>>;
+    binary_to_text::basic_encoder<Iterator, Sentinel, base2_encoding_traits>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_decoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_decoder<Iterator, Sentinel, base2_encoding_traits<8, 1>>>;
+    binary_to_text::basic_decoder<Iterator, Sentinel, base2_encoding_traits>>;
 }
 
 TEST_CASE("base2", "[binary_to_text]")
@@ -142,7 +137,6 @@ TEST_CASE("base2", "[binary_to_text]")
 
 namespace
 {
-template <std::size_t In, std::size_t Out>
 struct octal_encoding_traits
 {
   using alphabet_t = char const[8];
@@ -152,8 +146,8 @@ struct octal_encoding_traits
 
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_decoded_bytes = 1;
+  static constexpr auto const nb_encoded_bytes = 3;
 
   static int find_char(char c)
   {
@@ -166,19 +160,15 @@ struct octal_encoding_traits
   }
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename octal_encoding_traits<In, Out>::alphabet_t
-    octal_encoding_traits<In, Out>::alphabet;
+constexpr octal_encoding_traits::alphabet_t octal_encoding_traits::alphabet;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using octal_encoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_encoder<Iterator, Sentinel, octal_encoding_traits<1, 3>>>;
+    binary_to_text::basic_encoder<Iterator, Sentinel, octal_encoding_traits>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using octal_decoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_decoder<Iterator, Sentinel, octal_encoding_traits<3, 1>>>;
+    binary_to_text::basic_decoder<Iterator, Sentinel, octal_encoding_traits>>;
 }
 
 TEST_CASE("octal", "[binary_to_text]")
@@ -250,7 +240,6 @@ TEST_CASE("octal", "[binary_to_text]")
 
 namespace
 {
-template <std::size_t In, std::size_t Out>
 struct diy_encoding_traits
 {
   using alphabet_t = char const[4];
@@ -259,8 +248,8 @@ struct diy_encoding_traits
 
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_decoded_bytes = 1;
+  static constexpr auto const nb_encoded_bytes = 5;
 
   static int find_char(char c)
   {
@@ -273,19 +262,15 @@ struct diy_encoding_traits
   }
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename diy_encoding_traits<In, Out>::alphabet_t
-    diy_encoding_traits<In, Out>::alphabet;
+constexpr diy_encoding_traits::alphabet_t diy_encoding_traits::alphabet;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using diy_encoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_encoder<Iterator, Sentinel, diy_encoding_traits<1, 5>>>;
+    binary_to_text::basic_encoder<Iterator, Sentinel, diy_encoding_traits>>;
 
 template <typename Iterator, typename Sentinel = Iterator>
 using diy_decoder = adapters::transformer_adapter<
-    binary_to_text::
-        basic_decoder<Iterator, Sentinel, diy_encoding_traits<5, 1>>>;
+    binary_to_text::basic_decoder<Iterator, Sentinel, diy_encoding_traits>>;
 }
 
 TEST_CASE("diy", "[binary_to_text]")

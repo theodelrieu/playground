@@ -16,7 +16,6 @@ namespace base32
 {
 namespace detail
 {
-template <std::size_t In, std::size_t Out>
 struct encoding_traits
 {
   using alphabet_t = char const[32];
@@ -29,10 +28,10 @@ struct encoding_traits
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::required;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_decoded_bytes = 5;
+  static constexpr auto const nb_encoded_bytes = 8;
 
-  static constexpr int find_char(char c)
+  static int find_char(char c)
   {
     // FIXME lookup table
     auto it = std::find(std::begin(alphabet), std::end(alphabet), c);
@@ -42,12 +41,8 @@ struct encoding_traits
   }
 };
 
-template <std::size_t In, std::size_t Out>
-constexpr typename encoding_traits<In, Out>::alphabet_t
-    encoding_traits<In, Out>::alphabet;
-
-template <std::size_t In, std::size_t Out>
-constexpr char const encoding_traits<In, Out>::padding_character;
+constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
+constexpr char const encoding_traits::padding_character;
 }
 }
 }

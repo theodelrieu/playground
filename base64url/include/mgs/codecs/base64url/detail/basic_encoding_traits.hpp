@@ -15,9 +15,7 @@ namespace base64url
 {
 namespace detail
 {
-template <std::size_t In,
-          std::size_t Out,
-          binary_to_text::padding_policy PaddingPolicy>
+template <binary_to_text::padding_policy PaddingPolicy>
 struct basic_encoding_traits
 {
   using alphabet_t = char const[64];
@@ -49,8 +47,8 @@ struct basic_encoding_traits
 
   static constexpr auto const padding_character = '=';
   static constexpr auto const padding_policy = PaddingPolicy;
-  static constexpr auto const nb_input_bytes = In;
-  static constexpr auto const nb_output_bytes = Out;
+  static constexpr auto const nb_encoded_bytes = 4;
+  static constexpr auto const nb_decoded_bytes = 3;
 
   static constexpr auto find_char(char c)
   {
@@ -58,23 +56,16 @@ struct basic_encoding_traits
   }
 };
 
-template <std::size_t In,
-          std::size_t Out,
-          binary_to_text::padding_policy PaddingPolicy>
-constexpr typename basic_encoding_traits<In, Out, PaddingPolicy>::alphabet_t
-    basic_encoding_traits<In, Out, PaddingPolicy>::alphabet;
+template <binary_to_text::padding_policy PaddingPolicy>
+constexpr typename basic_encoding_traits<PaddingPolicy>::alphabet_t
+    basic_encoding_traits<PaddingPolicy>::alphabet;
 
-template <std::size_t In,
-          std::size_t Out,
-          binary_to_text::padding_policy PaddingPolicy>
-constexpr char const
-    basic_encoding_traits<In, Out, PaddingPolicy>::padding_character;
+template <binary_to_text::padding_policy PaddingPolicy>
+constexpr char const basic_encoding_traits<PaddingPolicy>::padding_character;
 
-template <std::size_t In,
-          std::size_t Out,
-          binary_to_text::padding_policy PaddingPolicy>
-constexpr typename basic_encoding_traits<In, Out, PaddingPolicy>::lookup_table_t
-    basic_encoding_traits<In, Out, PaddingPolicy>::lookup_table;
+template <binary_to_text::padding_policy PaddingPolicy>
+constexpr typename basic_encoding_traits<PaddingPolicy>::lookup_table_t
+    basic_encoding_traits<PaddingPolicy>::lookup_table;
 }
 }
 }

@@ -15,7 +15,7 @@ namespace detected
 namespace static_data_members
 {
 template <typename T>
-using nb_output_bytes = decltype(T::nb_output_bytes);
+using nb_encoded_bytes = decltype(T::nb_encoded_bytes);
 }
 }
 }

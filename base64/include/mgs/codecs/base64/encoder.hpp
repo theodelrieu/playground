@@ -16,13 +16,13 @@ template <typename Iterator, typename Sentinel = Iterator>
 class encoder
   : public adapters::transformer_adapter<
         binary_to_text::
-            basic_encoder<Iterator, Sentinel, detail::encoding_traits<3, 4>>>
+            basic_encoder<Iterator, Sentinel, detail::encoding_traits>>
 {
 public:
   using adapters::transformer_adapter<binary_to_text::basic_encoder<
       Iterator,
       Sentinel,
-      detail::encoding_traits<3, 4>>>::transformer_adapter;
+      detail::encoding_traits>>::transformer_adapter;
 };
 }
 }
