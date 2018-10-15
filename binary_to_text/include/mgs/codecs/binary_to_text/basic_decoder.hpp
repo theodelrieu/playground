@@ -11,6 +11,7 @@
 #include <mgs/codecs/binary_to_text/detail/encoded_input_reader.hpp>
 #include <mgs/codecs/binary_to_text/detail/invalid_character_handler.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
+#include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
@@ -43,6 +44,10 @@ private:
                     0,
                 "The impossible has occurred");
 
+  static constexpr auto nb_bytes_to_read =
+      (256 / BitshiftTraits::nb_decoded_bytes) *
+      BitshiftTraits::nb_encoded_bytes;
+
 public:
   using value_type =
       detail::static_vector<std::uint8_t, BitshiftTraits::nb_decoded_bytes>;
@@ -67,14 +72,39 @@ public:
     }
   }
 
+  template <typename I, typename S>
+  auto read_input_impl(I& current, S end, std::input_iterator_tag)
+  {
+    detail::static_vector<std::uint8_t, nb_bytes_to_read> ret;
+    auto i = 0;
+    for (; i < nb_bytes_to_read; ++i)
+    {
+      if (current == end)
+        break;
+      ret.push_back(*current++);
+    }
+    return ret;
+  }
+
+  template <typename I, typename S>
+  auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
+  {
+    auto const dist =
+        std::min(static_cast<long int>(nb_bytes_to_read), end - current);
+
+    detail::span<I> s{current, current + dist};
+    current += dist;
+    return s;
+  }
+
   void read_input(value_type& output)
   {
-    // auto const input = read_input_impl(
-    //     _current,
-    //     _end,
-    //     typename std::iterator_traits<Iterator>::iterator_category{});
-    //
-    // constexpr std::bitset<BitshiftTraits::nb_total_input_bits> mask(
+    auto const input = read_input_impl(
+        _current,
+        _end,
+        typename std::iterator_traits<Iterator>::iterator_category{});
+
+    // constexpr std::bitset<BitshiftTraits::nb_total_encoded_bits> mask(
     //     detail::pow<2, BitshiftTraits::BitshiftTraits::nb_index_bits>() - 1);
     //
     // auto const nb_loop_iterations =
