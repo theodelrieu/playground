@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <bitset>
 #include <cassert>
 #include <cstdint>
@@ -45,8 +46,7 @@ private:
                 "The impossible has occurred");
 
   static constexpr auto nb_bytes_to_read =
-      (256 / BitshiftTraits::nb_decoded_bytes) *
-      BitshiftTraits::nb_encoded_bytes;
+      256 - (BitshiftTraits::nb_index_bits / 8);
 
 public:
   using value_type =
@@ -66,9 +66,10 @@ public:
     output.resize(0);
     if (_current != _end)
     {
-      auto const res = read();
-
-      decode_input_bits(res, std::back_inserter(output));
+      read_input(output);
+      // auto const res = read();
+      //
+      // decode_input_bits(res, std::back_inserter(output));
     }
   }
 
@@ -76,24 +77,51 @@ public:
   auto read_input_impl(I& current, S end, std::input_iterator_tag)
   {
     detail::static_vector<std::uint8_t, nb_bytes_to_read> ret;
+    ret.resize(nb_bytes_to_read);
+
     auto i = 0;
     for (; i < nb_bytes_to_read; ++i)
     {
       if (current == end)
         break;
-      ret.push_back(*current++);
+      auto const byte = *current++;
+
+      if (EncodingTraits::find_char(byte) != -1)
+        ret[i] = byte;
+      else
+      {
+        detail::invalid_character_handler<EncodingTraits>::handle(
+            i, byte, current, end);
+      }
     }
+    ret.resize(i);
     return ret;
   }
 
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
+    // TODO sanitize input
     auto const dist =
         std::min(static_cast<long int>(nb_bytes_to_read), end - current);
 
+    auto const it = std::find_if(current, current + dist, [](auto byte) {
+      return EncodingTraits::find_char(byte) == -1;
+    });
+    if (it != end)
+    {
+      // todo naming
+      auto const real_dist = dist - (it - current);
+      // FIXME redo how invalid chars are handled (with long inputs)
+      detail::invalid_character_handler<EncodingTraits>::handle(
+          it - current, *it, current, end);
+      auto sp = detail::span<I>{current, current + real_dist};
+      current += real_dist;
+      return sp;
+    }
     detail::span<I> s{current, current + dist};
     current += dist;
+
     return s;
   }
 
@@ -104,6 +132,32 @@ public:
         _end,
         typename std::iterator_traits<Iterator>::iterator_category{});
 
+    // auto const nb_loop_iterations =
+    //     std::ldiv(input.size(), BitshiftTraits::nb_encoded_bytes);
+    // std::bitset<BitshiftTraits::nb_total_decoded_bits> input_bits;
+    //
+    // for (auto i = 0; i < nb_loop_iterations.quot; ++i)
+    // {
+    //   auto const c =
+    //       detail::encoded_input_reader<EncodingTraits>::read(_current, _end);
+    //   auto const index = EncodingTraits::find_char(c);
+    //
+    //   if (index == -1)
+    //   {
+    //     detail::invalid_character_handler<EncodingTraits>::handle(
+    //         i, c, _current, _end);
+    //     break;
+    //   }
+    //
+    //   std::bitset<BitshiftTraits::nb_total_decoded_bits> const
+    //       decoded_byte_bits(index);
+    //
+    //   input_bits |=
+    //       (decoded_byte_bits << (BitshiftTraits::nb_total_decoded_bits -
+    //                              BitshiftTraits::nb_index_bits -
+    //                              (BitshiftTraits::nb_index_bits * i)));
+    // }
+    // return {input_bits, (i * BitshiftTraits::nb_index_bits) / 8};
     // constexpr std::bitset<BitshiftTraits::nb_total_encoded_bits> mask(
     //     detail::pow<2, BitshiftTraits::BitshiftTraits::nb_index_bits>() - 1);
     //
