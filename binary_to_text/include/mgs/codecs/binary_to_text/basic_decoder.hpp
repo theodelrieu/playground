@@ -84,8 +84,6 @@ public:
     auto const sanitized_size =
         detail::input_sanitizer<EncodingTraits>::sanitize(ret, current == end);
     ret.resize(sanitized_size);
-    for (auto& elem : ret)
-      elem = EncodingTraits::find_char(elem);
     return ret;
   }
 
@@ -101,11 +99,7 @@ public:
             detail::span<I, S>{current, input_end}, input_end == end);
     detail::span<I, S> sanitized_input{current, current + sanitized_size};
     current += dist;
-    detail::static_vector<std::uint8_t, nb_bytes_to_read> ret;
-    ret.resize(sanitized_size);
-    for (auto i = 0; i < sanitized_size; ++i)
-      ret[i] = EncodingTraits::find_char(sanitized_input[i]);
-    return ret;
+    return sanitized_input;
   }
 
   void read_input(value_type& output)
@@ -121,7 +115,7 @@ public:
     output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes);
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)
     {
-      auto const indices_bits = detail::indices_to_bitset<BitshiftTraits>(
+      auto const indices_bits = detail::indices_to_bitset<EncodingTraits>(
           input.begin() + (i * BitshiftTraits::nb_encoded_bytes),
           BitshiftTraits::nb_encoded_bytes);
 
@@ -135,7 +129,7 @@ public:
       auto const old_size = output.size();
       output.resize(old_size + nb_last_bytes_to_decode);
 
-      auto const indices_bits = detail::indices_to_bitset<BitshiftTraits>(
+      auto const indices_bits = detail::indices_to_bitset<EncodingTraits>(
           input.begin() +
               (nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes),
           nb_loop_iterations.rem);
