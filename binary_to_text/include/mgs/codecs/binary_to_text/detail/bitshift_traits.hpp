@@ -29,6 +29,8 @@ struct bitshift_traits
       nb_total_decoded_bits / nb_encoded_bytes;
   static constexpr auto encoded_shift = nb_total_decoded_bits - nb_index_bits;
   static constexpr auto decoded_shift = nb_total_encoded_bits - nb_index_bits;
+  static constexpr auto nb_max_padding_bytes =
+      nb_encoded_bytes - ((8 / nb_index_bits) + ((8 % nb_index_bits) > 0));
 };
 }
 }

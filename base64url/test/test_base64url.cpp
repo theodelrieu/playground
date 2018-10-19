@@ -117,12 +117,24 @@ TEST_CASE("b64url lazy", "[base64url]")
   SECTION("invalid input")
   {
     std::vector<std::string> invalid_chars{
-        "="s, "*"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA==="s, "ZAW@"s};
-    std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
+        "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
+
+    // TODO move nopad tests in test case
+    std::vector<std::string> invalid_nopad_chars{"ZAAAA="s, "ZAW@=="s};
+    std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
 
     invalid_input_checks<base64url::decoder,
                          mgs::exceptions::invalid_input_error>(invalid_chars);
+
+    invalid_input_checks<base64url::nopad_decoder,
+                         mgs::exceptions::invalid_input_error>(invalid_chars);
+
+    invalid_input_checks<base64url::nopad_decoder,
+                         mgs::exceptions::invalid_input_error>(invalid_nopad_chars);
     invalid_input_checks<base64url::decoder,
+                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+
+    invalid_input_checks<base64url::nopad_decoder,
                          mgs::exceptions::unexpected_eof_error>(invalid_eof);
   }
 }

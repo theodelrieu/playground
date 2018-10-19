@@ -60,6 +60,7 @@ private:
   static constexpr auto nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_decoded_bytes;
+  static_assert(nb_bytes_to_read % BitshiftTraits::nb_decoded_bytes == 0, "");
 
 public:
   using value_type = detail::static_vector<char, 256>;

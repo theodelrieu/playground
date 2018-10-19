@@ -102,7 +102,7 @@ TEST_CASE("base64 low level", "[base64]")
   SECTION("invalid input")
   {
     std::vector<std::string> invalid_chars{
-        "="s, "*"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA==="s, "ZAW@"s};
+        "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
     std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
     invalid_input_checks<base64::decoder, mgs::exceptions::invalid_input_error>(

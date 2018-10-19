@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 #include <algorithm>
 #include <bitset>
@@ -10,7 +11,7 @@
 #include <mgs/codecs/binary_to_text/concepts/encoding_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/encoded_input_reader.hpp>
-#include <mgs/codecs/binary_to_text/detail/invalid_character_handler.hpp>
+#include <mgs/codecs/binary_to_text/detail/input_sanitizer.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
@@ -26,6 +27,8 @@ namespace codecs
 {
 namespace binary_to_text
 {
+template <int>
+  struct S;
 template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_decoder
 {
@@ -46,7 +49,9 @@ private:
                 "The impossible has occurred");
 
   static constexpr auto nb_bytes_to_read =
-      256 - (BitshiftTraits::nb_index_bits / 8);
+      (256 / BitshiftTraits::nb_encoded_bytes) *
+      BitshiftTraits::nb_encoded_bytes;
+  static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0, "");
 
 public:
   using value_type =
@@ -85,44 +90,28 @@ public:
       if (current == end)
         break;
       auto const byte = *current++;
-
-      if (EncodingTraits::find_char(byte) != -1)
-        ret[i] = byte;
-      else
-      {
-        detail::invalid_character_handler<EncodingTraits>::handle(
-            i, byte, current, end);
-      }
+      ret[i] = byte;
     }
     ret.resize(i);
+    auto const sanitized_size =
+        detail::input_sanitizer<EncodingTraits>::sanitize(ret, current == end);
+    ret.resize(sanitized_size);
     return ret;
   }
 
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
-    // TODO sanitize input
     auto const dist =
         std::min(static_cast<long int>(nb_bytes_to_read), end - current);
 
-    auto const it = std::find_if(current, current + dist, [](auto byte) {
-      return EncodingTraits::find_char(byte) == -1;
-    });
-    if (it != end)
-    {
-      // todo naming
-      auto const real_dist = dist - (it - current);
-      // FIXME redo how invalid chars are handled (with long inputs)
-      detail::invalid_character_handler<EncodingTraits>::handle(
-          it - current, *it, current, end);
-      auto sp = detail::span<I>{current, current + real_dist};
-      current += real_dist;
-      return sp;
-    }
-    detail::span<I> s{current, current + dist};
+    auto const input_end = current + dist;
+    auto const sanitized_size =
+        detail::input_sanitizer<EncodingTraits>::sanitize(
+            detail::span<I, S>{current, input_end}, input_end == end);
+    detail::span<I, S> sanitized_input{current, current + sanitized_size};
     current += dist;
-
-    return s;
+    return sanitized_size;
   }
 
   void read_input(value_type& output)
@@ -222,8 +211,8 @@ public:
 
       if (index == -1)
       {
-        detail::invalid_character_handler<EncodingTraits>::handle(
-            i, c, _current, _end);
+        // detail::invalid_character_handler<EncodingTraits>::handle(
+        //     i, c, _current, _end);
         break;
       }
 

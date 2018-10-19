@@ -12,13 +12,14 @@ namespace binary_to_text
 {
 namespace detail
 {
-template <typename T>
+template <typename T, typename U = T>
 class span
 {
 public:
-  span(T begin, T const end) : _begin(begin), _end(end)
+  span(T begin, U const end) : _begin(begin), _end(end)
   {
   }
+
   auto& operator[](std::size_t n)
   {
     return _begin[n];
@@ -56,7 +57,7 @@ public:
 
 private:
   T _begin;
-  T _end;
+  U _end;
 };
 }
 }
