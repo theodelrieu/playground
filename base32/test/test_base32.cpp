@@ -103,7 +103,7 @@ TEST_CASE("b32 lazy", "[base32]")
   SECTION("invalid input")
   {
     std::vector<std::string> invalid_chars{
-        "="s, "*"s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@"s};
+        "========"s, "**DA=2=="s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@==="s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
     invalid_input_checks<base32::decoder, mgs::exceptions::invalid_input_error>(

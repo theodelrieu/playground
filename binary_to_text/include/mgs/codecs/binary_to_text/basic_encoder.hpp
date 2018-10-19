@@ -45,10 +45,6 @@ private:
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-  static_assert(BitshiftTraits::nb_total_decoded_bits %
-                        BitshiftTraits::nb_encoded_bytes ==
-                    0,
-                "The impossible has occurred");
   static_assert(detail::is_power_of_2<sizeof(EncodingTraits::alphabet)>(),
                 "Alphabet size must be a power of 2");
   static_assert(detail::pow<2, BitshiftTraits::nb_index_bits>() ==
@@ -116,7 +112,7 @@ private:
         _end,
         typename std::iterator_traits<Iterator>::iterator_category{});
 
-    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(
         detail::pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
     auto const nb_loop_iterations =

@@ -61,7 +61,7 @@ bool invalid_padding_character_pos(std::size_t nb_non_padded_bytes)
 {
   auto const res =
       std::div(nb_non_padded_bytes * BitshiftTraits::nb_index_bits, 8);
-  return (res.quot == 0 || res.rem >= BitshiftTraits::nb_index_bits);
+  return (res.rem >= BitshiftTraits::nb_index_bits);
 }
 
 template <typename EncodingTraits,
@@ -97,9 +97,13 @@ public:
   template <typename Input>
   static std::size_t sanitize(Input const& input, bool)
   {
+    using BitshiftTraits = bitshift_traits<EncodingTraits>;
+
     auto const invalid_byte_it = find_invalid_byte<EncodingTraits>(input);
     if (invalid_byte_it != input.end())
       throw_invalid_input(invalid_byte_it);
+    else if (invalid_padding_character_pos<BitshiftTraits>(input.size()))
+      throw exceptions::unexpected_eof_error{"unexpected end of encoded input"};
     return input.size();
   }
 };
@@ -150,7 +154,6 @@ public:
     return input.size();
   }
 };
-
 }
 }
 }

@@ -2,6 +2,7 @@ Mandatory
 ----------
 
 * Benchmark!
+* remove nb_encoded etc, use log2 alphabet
 
 Later
 -----

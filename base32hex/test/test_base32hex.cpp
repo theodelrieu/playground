@@ -105,7 +105,7 @@ TEST_CASE("base32hex", "[base32hex]")
   SECTION("invalid input")
   {
     std::vector<std::string> invalid_chars{
-        "="s, "*"s, "V======="s, "ABC====="s, "ABCDEF=="s, "ABCDE@"s};
+        "========"s, "**+====/"s, "V======="s, "ABC====="s, "ABCDEF=="s, "ABCDE@=="s};
     std::vector<std::string> invalid_eof{"ABC"s, "ABDHCAV"s};
 
     invalid_input_checks<base32hex::decoder,

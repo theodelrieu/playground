@@ -27,7 +27,7 @@ struct output_encoder
       OutputIterator out,
       std::size_t n)
   {
-    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(
         pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
     for (auto i = 0u; i < n; ++i)
@@ -46,7 +46,7 @@ struct output_encoder
       std::bitset<BitshiftTraits::nb_decoded_bits> const& decoded_bits,
       OutputIterator out)
   {
-    constexpr std::bitset<BitshiftTraits::nb_total_decoded_bits> mask(
+    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(
         pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
     for (auto i = 0u; i < BitshiftTraits::nb_encoded_bytes; ++i)

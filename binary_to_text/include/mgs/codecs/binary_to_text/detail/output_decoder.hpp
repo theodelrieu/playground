@@ -23,17 +23,16 @@ struct output_decoder
 
   template <typename OutputIterator>
   static void decode(
-      std::bitset<BitshiftTraits::nb_total_decoded_bits> const& decoded_bits,
+      std::bitset<BitshiftTraits::nb_decoded_bits> const& decoded_bits,
       OutputIterator out,
       std::size_t n)
   {
-    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(256);
+    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(255);
 
     for (auto i = 0u; i < n; ++i)
     {
       out[i] = static_cast<std::uint8_t>(
-          (decoded_bits &
-           (mask << (BitshiftTraits::nb_decoded_bits - 8 - (8 * i))))
+          (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
               .to_ulong());
     }
   }
@@ -43,13 +42,12 @@ struct output_decoder
       std::bitset<BitshiftTraits::nb_decoded_bits> const& decoded_bits,
       OutputIterator out)
   {
-    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(256);
+    constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(255);
 
     for (auto i = 0u; i < BitshiftTraits::nb_decoded_bytes; ++i)
     {
       out[i] = static_cast<std::uint8_t>(
-          (decoded_bits &
-           (mask << (BitshiftTraits::nb_decoded_bits - 8 - (8 * i))))
+          (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
               .to_ulong());
     }
   }
