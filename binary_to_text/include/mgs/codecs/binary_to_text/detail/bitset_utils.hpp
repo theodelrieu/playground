@@ -29,16 +29,16 @@ auto decoded_to_bitset(RandomAccessIterator it, std::size_t n)
 }
 
 template <typename BitshiftTraits, typename RandomAccessIterator>
-auto encoded_to_bitset(RandomAccessIterator it, std::size_t n)
+auto indices_to_bitset(RandomAccessIterator it, std::size_t n)
 {
-  std::bitset<BitshiftTraits::nb_total_encoded_bits> input_bits;
+  std::bitset<BitshiftTraits::nb_decoded_bits> input_bits;
 
   for (auto i = 0u; i < n; ++i)
   {
     decltype(input_bits) bits(it[i]);
-    input_bits |=
-        (bits << (BitshiftTraits::nb_total_encoded_bits -
-                  BitshiftTraits::nb_extra_encoded_bits - 8 - (8 * i)));
+    input_bits |= (bits << (BitshiftTraits::nb_decoded_bits -
+                            BitshiftTraits::nb_index_bits -
+                            (BitshiftTraits::nb_index_bits * i)));
   }
   return input_bits;
 }
