@@ -18,6 +18,25 @@ namespace detail
 {
 struct encoding_traits
 {
+  using lookup_table_t = int const[256];
+
+  static constexpr lookup_table_t lookup_table = {
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0,  1,  2,  3,  4,  5,
+      6,  7,  8,  9,  -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+      -1, -1, -1, -1};
+
   using alphabet_t = char const[16];
 
   static constexpr alphabet_t alphabet = {'0',
@@ -42,13 +61,7 @@ struct encoding_traits
 
   static int find_char(char c)
   {
-    // toupper is meh...
-    if (c >= 'a' && c <= 'z')
-      c -= 32;
-    auto it = std::find(std::begin(alphabet), std::end(alphabet), c);
-    if (it == std::end(alphabet))
-      return -1;
-    return std::distance(std::begin(alphabet), it);
+    return lookup_table[static_cast<unsigned char>(c)];
   }
 
   static constexpr auto const padding_policy =
@@ -56,6 +69,7 @@ struct encoding_traits
 };
 
 constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
+constexpr encoding_traits::lookup_table_t encoding_traits::lookup_table;
 }
 }
 }
