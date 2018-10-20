@@ -37,7 +37,7 @@ struct base2_encoding_traits
   static constexpr auto const nb_decoded_bytes = 1;
   static constexpr auto const nb_encoded_bytes = 8;
 
-  static int find_char(char c)
+  static int index_of(char c)
   {
     auto const begin = std::begin(alphabet);
     auto const end = std::end(alphabet);

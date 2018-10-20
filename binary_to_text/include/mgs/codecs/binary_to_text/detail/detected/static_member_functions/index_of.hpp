@@ -17,7 +17,7 @@ namespace detected
 namespace static_member_functions
 {
 template <typename T, typename... Args>
-using find_char = decltype(T::find_char(std::declval<Args>()...));
+using index_of = decltype(T::index_of(std::declval<Args>()...));
 }
 }
 }

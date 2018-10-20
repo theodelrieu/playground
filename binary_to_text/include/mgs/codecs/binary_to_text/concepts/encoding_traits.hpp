@@ -8,7 +8,7 @@
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/nb_encoded_bytes.hpp>
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_character.hpp>
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_policy.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_member_functions/find_char.hpp>
+#include <mgs/codecs/binary_to_text/detail/detected/static_member_functions/index_of.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/detected.hpp>
@@ -23,7 +23,7 @@
 //  Same<padding_policy const, decltype(T::padding_policy) const> &&
 //  (Same<char const, decltype(T::padding_character) const> || T::padding_policy
 //  == padding_policy::none) && requires (char c) {
-//    Same<int, T::find_char(c)>;
+//    Same<int, T::index_of(c)>;
 //  };
 
 namespace mgs
@@ -79,7 +79,7 @@ public:
        T::padding_policy == padding_policy::none) &&
       meta::is_detected_exact<
           int,
-          detail::detected::static_member_functions::find_char,
+          detail::detected::static_member_functions::index_of,
           T,
           char>::value;
 };
@@ -139,10 +139,10 @@ struct static_asserts
 
   static_assert(meta::is_detected_exact<
                     int,
-                    detail::detected::static_member_functions::find_char,
+                    detail::detected::static_member_functions::index_of,
                     T,
                     char>::value,
-                "static method not found: int find_char(char)");
+                "static method not found: int index_of(char)");
 
   using trigger = decltype(sizeof(T));
 };

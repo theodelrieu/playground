@@ -49,7 +49,7 @@ struct encoding_traits
   static constexpr auto const nb_encoded_bytes = 8;
   static constexpr auto const nb_decoded_bytes = 5;
 
-  static int find_char(char c)
+  static int index_of(char c)
   {
     return lookup_table[static_cast<unsigned char>(c)];
   }

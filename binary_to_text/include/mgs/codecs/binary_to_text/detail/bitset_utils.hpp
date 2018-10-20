@@ -36,7 +36,7 @@ auto indices_to_bitset(RandomAccessIterator it, std::size_t n)
 
   for (auto i = 0u; i < n; ++i)
   {
-    decltype(input_bits) bits(EncodingTraits::find_char(it[i]));
+    decltype(input_bits) bits(EncodingTraits::index_of(it[i]));
     input_bits |= (bits << (BitshiftTraits::nb_decoded_bits -
                             BitshiftTraits::nb_index_bits -
                             (BitshiftTraits::nb_index_bits * i)));
