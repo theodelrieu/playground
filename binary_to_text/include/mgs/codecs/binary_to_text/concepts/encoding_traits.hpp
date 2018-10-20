@@ -1,11 +1,10 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 #include <utility>
 
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/alphabet.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_data_members/nb_decoded_bytes.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_data_members/nb_encoded_bytes.hpp>
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_character.hpp>
 #include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_policy.hpp>
 #include <mgs/codecs/binary_to_text/detail/detected/static_member_functions/index_of.hpp>
@@ -18,8 +17,6 @@
 //  std::is_array<decltype(T::alphabet)>::value &&
 //  Same<char const, std::remove_extent_t<decltype(T::alphabet)>> &&
 //  is_power_of_2<sizeof(T::alphabet)>() &&
-//  Integral<T::nb_encoded_bytes> && T::nb_encoded_bytes > 0 &&
-//  Integral<T::nb_decoded_bytes> && T::nb_decoded_bytes> && 
 //  Same<padding_policy const, decltype(T::padding_policy) const> &&
 //  (Same<char const, decltype(T::padding_character) const> || T::padding_policy
 //  == padding_policy::none) && requires (char c) {
@@ -44,46 +41,73 @@ struct is_encoding_traits : std::false_type
 template <typename T>
 struct is_encoding_traits<
     T,
-    std::enable_if_t<
-        meta::is_detected_convertible<
-            padding_policy,
-            detail::detected::static_data_members::padding_policy,
-            T>::value &&
-        std::is_array<
-            meta::detected_t<detail::detected::static_data_members::alphabet,
-                             T>>::value &&
-        std::is_integral<meta::detected_t<
-            detail::detected::static_data_members::nb_encoded_bytes,
-            T>>::value &&
-        std::is_integral<meta::detected_t<
-            detail::detected::static_data_members::nb_decoded_bytes,
-            T>>::value>>
+    std::enable_if_t<meta::is_detected_convertible<
+                         padding_policy,
+                         detail::detected::static_data_members::padding_policy,
+                         T>::value &&
+                     std::is_array<meta::detected_t<
+                         detail::detected::static_data_members::alphabet,
+                         T>>::value>>
 {
 private:
   using alphabet_t = detail::detected::static_data_members::alphabet<T>;
-  using nb_encoded_bytes_t =
-      detail::detected::static_data_members::nb_encoded_bytes<T>;
-  using nb_decoded_bytes_t =
-      detail::detected::static_data_members::nb_decoded_bytes<T>;
+
+  static constexpr auto const is_alphabet = 
+      std::is_array<alphabet_t>::value &&
+      std::is_same<char const, std::remove_extent_t<alphabet_t>>::value;
+
+  static constexpr auto const is_valid_alphabet_size =
+      detail::is_power_of_2<sizeof(alphabet_t)>();
+
+  static constexpr auto const has_padding_character = meta::is_detected<
+      detail::detected::static_data_members::padding_character,
+      T>::value;
+
+  static constexpr auto const is_valid_padding_character =
+      meta::is_detected_convertible<
+          char,
+          detail::detected::static_data_members::padding_character,
+          T>::value;
+
+  static constexpr auto const has_index_of = meta::is_detected_exact<
+      int,
+      detail::detected::static_member_functions::index_of,
+      T,
+      char>::value;
 
 public:
+  using requirements = std::tuple<>;
+
   static constexpr auto const value =
-      std::is_array<alphabet_t>::value &&
-      std::is_same<char const, std::remove_extent_t<alphabet_t>>::value &&
-      detail::is_power_of_2<sizeof(alphabet_t)>() && T::nb_encoded_bytes > 0 &&
-      T::nb_decoded_bytes > 0 &&
-      (meta::is_detected_convertible<
-           char,
-           detail::detected::static_data_members::padding_character,
-           T>::value ||
-       T::padding_policy == padding_policy::none) &&
-      meta::is_detected_exact<
-          int,
-          detail::detected::static_member_functions::index_of,
-          T,
-          char>::value;
+      is_alphabet && is_valid_alphabet_size &&
+      ((!has_padding_character && T::padding_policy == padding_policy::none) ||
+       (is_valid_padding_character &&
+        T::padding_policy != padding_policy::none)) &&
+      has_index_of;
+
+  // TODO 
+  static constexpr int trigger_static_asserts()
+  {
+    static_assert(value, "T is not Regular");
+    return 1;
+  }
 };
 
+template <typename T, typename = void>
+struct is_regular
+{
+  static constexpr auto const value =
+      is_semiregular<T>::value && comparison::is_equality_comparable<T>::value;
+
+  using requirements =
+      std::tuple<is_semiregular<T>, comparison::is_equality_comparable<T>>;
+
+  static constexpr int trigger_static_asserts()
+  {
+    static_assert(value, "T is not Regular");
+    return 1;
+  }
+};
 // TODO better name/design
 template <typename T>
 struct static_asserts
@@ -146,9 +170,6 @@ struct static_asserts
 
   using trigger = decltype(sizeof(T));
 };
-
-template <typename T>
-using trigger_static_asserts = typename static_asserts<T>::trigger;
 }
 }
 }
