@@ -136,11 +136,13 @@ public:
 template <typename EncodingTraits>
 class input_sanitizer<EncodingTraits, padding_policy::required>
 {
+  using BitshiftTraits = bitshift_traits<EncodingTraits>;
+
 public:
   template <typename Input>
   static std::size_t sanitize(Input const& input, bool end_of_input)
   {
-    if (input.size() % EncodingTraits::nb_encoded_bytes != 0)
+    if (input.size() % BitshiftTraits::nb_encoded_bytes != 0)
       throw exceptions::unexpected_eof_error{"unexpected end of encoded input"};
 
     auto const invalid_byte_it = find_invalid_byte<EncodingTraits>(input);

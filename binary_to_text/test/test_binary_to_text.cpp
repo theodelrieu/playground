@@ -34,8 +34,6 @@ struct base2_encoding_traits
 
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::none;
-  static constexpr auto const nb_decoded_bytes = 1;
-  static constexpr auto const nb_encoded_bytes = 8;
 
   static int index_of(char c)
   {

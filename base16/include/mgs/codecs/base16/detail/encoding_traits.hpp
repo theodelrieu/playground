@@ -56,9 +56,6 @@ struct encoding_traits
                                           'E',
                                           'F'};
 
-  static constexpr auto const nb_encoded_bytes = 2;
-  static constexpr auto const nb_decoded_bytes = 1;
-
   static int index_of(char c)
   {
     return lookup_table[static_cast<unsigned char>(c)];

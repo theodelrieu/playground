@@ -47,8 +47,6 @@ struct encoding_traits
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
       binary_to_text::padding_policy::required;
-  static constexpr auto const nb_decoded_bytes = 5;
-  static constexpr auto const nb_encoded_bytes = 8;
 
   static int index_of(char c)
   {

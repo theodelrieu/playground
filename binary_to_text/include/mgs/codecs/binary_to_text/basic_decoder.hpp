@@ -19,6 +19,7 @@
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
 {
@@ -32,20 +33,20 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_decoder
 {
 private:
-  static_assert(meta::concepts::iterator::is_input_iterator<Iterator>::value,
-                "Iterator is not an InputIterator");
-  static_assert(
-      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value,
-      "Sentinel is not a Sentinel<Iterator>");
-
-  using _ = concepts::trigger_static_asserts<EncodingTraits>;
+  static constexpr auto _ =
+      meta::trigger_static_asserts<
+          meta::concepts::iterator::is_input_iterator<Iterator>>() &&
+      meta::trigger_static_asserts<
+          meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>() &&
+      meta::trigger_static_asserts<
+          concepts::is_encoding_traits<EncodingTraits>>();
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
   static constexpr auto nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_encoded_bytes;
-  static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0, "");
+  static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0, "The impossible has occurred");
 
 public:
   using value_type = detail::static_vector<std::uint8_t, 256>;

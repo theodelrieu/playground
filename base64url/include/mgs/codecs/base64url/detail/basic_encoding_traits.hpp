@@ -47,8 +47,6 @@ struct basic_encoding_traits
 
   static constexpr auto const padding_character = '=';
   static constexpr auto const padding_policy = PaddingPolicy;
-  static constexpr auto const nb_encoded_bytes = 4;
-  static constexpr auto const nb_decoded_bytes = 3;
 
   static constexpr auto index_of(char c)
   {

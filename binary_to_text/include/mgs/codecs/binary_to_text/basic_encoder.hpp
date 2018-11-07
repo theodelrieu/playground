@@ -19,6 +19,7 @@
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
 {
@@ -32,25 +33,20 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
 private:
-  static_assert(meta::concepts::iterator::is_input_iterator<Iterator>::value,
-                "Iterator is not an InputIterator");
-  static_assert(
-      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value,
-      "Sentinel is not a Sentinel<Iterator>");
-
-  using _ = concepts::trigger_static_asserts<EncodingTraits>;
+  static constexpr auto _ =
+      meta::trigger_static_asserts<
+          concepts::is_encoding_traits<EncodingTraits>>() &&
+      meta::trigger_static_asserts<
+          meta::concepts::iterator::is_input_iterator<Iterator>>() &&
+      meta::trigger_static_asserts<
+          meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>();
 
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-  static_assert(detail::is_power_of_2<sizeof(EncodingTraits::alphabet)>(),
-                "Alphabet size must be a power of 2");
-  static_assert(detail::pow<2, BitshiftTraits::nb_index_bits>() ==
-                    sizeof(EncodingTraits::alphabet),
-                "Invalid alphabet size");
-  static_assert(EncodingTraits::nb_encoded_bytes < 256,
+  static_assert(BitshiftTraits::nb_encoded_bytes < 256,
                 "nb_encoded_bytes must be lower than 256");
 
   static constexpr auto nb_bytes_to_read =
