@@ -6,15 +6,16 @@ Later
 
 Must refine InputAdapter/Transformer requirements, to provide underlying buffer
 
-max_size or exact_size?
-Try again to add an API to optionally get the exact encoded/decoded size.
-Useful for sequence containers (string/vector)
-Optional InputAdapter API? SizedInputAdapter? Requires a SizedInputTransformer as well.
-Then pass the InputAdapter to output_traits::create;
+encoded_size/max_decoded_size:
+
+should be in a basic_codec: e.g. basic_binary_to_text_codec
+
+std::size_t encoded_size(std::size_t decoded_size);
+std::size_t max_decoded_size(std::size_t encoded_size);
+Might be a good idea to add a basic_codec in binary_to_text to handle '\0' there
 
 Refactor basic_codec, with priority tag.
 Add encoded_output must be copyable
-Might be a good idea to add a basic_codec in binary_to_text to handle '\0' there
 
 usage:
 ....
