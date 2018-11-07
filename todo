@@ -1,11 +1,8 @@
 Mandatory
 ----------
 
-* Benchmark!
-
 Later
 -----
-rename bitshifttraits
 
 Must refine InputAdapter/Transformer requirements, to provide underlying buffer
 
