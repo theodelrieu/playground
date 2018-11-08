@@ -20,6 +20,7 @@ namespace codecs
 template <typename CodecTraits>
 class basic_codec
 {
+public:
   template <typename Iterator, typename Sentinel>
   using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
@@ -32,7 +33,6 @@ class basic_codec
   using default_encoded_output = typename CodecTraits::default_encoded_output;
   using default_decoded_output = typename CodecTraits::default_decoded_output;
 
-public:
   template <
       typename Iterator,
       typename Sentinel,

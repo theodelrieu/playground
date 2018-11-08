@@ -58,6 +58,7 @@ public:
   using value_type = detail::static_vector<char, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
+  using encoding_traits = EncodingTraits;
 
   basic_encoder() = default;
 

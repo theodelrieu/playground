@@ -8,11 +8,8 @@ Must refine InputAdapter/Transformer requirements, to provide underlying buffer
 
 encoded_size/max_decoded_size:
 
-should be in a basic_codec: e.g. basic_binary_to_text_codec
-
-std::size_t encoded_size(std::size_t decoded_size);
-std::size_t max_decoded_size(std::size_t encoded_size);
-Might be a good idea to add a basic_codec in binary_to_text to handle '\0' there
+Specific to binary_to_text: basic_encoder/decoder encoded_size/max_decoded_size
+Also, force basic_encoder/basic_decoder in binary_to_text basic_codec
 
 Refactor basic_codec, with priority tag.
 Add encoded_output must be copyable

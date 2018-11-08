@@ -52,6 +52,7 @@ public:
   using value_type = detail::static_vector<std::uint8_t, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
+  using encoding_traits = EncodingTraits;
 
   basic_decoder() = default;
 

@@ -155,13 +155,38 @@ TEST_CASE("base2", "[binary_to_text]")
   {
     using base2 = binary_to_text::basic_codec<base2_codec_traits>;
 
-    char const tab[5] = "abcd";
+    SECTION("C char arrays, handle null terminator")
+    {
+      char const tab[5] = "abcd";
+      char const tab2[33] = "01100001011000100110001101100100";
 
-    auto const encoded = base2::encode(tab);
-    CHECK(encoded == "01100001011000100110001101100100"s);
-    char const tab2[33] = "01100001011000100110001101100100";
-    auto const decoded = base2::decode<std::string>(tab2);
-    CHECK(decoded == tab);
+      auto const encoded = base2::encode(tab);
+      auto const decoded = base2::decode<std::string>(tab2);
+
+      CHECK(encoded == "01100001011000100110001101100100"s);
+      CHECK(decoded == tab);
+    }
+
+    SECTION("encoded_size")
+    {
+      CHECK(base2::encoded_size(0) == 0);
+      CHECK(base2::encoded_size(1) == 8);
+      CHECK(base2::encoded_size(2) == 16);
+      CHECK(base2::encoded_size(8) == 64);
+    }
+
+    SECTION("max_decoded_size")
+    {
+      CHECK(base2::max_decoded_size(0) == 0);
+      CHECK(base2::max_decoded_size(1) == 0);
+      CHECK(base2::max_decoded_size(2) == 0);
+      CHECK(base2::max_decoded_size(3) == 0);
+      CHECK(base2::max_decoded_size(4) == 0);
+      CHECK(base2::max_decoded_size(5) == 0);
+      CHECK(base2::max_decoded_size(6) == 0);
+      CHECK(base2::max_decoded_size(7) == 0);
+      CHECK(base2::max_decoded_size(8) == 1);
+      CHECK(base2::max_decoded_size(64) == 8);
+    }
   }
-
 }
