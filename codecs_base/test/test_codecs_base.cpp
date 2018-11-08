@@ -138,9 +138,10 @@ TEST_CASE("codecs_base", "[codecs_base]")
       auto const v2 = noop_codec::encode(tab2);
       auto const v3 = noop_codec::encode(tab3);
 
+      // no handling of '\0' in this codec
       CHECK(v.size() == 10);
-      CHECK(v2.empty());
-      CHECK(v3.size() == 9);
+      CHECK(v2.size() == 10);
+      CHECK(v3.size() == 10);
     }
 
     SECTION("User-defined types")

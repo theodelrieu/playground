@@ -5,12 +5,13 @@
 #include <vector>
 
 #include <mgs/codecs/base64/detail/codec_traits.hpp>
-#include <mgs/codecs/basic_codec.hpp>
+#include <mgs/codecs/binary_to_text/basic_codec.hpp>
 
 namespace mgs
 {
 inline namespace v1
 {
-using base64 = codecs::basic_codec<codecs::base64::detail::codec_traits>;
+using base64 =
+    codecs::binary_to_text::basic_codec<codecs::base64::detail::codec_traits>;
 }
 }

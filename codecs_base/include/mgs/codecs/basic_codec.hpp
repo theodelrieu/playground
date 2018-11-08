@@ -88,18 +88,19 @@ public:
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
-  template <typename T = default_encoded_output,
-            typename U = void,
-            std::size_t N = 0,
-            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
-                             int> = 0>
-  static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
-      std::declval<meta::result_of_begin<decltype(tab)>>(),
-      std::declval<meta::result_of_end<decltype(tab)>>()))
-  {
-    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
-    return basic_codec::encode<T>(std::begin(tab), end_it);
-  }
+  // TODO same as below
+  // template <typename T = default_encoded_output,
+  //           typename U = void,
+  //           std::size_t N = 0,
+  //           std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
+  //                            int> = 0>
+  // static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
+  //     std::declval<meta::result_of_begin<decltype(tab)>>(),
+  //     std::declval<meta::result_of_end<decltype(tab)>>()))
+  // {
+  //   auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
+  //   return basic_codec::encode<T>(std::begin(tab), end_it);
+  // }
 
   template <
       typename T = default_decoded_output,
@@ -135,18 +136,19 @@ public:
     return basic_codec::decode<T>(begin(it), end(it));
   }
 
-  template <typename T = default_decoded_output,
-            typename U = void,
-            std::size_t N = 0,
-            std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
-                             int> = 0>
-  static auto decode(U (&tab)[N]) -> decltype(basic_codec::decode<T>(
-      std::declval<meta::result_of_begin<decltype(tab)>>(),
-      std::declval<meta::result_of_end<decltype(tab)>>()))
-  {
-    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
-    return basic_codec::decode<T>(std::begin(tab), end_it);
-  }
+  // TODO move this in binary_to_text basic_codec
+  // template <typename T = default_decoded_output,
+  //           typename U = void,
+  //           std::size_t N = 0,
+  //           std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
+  //                            int> = 0>
+  // static auto decode(U (&tab)[N]) -> decltype(basic_codec::decode<T>(
+  //     std::declval<meta::result_of_begin<decltype(tab)>>(),
+  //     std::declval<meta::result_of_end<decltype(tab)>>()))
+  // {
+  //   auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
+  //   return basic_codec::decode<T>(std::begin(tab), end_it);
+  // }
 };
 }
 }

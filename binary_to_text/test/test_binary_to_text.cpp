@@ -12,6 +12,7 @@
 
 #include <catch.hpp>
 
+#include <mgs/codecs/binary_to_text/basic_codec.hpp>
 #include <mgs/codecs/binary_to_text/basic_decoder.hpp>
 #include <mgs/codecs/binary_to_text/basic_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
@@ -55,6 +56,24 @@ using base2_encoder = adapters::transformer_adapter<
 template <typename Iterator, typename Sentinel = Iterator>
 using base2_decoder = adapters::transformer_adapter<
     binary_to_text::basic_decoder<Iterator, Sentinel, base2_encoding_traits>>;
+
+struct base2_codec_traits
+{
+  template <typename Iterator, typename Sentinel>
+  static auto make_encoder(Iterator begin, Sentinel end)
+  {
+    return base2_encoder<Iterator, Sentinel>(std::move(begin), std::move(end));
+  }
+
+  template <typename Iterator, typename Sentinel>
+  static auto make_decoder(Iterator begin, Sentinel end)
+  {
+    return base2_decoder<Iterator, Sentinel>(std::move(begin), std::move(end));
+  }
+
+  using default_encoded_output = std::string;
+  using default_decoded_output = std::vector<std::uint8_t>;
+};
 }
 
 TEST_CASE("base2", "[binary_to_text]")
@@ -131,4 +150,18 @@ TEST_CASE("base2", "[binary_to_text]")
     invalid_input_checks<base2_decoder, mgs::exceptions::unexpected_eof_error>(
         invalid_eof);
   }
+
+  SECTION("basic_codec")
+  {
+    using base2 = binary_to_text::basic_codec<base2_codec_traits>;
+
+    char const tab[5] = "abcd";
+
+    auto const encoded = base2::encode(tab);
+    CHECK(encoded == "01100001011000100110001101100100"s);
+    char const tab2[33] = "01100001011000100110001101100100";
+    auto const decoded = base2::decode<std::string>(tab2);
+    CHECK(decoded == tab);
+  }
+
 }
