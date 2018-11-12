@@ -158,12 +158,76 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
 TEST_CASE("base64url codec", "[base64url]")
 {
-  test_helpers::run_codec_tests<std::string>(
-      mgs::base64url{}, "abcde"s, "YWJjZGU="s);
+  using mgs::base64url;
+
+  SECTION("Rebular tests")
+  {
+    test_helpers::run_codec_tests<std::string>(
+        base64url{}, "abcde"s, "YWJjZGU="s);
+  }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base64url::encoded_size(0) == 0);
+    CHECK(base64url::encoded_size(1) == 4);
+    CHECK(base64url::encoded_size(2) == 4);
+    CHECK(base64url::encoded_size(3) == 4);
+    CHECK(base64url::encoded_size(4) == 8);
+    CHECK(base64url::encoded_size(5) == 8);
+    CHECK(base64url::encoded_size(6) == 8);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base64url::max_decoded_size(0) == 0);
+    CHECK(base64url::max_decoded_size(1) == 0);
+    CHECK(base64url::max_decoded_size(2) == 0);
+    CHECK(base64url::max_decoded_size(3) == 0);
+    CHECK(base64url::max_decoded_size(4) == 3);
+    CHECK(base64url::max_decoded_size(5) == 0);
+    CHECK(base64url::max_decoded_size(6) == 0);
+    CHECK(base64url::max_decoded_size(7) == 0);
+    CHECK(base64url::max_decoded_size(8) == 6);
+    CHECK(base64url::max_decoded_size(32) == 24);
+    CHECK(base64url::max_decoded_size(33) == 0);
+    CHECK(base64url::max_decoded_size(31) == 0);
+  }
 }
 
 TEST_CASE("base64url_nopad codec", "[base64url]")
 {
-  test_helpers::run_codec_tests<std::string>(
-      mgs::base64url_nopad{}, "abcde"s, "YWJjZGU"s);
+  using mgs::base64url_nopad;
+
+  SECTION("Regular tests")
+  {
+    test_helpers::run_codec_tests<std::string>(
+        base64url_nopad{}, "abcde"s, "YWJjZGU"s);
+  }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base64url_nopad::encoded_size(0) == 0);
+    CHECK(base64url_nopad::encoded_size(1) == 2);
+    CHECK(base64url_nopad::encoded_size(2) == 3);
+    CHECK(base64url_nopad::encoded_size(3) == 4);
+    CHECK(base64url_nopad::encoded_size(4) == 6);
+    CHECK(base64url_nopad::encoded_size(5) == 7);
+    CHECK(base64url_nopad::encoded_size(6) == 8);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base64url_nopad::max_decoded_size(0) == 0);
+    CHECK(base64url_nopad::max_decoded_size(1) == 0);
+    CHECK(base64url_nopad::max_decoded_size(2) == 1);
+    CHECK(base64url_nopad::max_decoded_size(3) == 2);
+    CHECK(base64url_nopad::max_decoded_size(4) == 3);
+    CHECK(base64url_nopad::max_decoded_size(5) == 0);
+    CHECK(base64url_nopad::max_decoded_size(6) == 4);
+    CHECK(base64url_nopad::max_decoded_size(7) == 5);
+    CHECK(base64url_nopad::max_decoded_size(8) == 6);
+    CHECK(base64url_nopad::max_decoded_size(21) == 0);
+    CHECK(base64url_nopad::max_decoded_size(22) == 16);
+    CHECK(base64url_nopad::max_decoded_size(24) == 18);
+  }
 }

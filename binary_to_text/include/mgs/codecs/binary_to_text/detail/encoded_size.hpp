@@ -17,16 +17,20 @@ namespace detail
 {
 template <typename EncodingTraits,
           padding_policy = EncodingTraits::padding_policy>
-struct encoded_size
+struct encoded_size;
+
+template <typename EncodingTraits>
+struct encoded_size<EncodingTraits, padding_policy::required>
 {
   constexpr std::size_t operator()(std::size_t decoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
-    auto rounded = decoded_size + (BitshiftTraits::nb_decoded_bytes - 1);
-    return ((rounded - (rounded % BitshiftTraits::nb_decoded_bytes)) *
-            BitshiftTraits::nb_encoded_bytes) /
-           BitshiftTraits::nb_decoded_bytes;
+    auto const quot = decoded_size / BitshiftTraits::nb_decoded_bytes;
+    auto const rem = decoded_size % BitshiftTraits::nb_decoded_bytes;
+
+    return quot * BitshiftTraits::nb_encoded_bytes +
+           int(rem > 0) * BitshiftTraits::nb_encoded_bytes;
   }
 };
 
@@ -37,10 +41,12 @@ struct encoded_size<EncodingTraits, padding_policy::none>
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
-    return ((decoded_size * BitshiftTraits::nb_encoded_bytes) /
-            BitshiftTraits::nb_decoded_bytes) +
-           (int((decoded_size * BitshiftTraits::nb_encoded_bytes) %
-                BitshiftTraits::nb_decoded_bytes));
+    auto const quot = (decoded_size * BitshiftTraits::nb_encoded_bytes) /
+                      BitshiftTraits::nb_decoded_bytes;
+    auto const rem = (decoded_size * BitshiftTraits::nb_encoded_bytes) %
+                      BitshiftTraits::nb_decoded_bytes;
+
+    return quot + int(rem > 0);
   }
 };
 
