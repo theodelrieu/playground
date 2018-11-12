@@ -1,11 +1,12 @@
 #pragma once
-#include <cstring>
 
 #include <array>
 #include <cstddef>
+#include <cstring>
 #include <iterator>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
@@ -82,6 +83,33 @@ struct default_converter<std::string>
       adapter.read_block();
     }
     return s;
+  }
+};
+
+// TODO concept
+template <typename T, typename Alloc>
+struct default_converter<
+    std::vector<T, Alloc>,
+    std::enable_if_t<std::is_integral<T>::value &&
+                     !std::is_same<T, bool>::value && sizeof(T) == 1>>
+{
+private:
+  using Ret = std::vector<T, Alloc>;
+
+public:
+  template <typename InputAdapter>
+  static Ret create(InputAdapter& adapter)
+  {
+    Ret v;
+
+    while (auto const bsize = adapter.block().size())
+    {
+      auto const old_size = v.size();
+      v.resize(old_size + bsize);
+      std::memcpy(&*(v.begin() + old_size), adapter.block().data(), bsize);
+      adapter.read_block();
+    }
+    return v;
   }
 };
 }
