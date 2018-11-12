@@ -138,6 +138,33 @@ TEST_CASE("base16 lazy", "[base16]")
 
 TEST_CASE("base16 codec", "[base16]")
 {
-  test_helpers::run_codec_tests<std::string>(
-      mgs::base16{}, "foobar"s, "666F6F626172"s);
+  using mgs::base16;
+
+  SECTION("Regular tests")
+  {
+    test_helpers::run_codec_tests<std::string>(
+        base16{}, "foobar"s, "666F6F626172"s);
+  }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base16::encoded_size(0) == 0);
+    CHECK(base16::encoded_size(1) == 2);
+    CHECK(base16::encoded_size(2) == 4);
+    CHECK(base16::encoded_size(3) == 6);
+    CHECK(base16::encoded_size(4) == 8);
+    CHECK(base16::encoded_size(5) == 10);
+    CHECK(base16::encoded_size(8) == 16);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base16::max_decoded_size(0) == 0);
+    CHECK(base16::max_decoded_size(1) == 0);
+    CHECK(base16::max_decoded_size(2) == 1);
+    CHECK(base16::max_decoded_size(3) == 0);
+    CHECK(base16::max_decoded_size(4) == 2);
+    CHECK(base16::max_decoded_size(32) == 16);
+    CHECK(base16::max_decoded_size(33) == 0);
+  }
 }
