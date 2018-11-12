@@ -114,6 +114,37 @@ TEST_CASE("base64 low level", "[base64]")
 
 TEST_CASE("base64 codec", "[base64]")
 {
-  test_helpers::run_codec_tests<std::string>(
-      mgs::base64{}, "abcde"s, "YWJjZGU="s);
+  using mgs::base64;
+
+  SECTION("Regular tests")
+  {
+    test_helpers::run_codec_tests<std::string>(base64{}, "abcde"s, "YWJjZGU="s);
+  }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base64::encoded_size(0) == 0);
+    CHECK(base64::encoded_size(1) == 4);
+    CHECK(base64::encoded_size(2) == 4);
+    CHECK(base64::encoded_size(3) == 4);
+    CHECK(base64::encoded_size(4) == 8);
+    CHECK(base64::encoded_size(5) == 8);
+    CHECK(base64::encoded_size(6) == 8);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base64::max_decoded_size(0) == 0);
+    CHECK(base64::max_decoded_size(1) == 0);
+    CHECK(base64::max_decoded_size(2) == 0);
+    CHECK(base64::max_decoded_size(3) == 0);
+    CHECK(base64::max_decoded_size(4) == 3);
+    CHECK(base64::max_decoded_size(5) == 0);
+    CHECK(base64::max_decoded_size(6) == 0);
+    CHECK(base64::max_decoded_size(7) == 0);
+    CHECK(base64::max_decoded_size(8) == 6);
+    CHECK(base64::max_decoded_size(32) == 24);
+    CHECK(base64::max_decoded_size(33) == 0);
+    CHECK(base64::max_decoded_size(31) == 0);
+  }
 }
