@@ -1,6 +1,8 @@
 Mandatory
 ----------
 
+* add a function that returns the size written, and writes to an output iterator
+
 Later
 -----
 
