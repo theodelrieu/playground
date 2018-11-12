@@ -160,11 +160,15 @@ TEST_CASE("base16 codec", "[base16]")
   SECTION("max_decoded_size")
   {
     CHECK(base16::max_decoded_size(0) == 0);
-    CHECK(base16::max_decoded_size(1) == 0);
     CHECK(base16::max_decoded_size(2) == 1);
-    CHECK(base16::max_decoded_size(3) == 0);
     CHECK(base16::max_decoded_size(4) == 2);
     CHECK(base16::max_decoded_size(32) == 16);
-    CHECK(base16::max_decoded_size(33) == 0);
+
+    CHECK_THROWS_AS(base16::max_decoded_size(1),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base16::max_decoded_size(3),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base16::max_decoded_size(33),
+                    mgs::exceptions::invalid_input_error);
   }
 }

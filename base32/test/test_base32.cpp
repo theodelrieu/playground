@@ -137,16 +137,26 @@ TEST_CASE("base32 codec", "[base32]")
   SECTION("max_decoded_size")
   {
     CHECK(base32::max_decoded_size(0) == 0);
-    CHECK(base32::max_decoded_size(1) == 0);
-    CHECK(base32::max_decoded_size(2) == 0);
-    CHECK(base32::max_decoded_size(3) == 0);
-    CHECK(base32::max_decoded_size(4) == 0);
-    CHECK(base32::max_decoded_size(5) == 0);
-    CHECK(base32::max_decoded_size(6) == 0);
-    CHECK(base32::max_decoded_size(7) == 0);
     CHECK(base32::max_decoded_size(8) == 5);
     CHECK(base32::max_decoded_size(32) == 20);
-    CHECK(base32::max_decoded_size(33) == 0);
-    CHECK(base32::max_decoded_size(31) == 0);
+
+    CHECK_THROWS_AS(base32::max_decoded_size(1),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(2),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(3),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(4),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(5),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(6),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(7),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(33),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base32::max_decoded_size(31),
+                    mgs::exceptions::invalid_input_error);
   }
 }

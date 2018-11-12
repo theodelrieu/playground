@@ -178,15 +178,23 @@ TEST_CASE("base2", "[binary_to_text]")
     SECTION("max_decoded_size")
     {
       CHECK(base2::max_decoded_size(0) == 0);
-      CHECK(base2::max_decoded_size(1) == 0);
-      CHECK(base2::max_decoded_size(2) == 0);
-      CHECK(base2::max_decoded_size(3) == 0);
-      CHECK(base2::max_decoded_size(4) == 0);
-      CHECK(base2::max_decoded_size(5) == 0);
-      CHECK(base2::max_decoded_size(6) == 0);
-      CHECK(base2::max_decoded_size(7) == 0);
       CHECK(base2::max_decoded_size(8) == 1);
       CHECK(base2::max_decoded_size(64) == 8);
+
+      CHECK_THROWS_AS(base2::max_decoded_size(1),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(2),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(3),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(4),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(5),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(6),
+                      mgs::exceptions::invalid_input_error);
+      CHECK_THROWS_AS(base2::max_decoded_size(7),
+                      mgs::exceptions::invalid_input_error);
     }
   }
 }

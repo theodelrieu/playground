@@ -180,17 +180,26 @@ TEST_CASE("base64url codec", "[base64url]")
   SECTION("max_decoded_size")
   {
     CHECK(base64url::max_decoded_size(0) == 0);
-    CHECK(base64url::max_decoded_size(1) == 0);
-    CHECK(base64url::max_decoded_size(2) == 0);
-    CHECK(base64url::max_decoded_size(3) == 0);
     CHECK(base64url::max_decoded_size(4) == 3);
-    CHECK(base64url::max_decoded_size(5) == 0);
-    CHECK(base64url::max_decoded_size(6) == 0);
-    CHECK(base64url::max_decoded_size(7) == 0);
     CHECK(base64url::max_decoded_size(8) == 6);
     CHECK(base64url::max_decoded_size(32) == 24);
-    CHECK(base64url::max_decoded_size(33) == 0);
-    CHECK(base64url::max_decoded_size(31) == 0);
+
+    CHECK_THROWS_AS(base64url::max_decoded_size(1),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(2),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(3),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(5),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(6),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(7),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(33),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(31),
+                    mgs::exceptions::invalid_input_error);
   }
 }
 
@@ -218,16 +227,20 @@ TEST_CASE("base64url_nopad codec", "[base64url]")
   SECTION("max_decoded_size")
   {
     CHECK(base64url_nopad::max_decoded_size(0) == 0);
-    CHECK(base64url_nopad::max_decoded_size(1) == 0);
     CHECK(base64url_nopad::max_decoded_size(2) == 1);
     CHECK(base64url_nopad::max_decoded_size(3) == 2);
     CHECK(base64url_nopad::max_decoded_size(4) == 3);
-    CHECK(base64url_nopad::max_decoded_size(5) == 0);
     CHECK(base64url_nopad::max_decoded_size(6) == 4);
     CHECK(base64url_nopad::max_decoded_size(7) == 5);
     CHECK(base64url_nopad::max_decoded_size(8) == 6);
-    CHECK(base64url_nopad::max_decoded_size(21) == 0);
     CHECK(base64url_nopad::max_decoded_size(22) == 16);
     CHECK(base64url_nopad::max_decoded_size(24) == 18);
+
+    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(1),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(5),
+                    mgs::exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(21),
+                    mgs::exceptions::invalid_input_error);
   }
 }
