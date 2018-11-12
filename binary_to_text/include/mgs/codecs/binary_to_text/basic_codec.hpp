@@ -21,6 +21,11 @@ class basic_codec : public codecs::basic_codec<CodecTraits>
   using base = codecs::basic_codec<CodecTraits>;
 
 public:
+  using base::encode;
+  using base::decode;
+  using base::make_encoder;
+  using base::make_decoder;
+
   template <typename T = typename base::default_encoded_output,
             std::size_t N = 0>
   static auto encode(char const (&tab)[N])
