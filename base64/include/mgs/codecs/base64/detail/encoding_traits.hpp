@@ -15,6 +15,7 @@ namespace base64
 {
 namespace detail
 {
+template <typename = void>
 struct encoding_traits
 {
   using alphabet_t = char const[64];
@@ -54,9 +55,16 @@ struct encoding_traits
   }
 };
 
-constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
-constexpr char const encoding_traits::padding_character;
-constexpr encoding_traits::lookup_table_t encoding_traits::lookup_table;
+template <typename Dummy>
+constexpr typename encoding_traits<Dummy>::alphabet_t
+    encoding_traits<Dummy>::alphabet;
+
+template <typename Dummy>
+constexpr char const encoding_traits<Dummy>::padding_character;
+
+template <typename Dummy>
+constexpr typename encoding_traits<Dummy>::lookup_table_t
+    encoding_traits<Dummy>::lookup_table;
 }
 }
 }

@@ -16,6 +16,7 @@ namespace base16
 {
 namespace detail
 {
+template <typename Dummy = void>
 struct encoding_traits
 {
   using lookup_table_t = int const[256];
@@ -65,8 +66,12 @@ struct encoding_traits
       binary_to_text::padding_policy::none;
 };
 
-constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
-constexpr encoding_traits::lookup_table_t encoding_traits::lookup_table;
+template <typename T>
+constexpr typename encoding_traits<T>::alphabet_t encoding_traits<T>::alphabet;
+
+template <typename T>
+constexpr typename encoding_traits<T>::lookup_table_t
+    encoding_traits<T>::lookup_table;
 }
 }
 }

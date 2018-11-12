@@ -15,6 +15,7 @@ namespace base32hex
 {
 namespace detail
 {
+template <typename Dummy = void>
 struct encoding_traits
 {
   using lookup_table_t = int const[256];
@@ -53,9 +54,15 @@ struct encoding_traits
   }
 };
 
-constexpr encoding_traits::alphabet_t encoding_traits::alphabet;
-constexpr encoding_traits::lookup_table_t encoding_traits::lookup_table;
-constexpr char const encoding_traits::padding_character;
+template <typename T>
+constexpr typename encoding_traits<T>::alphabet_t encoding_traits<T>::alphabet;
+
+template <typename T>
+constexpr typename encoding_traits<T>::lookup_table_t
+    encoding_traits<T>::lookup_table;
+
+template <typename T>
+constexpr char const encoding_traits<T>::padding_character;
 }
 }
 }
