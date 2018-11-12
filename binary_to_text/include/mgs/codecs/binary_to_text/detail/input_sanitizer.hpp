@@ -57,11 +57,10 @@ void ensures_only_padding_characters(RandomAccessIterator invalid_byte_it,
 }
 
 template <typename BitshiftTraits>
-bool invalid_padding_character_pos(std::size_t nb_non_padded_bytes)
+constexpr bool invalid_padding_character_pos(std::size_t nb_non_padded_bytes)
 {
-  auto const res =
-      std::div(nb_non_padded_bytes * BitshiftTraits::nb_index_bits, 8);
-  return (res.rem >= BitshiftTraits::nb_index_bits);
+  auto const rem = (nb_non_padded_bytes * BitshiftTraits::nb_index_bits) % 8;
+  return rem >= BitshiftTraits::nb_index_bits;
 }
 
 template <typename EncodingTraits,

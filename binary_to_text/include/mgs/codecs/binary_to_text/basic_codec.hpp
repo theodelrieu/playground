@@ -3,6 +3,9 @@
 #include <mgs/codecs/basic_codec.hpp>
 
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
+#include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>
+#include <mgs/codecs/binary_to_text/detail/max_decoded_size.hpp>
 
 namespace mgs
 {
@@ -40,15 +43,13 @@ public:
 
   static constexpr std::size_t encoded_size(std::size_t decoded_size)
   {
-    // TODO find the correct place to calculate size (i.e. where to retrieve encoding traits...)
+    // TODO find the correct place to calculate size (i.e. where to retrieve
+    // encoding traits...)
     using EncodingTraits =
         typename base::template encoder<char*,
                                         char*>::transformer::encoding_traits;
-    using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-    // FIXME only works for base2, padding policies
-    return ((decoded_size / BitshiftTraits::nb_decoded_bytes) *
-            BitshiftTraits::nb_encoded_bytes);
+    return detail::encoded_size<EncodingTraits>{}(decoded_size);
   }
 
   static constexpr std::size_t max_decoded_size(std::size_t encoded_size)
@@ -56,12 +57,8 @@ public:
     using EncodingTraits =
         typename base::template decoder<char*,
                                         char*>::transformer::encoding_traits;
-    using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-    // FIXME only works for base2;
-    return encoded_size % BitshiftTraits::nb_encoded_bytes != 0 ?
-               0 :
-               encoded_size / BitshiftTraits::nb_encoded_bytes;
+    return detail::max_decoded_size<EncodingTraits>{}(encoded_size);
   }
 };
 }
