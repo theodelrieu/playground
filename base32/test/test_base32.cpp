@@ -115,6 +115,38 @@ TEST_CASE("b32 lazy", "[base32]")
 
 TEST_CASE("base32 codec", "[base32]")
 {
-  test_helpers::run_codec_tests<std::string>(
-      mgs::base32{}, "abcde"s, "MFRGGZDF"s);
+  using mgs::base32;
+
+  SECTION("Regular tests")
+  {
+    test_helpers::run_codec_tests<std::string>(
+        base32{}, "abcde"s, "MFRGGZDF"s);
+  }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base32::encoded_size(0) == 0);
+    CHECK(base32::encoded_size(1) == 8);
+    CHECK(base32::encoded_size(2) == 8);
+    CHECK(base32::encoded_size(3) == 8);
+    CHECK(base32::encoded_size(4) == 8);
+    CHECK(base32::encoded_size(5) == 8);
+    CHECK(base32::encoded_size(6) == 16);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base32::max_decoded_size(0) == 0);
+    CHECK(base32::max_decoded_size(1) == 0);
+    CHECK(base32::max_decoded_size(2) == 0);
+    CHECK(base32::max_decoded_size(3) == 0);
+    CHECK(base32::max_decoded_size(4) == 0);
+    CHECK(base32::max_decoded_size(5) == 0);
+    CHECK(base32::max_decoded_size(6) == 0);
+    CHECK(base32::max_decoded_size(7) == 0);
+    CHECK(base32::max_decoded_size(8) == 5);
+    CHECK(base32::max_decoded_size(32) == 20);
+    CHECK(base32::max_decoded_size(33) == 0);
+    CHECK(base32::max_decoded_size(31) == 0);
+  }
 }
