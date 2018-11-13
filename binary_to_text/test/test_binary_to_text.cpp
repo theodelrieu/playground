@@ -49,31 +49,13 @@ struct base2_encoding_traits
 
 constexpr base2_encoding_traits::alphabet_t base2_encoding_traits::alphabet;
 
-template <typename Iterator, typename Sentinel = Iterator>
-using base2_encoder = adapters::transformer_adapter<
-    binary_to_text::basic_encoder<Iterator, Sentinel, base2_encoding_traits>>;
+using base2 = binary_to_text::basic_codec<base2_encoding_traits>;
 
-template <typename Iterator, typename Sentinel = Iterator>
-using base2_decoder = adapters::transformer_adapter<
-    binary_to_text::basic_decoder<Iterator, Sentinel, base2_encoding_traits>>;
+template <typename I, typename S = I>
+using base2_encoder = typename base2::template encoder<I, S>;
 
-struct base2_codec_traits
-{
-  template <typename Iterator, typename Sentinel>
-  static auto make_encoder(Iterator begin, Sentinel end)
-  {
-    return base2_encoder<Iterator, Sentinel>(std::move(begin), std::move(end));
-  }
-
-  template <typename Iterator, typename Sentinel>
-  static auto make_decoder(Iterator begin, Sentinel end)
-  {
-    return base2_decoder<Iterator, Sentinel>(std::move(begin), std::move(end));
-  }
-
-  using default_encoded_output = std::string;
-  using default_decoded_output = std::vector<std::uint8_t>;
-};
+template <typename I, typename S = I>
+using base2_decoder = typename base2::template decoder<I, S>;
 }
 
 TEST_CASE("base2", "[binary_to_text]")
@@ -153,8 +135,6 @@ TEST_CASE("base2", "[binary_to_text]")
 
   SECTION("basic_codec")
   {
-    using base2 = binary_to_text::basic_codec<base2_codec_traits>;
-
     SECTION("C char arrays, handle null terminator")
     {
       char const tab[5] = "abcd";

@@ -6,10 +6,6 @@
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/base64url.hpp>
-#include <mgs/codecs/base64url/decoder.hpp>
-#include <mgs/codecs/base64url/encoder.hpp>
-#include <mgs/codecs/base64url/nopad_decoder.hpp>
-#include <mgs/codecs/base64url/nopad_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -17,7 +13,7 @@
 #include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs::codecs;
+using namespace mgs;
 namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
@@ -123,19 +119,19 @@ TEST_CASE("b64url lazy", "[base64url]")
     std::vector<std::string> invalid_nopad_chars{"ZAAAA="s, "ZAW@=="s};
     std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
 
-    invalid_input_checks<base64url::decoder,
-                         mgs::exceptions::invalid_input_error>(invalid_chars);
+    invalid_input_checks<base64url::decoder, exceptions::invalid_input_error>(
+        invalid_chars);
 
-    invalid_input_checks<base64url::nopad_decoder,
-                         mgs::exceptions::invalid_input_error>(invalid_chars);
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::invalid_input_error>(invalid_chars);
 
-    invalid_input_checks<base64url::nopad_decoder,
-                         mgs::exceptions::invalid_input_error>(invalid_nopad_chars);
-    invalid_input_checks<base64url::decoder,
-                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::invalid_input_error>(invalid_nopad_chars);
+    invalid_input_checks<base64url::decoder, exceptions::unexpected_eof_error>(
+        invalid_eof);
 
-    invalid_input_checks<base64url::nopad_decoder,
-                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::unexpected_eof_error>(invalid_eof);
   }
 }
 
@@ -147,20 +143,18 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
   SECTION("encode")
   {
-    common_checks<base64url::nopad_encoder>(decoded, encoded_unpadded);
+    common_checks<base64url_nopad::encoder>(decoded, encoded_unpadded);
   }
 
   SECTION("decode")
   {
-    common_checks<base64url::nopad_decoder>(encoded_padded, decoded);
+    common_checks<base64url_nopad::decoder>(encoded_padded, decoded);
   }
 }
 
 TEST_CASE("base64url codec", "[base64url]")
 {
-  using mgs::base64url;
-
-  SECTION("Rebular tests")
+  SECTION("Regular tests")
   {
     test_helpers::run_codec_tests<std::string>(
         base64url{}, "abcde"s, "YWJjZGU="s);
@@ -185,28 +179,26 @@ TEST_CASE("base64url codec", "[base64url]")
     CHECK(base64url::max_decoded_size(32) == 24);
 
     CHECK_THROWS_AS(base64url::max_decoded_size(1),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(2),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(3),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(5),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(6),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(7),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(33),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url::max_decoded_size(31),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
   }
 }
 
 TEST_CASE("base64url_nopad codec", "[base64url]")
 {
-  using mgs::base64url_nopad;
-
   SECTION("Regular tests")
   {
     test_helpers::run_codec_tests<std::string>(
@@ -237,10 +229,10 @@ TEST_CASE("base64url_nopad codec", "[base64url]")
     CHECK(base64url_nopad::max_decoded_size(24) == 18);
 
     CHECK_THROWS_AS(base64url_nopad::max_decoded_size(1),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url_nopad::max_decoded_size(5),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64url_nopad::max_decoded_size(21),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
   }
 }

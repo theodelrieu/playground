@@ -6,8 +6,6 @@
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
 #include <mgs/base16.hpp>
-#include <mgs/codecs/base16/decoder.hpp>
-#include <mgs/codecs/base16/encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
@@ -15,7 +13,7 @@
 #include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs::codecs;
+using namespace mgs;
 namespace adapter_concepts = mgs::adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
@@ -129,10 +127,10 @@ TEST_CASE("base16 lazy", "[base16]")
     std::vector<std::string> invalid_chars{"=="s, "**"s, "0G"s};
     std::vector<std::string> invalid_eof{"0F0"s};
 
-    invalid_input_checks<base16::decoder, mgs::exceptions::invalid_input_error>(
+    invalid_input_checks<base16::decoder, exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<base16::decoder,
-                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<base16::decoder, exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }
 
@@ -165,10 +163,10 @@ TEST_CASE("base16 codec", "[base16]")
     CHECK(base16::max_decoded_size(32) == 16);
 
     CHECK_THROWS_AS(base16::max_decoded_size(1),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base16::max_decoded_size(3),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base16::max_decoded_size(33),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
   }
 }

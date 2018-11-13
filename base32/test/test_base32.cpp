@@ -5,18 +5,16 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
-#include <mgs/codecs/base32/decoder.hpp>
-#include <mgs/codecs/base32/encoder.hpp>
+#include <mgs/base32.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/base32.hpp>
 
 #include <test_helpers/binary_to_text.hpp>
 #include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-using namespace mgs::codecs;
-namespace adapter_concepts = mgs::adapters::concepts;
+using namespace mgs;
+namespace adapter_concepts = adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -102,25 +100,26 @@ TEST_CASE("b32 lazy", "[base32]")
 
   SECTION("invalid input")
   {
-    std::vector<std::string> invalid_chars{
-        "========"s, "**DA=2=="s, "M======="s, "MFR====="s, "MFRAFA=="s, "MFRA@==="s};
+    std::vector<std::string> invalid_chars{"========"s,
+                                           "**DA=2=="s,
+                                           "M======="s,
+                                           "MFR====="s,
+                                           "MFRAFA=="s,
+                                           "MFRA@==="s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
-    invalid_input_checks<base32::decoder, mgs::exceptions::invalid_input_error>(
+    invalid_input_checks<base32::decoder, exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<base32::decoder,
-                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<base32::decoder, exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }
 
 TEST_CASE("base32 codec", "[base32]")
 {
-  using mgs::base32;
-
   SECTION("Regular tests")
   {
-    test_helpers::run_codec_tests<std::string>(
-        base32{}, "abcde"s, "MFRGGZDF"s);
+    test_helpers::run_codec_tests<std::string>(base32{}, "abcde"s, "MFRGGZDF"s);
   }
 
   SECTION("encoded_size")
@@ -141,22 +140,22 @@ TEST_CASE("base32 codec", "[base32]")
     CHECK(base32::max_decoded_size(32) == 20);
 
     CHECK_THROWS_AS(base32::max_decoded_size(1),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(2),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(3),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(4),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(5),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(6),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(7),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(33),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base32::max_decoded_size(31),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
   }
 }

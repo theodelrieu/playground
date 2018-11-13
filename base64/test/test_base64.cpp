@@ -1,14 +1,12 @@
 #include <fstream>
+#include <iostream>
 #include <random>
 #include <string>
-#include <iostream>
 #include <vector>
 
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_input_adapter.hpp>
-#include <mgs/codecs/base64/decoder.hpp>
-#include <mgs/codecs/base64/encoder.hpp>
 #include <mgs/base64.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -17,8 +15,8 @@
 #include <test_helpers/codecs_base.hpp>
 
 using namespace std::string_literals;
-namespace base64 = mgs::codecs::base64;
-namespace adapter_concepts = mgs::adapters::concepts;
+using namespace mgs;
+namespace adapter_concepts = adapters::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
@@ -105,17 +103,15 @@ TEST_CASE("base64 low level", "[base64]")
         "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
     std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
-    invalid_input_checks<base64::decoder, mgs::exceptions::invalid_input_error>(
+    invalid_input_checks<base64::decoder, exceptions::invalid_input_error>(
         invalid_chars);
-    invalid_input_checks<base64::decoder,
-                         mgs::exceptions::unexpected_eof_error>(invalid_eof);
+    invalid_input_checks<base64::decoder, exceptions::unexpected_eof_error>(
+        invalid_eof);
   }
 }
 
 TEST_CASE("base64 codec", "[base64]")
 {
-  using mgs::base64;
-
   SECTION("Regular tests")
   {
     test_helpers::run_codec_tests<std::string>(base64{}, "abcde"s, "YWJjZGU="s);
@@ -140,20 +136,20 @@ TEST_CASE("base64 codec", "[base64]")
     CHECK(base64::max_decoded_size(32) == 24);
 
     CHECK_THROWS_AS(base64::max_decoded_size(1),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(2),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(3),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(5),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(6),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(7),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(33),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
     CHECK_THROWS_AS(base64::max_decoded_size(31),
-                    mgs::exceptions::invalid_input_error);
+                    exceptions::invalid_input_error);
   }
 }

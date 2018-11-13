@@ -21,12 +21,12 @@ template <typename CodecTraits>
 class basic_codec
 {
 public:
-  template <typename Iterator, typename Sentinel>
+  template <typename Iterator, typename Sentinel = Iterator>
   using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
 
   // TODO SFINAE + detected + codec_traits concept
-  template <typename Iterator, typename Sentinel>
+  template <typename Iterator, typename Sentinel = Iterator>
   using decoder = decltype(CodecTraits::make_decoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
 
@@ -87,20 +87,6 @@ public:
 
     return basic_codec::encode<T>(begin(it), end(it));
   }
-
-  // TODO same as below
-  // template <typename T = default_encoded_output,
-  //           typename U = void,
-  //           std::size_t N = 0,
-  //           std::enable_if_t<std::is_same<std::remove_const_t<U>, char>::value,
-  //                            int> = 0>
-  // static auto encode(U (&tab)[N]) -> decltype(basic_codec::encode<T>(
-  //     std::declval<meta::result_of_begin<decltype(tab)>>(),
-  //     std::declval<meta::result_of_end<decltype(tab)>>()))
-  // {
-  //   auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
-  //   return basic_codec::encode<T>(std::begin(tab), end_it);
-  // }
 
   template <
       typename T = default_decoded_output,

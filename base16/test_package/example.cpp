@@ -2,12 +2,11 @@
 #include <iostream>
 #include <string>
 
-#include <mgs/codecs/base16/encoder.hpp>
+#include <mgs/base16.hpp>
 
 int main(int argc, char const* argv[])
 {
-  auto const h = "Hello, World!";
-  mgs::codecs::base16::encoder<char const*> enc(h, h + std::strlen(h));
+  auto&& h = "Hello, World!";
 
-  std::cout << std::string(enc.begin(), v.end()) << std::endl;
+  std::cout << mgs::base16::encode(h) << std::endl;
 }
