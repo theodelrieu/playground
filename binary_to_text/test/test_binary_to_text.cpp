@@ -196,5 +196,33 @@ TEST_CASE("base2", "[binary_to_text]")
       CHECK_THROWS_AS(base2::max_decoded_size(7),
                       mgs::exceptions::invalid_input_error);
     }
+
+    SECTION("write")
+    {
+      SECTION("small buffer")
+      {
+        auto const str = "abcd"s;
+        auto const encoded_str = "01100001011000100110001101100100"s;
+        auto enc = base2::make_encoder(str.begin(), str.end());
+        std::string encoded;
+        auto const nb_read = enc.write(std::back_inserter(encoded), 4000);
+        CHECK(encoded == encoded_str);
+        CHECK(nb_read == 32);
+
+        CHECK(enc.write(std::back_inserter(encoded), 4000) == 0);
+      }
+
+      SECTION("huge buffer")
+      {
+        // encoded > 256 bytes
+        auto const str = "abcdefghijklmnopqrstuvwxyz"s;
+        auto enc = base2::make_encoder(str.begin(), str.end());
+        std::string encoded;
+        auto nb_read = enc.write(std::back_inserter(encoded), 2);
+        CHECK(nb_read == 2);
+        nb_read = enc.write(std::back_inserter(encoded), 2000);
+        CHECK(nb_read == encoded.size() - 2);
+      }
+    }
   }
 }
