@@ -157,7 +157,6 @@ void iterator_checks(ForwardIterator current,
   CHECK(copy == current);
   CHECK(++copy == ++current);
   CHECK(ForwardIterator{} == end);
-  // TODO add is_output_iterator and check reference
   using Traits = std::iterator_traits<ForwardIterator>;
   static_assert(std::is_same<typename Traits::reference,
                              const typename Traits::value_type&>::value,
