@@ -220,7 +220,7 @@ TEST_CASE("base2", "[binary_to_text]")
         std::string encoded;
         auto nb_read = enc.write(std::back_inserter(encoded), 2);
         CHECK(nb_read == 2);
-        nb_read = enc.write(std::back_inserter(encoded), 2000);
+        nb_read = enc.write(std::back_inserter(encoded));
         CHECK(nb_read == encoded.size() - 2);
       }
     }

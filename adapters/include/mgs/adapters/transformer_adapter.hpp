@@ -52,6 +52,9 @@ public:
   template <typename OutputIterator>
   std::size_t write(OutputIterator out, std::size_t n);
 
+  template <typename OutputIterator>
+  std::size_t write(OutputIterator out);
+
   void read_block();
   auto const& block() const;
   iterator begin() const;

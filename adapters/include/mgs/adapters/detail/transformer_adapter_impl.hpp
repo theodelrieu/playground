@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <limits>
 #include <tuple>
 
 namespace mgs
@@ -49,6 +50,14 @@ std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out,
     _process_input();
   }
   return nb_read;
+}
+
+template <typename InputTransformer>
+template <typename OutputIterator>
+std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out)
+                                                         
+{
+  return write(out, std::numeric_limits<std::size_t>::max());
 }
 
 template <typename InputTransformer>
