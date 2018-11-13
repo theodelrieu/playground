@@ -16,14 +16,12 @@
 
 // template <typename T>
 // concept InputTransformer =
-//   using I = typename T::underlying_iterator;
-//   using S = typename T::underlying_sentinel;
 //   SemiRegular<T> &&
 //   Iterable<typename T::value_type> &&
 //   SemiRegular<typename T::value_type> &&
-//   Iterator<I> &&
-//   Sentinel<S, I> &&
-//   Constructible<T, I, S> &&
+//   Iterator<typename T::underlying_iterator> &&
+//   Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator> &&
+//   Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel> &&
 //   RandomAccessIterator<result_of_begin<typename T::value_type>> &&
 //   SizedSentinel<
 //     result_of_end<typename T::value_type>,
