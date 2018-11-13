@@ -34,8 +34,6 @@ class transformer_adapter : private InputTransformer
 public:
   using iterator = iterators::adaptive_iterator<transformer_adapter,
                                                 std::input_iterator_tag>;
-  // TODO add to concept
-  using transformer = InputTransformer;
   using difference_type = std::streamoff;
   using value_type = typename std::iterator_traits<
       transformer_value_type_iterator>::value_type;
@@ -47,7 +45,6 @@ public:
   value_type const& get() const;
   void seek_forward(difference_type n);
 
-  // TODO concept OutputIterator
   template <typename OutputIterator>
   std::size_t write(OutputIterator out, std::size_t n);
 
