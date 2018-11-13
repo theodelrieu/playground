@@ -39,11 +39,12 @@ template <typename OutputIterator>
 std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out,
                                                          std::size_t n)
 {
-  using std::end;
-
   std::size_t nb_read{0};
+
   while (n > 0 && _transformed.size() != 0)
   {
+    using std::end;
+
     auto const to_read = std::min(n, _transformed.size() - _index);
     std::copy_n(end(_transformed) - to_read, to_read, out);
     nb_read += to_read;
@@ -57,7 +58,17 @@ template <typename OutputIterator>
 std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out)
                                                          
 {
-  return write(out, std::numeric_limits<std::size_t>::max());
+  std::size_t nb_read{0};
+  while (_transformed.size() != 0)
+  {
+    using std::end;
+
+    auto const to_read = _transformed.size() - _index;
+    std::copy_n(end(_transformed) - to_read, to_read, out);
+    nb_read += to_read;
+    _process_input();
+  }
+  return nb_read;
 }
 
 template <typename InputTransformer>
