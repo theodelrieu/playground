@@ -51,17 +51,11 @@ struct default_converter<std::array<C, N>>
   static std::array<C, N> create(InputAdapter& adapter)
   {
     std::array<C, N> ret;
-    // TODO optimize this one
 
-    auto begin = adapter.begin();
-    auto end = adapter.end();
-    for (std::size_t i = 0; i < N; ++i)
-    {
-      if (begin == end)
-        throw exceptions::unexpected_eof_error("output buffer is too large");
-      ret[i] = *begin++;
-    }
-    if (begin != end)
+    auto const nb_read = adapter.write(ret.begin(), N);
+    if (nb_read != N)
+      throw exceptions::unexpected_eof_error("output buffer is too large");
+    if (adapter.write(ret.begin(), 1) != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }
@@ -73,20 +67,22 @@ struct default_converter<std::string>
   template <typename InputAdapter>
   static std::string create(InputAdapter& adapter)
   {
-    std::string s;
+    constexpr auto block_size = 256;
+    std::string s(block_size, 0);
 
-    while (auto const bsize = adapter.block().size())
+    auto total_read = 0;
+    for (auto nb_read = adapter.write(s.begin(), block_size); nb_read != 0;
+         nb_read = adapter.write(s.begin(), block_size))
     {
-      auto const old_size = s.size();
-      s.resize(old_size + bsize);
-      std::memcpy(&*(s.begin() + old_size), adapter.block().data(), bsize);
-      adapter.read_block();
+      total_read += nb_read;
+      s.resize(total_read + block_size);
     }
+    s.resize(total_read);
     return s;
   }
 };
 
-// TODO concept
+// TODO concept for byte_integral
 template <typename T, typename Alloc>
 struct default_converter<
     std::vector<T, Alloc>,
@@ -100,15 +96,17 @@ public:
   template <typename InputAdapter>
   static Ret create(InputAdapter& adapter)
   {
-    Ret v;
+    constexpr auto block_size = 256;
 
-    while (auto const bsize = adapter.block().size())
+    Ret v(block_size);
+    auto total_read = 0;
+    for (auto nb_read = adapter.write(v.begin(), block_size); nb_read != 0;
+         nb_read = adapter.write(v.begin(), block_size))
     {
-      auto const old_size = v.size();
-      v.resize(old_size + bsize);
-      std::memcpy(&*(v.begin() + old_size), adapter.block().data(), bsize);
-      adapter.read_block();
+      total_read += nb_read;
+      v.resize(total_read + block_size);
     }
+    v.resize(total_read);
     return v;
   }
 };

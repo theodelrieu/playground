@@ -29,12 +29,6 @@ auto transformer_adapter<InputTransformer>::get() const -> value_type const&
 }
 
 template <typename InputTransformer>
-void transformer_adapter<InputTransformer>::read_block()
-{
-  _process_input();
-}
-
-template <typename InputTransformer>
 template <typename OutputIterator>
 std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out,
                                                          std::size_t n)
@@ -47,8 +41,11 @@ std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out,
 
     auto const to_read = std::min(n, _transformed.size() - _index);
     std::copy_n(end(_transformed) - to_read, to_read, out);
+    _index += to_read;
     nb_read += to_read;
-    _process_input();
+    n -= nb_read;
+    if (_index == _transformed.size())
+      _process_input();
   }
   return nb_read;
 }
@@ -69,12 +66,6 @@ std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out)
     _process_input();
   }
   return nb_read;
-}
-
-template <typename InputTransformer>
-auto const& transformer_adapter<InputTransformer>::block() const
-{
-  return _transformed;
 }
 
 template <typename InputTransformer>

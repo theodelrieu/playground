@@ -5,7 +5,6 @@
 
 #include <mgs/meta/static_asserts.hpp>
 
-// TODO variadic instead of tuple
 template <typename Requirement, typename ExpectedFailedRequirements = std::tuple<>>
 void generate_failed_requirements_tests()
 {

@@ -45,7 +45,6 @@ public:
                       transformer_underlying_sentinel end);
 
   value_type const& get() const;
-  // TODO remove parameter
   void seek_forward(difference_type n);
 
   // TODO concept OutputIterator
@@ -55,8 +54,6 @@ public:
   template <typename OutputIterator>
   std::size_t write(OutputIterator out);
 
-  void read_block();
-  auto const& block() const;
   iterator begin() const;
   iterator end() const;
 
