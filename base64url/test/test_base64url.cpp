@@ -115,23 +115,14 @@ TEST_CASE("b64url lazy", "[base64url]")
     std::vector<std::string> invalid_chars{
         "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
 
-    // TODO move nopad tests in test case
-    std::vector<std::string> invalid_nopad_chars{"ZAAAA="s, "ZAW@=="s};
     std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
 
     invalid_input_checks<base64url::decoder, exceptions::invalid_input_error>(
         invalid_chars);
 
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::invalid_input_error>(invalid_chars);
-
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::invalid_input_error>(invalid_nopad_chars);
     invalid_input_checks<base64url::decoder, exceptions::unexpected_eof_error>(
         invalid_eof);
 
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::unexpected_eof_error>(invalid_eof);
   }
 }
 
@@ -149,6 +140,23 @@ TEST_CASE("base64url_nopad", "[base64url]")
   SECTION("decode")
   {
     common_checks<base64url_nopad::decoder>(encoded_padded, decoded);
+  }
+
+  SECTION("invalid input")
+  {
+    std::vector<std::string> invalid_chars{
+        "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
+
+    std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
+    std::vector<std::string> invalid_nopad_chars{"ZAAAA="s, "ZAW@=="s};
+
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::invalid_input_error>(invalid_chars);
+
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::invalid_input_error>(invalid_nopad_chars);
+    invalid_input_checks<base64url_nopad::decoder,
+                         exceptions::unexpected_eof_error>(invalid_eof);
   }
 }
 
