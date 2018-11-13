@@ -115,7 +115,5 @@ TEST_CASE("BidirectionalIterator", "[meta][concepts][iterator]")
 
   generate_failed_requirements_tests<
       iterator_concepts::is_bidirectional_iterator<
-          std::istreambuf_iterator<char>>,
-      std::tuple<iterator_concepts::is_forward_iterator<
-          std::istreambuf_iterator<char>>>>();
+          std::forward_list<char>::iterator>>();
 }

@@ -95,7 +95,4 @@ TEST_CASE("ForwardIterator", "[meta][concepts][iterator]")
       iterator_concepts::is_forward_iterator<invalid_post_increment_iterator>,
       std::tuple<iterator_concepts::is_incrementable<
           invalid_post_increment_iterator>>>();
-
-  generate_failed_requirements_tests<
-      iterator_concepts::is_forward_iterator<std::istreambuf_iterator<char>>>();
 }
