@@ -1,19 +1,9 @@
 Mandatory
 ----------
 
-* add a function that returns the size written, and writes to an output iterator
-
 Later
 -----
 
-Must refine InputAdapter/Transformer requirements, to provide underlying buffer
-
-encoded_size/max_decoded_size:
-
-Specific to binary_to_text: basic_encoder/decoder encoded_size/max_decoded_size
-Also, force basic_encoder/basic_decoder in binary_to_text basic_codec
-
-Refactor basic_codec, with priority tag.
 Add encoded_output must be copyable
 
 usage:
