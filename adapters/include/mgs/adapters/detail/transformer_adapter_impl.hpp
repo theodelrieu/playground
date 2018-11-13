@@ -1,6 +1,6 @@
 #pragma once
-#include <iostream>
 
+#include <algorithm>
 #include <cassert>
 #include <tuple>
 
@@ -31,6 +31,24 @@ template <typename InputTransformer>
 void transformer_adapter<InputTransformer>::read_block()
 {
   _process_input();
+}
+
+template <typename InputTransformer>
+template <typename OutputIterator>
+std::size_t transformer_adapter<InputTransformer>::write(OutputIterator out,
+                                                         std::size_t n)
+{
+  using std::end;
+
+  std::size_t nb_read{0};
+  while (n > 0 && _transformed.size() != 0)
+  {
+    auto const to_read = std::min(n, _transformed.size() - _index);
+    std::copy_n(end(_transformed) - to_read, to_read, out);
+    nb_read += to_read;
+    _process_input();
+  }
+  return nb_read;
 }
 
 template <typename InputTransformer>
