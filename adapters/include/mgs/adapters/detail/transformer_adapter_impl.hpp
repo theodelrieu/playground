@@ -5,6 +5,8 @@
 #include <limits>
 #include <tuple>
 
+#include <mgs/adapters/transformer_adapter.hpp>
+
 namespace mgs
 {
 inline namespace v1

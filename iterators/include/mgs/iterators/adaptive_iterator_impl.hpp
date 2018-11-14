@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <mgs/iterators/adaptive_iterator.hpp>
+
 namespace mgs
 {
 inline namespace v1
