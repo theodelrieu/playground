@@ -71,8 +71,9 @@ struct default_converter<std::string>
     std::string s(block_size, 0);
 
     auto total_read = 0;
-    for (auto nb_read = adapter.write(s.begin(), block_size); nb_read != 0;
-         nb_read = adapter.write(s.begin(), block_size))
+    for (auto nb_read = adapter.write(s.begin() + total_read, block_size);
+         nb_read != 0;
+         nb_read = adapter.write(s.begin() + total_read, block_size))
     {
       total_read += nb_read;
       s.resize(total_read + block_size);
@@ -100,8 +101,9 @@ public:
 
     Ret v(block_size);
     auto total_read = 0;
-    for (auto nb_read = adapter.write(v.begin(), block_size); nb_read != 0;
-         nb_read = adapter.write(v.begin(), block_size))
+    for (auto nb_read = adapter.write(v.begin() + total_read, block_size);
+         nb_read != 0;
+         nb_read = adapter.write(v.begin() + total_read, block_size))
     {
       total_read += nb_read;
       v.resize(total_read + block_size);
