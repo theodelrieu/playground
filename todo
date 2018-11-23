@@ -2,6 +2,7 @@ Mandatory
 ----------
 
 * Test codecs, especially default_converter
+* Rework UDT conversion design
 
 Later
 -----
