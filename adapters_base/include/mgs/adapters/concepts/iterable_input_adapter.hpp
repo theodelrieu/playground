@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <type_traits>
 
 #include <mgs/adapters/concepts/input_adapter.hpp>
@@ -11,7 +12,7 @@
 // concept IterableInputAdapter =
 //   InputAdapter<T> &&
 //   Iterable<T> &&
-//   Same<T::iterator, result_of_begin<T>>;
+//   Same<typename T::iterator, result_of_begin<T>>;
 
 namespace mgs
 {
@@ -21,21 +22,29 @@ namespace adapters
 {
 namespace concepts
 {
-template <typename T, typename = void>
-struct is_iterable_input_adapter : std::false_type
-{
-};
-
 template <typename T>
-struct is_iterable_input_adapter<
-    T,
-    std::enable_if_t<is_input_adapter<T>::value &&
-                     meta::concepts::iterator::is_iterable<T>::value>>
+struct is_iterable_input_adapter
 {
-  static constexpr bool value =
-      meta::is_detected_exact<meta::result_of_begin<T>,
-                              meta::detected::types::iterator,
-                              T>::value;
+private:
+  using I = meta::detected_t<meta::detected::types::iterator, T>;
+  using ResultOfBegin = meta::detected_t<meta::result_of_begin, T&>;
+
+public:
+  using requirements =
+      std::tuple<is_input_adapter<T>, meta::concepts::iterator::is_iterable<T>>;
+
+  static constexpr bool const value =
+      is_input_adapter<T>::value &&
+      meta::concepts::iterator::is_iterable<T>::value &&
+      std::is_same<ResultOfBegin, I>::value;
+
+  static constexpr int trigger_static_asserts()
+  {
+    static_assert(value, "T is not an IterableInputAdapter");
+    static_assert(std::is_same<ResultOfBegin, I>::value,
+                  "begin must return T::iterator");
+    return 1;
+  }
 };
 }
 }

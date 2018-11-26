@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/adapters/concepts/input_transformer.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
@@ -20,9 +20,6 @@ namespace adapters
 template <typename InputTransformer>
 class transformer_adapter : private InputTransformer
 {
-  static_assert(concepts::is_input_transformer<InputTransformer>::value,
-                "InputTransformer is not an InputTransformer");
-
   using transformer_underlying_iterator =
       typename InputTransformer::underlying_iterator;
   using transformer_underlying_sentinel =
@@ -34,6 +31,8 @@ class transformer_adapter : private InputTransformer
 public:
   using iterator = iterators::adaptive_iterator<transformer_adapter,
                                                 std::input_iterator_tag>;
+  using underlying_iterator = transformer_underlying_iterator;
+  using underlying_sentinel = transformer_underlying_sentinel;
   using difference_type = std::streamoff;
   using value_type = typename std::iterator_traits<
       transformer_value_type_iterator>::value_type;

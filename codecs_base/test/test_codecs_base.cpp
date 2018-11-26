@@ -20,6 +20,7 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/meta/static_asserts.hpp>
 #include <test_helpers/codecs_base.hpp>
 
 using namespace mgs;
@@ -68,6 +69,10 @@ template <typename Iterator, typename Sentinel>
 class noop_adapter
   : public adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>
 {
+public:
+  using underlying_iterator = Iterator;
+  using underlying_sentinel = Sentinel;
+
   using adapters::transformer_adapter<
       noop_transformer<Iterator, Sentinel>>::transformer_adapter;
 };
@@ -116,6 +121,11 @@ struct output_traits<std::vector<T>>
 };
 }
 }
+
+auto _ = meta::trigger_static_asserts<
+    mgs::adapters::concepts::is_iterable_input_adapter<
+        noop_adapter<meta::result_of_begin<std::string>,
+                     meta::result_of_end<std::string>>>>();
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {

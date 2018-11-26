@@ -2,5 +2,5 @@
 
 int main(int argc, char const* argv[])
 {
-  static_assert(!mgs::adapters::concepts::is_input_adapter<int>::value, "");
+  static_assert(!mgs::adapters::concepts::is_input_adapter<int, int, int>::value, "");
 }
