@@ -1,6 +1,7 @@
 Mandatory
 ----------
 
+* Remove transformer_adapter
 * Merge InputAdapter/InputTransformer
 * Test codecs, especially default_converter
 * Rework UDT conversion design
