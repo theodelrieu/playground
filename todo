@@ -1,9 +1,9 @@
 Mandatory
 ----------
 
+* Merge InputAdapter/InputTransformer
 * Test codecs, especially default_converter
 * Rework UDT conversion design
-* Merge InputAdapter/InputTransformer
 
 Later
 -----
