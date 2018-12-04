@@ -6,11 +6,12 @@ Mandatory
 * Test codecs, especially default_converter
 * Rework UDT conversion design
 
+a `size()` member function on Adapters, which returns the number of bytes to be processed.
+
+Write a SizedInputAdapter concept which subsumes InputAdapter.
+
 Later
 -----
-
-usage:
-....
 
 build_require catch2 everywhere
 
