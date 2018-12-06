@@ -21,10 +21,6 @@ mgs_test_helpers:
     folder: test_helpers
     includedirs: include
 
-mgs_iterators:
-    folder: iterators
-    includedirs: include
-
 mgs_binary_to_text:
     folder: binary_to_text
     includedirs: include

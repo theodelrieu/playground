@@ -11,7 +11,14 @@ target_include_directories(adapters INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(adapters INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_iterators CONAN_PKG::mgs_adapters_base)
+target_link_libraries(adapters INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_adapters_base)
 
 include(MgsExportAndInstallTarget)
 mgs_export_and_install_target(adapters)
+
+include(CTest)
+
+if (BUILD_TESTING)
+  enable_testing()
+  add_subdirectory(test)
+endif()
