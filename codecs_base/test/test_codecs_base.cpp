@@ -19,7 +19,7 @@
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/adapters/input_adapter_iterator.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <test_helpers/codecs_base.hpp>
 

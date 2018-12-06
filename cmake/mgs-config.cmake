@@ -9,7 +9,6 @@ set(_supported_components
   binary_to_text
   codecs_base
   exceptions
-  iterators
   meta
 )
 

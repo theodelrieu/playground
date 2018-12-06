@@ -99,7 +99,7 @@ bool operator!=(noop_encoder<T> const& lhs, noop_encoder<T> const& rhs) noexcept
 }
 }
 
-TEST_CASE("input_adapter_iterator", "[iterators][adaptive]")
+TEST_CASE("input_adapter_iterator", "[adapters][input_adapter_iterator]")
 {
   std::stringstream ss("abcdefghijklmnopqrstuvwxyz");
   using Iterator = std::istreambuf_iterator<char>;

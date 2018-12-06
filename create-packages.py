@@ -15,7 +15,6 @@ PACKAGES = [
     "cmake",
     "codecs_base",
     "exceptions",
-    "iterators",
     "meta",
     "test_helpers",
 ]

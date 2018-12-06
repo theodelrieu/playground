@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/iterators/adaptive_iterator.hpp>
+#include <mgs/adapters/input_adapter_iterator.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
@@ -29,8 +29,7 @@ class transformer_adapter : private InputTransformer
       meta::result_of_begin<transformer_value_type>;
 
 public:
-  using iterator = iterators::adaptive_iterator<transformer_adapter,
-                                                std::input_iterator_tag>;
+  using iterator = input_adapter_iterator<transformer_adapter>;
   using underlying_iterator = transformer_underlying_iterator;
   using underlying_sentinel = transformer_underlying_sentinel;
   using difference_type = std::streamoff;

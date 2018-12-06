@@ -5,8 +5,6 @@ Mandatory
 * Merge InputAdapter/InputTransformer
 * Test codecs, especially default_converter
 * Rework UDT conversion design
-* Remove adaptive_iterator
-* Merge iterators in adapters
 
 a `size()` member function on Adapters, which returns the number of bytes to be processed.
 
