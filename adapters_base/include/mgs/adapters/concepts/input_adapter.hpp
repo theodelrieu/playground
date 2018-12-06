@@ -18,7 +18,7 @@
 #include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 
-// template <typename T, OutputIterator OI>
+// template <typename T>
 // concept InputAdapter = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  requires Iterator<typename T::underlying_iterator>;
@@ -26,7 +26,7 @@
 //  typename T::value_type;
 //  typename T::difference_type;
 //  requires Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
-//  requires(typename T::difference_type n, OI out) {
+//  requires(typename T::difference_type n, typename T::value_type* out) {
 //     v.get();
 //     u.seek_forward(n);
 //     u.write(out, n);
@@ -44,7 +44,7 @@ namespace adapters
 {
 namespace concepts
 {
-template <typename T, typename OutputIterator>
+template <typename T>
 struct is_input_adapter
 {
 private:
@@ -59,7 +59,7 @@ private:
       meta::is_detected_exact<std::size_t,
                               detail::detected::member_functions::write,
                               T&,
-                              OutputIterator,
+                              value_type*,
                               std::size_t>::value;
 
   static auto constexpr const has_get_method =
@@ -98,7 +98,7 @@ public:
         "Missing or invalid function: 'void seek_forward(T::difference_type)'");
     static_assert(
         has_get_method,
-        "Missing or invalid function: 'std::size_t write(OutputIterator, std::size_t)'");
+        "Missing or invalid function: 'std::size_t write(T::value_type*, std::size_t)'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(std::is_signed<difference_type>::value,
