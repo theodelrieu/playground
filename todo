@@ -2,7 +2,7 @@ Mandatory
 ----------
 
 * Rename transformer_adapter, use detail::basic_input_adapter
-* Merge InputAdapter/InputTransformer
+* Put back InputTransformer, find a better name
 * Test codecs, especially default_converter
 * Rework UDT conversion design
 
