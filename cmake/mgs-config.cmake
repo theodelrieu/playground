@@ -1,6 +1,5 @@
 set(_supported_components
   adapters
-  adapters_base
   base16
   base32
   base32hex
