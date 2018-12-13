@@ -10,7 +10,6 @@
 
 #include <catch.hpp>
 
-#include <mgs/adapters/transformer_adapter.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 
 // streams are not Iterable until C++20.

@@ -13,13 +13,13 @@
 #include <unordered_set>
 #include <utility>
 
-#include <mgs/adapters/transformer_adapter.hpp>
+#include <mgs/adapters/basic_input_adapter.hpp>
+#include <mgs/adapters/input_adapter_iterator.hpp>
 #include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/adapters/input_adapter_iterator.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <test_helpers/codecs_base.hpp>
 
@@ -67,14 +67,14 @@ private:
 
 template <typename Iterator, typename Sentinel>
 class noop_adapter
-  : public adapters::transformer_adapter<noop_transformer<Iterator, Sentinel>>
+  : public adapters::basic_input_adapter<noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
-  using adapters::transformer_adapter<
-      noop_transformer<Iterator, Sentinel>>::transformer_adapter;
+  using adapters::basic_input_adapter<
+      noop_transformer<Iterator, Sentinel>>::basic_input_adapter;
 };
 
 struct noop_codec_traits
