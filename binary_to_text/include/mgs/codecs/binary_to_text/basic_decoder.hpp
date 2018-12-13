@@ -49,7 +49,7 @@ private:
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0, "The impossible has occurred");
 
 public:
-  using value_type = detail::static_vector<std::uint8_t, 256>;
+  using buffer_type = detail::static_vector<std::uint8_t, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
   using encoding_traits = EncodingTraits;
@@ -61,7 +61,7 @@ public:
   {
   }
 
-  void operator()(value_type& output)
+  void operator()(buffer_type& output)
   {
     output.resize(0);
     if (_current != _end)
@@ -104,7 +104,7 @@ public:
     return sanitized_input;
   }
 
-  void read_input(value_type& output)
+  void read_input(buffer_type& output)
   {
     auto const input = read_input_impl(
         _current,

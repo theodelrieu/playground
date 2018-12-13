@@ -25,7 +25,7 @@ public:
   using underlying_sentinel = typename InputTransformer::underlying_sentinel;
 
 private:
-  using buffer_t = typename InputTransformer::value_type;
+  using buffer_t = typename InputTransformer::buffer_type;
   using buffer_iterator = meta::result_of_begin<buffer_t>;
 
 public:

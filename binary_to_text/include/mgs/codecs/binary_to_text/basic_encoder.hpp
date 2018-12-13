@@ -55,7 +55,7 @@ private:
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_decoded_bytes == 0, "");
 
 public:
-  using value_type = detail::static_vector<char, 256>;
+  using buffer_type = detail::static_vector<char, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
   using encoding_traits = EncodingTraits;
@@ -67,7 +67,7 @@ public:
   {
   }
 
-  void operator()(value_type& out)
+  void operator()(buffer_type& out)
   {
     if (_current != this->_end)
       read_input(out);
@@ -102,7 +102,7 @@ private:
   }
 
   // TODO better name
-  void read_input(value_type& output)
+  void read_input(buffer_type& output)
   {
     auto const input = read_input_impl(
         _current,

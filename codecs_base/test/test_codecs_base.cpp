@@ -44,7 +44,7 @@ class noop_transformer
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
-  using value_type = std::vector<std::uint8_t>;
+  using buffer_type = std::vector<std::uint8_t>;
 
   noop_transformer() = default;
 
