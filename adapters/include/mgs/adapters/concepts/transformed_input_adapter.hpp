@@ -19,7 +19,7 @@
 #include <mgs/meta/detected/types/value_type.hpp>
 
 // template <typename T>
-// concept InputAdapter = requires(T const& v, T& u) {
+// concept TransformedInputAdapter = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  requires Iterator<typename T::underlying_iterator>;
 //  requires Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
@@ -45,7 +45,7 @@ namespace adapters
 namespace concepts
 {
 template <typename T>
-struct is_input_adapter
+struct is_transformed_input_adapter
 {
 private:
   using value_type = meta::detected_t<meta::detected::types::value_type, T>;
@@ -89,7 +89,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not an InputAdapter");
+    static_assert(value, "T is not an TransformedInputAdapter");
     static_assert(
         has_get_method,
         "Missing or invalid function: 'T::value_type const& get() const'");

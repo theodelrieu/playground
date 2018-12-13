@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-#include <mgs/adapters/basic_input_adapter.hpp>
+#include <mgs/adapters/basic_transformed_input_adapter.hpp>
 #include <mgs/codecs/binary_to_text/basic_decoder.hpp>
 #include <mgs/codecs/binary_to_text/basic_encoder.hpp>
 
@@ -25,7 +25,7 @@ struct basic_codec_traits
   template <typename Iterator, typename Sentinel>
   static auto make_encoder(Iterator begin, Sentinel end)
   {
-    return adapters::basic_input_adapter<
+    return adapters::basic_transformed_input_adapter<
         basic_encoder<Iterator, Sentinel, EncodingTraits>>(std::move(begin),
                                                            std::move(end));
   }
@@ -33,7 +33,7 @@ struct basic_codec_traits
   template <typename Iterator, typename Sentinel>
   static auto make_decoder(Iterator begin, Sentinel end)
   {
-    return adapters::basic_input_adapter<
+    return adapters::basic_transformed_input_adapter<
         basic_decoder<Iterator, Sentinel, DecodingTraits>>(std::move(begin),
                                                            std::move(end));
   }

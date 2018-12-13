@@ -6,7 +6,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
 #include <mgs/base64.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -21,15 +21,15 @@ namespace adapter_concepts = adapters::concepts;
 extern std::vector<std::string> testFilePaths;
 
 static_assert(
-    adapter_concepts::is_iterable_input_adapter<base64::encoder<char*>>::value,
+    adapter_concepts::is_iterable_transformed_input_adapter<base64::encoder<char*>>::value,
     "");
-static_assert(adapter_concepts::is_iterable_input_adapter<
+static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base64::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(adapter_concepts::is_iterable_input_adapter<
+static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base64::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(adapter_concepts::is_iterable_input_adapter<
+static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base64::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 

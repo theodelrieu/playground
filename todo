@@ -1,8 +1,7 @@
 Mandatory
 ----------
 
-* rename InputAdapter -> TransformedInputAdapter
-* keep InputTransformer
+* Put back InputTransformer concept
 * Test codecs, especially default_converter
 * Rework UDT conversion design
 

@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/decode.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/encode.hpp>
@@ -88,8 +88,8 @@ private:
 
 public:
   static constexpr auto const value =
-      adapters::concepts::is_iterable_input_adapter<Encoder>::value &&
-      adapters::concepts::is_iterable_input_adapter<Decoder>::value &&
+      adapters::concepts::is_iterable_transformed_input_adapter<Encoder>::value &&
+      adapters::concepts::is_iterable_transformed_input_adapter<Decoder>::value &&
       is_codec_output<EncodedOut, EncoderIterator>::value &&
       is_codec_output<DecodedOut, DecoderIterator>::value &&
       meta::is_detected_exact<EncodedOut,

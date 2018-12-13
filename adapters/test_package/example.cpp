@@ -1,4 +1,4 @@
-#include <mgs/adapters/concepts/input_adapter.hpp>
+#include <mgs/adapters/concepts/transformed_input_adapter.hpp>
 
 int main(int argc, char const* argv[])
 {

@@ -13,8 +13,8 @@
 #include <unordered_set>
 #include <utility>
 
-#include <mgs/adapters/basic_input_adapter.hpp>
-#include <mgs/adapters/input_adapter_iterator.hpp>
+#include <mgs/adapters/basic_transformed_input_adapter.hpp>
+#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
 #include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
@@ -67,14 +67,14 @@ private:
 
 template <typename Iterator, typename Sentinel>
 class noop_adapter
-  : public adapters::basic_input_adapter<noop_transformer<Iterator, Sentinel>>
+  : public adapters::basic_transformed_input_adapter<noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
-  using adapters::basic_input_adapter<
-      noop_transformer<Iterator, Sentinel>>::basic_input_adapter;
+  using adapters::basic_transformed_input_adapter<
+      noop_transformer<Iterator, Sentinel>>::basic_transformed_input_adapter;
 };
 
 struct noop_codec_traits
@@ -123,7 +123,7 @@ struct output_traits<std::vector<T>>
 }
 
 auto _ = meta::trigger_static_asserts<
-    mgs::adapters::concepts::is_iterable_input_adapter<
+    mgs::adapters::concepts::is_iterable_transformed_input_adapter<
         noop_adapter<meta::result_of_begin<std::string>,
                      meta::result_of_end<std::string>>>>();
 

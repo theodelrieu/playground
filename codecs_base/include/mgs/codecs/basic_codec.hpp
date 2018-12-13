@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include <mgs/adapters/concepts/iterable_input_adapter.hpp>
+#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/call_std/begin.hpp>
@@ -62,7 +62,7 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
-          adapters::concepts::is_iterable_input_adapter<
+          adapters::concepts::is_iterable_transformed_input_adapter<
               encoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<T, encoder<Iterator, Sentinel>>::value>>
   static auto encode(Iterator it, Sentinel sent)
@@ -95,7 +95,7 @@ public:
       typename = std::enable_if_t<
           meta::concepts::iterator::is_input_iterator<Iterator>::value &&
           meta::concepts::iterator::is_sentinel<Sentinel, Iterator>::value &&
-          adapters::concepts::is_iterable_input_adapter<
+          adapters::concepts::is_iterable_transformed_input_adapter<
               decoder<Iterator, Sentinel>>::value &&
           concepts::is_codec_output<T, decoder<Iterator, Sentinel>>::value>>
   static auto decode(Iterator it, Sentinel sent)
