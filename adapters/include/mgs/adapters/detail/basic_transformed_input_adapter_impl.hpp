@@ -126,15 +126,14 @@ bool operator==(basic_transformed_input_adapter<T> const& lhs,
   auto const lhs_buffer_end = end(lhs._buffer);
   auto const rhs_buffer_end = end(rhs._buffer);
 
-  // a bit similar to std::istreambuf_iterator::equal
   if (lhs_buffer_current == lhs_buffer_end ||
       rhs_buffer_current == rhs_buffer_end)
   {
     return lhs_buffer_current == lhs_buffer_end &&
            rhs_buffer_current == rhs_buffer_end;
   }
-  // FIXME compare InputTransformer as well
-  return lhs._index == rhs._index;
+  return lhs._index == rhs._index &&
+         static_cast<T const&>(lhs) == static_cast<T const&>(rhs);
 }
 
 template <typename T>

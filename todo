@@ -1,9 +1,10 @@
 Mandatory
 ----------
 
-* Put back InputTransformer concept
 * Test codecs, especially default_converter
 * Rework UDT conversion design
+* Uniform static asserts (no negation)
+* test adapters concepts
 
 a `size()` member function on Adapters, which returns the number of bytes to be processed.
 

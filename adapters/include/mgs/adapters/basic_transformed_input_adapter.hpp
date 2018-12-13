@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <type_traits>
 
+#include <mgs/adapters/concepts/input_transformer.hpp>
 #include <mgs/adapters/transformed_input_adapter_iterator.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
@@ -20,6 +21,9 @@ namespace adapters
 template <typename InputTransformer>
 class basic_transformed_input_adapter : private InputTransformer
 {
+  static_assert(concepts::is_input_transformer<InputTransformer>::value,
+                "Template parameter must be an InputTransformer");
+
 public:
   using underlying_iterator = typename InputTransformer::underlying_iterator;
   using underlying_sentinel = typename InputTransformer::underlying_sentinel;

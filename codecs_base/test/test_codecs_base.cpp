@@ -53,7 +53,7 @@ public:
   {
   }
 
-  void operator()(std::vector<std::uint8_t>& out)
+  void operator()(buffer_type& out)
   {
     out.clear();
     while (_current != _end)
@@ -63,11 +63,31 @@ public:
 private:
   Iterator _current{};
   Sentinel _end{};
+
+  template <typename I, typename S>
+  friend bool operator==(noop_transformer<I, S> const& lhs,
+                         noop_transformer<I, S> const& rhs);
 };
 
+template <typename I, typename S>
+bool operator==(noop_transformer<I, S> const& lhs,
+                noop_transformer<I, S> const& rhs)
+{
+  return (lhs._current == lhs._end || rhs._current == rhs._end) ?
+             (lhs._current == lhs._end && rhs._current == rhs._end) :
+             lhs._current == rhs._current;
+}
+
+template <typename I, typename S>
+bool operator!=(noop_transformer<I, S> const& lhs,
+                noop_transformer<I, S> const& rhs)
+{
+  return !(lhs == rhs);
+}
+
 template <typename Iterator, typename Sentinel>
-class noop_adapter
-  : public adapters::basic_transformed_input_adapter<noop_transformer<Iterator, Sentinel>>
+class noop_adapter : public adapters::basic_transformed_input_adapter<
+                         noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
@@ -121,11 +141,6 @@ struct output_traits<std::vector<T>>
 };
 }
 }
-
-auto _ = meta::trigger_static_asserts<
-    mgs::adapters::concepts::is_iterable_transformed_input_adapter<
-        noop_adapter<meta::result_of_begin<std::string>,
-                     meta::result_of_end<std::string>>>>();
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {

@@ -22,11 +22,11 @@
 // concept TransformedInputAdapter = requires(T const& v, T& u) {
 //  requires Regular<T>;
 //  requires Iterator<typename T::underlying_iterator>;
-//  requires Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
-//  typename T::value_type;
-//  typename T::difference_type;
-//  requires Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
-//  requires(typename T::difference_type n, typename T::value_type* out) {
+//  requires Sentinel<typename T::underlying_sentinel, typename
+//  T::underlying_iterator>; typename T::value_type; typename
+//  T::difference_type; requires Constructible<T, typename
+//  T::underlying_iterator, typename T::underlying_sentinel>; requires(typename
+//  T::difference_type n, typename T::value_type* out) {
 //     v.get();
 //     u.seek_forward(n);
 //     u.write(out, n);
@@ -89,16 +89,16 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not an TransformedInputAdapter");
+    static_assert(value, "T is not a TransformedInputAdapter");
     static_assert(
         has_get_method,
         "Missing or invalid function: 'T::value_type const& get() const'");
     static_assert(
         has_seek_forward_method,
         "Missing or invalid function: 'void seek_forward(T::difference_type)'");
-    static_assert(
-        has_get_method,
-        "Missing or invalid function: 'std::size_t write(T::value_type*, std::size_t)'");
+    static_assert(has_write_method,
+                  "Missing or invalid function: 'std::size_t "
+                  "write(T::value_type*, std::size_t)'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(std::is_signed<difference_type>::value,

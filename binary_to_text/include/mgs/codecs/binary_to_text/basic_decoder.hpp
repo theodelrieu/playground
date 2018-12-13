@@ -143,7 +143,27 @@ public:
 
   Iterator _current{};
   Sentinel _end{};
+
+  template <typename T, typename U, typename V>
+  friend bool operator==(basic_decoder<T, U, V> const&,
+                         basic_decoder<T, U, V> const&);
 };
+
+template <typename T, typename U, typename V>
+bool operator==(basic_decoder<T, U, V> const& lhs,
+                basic_decoder<T, U, V> const& rhs)
+{
+  return (lhs._current == lhs._end || rhs._current == rhs._end) ?
+             (lhs._current == lhs._end && rhs._current == rhs._end) :
+             lhs._current == rhs._current;
+}
+
+template <typename T, typename U, typename V>
+bool operator!=(basic_decoder<T, U, V> const& lhs,
+                basic_decoder<T, U, V> const& rhs)
+{
+  return !(lhs == rhs);
+}
 }
 }
 }
