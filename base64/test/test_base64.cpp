@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
+#include <mgs/adapters/concepts/sized_transformed_input_adapter.hpp>
 #include <mgs/base64.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -107,6 +108,70 @@ TEST_CASE("base64 low level", "[base64]")
         invalid_chars);
     invalid_input_checks<base64::decoder, exceptions::unexpected_eof_error>(
         invalid_eof);
+  }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc = base64::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 20);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc = base64::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 13336);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "WVdKalpHVT0="s;
+        
+        auto dec = base64::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 8);
+        dec.seek_forward(5);
+        CHECK(dec.max_transformed_size() == 3);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded = base64::encode<std::string>(std::string(10000, 0));
+
+        auto dec = base64::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10002);
+
+        // trigger last decode operation, padding is removed, exact size is
+        // returned
+        dec.seek_forward(9984);
+        CHECK(dec.max_transformed_size() == 16);
+      }
+    }
   }
 }
 
