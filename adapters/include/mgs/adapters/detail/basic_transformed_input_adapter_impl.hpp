@@ -38,16 +38,16 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::write(
 {
   std::size_t nb_read{};
 
-  while (n > 0 && _buffer.size() != 0)
+  while (n > 0 && _buffer_size() != 0)
   {
     using std::end;
 
-    auto const to_read = (std::min)(n, _buffer.size() - _index);
+    auto const to_read = (std::min)(n, _buffer_size() - _index);
     std::copy_n(end(_buffer) - to_read, to_read, out);
     _index += to_read;
     nb_read += to_read;
     n -= nb_read;
-    if (_index == _buffer.size())
+    if (_index == _buffer_size())
       _transform_input();
   }
   return nb_read;
@@ -61,11 +61,11 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::write(
 {
   std::size_t nb_read{};
 
-  while (_buffer.size() != 0)
+  while (_buffer_size() != 0)
   {
     using std::end;
 
-    auto const to_read = _buffer.size() - _index;
+    auto const to_read = _buffer_size() - _index;
     std::copy_n(end(_buffer) - to_read, to_read, out);
     nb_read += to_read;
     _transform_input();
