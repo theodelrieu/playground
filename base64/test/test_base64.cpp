@@ -171,6 +171,16 @@ TEST_CASE("base64 low level", "[base64]")
         dec.seek_forward(9984);
         CHECK(dec.max_transformed_size() == 16);
       }
+
+      SECTION("Invalid size")
+      {
+        auto encoded = base64::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec = base64::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
     }
   }
 }
