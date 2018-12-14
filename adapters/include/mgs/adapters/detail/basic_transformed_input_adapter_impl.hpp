@@ -43,7 +43,7 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::write(
     using std::end;
 
     auto const to_read = (std::min)(n, _buffer_size() - _index);
-    std::copy_n(end(_buffer) - to_read, to_read, out);
+    out = std::copy_n(end(_buffer) - to_read, to_read, out);
     _index += to_read;
     nb_read += to_read;
     n -= nb_read;
@@ -111,7 +111,7 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::_buffer_size() co
 }
 
 template <typename InputTransformer>
-template <typename I, typename S, typename SFINAE>
+template <typename T, typename SFINAE>
 std::size_t
 basic_transformed_input_adapter<InputTransformer>::max_transformed_size() const
 {

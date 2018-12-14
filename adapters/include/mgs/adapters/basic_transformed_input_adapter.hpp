@@ -5,6 +5,7 @@
 #include <type_traits>
 
 #include <mgs/adapters/concepts/input_transformer.hpp>
+#include <mgs/adapters/concepts/sized_input_transformer.hpp>
 #include <mgs/adapters/transformed_input_adapter_iterator.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
@@ -54,10 +55,9 @@ public:
   iterator begin() const;
   iterator end() const;
 
-  template <typename I = underlying_iterator,
-            typename S = underlying_sentinel,
+  template <typename T = InputTransformer,
             typename = std::enable_if_t<
-                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+                concepts::is_sized_input_transformer<T>::value>>
   std::size_t max_transformed_size() const;
 
 private:
