@@ -5,9 +5,7 @@ Mandatory
 * Rework UDT conversion design
 * Uniform static asserts (no negation)
 * max_transformed_size, encoded_size and max_decoded_size use it
-
-Later
------
+* rename write to read...
 
 build_require catch2 everywhere
 

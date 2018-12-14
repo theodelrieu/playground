@@ -102,6 +102,24 @@ void basic_transformed_input_adapter<InputTransformer>::_transform_input()
 }
 
 template <typename InputTransformer>
+std::size_t basic_transformed_input_adapter<InputTransformer>::_buffer_size() const
+{
+  using std::begin;
+  using std::end;
+
+  return end(_buffer) - begin(_buffer);
+}
+
+template <typename InputTransformer>
+template <typename I, typename S, typename SFINAE>
+std::size_t
+basic_transformed_input_adapter<InputTransformer>::max_transformed_size() const
+{
+  return _buffer_size() - _index +
+         static_cast<InputTransformer const&>(*this).max_transformed_size();
+}
+
+template <typename InputTransformer>
 auto basic_transformed_input_adapter<InputTransformer>::begin() const
     -> iterator
 {

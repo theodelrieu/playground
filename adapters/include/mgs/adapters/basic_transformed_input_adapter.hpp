@@ -9,6 +9,7 @@
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 
@@ -53,11 +54,18 @@ public:
   iterator begin() const;
   iterator end() const;
 
+  template <typename I = underlying_iterator,
+            typename S = underlying_sentinel,
+            typename = std::enable_if_t<
+                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+  std::size_t max_transformed_size() const;
+
 private:
   buffer_t _buffer{};
   typename std::iterator_traits<buffer_iterator>::difference_type _index{};
 
   void _transform_input();
+  std::size_t _buffer_size() const;
 
   template <typename T>
   friend bool operator==(basic_transformed_input_adapter<T> const& lhs,

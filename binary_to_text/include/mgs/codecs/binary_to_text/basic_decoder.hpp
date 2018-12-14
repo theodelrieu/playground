@@ -13,12 +13,14 @@
 #include <mgs/codecs/binary_to_text/detail/encoded_input_reader.hpp>
 #include <mgs/codecs/binary_to_text/detail/input_sanitizer.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
+#include <mgs/codecs/binary_to_text/detail/max_decoded_size.hpp>
 #include <mgs/codecs/binary_to_text/detail/output_decoder.hpp>
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
@@ -46,7 +48,8 @@ private:
   static constexpr auto nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_encoded_bytes;
-  static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0, "The impossible has occurred");
+  static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0,
+                "The impossible has occurred");
 
 public:
   using buffer_type = detail::static_vector<std::uint8_t, 256>;
@@ -68,6 +71,16 @@ public:
       read_input(output);
   }
 
+  template <typename I = Iterator,
+            typename S = Sentinel,
+            typename = std::enable_if_t<
+                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+  std::size_t max_transformed_size() const
+  {
+    return detail::max_decoded_size<EncodingTraits>{}(_end - _current);
+  }
+
+private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::input_iterator_tag)
   {

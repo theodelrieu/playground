@@ -11,6 +11,7 @@
 #include <mgs/codecs/binary_to_text/concepts/encoding_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/bitset_utils.hpp>
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
+#include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
 #include <mgs/codecs/binary_to_text/detail/output_encoder.hpp>
 #include <mgs/codecs/binary_to_text/detail/padding_writer.hpp>
@@ -19,6 +20,7 @@
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
@@ -73,6 +75,15 @@ public:
       read_input(out);
     else
       out.resize(0);
+  }
+
+  template <typename I = Iterator,
+            typename S = Sentinel,
+            typename = std::enable_if_t<
+                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+  std::size_t max_transformed_size() const
+  {
+    return detail::encoded_size<EncodingTraits>{}(_end - _current);
   }
 
 private:
