@@ -4,10 +4,7 @@ Mandatory
 * Test codecs, especially default_converter
 * Rework UDT conversion design
 * Uniform static asserts (no negation)
-
-a `size()` member function on Adapters, which returns the number of bytes to be processed.
-
-Write a SizedInputAdapter concept which subsumes InputAdapter.
+* max_transformed_size, encoded_size and max_decoded_size use it
 
 Later
 -----
