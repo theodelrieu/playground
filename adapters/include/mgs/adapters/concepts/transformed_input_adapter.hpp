@@ -108,6 +108,10 @@ public:
     return 1;
   }
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_transformed_input_adapter<T>::value>>
+using TransformedInputAdapter = T;
 }
 }
 }

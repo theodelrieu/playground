@@ -8,10 +8,13 @@
 #include <utility>
 #include <vector>
 
+#include <mgs/adapters/concepts/sized_transformed_input_adapter.hpp>
+#include <mgs/adapters/concepts/transformed_input_adapter.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/key_type.hpp>
+#include <mgs/meta/priority_tag.hpp>
 
 namespace mgs
 {
@@ -21,6 +24,44 @@ namespace codecs
 {
 namespace detail
 {
+template <typename ContiguousContainer, typename T>
+ContiguousContainer fill_contiguous_container(
+    adapters::concepts::SizedTransformedInputAdapter<T>& adapter,
+    meta::priority_tag<1>)
+{
+  using std::begin;
+
+  auto const max_size = adapter.max_transformed_size();
+  ContiguousContainer cont(max_size, 0);
+
+  auto const total_read = adapter.write(begin(cont), max_size);
+  cont.resize(total_read);
+  return cont;
+}
+
+template <typename ContiguousContainer, typename T>
+ContiguousContainer fill_contiguous_container(
+    adapters::concepts::TransformedInputAdapter<T>& adapter,
+    meta::priority_tag<0>)
+{
+  using std::begin;
+
+  constexpr auto block_size = 256;
+
+  ContiguousContainer cont(block_size, 0);
+
+  auto total_read = 0;
+  for (auto nb_read = adapter.write(begin(cont) + total_read, block_size);
+       nb_read != 0;
+       nb_read = adapter.write(begin(cont) + total_read, block_size))
+  {
+    total_read += nb_read;
+    cont.resize(total_read + block_size);
+  }
+  cont.resize(total_read);
+  return cont;
+}
+
 template <typename T, typename = void>
 struct default_converter
 {
@@ -43,12 +84,13 @@ struct default_converter
 template <typename C, std::size_t N>
 struct default_converter<std::array<C, N>>
 {
-  template <typename InputAdapter,
-            typename Iterator = meta::result_of_begin<InputAdapter&>,
+  template <typename T,
+            typename Iterator = meta::result_of_begin<T&>,
             typename = std::enable_if_t<std::is_convertible<
                 typename std::iterator_traits<Iterator>::value_type,
                 C>::value>>
-  static std::array<C, N> create(InputAdapter& adapter)
+  static std::array<C, N> create(
+      adapters::concepts::TransformedInputAdapter<T>& adapter)
   {
     std::array<C, N> ret;
 
@@ -64,22 +106,12 @@ struct default_converter<std::array<C, N>>
 template <>
 struct default_converter<std::string>
 {
-  template <typename InputAdapter>
-  static std::string create(InputAdapter& adapter)
+  template <typename T>
+  static std::string create(
+      adapters::concepts::TransformedInputAdapter<T>& adapter)
   {
-    constexpr auto block_size = 256;
-    std::string s(block_size, 0);
-
-    auto total_read = 0;
-    for (auto nb_read = adapter.write(s.begin() + total_read, block_size);
-         nb_read != 0;
-         nb_read = adapter.write(s.begin() + total_read, block_size))
-    {
-      total_read += nb_read;
-      s.resize(total_read + block_size);
-    }
-    s.resize(total_read);
-    return s;
+    return fill_contiguous_container<std::string>(adapter,
+                                                  meta::priority_tag<1>{});
   }
 };
 
@@ -94,22 +126,10 @@ private:
   using Ret = std::vector<T, Alloc>;
 
 public:
-  template <typename InputAdapter>
-  static Ret create(InputAdapter& adapter)
+  template <typename U>
+  static Ret create(adapters::concepts::TransformedInputAdapter<U>& adapter)
   {
-    constexpr auto block_size = 256;
-
-    Ret v(block_size);
-    auto total_read = 0;
-    for (auto nb_read = adapter.write(v.begin() + total_read, block_size);
-         nb_read != 0;
-         nb_read = adapter.write(v.begin() + total_read, block_size))
-    {
-      total_read += nb_read;
-      v.resize(total_read + block_size);
-    }
-    v.resize(total_read);
-    return v;
+    return fill_contiguous_container<Ret>(adapter, meta::priority_tag<1>{});
   }
 };
 }
