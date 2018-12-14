@@ -7,7 +7,6 @@
 #include <mgs/adapters/detail/detected/member_functions/get.hpp>
 #include <mgs/adapters/detail/detected/member_functions/seek_forward.hpp>
 #include <mgs/adapters/detail/detected/member_functions/write.hpp>
-#include <mgs/adapters/detail/detected/member_functions/max_transformed_size.hpp>
 #include <mgs/adapters/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/adapters/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
@@ -31,7 +30,6 @@
 //     { u.write(out, n) } -> std::size_t;
 //     { u.seek_forward(n) } -> void;
 //     { v.get() } -> value_type const&;
-//     { v.max_transformed_size(s) } -> std::size_t;
 //   }
 // }
 
@@ -72,12 +70,6 @@ private:
                               T&,
                               difference_type>::value;
 
-  static auto constexpr const has_max_transformed_size_method =
-      meta::is_detected_exact<
-          std::size_t,
-          detail::detected::member_functions::max_transformed_size,
-          T const&>::value;
-
   static auto constexpr const is_constructible_from_iterator_sentinel =
       std::is_constructible<T, I, S>::value;
 
@@ -86,7 +78,6 @@ public:
 
   static auto constexpr value =
       has_get_method && has_seek_forward_method && has_write_method &&
-      has_max_transformed_size_method &&
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_regular<T>::value &&
       meta::concepts::iterator::is_iterator<I>::value &&
@@ -105,9 +96,6 @@ public:
     static_assert(has_write_method,
                   "Missing or invalid function: 'std::size_t "
                   "T::write(T::value_type*, std::size_t)'");
-    static_assert(has_max_transformed_size_method,
-                  "Missing or invalid function: 'std::size_t "
-                  "T::max_transformed_size() const'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(std::is_signed<difference_type>::value,
