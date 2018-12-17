@@ -1,20 +1,2 @@
-Mandatory
-----------
-
 * Test codecs, especially default_converter
 * Uniform static asserts (no negation)
-
------ Maybe ----
-
-base58 takes numbers, or string in reverse order...
-it would change the Codec concept as well, which only deals with binary to text right now
-Rename Codec to BinaryCodec?
-
-Rename InputAdapter to BinaryInputAdapter?
-Having a Numeral/Numeric Codec/InputAdapter?
-
-note in doc that only sequence containers are supported
-
-Look again where SFINAE correctness might make sense.
-
-namespace mgs::test_helpers
