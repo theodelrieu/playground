@@ -1,7 +1,6 @@
 #pragma once
 
 #include <mgs/codecs/basic_codec.hpp>
-
 #include <mgs/codecs/binary_to_text/detail/basic_codec_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>

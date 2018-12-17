@@ -3,8 +3,7 @@ Mandatory
 
 * Test codecs, especially default_converter
 * Uniform static asserts (no negation)
-
-build_require catch2 everywhere
+* Test max_transformed_size on every codec
 
 ----- Maybe ----
 
