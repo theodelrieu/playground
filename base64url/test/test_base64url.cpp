@@ -124,6 +124,81 @@ TEST_CASE("b64url lazy", "[base64url]")
         invalid_eof);
 
   }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64url::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64url::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc = base64url::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 20);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc = base64url::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 13336);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64url::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64url::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "WVdKalpHVT0="s;
+
+        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 8);
+        dec.seek_forward(5);
+        CHECK(dec.max_transformed_size() == 3);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded =
+            base64url::encode<std::string>(std::string(10000, 0));
+
+        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10002);
+
+        // trigger last decode operation, padding is removed, exact size is
+        // returned
+        dec.seek_forward(9984);
+        CHECK(dec.max_transformed_size() == 16);
+      }
+
+      SECTION("Invalid size")
+      {
+        auto encoded = base64url::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
+    }
+  }
 }
 
 TEST_CASE("base64url_nopad", "[base64url]")
@@ -157,6 +232,87 @@ TEST_CASE("base64url_nopad", "[base64url]")
                          exceptions::invalid_input_error>(invalid_nopad_chars);
     invalid_input_checks<base64url_nopad::decoder,
                          exceptions::unexpected_eof_error>(invalid_eof);
+  }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64url_nopad::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64url_nopad::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc =
+            base64url_nopad::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 18);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc =
+            base64url_nopad::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 13334);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base64url_nopad::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base64url_nopad::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "WVdKalpHVT0="s;
+
+        auto dec =
+            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 8);
+        dec.seek_forward(5);
+        CHECK(dec.max_transformed_size() == 3);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded =
+            base64url_nopad::encode<std::string>(std::string(10000, 0));
+
+        auto dec =
+            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10000);
+
+        // trigger last decode operation, padding is removed, exact size is
+        // returned
+        dec.seek_forward(9984);
+        CHECK(dec.max_transformed_size() == 16);
+      }
+
+      SECTION("Invalid size")
+      {
+        auto encoded =
+            base64url_nopad::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec =
+            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
+    }
   }
 }
 
