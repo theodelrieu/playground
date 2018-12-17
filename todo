@@ -3,7 +3,6 @@ Mandatory
 
 * Test codecs, especially default_converter
 * Uniform static asserts (no negation)
-* Test max_transformed_size on every codec
 
 ----- Maybe ----
 

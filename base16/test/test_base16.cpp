@@ -132,6 +132,75 @@ TEST_CASE("base16 lazy", "[base16]")
     invalid_input_checks<base16::decoder, exceptions::unexpected_eof_error>(
         invalid_eof);
   }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base16::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base16::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc = base16::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 26);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc = base16::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 20000);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base16::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base16::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "666F6F62"s;
+
+        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 4);
+        dec.seek_forward(2);
+        CHECK(dec.max_transformed_size() == 2);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded = base16::encode<std::string>(std::string(10000, 0));
+
+        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10000);
+      }
+
+      SECTION("Invalid size")
+      {
+        auto encoded = base16::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
+    }
+  }
 }
 
 TEST_CASE("base16 codec", "[base16]")
