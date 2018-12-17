@@ -113,6 +113,75 @@ TEST_CASE("b32 lazy", "[base32]")
     invalid_input_checks<base32::decoder, exceptions::unexpected_eof_error>(
         invalid_eof);
   }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base32::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base32::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc = base32::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 24);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc = base32::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 16000);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base32::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base32::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "MFRGGZA="s;
+
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 4);
+        dec.seek_forward(2);
+        CHECK(dec.max_transformed_size() == 2);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded = base32::encode<std::string>(std::string(10000, 0));
+
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10000);
+      }
+
+      SECTION("Invalid size")
+      {
+        auto encoded = base32::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
+    }
+  }
 }
 
 TEST_CASE("base32 codec", "[base32]")
