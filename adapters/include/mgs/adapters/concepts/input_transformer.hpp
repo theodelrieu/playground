@@ -88,6 +88,10 @@ public:
     return 1;
   }
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_input_transformer<T>::value>>
+using InputTransformer = T;
 }
 }
 }

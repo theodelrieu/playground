@@ -7,6 +7,7 @@
 #include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>
 #include <mgs/codecs/binary_to_text/detail/max_decoded_size.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/codecs/concepts/codec_output.hpp>
 
 namespace mgs
 {
@@ -32,9 +33,9 @@ public:
 
   template <typename T = typename base::default_encoded_output,
             std::size_t N = 0>
-  static auto encode(char const (&tab)[N])
-      -> decltype(base::template encode<T>(std::declval<char const*>(),
-                                           std::declval<char const*>()))
+  static codecs::concepts::
+      CodecOutput<T, typename base::template encoder<char const*>>
+      encode(char const (&tab)[N])
   {
     auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
     return base::template encode<T>(std::begin(tab), end_it);
@@ -42,9 +43,10 @@ public:
 
   template <typename T = typename base::default_decoded_output,
             std::size_t N = 0>
-  static auto decode(char const (&tab)[N])
-      -> decltype(base::template decode<T>(std::declval<char const*>(),
-                                           std::declval<char const*>()))
+
+  static codecs::concepts::
+      CodecOutput<T, typename base::template decoder<char const*>>
+      decode(char const (&tab)[N])
   {
     auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
     return base::template decode<T>(std::begin(tab), end_it);

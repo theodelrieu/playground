@@ -94,6 +94,9 @@ public:
     return 1;
   }
 };
+
+template <typename T, typename = std::enable_if_t<is_encoding_traits<T>::value>>
+using EncodingTraits = T;
 }
 }
 }

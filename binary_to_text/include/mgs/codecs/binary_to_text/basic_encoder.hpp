@@ -76,8 +76,7 @@ public:
 
   template <typename I = Iterator,
             typename S = Sentinel,
-            typename = std::enable_if_t<
-                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+            typename = meta::concepts::iterator::SizedSentinel<S, I>>
   std::size_t max_transformed_size() const
   {
     return detail::encoded_size<EncodingTraits>{}(_end - _current);
