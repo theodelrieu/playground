@@ -35,13 +35,10 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
 private:
-  static constexpr auto _ =
-      meta::trigger_static_asserts<
-          concepts::is_encoding_traits<EncodingTraits>>() &&
-      meta::trigger_static_asserts<
-          meta::concepts::iterator::is_input_iterator<Iterator>>() &&
-      meta::trigger_static_asserts<
-          meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>();
+  static constexpr auto _ = meta::trigger_static_asserts<
+      concepts::is_encoding_traits<EncodingTraits>,
+      meta::concepts::iterator::is_input_iterator<Iterator>,
+      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>();
 
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");

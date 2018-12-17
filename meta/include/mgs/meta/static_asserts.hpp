@@ -59,16 +59,30 @@ struct filter_requirements<std::tuple<Requirements...>>
   using type = typename filter_requirements_impl<Requirements...>::type;
 };
 
-template <typename Requirement>
-struct collect_failed_requirements
-{
-  using AllRequirements =
-      typename collect_requirements<Requirement,
-                                    typename Requirement::requirements>::type;
+template <typename ...Requirements>
+struct collect_failed_requirements;
 
-  using type = typename filter_requirements<AllRequirements>::type;
+template <typename End>
+struct collect_failed_requirements<End>
+{
+  using type = typename filter_requirements<
+      typename collect_requirements<End,
+                                    typename End::requirements>::type>::type;
 };
 
+template <typename Head, typename... Tail>
+struct collect_failed_requirements<Head, Tail...>
+{
+  using AllRequirements =
+      typename collect_requirements<Head, typename Head::requirements>::type;
+
+  using type = decltype(std::tuple_cat(
+      AllRequirements{},
+      std::declval<typename filter_requirements<
+          typename collect_failed_requirements<Tail...>::type>::type>()));
+};
+
+//  typename filter_requirements<AllRequirements>::type;
 template <typename Requirement>
 constexpr int print_static_asserts()
 {
@@ -105,11 +119,11 @@ struct trigger_static_asserts<std::tuple<>>
 };
 }
 
-template <typename Requirement>
+template <typename ...Requirements>
 constexpr int trigger_static_asserts()
 {
   return detail::trigger_static_asserts<
-      typename detail::collect_failed_requirements<Requirement>::type>::
+      typename detail::collect_failed_requirements<Requirements...>::type>::
       trigger();
 }
 }
