@@ -13,7 +13,7 @@
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/detected.hpp>
 
-// FIXME BinaryCodec
+// FIXME rewrite
 // template <typename T,
 //           Iterable I,
 //           typename EncodedOut,
