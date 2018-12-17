@@ -5,6 +5,7 @@ Mandatory
 * Rework UDT conversion design
 * Uniform static asserts (no negation)
 * rename write to read...
+* replace enable_if with concepts::T parameters
 
 build_require catch2 everywhere
 
