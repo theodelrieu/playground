@@ -115,6 +115,75 @@ TEST_CASE("base32hex", "[base32hex]")
     invalid_input_checks<base32hex::decoder, exceptions::unexpected_eof_error>(
         invalid_eof);
   }
+
+  SECTION("max_transformed_size")
+  {
+    SECTION("encoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base32hex::encoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base32hex::encoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const decoded = "abcdefghijklm"s;
+        auto enc = base32hex::make_encoder(decoded.begin(), decoded.end());
+
+        CHECK(enc.max_transformed_size() == 24);
+      }
+
+      SECTION("Huge string")
+      {
+        std::string huge_str(10000, 0);
+        auto enc = base32hex::make_encoder(huge_str.begin(), huge_str.end());
+
+        CHECK(enc.max_transformed_size() == 16000);
+      }
+    }
+
+    SECTION("decoder")
+    {
+      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+                        base32hex::decoder<char const*>>::value,
+                    "");
+      static_assert(
+          !adapter_concepts::is_sized_transformed_input_adapter<
+              base32hex::decoder<std::list<char>::const_iterator>>::value,
+          "");
+
+      SECTION("Small string")
+      {
+        auto const encoded = "C5H66P0="s;
+
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 4);
+        dec.seek_forward(2);
+        CHECK(dec.max_transformed_size() == 2);
+      }
+
+      SECTION("Huge string")
+      {
+        auto const encoded = base32hex::encode<std::string>(std::string(10000, 0));
+
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_transformed_size() == 10000);
+      }
+
+      SECTION("Invalid size")
+      {
+        auto encoded = base32hex::encode<std::string>(std::string(10000, 0));
+        encoded.pop_back();
+
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
+        CHECK_THROWS_AS(dec.max_transformed_size(),
+                        mgs::exceptions::invalid_input_error);
+      }
+    }
+  }
 }
 
 TEST_CASE("base32hex codec", "[base32hex]")
