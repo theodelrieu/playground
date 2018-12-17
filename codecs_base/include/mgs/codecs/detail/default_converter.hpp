@@ -34,7 +34,7 @@ ContiguousContainer fill_contiguous_container(
   auto const max_size = adapter.max_transformed_size();
   ContiguousContainer cont(max_size, 0);
 
-  auto const total_read = adapter.write(begin(cont), max_size);
+  auto const total_read = adapter.read(begin(cont), max_size);
   cont.resize(total_read);
   return cont;
 }
@@ -51,9 +51,9 @@ ContiguousContainer fill_contiguous_container(
   ContiguousContainer cont(block_size, 0);
 
   auto total_read = 0;
-  for (auto nb_read = adapter.write(begin(cont) + total_read, block_size);
+  for (auto nb_read = adapter.read(begin(cont) + total_read, block_size);
        nb_read != 0;
-       nb_read = adapter.write(begin(cont) + total_read, block_size))
+       nb_read = adapter.read(begin(cont) + total_read, block_size))
   {
     total_read += nb_read;
     cont.resize(total_read + block_size);
@@ -94,10 +94,10 @@ struct default_converter<std::array<C, N>>
   {
     std::array<C, N> ret;
 
-    auto const nb_read = adapter.write(ret.begin(), N);
+    auto const nb_read = adapter.read(ret.begin(), N);
     if (nb_read != N)
       throw exceptions::unexpected_eof_error("output buffer is too large");
-    if (adapter.write(ret.begin(), 1) != 0)
+    if (adapter.read(ret.begin(), 1) != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }

@@ -177,7 +177,7 @@ TEST_CASE("base2", "[binary_to_text]")
                       mgs::exceptions::invalid_input_error);
     }
 
-    SECTION("write")
+    SECTION("read")
     {
       SECTION("small buffer")
       {
@@ -185,11 +185,11 @@ TEST_CASE("base2", "[binary_to_text]")
         auto const encoded_str = "01100001011000100110001101100100"s;
         auto enc = base2::make_encoder(str.begin(), str.end());
         std::string encoded;
-        auto const nb_read = enc.write(std::back_inserter(encoded), 4000);
+        auto const nb_read = enc.read(std::back_inserter(encoded), 4000);
         CHECK(encoded == encoded_str);
         CHECK(nb_read == 32);
 
-        CHECK(enc.write(std::back_inserter(encoded), 4000) == 0);
+        CHECK(enc.read(std::back_inserter(encoded), 4000) == 0);
       }
 
       SECTION("huge buffer")
@@ -198,9 +198,9 @@ TEST_CASE("base2", "[binary_to_text]")
         auto const str = "abcdefghijklmnopqrstuvwxyz"s;
         auto enc = base2::make_encoder(str.begin(), str.end());
         std::string encoded;
-        auto nb_read = enc.write(std::back_inserter(encoded), 2);
+        auto nb_read = enc.read(std::back_inserter(encoded), 2);
         CHECK(nb_read == 2);
-        nb_read = enc.write(std::back_inserter(encoded));
+        nb_read = enc.read(std::back_inserter(encoded), 1000);
         CHECK(nb_read == encoded.size() - 2);
       }
     }

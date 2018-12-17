@@ -47,10 +47,7 @@ public:
   void seek_forward(difference_type n);
 
   template <typename OutputIterator>
-  std::size_t write(OutputIterator out, std::size_t n);
-
-  template <typename OutputIterator>
-  std::size_t write(OutputIterator out);
+  std::size_t read(OutputIterator out, std::size_t n);
 
   iterator begin() const;
   iterator end() const;

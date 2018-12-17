@@ -62,7 +62,7 @@ public:
     std::advance(_current_it, n);
   }
 
-  std::size_t write(value_type*, std::size_t)
+  std::size_t read(value_type*, std::size_t)
   {
     return 0;
   }

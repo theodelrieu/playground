@@ -5,8 +5,8 @@
 #include <type_traits>
 
 #include <mgs/adapters/detail/detected/member_functions/get.hpp>
+#include <mgs/adapters/detail/detected/member_functions/read.hpp>
 #include <mgs/adapters/detail/detected/member_functions/seek_forward.hpp>
-#include <mgs/adapters/detail/detected/member_functions/write.hpp>
 #include <mgs/adapters/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/adapters/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
@@ -27,7 +27,7 @@
 //  T::difference_type; requires Constructible<T, typename
 //  T::underlying_iterator, typename T::underlying_sentinel>; requires(typename
 //  T::difference_type n, typename T::value_type* out, std::size_t s) {
-//     { u.write(out, n) } -> std::size_t;
+//     { u.read(out, n) } -> std::size_t;
 //     { u.seek_forward(n) } -> void;
 //     { v.get() } -> value_type const&;
 //   }
@@ -52,9 +52,9 @@ private:
   using I = meta::detected_t<detail::detected::types::underlying_iterator, T>;
   using S = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
 
-  static auto constexpr const has_write_method =
+  static auto constexpr const has_read_method =
       meta::is_detected_exact<std::size_t,
-                              detail::detected::member_functions::write,
+                              detail::detected::member_functions::read,
                               T&,
                               value_type*,
                               std::size_t>::value;
@@ -77,7 +77,7 @@ public:
   using requirements = std::tuple<meta::concepts::object::is_regular<T>>;
 
   static auto constexpr value =
-      has_get_method && has_seek_forward_method && has_write_method &&
+      has_get_method && has_seek_forward_method && has_read_method &&
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_regular<T>::value &&
       meta::concepts::iterator::is_iterator<I>::value &&
@@ -93,9 +93,9 @@ public:
     static_assert(
         has_seek_forward_method,
         "Missing or invalid function: 'void seek_forward(T::difference_type)'");
-    static_assert(has_write_method,
+    static_assert(has_read_method,
                   "Missing or invalid function: 'std::size_t "
-                  "T::write(T::value_type*, std::size_t)'");
+                  "T::read(T::value_type*, std::size_t)'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(std::is_signed<difference_type>::value,

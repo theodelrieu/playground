@@ -33,7 +33,7 @@ auto basic_transformed_input_adapter<InputTransformer>::get() const
 
 template <typename InputTransformer>
 template <typename OutputIterator>
-std::size_t basic_transformed_input_adapter<InputTransformer>::write(
+std::size_t basic_transformed_input_adapter<InputTransformer>::read(
     OutputIterator out, std::size_t n)
 {
   std::size_t nb_read{};
@@ -49,26 +49,6 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::write(
     n -= nb_read;
     if (_index == _buffer_size())
       _transform_input();
-  }
-  return nb_read;
-}
-
-template <typename InputTransformer>
-template <typename OutputIterator>
-std::size_t basic_transformed_input_adapter<InputTransformer>::write(
-    OutputIterator out)
-
-{
-  std::size_t nb_read{};
-
-  while (_buffer_size() != 0)
-  {
-    using std::end;
-
-    auto const to_read = _buffer_size() - _index;
-    std::copy_n(end(_buffer) - to_read, to_read, out);
-    nb_read += to_read;
-    _transform_input();
   }
   return nb_read;
 }

@@ -15,7 +15,7 @@ namespace detected
 namespace member_functions
 {
 template <typename T, typename... Args>
-using write = decltype(std::declval<T>().write(std::declval<Args>()...));
+using read = decltype(std::declval<T>().read(std::declval<Args>()...));
 }
 }
 }
