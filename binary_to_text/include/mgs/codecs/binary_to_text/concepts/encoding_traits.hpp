@@ -90,7 +90,7 @@ public:
         is_valid_padding_character || T::padding_policy == padding_policy::none,
         "T::padding_character must be convertible to char when "
         "T::padding_policy is not padding_policy::none");
-    static_assert(has_index_of, "Missing or invalid function: 'int T::has_index_of(char)'");
+    static_assert(has_index_of, "Invalid or missing function: 'int T::has_index_of(char)'");
     return 1;
   }
 };

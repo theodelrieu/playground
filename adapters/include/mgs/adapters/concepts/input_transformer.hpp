@@ -84,7 +84,7 @@ public:
         "end(T::buffer_type) must return a SizedSentinel");
     static_assert(
         has_function_call_op,
-        "Missing or invalid function: 'void T::operator()(T::buffer_type&)'");
+        "Invalid or missing function: 'void T::operator()(T::buffer_type&)'");
     return 1;
   }
 };

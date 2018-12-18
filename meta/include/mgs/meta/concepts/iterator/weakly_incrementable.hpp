@@ -19,46 +19,33 @@ namespace concepts
 {
 namespace iterator
 {
-namespace detail
-{
-template <typename T, typename = void>
-struct is_weakly_incrementable_impl : std::false_type
-{
-};
-
 template <typename T>
-struct is_weakly_incrementable_impl<
-    T,
-    std::enable_if_t<core::is_complete_type<T>::value>>
+struct is_weakly_incrementable
 {
-  static constexpr auto const value =
-      object::is_semiregular<T>::value &&
-      is_detected_exact<T&, detected::operators::pre_increment, T&>::value &&
-      is_detected<detected::operators::post_increment, T&>::value;
-};
-}
+private:
+  using lvalue_ref = std::add_lvalue_reference_t<T>;
 
-template <typename T>
-struct is_weakly_incrementable : detail::is_weakly_incrementable_impl<T>
-{
-  using requirements = std::tuple<object::is_semiregular<T>>;
   static constexpr auto const has_pre_increment =
-      is_detected_exact<std::add_lvalue_reference_t<T>,
+      is_detected_exact<lvalue_ref,
                         detected::operators::pre_increment,
-                        std::add_lvalue_reference_t<T>>::value;
+                        lvalue_ref>::value;
 
   static constexpr auto const has_post_increment =
-      is_detected<detected::operators::post_increment,
-                  std::add_lvalue_reference_t<T>>::value;
+      is_detected<detected::operators::post_increment, lvalue_ref>::value;
+
+public:
+  using requirements = std::tuple<object::is_semiregular<T>>;
+
+  static constexpr auto const value = object::is_semiregular<T>::value &&
+                                      has_pre_increment && has_post_increment;
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_weakly_incrementable::value,
-                  "T is not WeaklyIncrementable");
+    static_assert(value, "T is not WeaklyIncrementable");
     static_assert(has_pre_increment,
-                  "Missing or invalid operator: 'T& operator++()'");
+                  "Invalid or missing operator: 'T& operator++()'");
     static_assert(has_post_increment,
-                  "Missing or invalid operator: '/* any */ operator++(int)'");
+                  "Invalid or missing operator: '/* any */ operator++(int)'");
     return 1;
   }
 };

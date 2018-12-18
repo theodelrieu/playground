@@ -17,24 +17,16 @@ namespace concepts
 {
 namespace comparison
 {
-namespace detail
-{
 template <typename T, typename U>
-struct is_equality_comparable_with_impl
-  : std::integral_constant<bool,
-                           is_equality_comparable<T>::value &&
-                               is_equality_comparable<U>::value &&
-                               is_weakly_equality_comparable_with<T, U>::value>
-{
-};
-}
-
-template <typename T, typename U>
-struct is_equality_comparable_with : detail::is_equality_comparable_with_impl<T, U>
+struct is_equality_comparable_with
 {
   using requirements = std::tuple<is_equality_comparable<T>,
                                   is_equality_comparable<U>,
                                   is_weakly_equality_comparable_with<T, U>>;
+
+  static constexpr auto const value =
+      is_equality_comparable<T>::value && is_equality_comparable<U>::value &&
+      is_weakly_equality_comparable_with<T, U>::value;
 
   static constexpr int trigger_static_asserts()
   {

@@ -52,9 +52,9 @@ struct is_bidirectional_iterator
                   "'std::iterator_traits<T>::iterator_category' is not derived "
                   "from 'std::bidirectional_iterator_tag'");
     static_assert(has_pre_decrement,
-                  "Missing or invalid operator: 'T& operator--()'");
+                  "Invalid or missing operator: 'T& operator--()'");
     static_assert(has_post_decrement,
-                  "Missing or invalid operator: 'T operator--(int)'");
+                  "Invalid or missing operator: 'T operator--(int)'");
     return 1;
   }
 };

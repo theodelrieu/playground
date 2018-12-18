@@ -24,39 +24,28 @@ namespace concepts
 {
 namespace iterator
 {
-namespace detail
-{
-template <typename T, typename = void>
-struct is_iterator_impl : std::false_type
-{
-};
-
 template <typename T>
-struct is_iterator_impl<T, std::enable_if_t<core::is_complete_type<T>::value>>
-  : std::integral_constant<
-        bool,
-        is_iterator_traits<std::iterator_traits<T>>::value &&
-            is_weakly_incrementable<T>::value &&
-            is_detected<detected::operators::dereference, T&>::value>
+struct is_iterator
 {
-};
-}
+private:
+  using lvalue_ref = std::add_lvalue_reference_t<T>;
 
-template <typename T>
-struct is_iterator : detail::is_iterator_impl<T>
-{
+  static constexpr auto const has_dereference =
+      is_detected<detected::operators::dereference, lvalue_ref>::value;
+
+public:
   using requirements = std::tuple<is_iterator_traits<std::iterator_traits<T>>,
                                   is_weakly_incrementable<T>>;
 
-  static constexpr auto const has_dereference =
-      is_detected<detected::operators::dereference,
-                  std::add_lvalue_reference_t<T>>::value;
+  static constexpr auto const value =
+      is_iterator_traits<std::iterator_traits<T>>::value &&
+      is_weakly_incrementable<T>::value && has_dereference;
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_iterator::value, "T is not an Iterator");
+    static_assert(value, "T is not an Iterator");
     static_assert(has_dereference,
-                  "Missing or invalid operator: '/* any */ operator*()'");
+                  "Invalid or missing operator: '/* any */ operator*()'");
     return 1;
   }
 };

@@ -23,40 +23,10 @@ namespace concepts
 {
 namespace iterator
 {
-namespace detail
-{
-template <typename T, typename = void>
-struct is_input_iterator_impl : std::false_type
-{
-};
-
 template <typename T>
-struct is_input_iterator_impl<T, std::enable_if_t<is_iterator<T>::value>>
+struct is_input_iterator
 {
-  using traits = std::iterator_traits<T>;
-  using value_type = detected_t<detected::types::value_type, traits>;
-
-  static constexpr auto const value =
-      core::is_derived_from<
-          detected_t<detected::types::iterator_category, traits>,
-          std::input_iterator_tag>::value &&
-      is_detected_convertible<value_type,
-                              detected::operators::dereference,
-                              T&>::value &&
-      is_detected_exact<typename traits::reference,
-                        detected::operators::dereference,
-                        T&>::value &&
-      is_detected_convertible<value_type,
-                              detected::operators::dereference,
-                              detected::operators::post_increment<T&>>::value;
-};
-}
-
-template <typename T>
-struct is_input_iterator : detail::is_input_iterator_impl<T>
-{
-  using requirements = std::tuple<is_iterator<T>>;
-
+private:
   using traits = meta::iterator_traits<T>;
 
   using value_type = detected_t<detected::types::value_type, traits>;
@@ -70,6 +40,7 @@ struct is_input_iterator : detail::is_input_iterator_impl<T>
       is_detected_convertible<value_type,
                               detected::operators::dereference,
                               lvalue_ref>::value;
+
   static constexpr auto const has_dereference_reference =
       is_detected_exact<detected_t<detected::types::reference, traits>,
                         detected::operators::dereference,
@@ -81,9 +52,16 @@ struct is_input_iterator : detail::is_input_iterator_impl<T>
           detected::operators::dereference,
           detected_t<detected::operators::post_increment, lvalue_ref>>::value;
 
+public:
+  using requirements = std::tuple<is_iterator<T>>;
+
+  static constexpr auto const value =
+      has_correct_tag && has_dereference_reference &&
+      has_dereference_value_type && has_post_increment_dereference;
+
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_input_iterator::value, "T is not an InputIterator");
+    static_assert(value, "T is not an InputIterator");
     static_assert(has_correct_tag,
                   "'std::iterator_traits<T>::iterator_category' is not derived "
                   "from 'std::input_iterator_tag'");
@@ -93,6 +71,9 @@ struct is_input_iterator : detail::is_input_iterator_impl<T>
     static_assert(has_dereference_reference,
                   "Invalid or missing 'T operator*': must return "
                   "'std::iterator_traits<T>::reference'");
+    static_assert(has_post_increment_dereference,
+                  "Invalid expression: 'T t; *t++;': Must return a type "
+                  "convertible to 'std::iterator_traits<T>::value_type'");
     return 1;
   }
 };

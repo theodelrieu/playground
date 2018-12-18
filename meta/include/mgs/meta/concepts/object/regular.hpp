@@ -16,7 +16,7 @@ namespace concepts
 {
 namespace object
 {
-template <typename T, typename = void>
+template <typename T>
 struct is_regular
 {
   static constexpr auto const value =

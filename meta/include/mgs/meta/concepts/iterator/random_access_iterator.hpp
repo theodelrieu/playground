@@ -97,23 +97,23 @@ public:
                   "'std::iterator_traits<T>::iterator_category' is not derived "
                   "from 'std::random_access_iterator_tag'");
     static_assert(has_addition_assignment,
-                  "Missing or invalid operator: 'T& "
+                  "Invalid or missing operator: 'T& "
                   "operator+=(std::iterator_traits<T>::difference_type)'");
     static_assert(has_addition_t_dt,
-                  "Missing or invalid operator: 'T operator+(T const&, "
+                  "Invalid or missing operator: 'T operator+(T const&, "
                   "std::iterator_traits<T>::difference_type)'");
     static_assert(has_addition_dt_t,
-                  "Missing or invalid operator: 'T "
+                  "Invalid or missing operator: 'T "
                   "operator+(std::iterator_traits<T>::difference_type, T "
                   "const&)'");
     static_assert(has_substraction_assignment,
-                  "Missing or invalid operator: 'T "
+                  "Invalid or missing operator: 'T "
                   "operator-=(std::iterator_traits<T>::difference_type)'");
     static_assert(has_substraction,
-                  "Missing or invalid operator: 'T operator-(T const&, "
+                  "Invalid or missing operator: 'T operator-(T const&, "
                   "std::iterator_traits<T>::difference_type)'");
     static_assert(has_array_subscript,
-                  "Missing or invalid operator: "
+                  "Invalid or missing operator: "
                   "'std::iterator_traits<T>::reference "
                   "operator[](std::iterator_traits<T>::difference_type)'");
     return 1;

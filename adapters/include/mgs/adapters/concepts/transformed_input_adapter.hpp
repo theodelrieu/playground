@@ -89,12 +89,12 @@ public:
     static_assert(value, "T is not a TransformedInputAdapter");
     static_assert(
         has_get_method,
-        "Missing or invalid function: 'T::value_type const& get() const'");
+        "Invalid or missing function: 'T::value_type const& get() const'");
     static_assert(
         has_seek_forward_method,
-        "Missing or invalid function: 'void seek_forward(T::difference_type)'");
+        "Invalid or missing function: 'void seek_forward(T::difference_type)'");
     static_assert(has_read_method,
-                  "Missing or invalid function: 'std::size_t "
+                  "Invalid or missing function: 'std::size_t "
                   "T::read(T::value_type*, std::size_t)'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");

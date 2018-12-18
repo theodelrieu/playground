@@ -12,7 +12,6 @@
 #include <mgs/meta/detected/operators/less_than.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
-
 namespace mgs
 {
 inline namespace v1
@@ -26,8 +25,7 @@ namespace comparison
 template <typename T, typename U>
 struct is_strict_totally_ordered_with
 {
-  using requirements =
-      std::tuple<is_strict_totally_ordered<T>, is_strict_totally_ordered<U>>;
+private:
   using t_const_lvalue_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
   using u_const_lvalue_ref = std::add_lvalue_reference_t<std::add_const_t<U>>;
 
@@ -79,6 +77,10 @@ struct is_strict_totally_ordered_with
                         u_const_lvalue_ref,
                         t_const_lvalue_ref>::value;
 
+public:
+  using requirements =
+      std::tuple<is_strict_totally_ordered<T>, is_strict_totally_ordered<U>>;
+
   static constexpr auto const value =
       is_strict_totally_ordered<T>::value &&
       is_strict_totally_ordered<U>::value && has_less_than_t_u &&
@@ -94,28 +96,28 @@ struct is_strict_totally_ordered_with
 
     static_assert(
         has_less_than_t_u,
-        "Missing or invalid operator: 'bool operator<(T const&, U const&)'");
+        "Invalid or missing operator: 'bool operator<(T const&, U const&)'");
     static_assert(
         has_less_than_u_t,
-        "Missing or invalid operator: 'bool operator<(U const&, T const&)'");
+        "Invalid or missing operator: 'bool operator<(U const&, T const&)'");
     static_assert(
         has_less_or_equal_than_t_u,
-        "Missing or invalid operator: 'bool operator<=(T const&, U const&)'");
+        "Invalid or missing operator: 'bool operator<=(T const&, U const&)'");
     static_assert(
         has_less_or_equal_than_u_t,
-        "Missing or invalid operator: 'bool operator<=(U const&, T const&)'");
+        "Invalid or missing operator: 'bool operator<=(U const&, T const&)'");
     static_assert(
         has_greater_than_t_u,
-        "Missing or invalid operator: 'bool operator>(T const&, U const&)'");
+        "Invalid or missing operator: 'bool operator>(T const&, U const&)'");
     static_assert(
         has_greater_than_u_t,
-        "Missing or invalid operator: 'bool operator>(U const&, T const&)'");
+        "Invalid or missing operator: 'bool operator>(U const&, T const&)'");
     static_assert(
         has_greater_or_equal_than_t_u,
-        "Missing or invalid operator: 'bool operator>=(T const&, U const&)'");
+        "Invalid or missing operator: 'bool operator>=(T const&, U const&)'");
     static_assert(
         has_greater_or_equal_than_t_u,
-        "Missing or invalid operator: 'bool operator>=(U const&, T const&)'");
+        "Invalid or missing operator: 'bool operator>=(U const&, T const&)'");
     return 1;
   };
 };

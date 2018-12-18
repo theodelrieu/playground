@@ -40,7 +40,7 @@ struct is_incrementable
   {
     static_assert(value, "T is not Incrementable");
     static_assert(has_post_increment,
-                  "Missing or invalid operator: 'T operator++(int)'");
+                  "Invalid or missing operator: 'T operator++(int)'");
     return 1;
   }
 };

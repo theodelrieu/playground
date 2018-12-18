@@ -41,7 +41,7 @@ public:
   {
     static_assert(value, "T is not an SizedInputTransformer");
     static_assert(has_max_transformed_size_method,
-                  "Missing or invalid function: 'std::size_t "
+                  "Invalid or missing function: 'std::size_t "
                   "T::max_transformed_size() const'");
     return 1;
   }

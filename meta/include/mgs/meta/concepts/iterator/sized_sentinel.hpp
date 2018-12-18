@@ -55,11 +55,11 @@ public:
   {
     static_assert(value, "T is not a SizedSentinel<Iterator>");
     static_assert(has_it_sent_substraction,
-                  "Missing or invalid operator: "
+                  "Invalid or missing operator: "
                   "'std::iterator_traits<Iterator>::difference_type "
                   "operator-(Iterator const&, T const&)'");
     static_assert(has_sent_it_substraction,
-                  "Missing or invalid operator: "
+                  "Invalid or missing operator: "
                   "'std::iterator_traits<Iterator>::difference_type "
                   "operator-(T const&, Iterator const&)'");
     return 1;
