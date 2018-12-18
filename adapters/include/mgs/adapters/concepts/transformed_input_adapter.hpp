@@ -110,7 +110,7 @@ public:
 };
 
 template <typename T,
-          typename = std::enable_if_t<is_transformed_input_adapter<T>::value>>
+          std::enable_if_t<is_transformed_input_adapter<T>::value, int> = 0>
 using TransformedInputAdapter = T;
 }
 }

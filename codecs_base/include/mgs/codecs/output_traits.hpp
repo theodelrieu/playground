@@ -17,11 +17,8 @@ namespace codecs
 template <typename T, typename>
 struct output_traits
 {
-  template <typename InputAdapter,
-            typename U = T,
-            typename = std::enable_if_t<
-                adapters::concepts::is_transformed_input_adapter<InputAdapter>::value>>
-  static auto create(InputAdapter& adapter)
+  template <typename A, typename U = T>
+  static auto create(adapters::concepts::TransformedInputAdapter<A>& adapter)
       -> decltype(detail::default_converter<U>::create(adapter))
   {
     return detail::default_converter<U>::create(adapter);
