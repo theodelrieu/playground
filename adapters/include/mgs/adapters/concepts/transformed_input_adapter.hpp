@@ -18,20 +18,24 @@
 #include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 
-// template <typename T>
-// concept TransformedInputAdapter = requires(T const& v, T& u) {
-//  requires Regular<T>;
-//  requires Iterator<typename T::underlying_iterator>;
-//  requires Sentinel<typename T::underlying_sentinel, typename
-//  T::underlying_iterator>; typename T::value_type; typename
-//  T::difference_type; requires Constructible<T, typename
-//  T::underlying_iterator, typename T::underlying_sentinel>; requires(typename
-//  T::difference_type n, typename T::value_type* out, std::size_t s) {
-//     { u.read(out, n) } -> std::size_t;
-//     { u.seek_forward(n) } -> void;
-//     { v.get() } -> value_type const&;
-//   }
+// clang-format off
+//
+// template <typename T, OutputIterator OI = typename T::value_type*>
+// concept TransformedInputAdapter = Regular<T> &&
+// requires(T const& v, T& u) {
+//    requires Iterator<typename T::underlying_iterator>;
+//    requires Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
+//    typename T::value_type;
+//    typename T::difference_type;
+//    requires Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
+//    requires(typename T::difference_type n, OI out, std::size_t s) {
+//      { u.read(out, n) } -> std::size_t;
+//      { u.seek_forward(n) } -> void;
+//      { v.get() } -> value_type const&;
+//    }
 // }
+//
+// clang-format on
 
 namespace mgs
 {
@@ -41,7 +45,9 @@ namespace adapters
 {
 namespace concepts
 {
-template <typename T>
+template <typename T,
+          typename OutputIterator = std::add_pointer_t<
+              meta::detected_t<meta::detected::types::value_type, T>>>
 struct is_transformed_input_adapter
 {
 private:
@@ -49,37 +55,43 @@ private:
   using difference_type =
       meta::detected_t<meta::detected::types::difference_type, T>;
 
+  using lvalue_ref = std::add_lvalue_reference_t<T>;
+  using lvalue_const_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
+
   using I = meta::detected_t<detail::detected::types::underlying_iterator, T>;
   using S = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
 
   static auto constexpr const has_read_method =
       meta::is_detected_exact<std::size_t,
                               detail::detected::member_functions::read,
-                              T&,
-                              value_type*,
+                              lvalue_ref,
+                              OutputIterator,
                               std::size_t>::value;
 
   static auto constexpr const has_get_method =
       meta::is_detected_convertible<value_type const&,
                                     detail::detected::member_functions::get,
-                                    T const&>::value;
+                                    lvalue_const_ref>::value;
 
   static auto constexpr const has_seek_forward_method =
       meta::is_detected_exact<void,
                               detail::detected::member_functions::seek_forward,
-                              T&,
+                              lvalue_ref,
                               difference_type>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
       std::is_constructible<T, I, S>::value;
 
 public:
-  using requirements = std::tuple<meta::concepts::object::is_regular<T>>;
+  using requirements =
+      std::tuple<meta::concepts::object::is_regular<T>,
+                 meta::concepts::iterator::is_iterator<OutputIterator>>;
 
   static auto constexpr value =
       has_get_method && has_seek_forward_method && has_read_method &&
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_regular<T>::value &&
+      meta::concepts::iterator::is_iterator<OutputIterator>::value &&
       meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
       std::is_signed<difference_type>::value;
@@ -109,8 +121,12 @@ public:
   }
 };
 
-template <typename T,
-          std::enable_if_t<is_transformed_input_adapter<T>::value, int> = 0>
+template <
+    typename T,
+    typename OutputIterator = std::add_pointer_t<
+        meta::detected_t<meta::detected::types::value_type, T>>,
+    std::enable_if_t<is_transformed_input_adapter<T, OutputIterator>::value,
+                     int> = 0>
 using TransformedInputAdapter = T;
 }
 }

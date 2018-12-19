@@ -7,8 +7,9 @@
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/detected/types/iterator.hpp>
+#include <mgs/meta/detected/types/value_type.hpp>
 
-// template <typename T>
+// template <typename T, OutputIterator OI = typename T::value_type*>
 // concept IterableTransformedInputAdapter =
 //   TransformedInputAdapter<T> &&
 //   Iterable<T> &&
@@ -22,7 +23,9 @@ namespace adapters
 {
 namespace concepts
 {
-template <typename T>
+template <typename T,
+          typename OutputIterator = std::add_pointer_t<
+              meta::detected_t<meta::detected::types::value_type, T>>>
 struct is_iterable_transformed_input_adapter
 {
 private:
@@ -30,11 +33,11 @@ private:
   using ResultOfBegin = meta::detected_t<meta::result_of_begin, T&>;
 
 public:
-  using requirements = std::tuple<is_transformed_input_adapter<T>,
+  using requirements = std::tuple<is_transformed_input_adapter<T, OutputIterator>,
                                   meta::concepts::iterator::is_iterable<T>>;
 
   static constexpr bool const value =
-      is_transformed_input_adapter<T>::value &&
+      is_transformed_input_adapter<T, OutputIterator>::value &&
       meta::concepts::iterator::is_iterable<T>::value &&
       std::is_same<ResultOfBegin, I>::value;
 
@@ -48,8 +51,10 @@ public:
 };
 
 template <typename T,
-          typename =
-              std::enable_if_t<is_iterable_transformed_input_adapter<T>::value>>
+          typename OutputIterator = std::add_pointer_t<
+              meta::detected_t<meta::detected::types::value_type, T>>,
+          typename = std::enable_if_t<
+              is_iterable_transformed_input_adapter<T, OutputIterator>::value>>
 using IterableTransformedInputAdapter = T;
 }
 }

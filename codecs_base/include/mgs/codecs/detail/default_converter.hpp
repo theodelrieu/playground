@@ -70,27 +70,20 @@ template <typename T, typename = void>
 struct default_converter
 {
 private:
-  // TODO concept? or a simple trait?
-  // Contiguous containers which has the following properties:
-  // - T(T::size_type, T::value_type const&)
+  // Containers which have the following properties:
+  // - DefaultConstructible
   // - T::resize(T::size_type)
   // - begin(T&) -> RandomAccessIterator
-  template <
-      typename TransformedInputAdapter,
-      typename U = T,
-      typename SizeType = meta::detected_t<meta::detected::types::size_type, U>,
-      typename ValueType =
-          meta::detected_t<meta::detected::types::value_type, U>,
-      typename LvalueU = std::add_lvalue_reference_t<U>,
-      typename = std::enable_if_t<
-          std::is_integral<ValueType>::value &&
-          !std::is_same<ValueType, bool>::value && sizeof(ValueType) == 1 &&
-          meta::concepts::iterator::is_random_access_iterator<
-              meta::detected_t<meta::result_of_begin, LvalueU>>::value &&
-          std::is_constructible<U, SizeType, ValueType const&>::value &&
-          meta::is_detected_exact<void,
-                                  meta::detected::member_functions::resize,
-                                  LvalueU,
+  template <typename TransformedInputAdapter,
+            typename U = T,
+            typename SizeType = typename U::size_type,
+            typename ValueType = typename U::value_type,
+            typename = std::enable_if_t<
+                meta::concepts::iterator::is_random_access_iterator<
+                    meta::result_of_begin<U&>>::value &&
+                std::is_default_constructible<U>::value &&
+                meta::is_detected<meta::detected::member_functions::resize,
+                                  U&,
                                   SizeType>::value>>
   static U create_impl(TransformedInputAdapter& adapter, meta::priority_tag<1>)
   {
