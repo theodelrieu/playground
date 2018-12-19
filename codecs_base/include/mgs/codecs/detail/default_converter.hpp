@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
 #include <mgs/adapters/concepts/sized_transformed_input_adapter.hpp>
 #include <mgs/adapters/concepts/transformed_input_adapter.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -30,7 +31,9 @@ namespace detail
 {
 template <typename ContiguousContainer, typename T>
 ContiguousContainer fill_contiguous_container(
-    adapters::concepts::SizedTransformedInputAdapter<T>& adapter,
+    adapters::concepts::SizedTransformedInputAdapter<
+        T,
+        meta::result_of_begin<ContiguousContainer&>>& adapter,
     meta::priority_tag<1>)
 {
   using std::begin;
@@ -45,7 +48,9 @@ ContiguousContainer fill_contiguous_container(
 
 template <typename ContiguousContainer, typename T>
 ContiguousContainer fill_contiguous_container(
-    adapters::concepts::TransformedInputAdapter<T>& adapter,
+    adapters::concepts::TransformedInputAdapter<
+        T,
+        meta::result_of_begin<ContiguousContainer&>>& adapter,
     meta::priority_tag<0>)
 {
   using std::begin;
@@ -90,17 +95,20 @@ private:
     return fill_contiguous_container<U>(adapter, meta::priority_tag<1>{});
   }
 
-  template <typename TransformedInputAdapter,
-            typename Iterator = meta::result_of_begin<TransformedInputAdapter&>,
-            typename U = T,
-            typename = std::enable_if_t<
-                (std::is_copy_constructible<U>::value ||
-                 std::is_move_constructible<U>::value) &&
-                std::is_constructible<U, Iterator, Iterator>::value &&
-                // Associative containers' range constructors are not
-                // SFINAE-friendly...
-                !meta::is_detected<meta::detected::types::key_type, U>::value>>
-  static T create_impl(TransformedInputAdapter& adapter, meta::priority_tag<0>)
+  template <
+      typename IterableTransformedInputAdapter,
+      typename Iterator = typename IterableTransformedInputAdapter::iterator,
+      typename U = T,
+      typename = std::enable_if_t<
+          (std::is_copy_constructible<U>::value ||
+           std::is_move_constructible<U>::value) &&
+          std::is_constructible<U, Iterator, Iterator>::value &&
+          // Associative containers' range constructors are not
+          // SFINAE-friendly...
+          !meta::is_detected<meta::detected::types::key_type, U>::value>>
+  static T create_impl(adapters::concepts::IterableTransformedInputAdapter<
+                           IterableTransformedInputAdapter>& adapter,
+                       meta::priority_tag<0>)
   {
     return T(adapter.begin(), adapter.end());
   }
@@ -119,11 +127,7 @@ template <typename C, std::size_t N>
 struct default_converter<std::array<C, N>>
 {
   template <typename T,
-            typename = adapters::concepts::TransformedInputAdapter<T>,
-            typename Iterator = meta::result_of_begin<T&>,
-            typename = std::enable_if_t<std::is_convertible<
-                typename std::iterator_traits<Iterator>::value_type,
-                C>::value>>
+            typename = adapters::concepts::TransformedInputAdapter<T, C*>>
   static std::array<C, N> create(T& adapter)
   {
     std::array<C, N> ret;
