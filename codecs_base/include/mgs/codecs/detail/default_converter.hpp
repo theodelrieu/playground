@@ -8,9 +8,9 @@
 #include <utility>
 #include <vector>
 
-#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
 #include <mgs/adapters/concepts/sized_transformed_input_adapter.hpp>
 #include <mgs/adapters/concepts/transformed_input_adapter.hpp>
+#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
@@ -98,7 +98,8 @@ private:
   // - can be constructed with an Iterator range
   // - are copy or move constructible
   template <typename T,
-            typename Iterator = typename T::iterator,
+            typename = adapters::concepts::TransformedInputAdapter<T>,
+            typename Iterator = adapters::transformed_input_adapter_iterator<T>,
             typename R = Output,
             typename = std::enable_if_t<
                 (std::is_copy_constructible<R>::value ||
@@ -107,11 +108,9 @@ private:
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
-  static R create_impl(
-      adapters::concepts::IterableTransformedInputAdapter<T>& adapter,
-      meta::priority_tag<0>)
+  static R create_impl(T& adapter, meta::priority_tag<0>)
   {
-    return R(adapter.begin(), adapter.end());
+    return R(Iterator(adapter), Iterator());
   }
 
 public:
