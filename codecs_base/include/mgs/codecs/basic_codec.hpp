@@ -72,7 +72,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Encoder = adapters::concepts::TransformedInputAdapter<
                 encoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Encoder> encode(Iterable const& it)
+  static concepts::CodecOutput<T, Encoder> encode(U const& it)
   {
     using std::begin;
     using std::end;
@@ -98,7 +98,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Decoder = adapters::concepts::TransformedInputAdapter<
                 decoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Decoder> decode(Iterable const& it)
+  static concepts::CodecOutput<T, Decoder> decode(U const& it)
   {
     using std::begin;
     using std::end;
