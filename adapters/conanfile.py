@@ -18,8 +18,7 @@ class ConanMgsAdapters(ConanFile):
     def build(self):
         cmake = CMake(self)
         build_tests = self.develop and self.should_build
-        if not build_tests:
-            cmake.definitions["BUILD_TESTING"] = "OFF"
+        cmake.definitions["BUILD_TESTING"] = build_tests
         if self.should_configure:
             cmake.configure()
         if build_tests:
