@@ -21,7 +21,8 @@ Its main design goals are:
 
 ## What is a codec?
 
-Quoting Wikipedia:
+{:.text-delta}
+Wikipedia:
 
 > A codec is a [...] computer program for encoding or decoding a digital data stream [...].
 >
