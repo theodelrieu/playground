@@ -1,2 +1,3 @@
 * Support istream&
 * add a reference to cppcodec in notes or credits section 
+* put back test_package folders, conan create every package
