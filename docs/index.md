@@ -2,69 +2,103 @@
 # Feel free to add content and custom Front Matter to this file.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-layout: home
+layout: default
+title: Introduction
+nav_order: 1
+permalink: /
 ---
 
-# Overview
+# Introduction
 
-Mgs is an open-source C++14 library, aiming to be a collection of codecs.
+Mgs is a C++14 codec library.
 
 Its main design goals are:
 
-* **Ease of use**: Basic usage must be a no-brainer. Advanced usage must be possible.
-* **Extensibility**: New codecs must be simple to add in future versions.
-* **API genericity**: Emulating [Concepts](https://en.cppreference.com/w/cpp/concepts) to define correct and generic APIs.
-* **Package managers friendly**: Easy to package, one can choose to only install specific codecs.
+* Ease of use
+* Extensibility
+* API genericity
+* Package manager friendliness
 
-## Ease of use
+## What is a codec?
+
+Quoting Wikipedia:
+
+> A codec is a [...] computer program for encoding or decoding a digital data stream [...].
+>
+> `Codec` is a portmanteau of coder-decoder. 
+
+Some famous codecs: `base64`, `Vorbis`, `zip`.
+
+## Why should I use Mgs?
+
+Mgs defines a common interface for all codecs, that is both generic and customizable.
 
 ```cpp
-#include <iostream>
-
 #include <mgs/base64.hpp>
 
-int main()
-{
-  std::cout << mgs::base64::encode("Hello, World!") << std::endl;
-  std::cout << mgs::base64::decode("SGVsbG8sIFdvcmxkIQ==") << std::endl;
+using namespace mgs;
+
+int main() {
+  // Parameter must be Iterable
+  std::string const a = base64::encode("Hello, World!");
+  std::vector<std::uint8_t> const b = base64::decode(encoded);
+
+  // Default return types can be overriden
+  auto const c = base64::encode<std::forward_list<char>>(b);
+  auto const d = base64::decode<std::array<char, 13>>(c);
+
+  // Iterator ranges are supported
+  auto const e = base64::encode(d.begin(), d.end());
+  auto const f = base64::encode(e.begin(), e.end());
 }
 ```
 
-## Extensibility
+This should cover most people's needs.
+More advanced use-cases are discussed in later sections.
 
-Every codec is located inside the top-level `mgs` directory, here is the [list of supported codecs]().
-Supporting a new codec will simply require a header to include.
+## Requirements
 
-## API genericity
+Mgs is header-only, it only requires a C++14 compiler.
 
-```cpp
-#include <string>
+## Installation
 
-#include <mgs/base64.hpp>
+### Conan 
 
-using namespace std::string_literals;
+Conan is supported out of the box:
 
-int main()
-{
-  auto const encoded = mgs::base64::encode<std::vector<unsigned char>>("Hello, World!"s);
-  auto const decoded = mgs::base64::decode<std::array<char, 13>>(encoded);
-}
+1. `conan remote add theodelrieu https://api.bintray.com/conan/theodelrieu/conan-repo`
+1. Add `mgs/0.1@mgs/testing` to your `conanfile.txt`
+
+This will install the entire library, you can also install specific components, e.g. `mgs_base64`.
+
+### Manual
+
+The latest release can be downloaded [here]().
+
+## Integration
+
+### CMake
+
+CMake files are released to ease integration:
+
+```cmake
+find_package(mgs 0.1 REQUIRED)
+
+add_executable(foo main.cpp)
+target_link_libraries(foo mgs::mgs)
 ```
 
-Almost every [`Iterable`]() can be passed as a parameter.
-TODO link to relevant sections
+Alternatively, you can use CMake components:
 
-## Package managers friendly
+```cmake
+find_package(mgs 0.1 REQUIRED COMPONENTS base64 base64url)
 
-The library is split into multiple CMake components, which helps re-packaging it.
+add_executable(foo main.cpp)
+target_link_libraries(foo mgs::base64 mgs::base64url)
+```
 
-Conan is supported out of the box. If you use a different package manager, check out if it provides `mgs`!
-
-If not, feel free to add it :)
-
-Please note that Conan will remain the only out of the box supported package manager, in order to avoid cluttering the GitHub repository and keeping the release process manageable.
-
-
-## Credits
-
-The library's design is heavily based on [cppcodec](https://github.com/tplgy/cppcodec).
+<!-- Here is the currently supported list of codecs: -->
+<!--  -->
+<!-- * Base64 -->
+<!-- * Base32 -->
+<!-- * Base16 -->
