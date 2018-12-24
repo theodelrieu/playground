@@ -27,7 +27,7 @@ Quoting Wikipedia:
 >
 > `Codec` is a portmanteau of coder-decoder. 
 
-Some famous codecs: `base64`, `Vorbis`, `zip`.
+Some famous codecs: `base64`, `FLAC`, `zip`.
 
 ## Why should I use Mgs?
 
@@ -59,46 +59,3 @@ More advanced use-cases are discussed in later sections.
 ## Requirements
 
 Mgs is header-only, it only requires a C++14 compiler.
-
-## Installation
-
-### Conan 
-
-Conan is supported out of the box:
-
-1. `conan remote add theodelrieu https://api.bintray.com/conan/theodelrieu/conan-repo`
-1. Add `mgs/0.1@mgs/testing` to your `conanfile.txt`
-
-This will install the entire library, you can also install specific components, e.g. `mgs_base64`.
-
-### Manual
-
-The latest release can be downloaded [here]().
-
-## Integration
-
-### CMake
-
-CMake files are released to ease integration:
-
-```cmake
-find_package(mgs 0.1 REQUIRED)
-
-add_executable(foo main.cpp)
-target_link_libraries(foo mgs::mgs)
-```
-
-Alternatively, you can use CMake components:
-
-```cmake
-find_package(mgs 0.1 REQUIRED COMPONENTS base64 base64url)
-
-add_executable(foo main.cpp)
-target_link_libraries(foo mgs::base64 mgs::base64url)
-```
-
-<!-- Here is the currently supported list of codecs: -->
-<!--  -->
-<!-- * Base64 -->
-<!-- * Base32 -->
-<!-- * Base16 -->
