@@ -62,7 +62,7 @@ Conan is supported out of the box. If you use a different package manager, check
 
 If not, feel free to add it :)
 
-Please note that Conan will remain the only out of the box package manager, in order to avoid cluttering the GitHub repository and keeping the release process manageable.
+Please note that Conan will remain the only out of the box supported package manager, in order to avoid cluttering the GitHub repository and keeping the release process manageable.
 
 
 ## Credits
