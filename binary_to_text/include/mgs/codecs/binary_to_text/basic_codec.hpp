@@ -42,7 +42,6 @@ public:
 
   template <typename T = typename base::default_decoded_output,
             std::size_t N = 0>
-
   static codecs::concepts::
       CodecOutput<T, typename base::template decoder<char const*>>
       decode(char const (&tab)[N])

@@ -1,3 +1,4 @@
 * Support istream&
 * add a reference to cppcodec in notes or credits section 
 * put back test_package folders, conan create every package
+* add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
