@@ -14,10 +14,10 @@ Mgs is a C++14 codec library.
 
 Its main design goals are:
 
-* Ease of use
-* Extensibility
-* API genericity
-* Package manager friendliness
+* **Ease of use:** Regular usage must be a no-brainer.
+* **Extensibility:** New codecs must be trivial to add in future versions.
+* **API genericity:** Emulating [`Concepts`](https://en.cppreference.com/w/cpp/concepts) to define good APIs.
+* **Package manager friendliness:** Modular architecture, each codec is a single entity.
 
 ## What is a codec?
 
@@ -30,9 +30,9 @@ Wikipedia:
 
 Some famous codecs: `base64`, `FLAC`, `zip`.
 
-## Why should I use Mgs?
+## Why should I use `mgs`?
 
-Mgs defines a common interface for all codecs, that is both generic and customizable.
+`mgs` defines a common interface for all codecs, that is both generic and customizable.
 
 ```cpp
 #include <mgs/base64.hpp>
@@ -50,7 +50,7 @@ int main() {
 
   // Iterator ranges are supported
   auto const e = base64::encode(d.begin(), d.end());
-  auto const f = base64::encode(e.begin(), e.end());
+  auto const f = base64::decode(e.begin(), e.end());
 }
 ```
 
@@ -71,8 +71,12 @@ Here is the current list of supported codecs:
 
 ## Requirements
 
-Mgs is header-only, and only requires a C++14 compiler.
+`mgs` is header-only, and only requires a C++14 compiler.
 
 ## Credits
 
 This library is heavily inspired from [cppcodec](https://github.com/tplgy/cppcodec).
+
+I first wanted to contribute to `cppcodec` by lifting some API constraints (e.g. being able to decode `std::array`).
+However, it was harder than it seemed so I started a side-project from scratch to experiment on API genericity and user-defined type conversions.
+It ended up as a complete rewrite...
