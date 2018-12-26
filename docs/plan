@@ -1,10 +1,13 @@
-Overview:
+Usage
 
-* Purpose of library
-* Small examples
+* Basic
+  - Encode decode
+  - encoded_size
 
-Contents:
-* Installing
+* Intermediate
+  - Use encoder/decoder (low memory usage)
 
-API:
-
+* Advanced
+  - Support your own container
+  - Add a codec variant
+  - Write your own codec
