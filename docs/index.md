@@ -57,6 +57,22 @@ int main() {
 This should cover most people's needs.
 More advanced use-cases are discussed in later sections.
 
+## Scope
+
+The goal of this library is to be a collection of codecs.
+
+Here is the current list of supported codecs:
+
+* base64
+* base64url
+* base32
+* base32hex
+* base16
+
 ## Requirements
 
-Mgs is header-only, it only requires a C++14 compiler.
+Mgs is header-only, and only requires a C++14 compiler.
+
+## Credits
+
+This library is heavily inspired from [cppcodec](https://github.com/tplgy/cppcodec).
