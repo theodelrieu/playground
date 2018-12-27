@@ -1,5 +1,6 @@
 * Support istream&
-* add a reference to cppcodec in notes or credits section 
-* put back test_package folders, conan create every package
+* remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
+* rename binary_to_text -> binary_to_base
 * use IterableTransformedInputAdapter everywhere except in iterator
+* put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
