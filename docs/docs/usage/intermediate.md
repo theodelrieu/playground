@@ -8,10 +8,9 @@ parent: Usage
 # Intermediate usage
 {:.no_toc}
 
-This section is for users having particular needs, e.g. low memory consumption.
+This section introduces Encoders and Decoders, and demonstrates how they are used in more advanced features than those shown in the [basic section](basic).
 
-It is assumed the reader has seen the [basic section](basic).
-
+If you wish to write your own codec, or want to know more about the library details, check out the [advanced section](advanced) as well.
 
 ## Table of contents
 {:.no_toc .text_delta}
@@ -21,22 +20,16 @@ It is assumed the reader has seen the [basic section](basic).
 
 ---
 
-## Eager vs. lazy
+## Encoders and Decoders
 
-The examples shown in the [previous section](basic) are eager, which means encoding a huge input will require allocating an even bigger chunk of memory.
+Every codec is built on top of an Encoder and a Decoder.
 
-This can have undesirable effects (e.g. `std::bad_alloc` being thrown).
+Both model the [`IterableTransformedInputAdapter`]() concept and thus share a common API:
 
-However, this does not mean codecs are eager. Some of them are lazy internally, they are made eager because of the high level API.
+1. `begin`/`end` member functions, each returning an [`InputIterator`]().
+2. `write` member function, returning the number of characters written.
 
-### Lazy constructs
-
-Currently, every `baseX` codec is implemented on top of lazy constructs, namely one `encoder` and one `decoder`.
-
-It is possible to use one of the following APIs instead of the high level one:
-
-1. `encoder`/`decoder` iterators.
-2. `write` member function.
+To create them, use the codecs' `make_encoder`/`make_decoder` static member functions:
 
 ```cpp
 #include <mgs/base64.hpp>
@@ -44,35 +37,99 @@ It is possible to use one of the following APIs instead of the high level one:
 using namespace mgs;
 
 int main() {
-  std::vector<std::uint8_t> const huge_buffer = /* ... */
+  std::string const str("decoded");
 
-  // requires an Iterator/Sentinel pair (which must outlives the encoder!)
-  auto encoder = base64::make_encoder(huge_buffer.begin(), huge_buffer.end());
+  // 1. Using iterators
+  auto encoder = base64::make_encoder(str.begin(), str.end());
+  std::string const b64str(encoder.begin(), encoder.end());
 
-  auto output_iterator = std::ostream_iterator<char>(std::cout);
-
-  // 1. Less boilerplate, can be less efficient than 2.
-  std::copy(encoder.begin(), encoder.end(), output_iterator);
-
-  // 2. More boilerplate, but can be more efficient than 1.
-  auto nb_written = encoder.write(output_iterator, 4096);
-  while (nb_written)
-    nb_written = encoder.write(output_iterator, 4096);
+  // 2. Using write
+  auto decoder = base64::make_decoder(b64str.begin(), b64str.end());
+  std::string decoded;
+  auto total_read = decoder.write(std::back_inserter(decoded), 256);
+  while (total_read != 0)
+    total_read = decoder.write(std::back_inserter(decoded), 256);
 }
 ```
 
-TODO explain what the code does, and what happens under the hood
+Note
+{: .label .label-blue }
+Both ways will lazily transform the input.
+
+Although more verbose, `write` is often faster than using iterators.
 
 Caveat
 {: .label .label-yellow }
+Encoders and Decoders are stateful objects designed for one-time use, be careful to not reuse them!
 
-Only one of the following ways must be used!
-The `encoder`/`decoder` are stateful, therefore it will be empty after having encoded the underlying data.
+## Use-cases
 
-Note
-{: .label .label-blue }
+### Adding support for user-defined types
 
-Both `encoder` and `decoder` model the [`IterableTransformedInputAdapter`]() concept.
+Although `mgs` supports lots of return types, you might use one in your code that is not supported by default.
 
+Here is the code needed to support `my_container`:
 
+```cpp
+#include <mgs/codecs/output_traits_fwd.hpp>
 
+namespace mgs {
+namespace codecs {
+template <>
+struct output_traits<my_container> {
+  template <typename IterableTransformedInputAdapter>
+  static my_container create(IterableTransformedInputAdapter&) {
+    // The parameter is either an Encoder or a Decoder.
+    // You can use iterators or the write member function.
+
+    // ...
+  }
+};
+}
+}
+```
+
+### Limiting memory usage
+
+When dealing with huge volumes of data to encode/decode, memory consumption can become a problem.
+
+Using the API shown in the [basic section](basic) demonstrates it well:
+
+```cpp
+#include <mgs/base64.hpp>
+
+using namespace mgs;
+
+int main() {
+  // Could be a few TB...
+  std::ifstream enormous_file("TODO.txt");
+
+  // oops
+  auto encoded = base64::encode(enormous_file);
+
+  std::ofstream ofs("TODO.b64");
+  ofs.write(encoded.c_str(), encoded.size());
+}
+```
+
+In this case, `std::bad_alloc` will likely be thrown by `std::string`'s constructor.
+
+Here is how to handle it properly:
+
+```cpp
+#include <mgs/base64.hpp>
+
+using namespace mgs;
+
+int main() {
+  std::ifstream enormous_file("TODO.txt");
+  std::istreambuf_iterator<char> begin(enormous_file);
+  std::istreambuf_iterator<char> end;
+
+  auto encoder = base64::make_encoder(std::istreambuf_iterator<char>(enormous_file),
+                                      std::istreambuf_iterator<char>());
+
+  std::ofstream ofs("TODO.b64");
+  std::copy(encoder.begin(), encoder.end(), std::ostreambuf_iterator<char>(ofs));
+}
+```

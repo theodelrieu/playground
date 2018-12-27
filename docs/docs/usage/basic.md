@@ -8,7 +8,11 @@ parent: Usage
 # Basic usage
 {:.no_toc}
 
-This section is for all users. It is sufficient for those who need to encode/decode data, with no particular constraints.
+This section demonstrates the library's most common usage.
+
+It is sufficient for users wanting to encode and decode data with no particular constraints.
+
+If this does not suit your needs, check out the [intermediate section](intermediate).
 
 ## Table of contents
 {:.no_toc .text_delta}
@@ -30,14 +34,14 @@ Both can take the following parameters:
 1. An [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
 1. `std::istream&`
 
-Note
+Caveat
 {: .label .label-yellow }
 
 Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
 
 It will stop encoding at the first encountered null character (`'\0'`).
 
-If you want to avoid this behavior, use the [`Iterator`]() range overloads(2).
+If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) instead.
 
 ```cpp
 #include <mgs/base64.hpp>

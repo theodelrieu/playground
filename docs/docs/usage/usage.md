@@ -6,8 +6,15 @@ has_children: true
 permalink: /docs/usage
 ---
 
-This section describes 3 different usage levels.
+This section presents 3 different usage levels.
 
 * **[Basic](basic):** should cover most of your needs.
-* **[Intermediate](intermediate):** for users looking for low memory consumption.
-* **[Advanced](advanced):** Write your own codec, add support for a custom container.
+* **[Intermediate](intermediate):** custom containers support, lazy encoding.
+* **[Advanced](advanced):** learn the quirks needed to write your own codec.
+
+Note
+{: .label .label-blue}
+
+Every code snippet will use [`base64`]() to demonstrate common codec functionalities.
+
+Unless otherwise specified, everything can be used with other codecs.
