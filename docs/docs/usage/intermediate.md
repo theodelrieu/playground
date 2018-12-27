@@ -12,6 +12,9 @@ This section introduces Encoders and Decoders, and demonstrates how they are use
 
 If you wish to write your own codec, or want to know more about the library details, check out the [advanced section](advanced) as well.
 
+
+TODO where to put encoded_size and max_decoded_size??
+
 ## Table of contents
 {:.no_toc .text_delta}
 
@@ -46,9 +49,9 @@ int main() {
   // 2. Using write
   auto decoder = base64::make_decoder(b64str.begin(), b64str.end());
   std::string decoded;
-  auto total_read = decoder.write(std::back_inserter(decoded), 256);
-  while (total_read != 0)
-    total_read = decoder.write(std::back_inserter(decoded), 256);
+  auto nb_written = decoder.write(std::back_inserter(decoded), 256);
+  while (nb_written != 0)
+    nb_written = decoder.write(std::back_inserter(decoded), 256);
 }
 ```
 

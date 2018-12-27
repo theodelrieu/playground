@@ -76,6 +76,7 @@ struct default_converter
 private:
   // Overload for containers which have the following properties:
   // - DefaultConstructible
+  // FIXME add copy / or move constructible
   // - T::resize(T::size_type)
   // - begin(T&) -> RandomAccessIterator
   template <typename T,
@@ -99,6 +100,7 @@ private:
   // - are copy or move constructible
   template <typename T,
             typename = adapters::concepts::TransformedInputAdapter<T>,
+            // FIXME require IterableStuff
             typename Iterator = adapters::transformed_input_adapter_iterator<T>,
             typename R = Output,
             typename = std::enable_if_t<
@@ -127,6 +129,7 @@ struct default_converter<std::array<C, N>>
 {
   template <typename T>
   static std::array<C, N> create(
+      // FIXME C const*
       adapters::concepts::TransformedInputAdapter<T, C*>& adapter)
   {
     std::array<C, N> ret;

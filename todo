@@ -4,3 +4,4 @@
 * rename binary_to_text -> binary_to_base
 * use IterableTransformedInputAdapter everywhere except in iterator
 * put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
+* for byte_integral, use std::numeric_limits<>::digits10 
