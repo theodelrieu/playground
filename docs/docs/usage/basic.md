@@ -34,22 +34,13 @@ Both can take the following parameters:
 1. An [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
 1. `std::istream&`
 
-Caveat
-{: .label .label-yellow }
-
-Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
-
-It will stop encoding at the first encountered null character (`'\0'`).
-
-If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) instead.
-
 ```cpp
 #include <mgs/base64.hpp>
 
 using namespace mgs;
 
 int main() {
-  // 1
+  // 1. Iterable
   std::string decoded_str("decoded text");
   std::list<char> decoded_list(decoded_str.begin(), decoded_str.end());
 
@@ -59,7 +50,7 @@ int main() {
   assert(base64::encode(decoded_str) == base64::encode(decoded_list));
   assert(base64::decode(encoded_str) == base64::decode(encoded_list));
 
-  // 2
+  // 2. Iterator range
   char const* decoded_c_str = decoded_str.c_str();
   char const* encoded_c_str = encoded_str.c_str();
 
@@ -69,7 +60,7 @@ int main() {
   assert(base64::decode(encoded_c_str, encoded_c_str + encoded_str.size()) ==
          base64::decode(encoded_list.begin(), encoded_list.end()));
 
-  // 3
+  // 3. Input stream
   std::ifstream decoded_file("decoded.txt");
   std::ifstream encoded_file("encoded.b64");
 
@@ -77,6 +68,15 @@ int main() {
   auto const decoded_content = base64::decode(encoded_file);
 }
 ```
+
+Caveat
+{: .label .label-yellow }
+
+Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
+
+It will stop encoding at the first encountered null character (`'\0'`).
+
+If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) instead.
 
 Note
 {: .label .label-blue }
