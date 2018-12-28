@@ -8,7 +8,7 @@ parent: Usage
 # Advanced usage
 {: .no_toc }
 
-This section explains in detail new and previously discussed topics, and how to write a custom codec.
+This section introduces some advanced topics and revisit in a bit more detail previously discussed ones.
 
 ## Table of contents
 {: .no_toc .text_delta }
@@ -18,37 +18,66 @@ This section explains in detail new and previously discussed topics, and how to 
 
 ---
 
-## Quirks and details
+## Customize an existing codec
 
-### Constraints on encode/decode input parameters
+Some codecs can be eazily customized, this is the case for all the `baseX` codecs.
 
-Codecs share a common set of contraints on `encode`/`decode` input parameters.
+Look at `base64`'s [`customization`]() section to learn more about it.
 
-As discussed in the [basic section](basic), the input parameters must either be:
+## Write your own codec
 
-1. An [`Iterable`]()
-1. An [`InputIterator`]() and a [`Sentinel<InputIterator>`]()
-1. `std::istream&`
+`mgs` provides some building blocks to help you write your codec.
 
-We will focus on `2.` since the other two are built on top of it.
+### basic_codec
 
-Depending on the called function, an Encoder or a Decoder will be constructed with the iterator-sentinel pair. 
+```cpp
+// Located in <mgs/codecs/basic_codec.hpp>
 
-This type must model the [`IterableTransformedInputAdapter`]() concept. Otherwise, a compiler error will be triggered.
+namespace mgs {
+namespace codecs {
+template <typename CodecTraits>
+class basic_codec { /* ... */ };
+}
+}
+```
+
+This class will take care of defining, and properly constraining the following functions:
+
+* `make_encoder`
+* `make_decoder`
+* `encode`
+* `decode`
+
+It expects a single template parameter, which must model the [`CodecTraits`]() concept.
+
+### basic_transformed_input_adapter
+
+```cpp
+// Located in <mgs/adapters/basic_transformed_input_adapter.hpp>
+
+namespace mgs {
+namespace adapters {
+template <typename InputTransformer>
+class basic_transformed_input_adapter { /* ... */ };
+}
+}
+```
+
+This class will help you create encoders and decoders.
+
+It expects a single template parameter, which must model the [`InputTransformer`]() concept.
 
 Note
 {: .label .label-blue }
-Codecs can have additional constraints, which are described in each codec's section (e.g. [`base64`]()).
+If the template parameter also models [`SizedInputTransformer`](), `basic_transformed_input_adapter` will model [`SizedTransformedInputAdapter`]() as well.
 
-### Constraints on encode/decode return types
+### Example
 
-Just like with their input parameters, `encode`/`decode` impose contraints on which types they return.
+A working example can be found in the test suite, in `codecs_base/test/test_codecs_base.cpp`.
 
-As explained [previously](), an Encoder or a Decoder is created when `encode`/`decode` is called, which must model the [`IterableTransformedInputAdapter`]() concept.
+It is a no-op codec, but it uses the previously mentioned building blocks and can be copy-pasted to get started easily.
 
-The return type itself must also model a concept: [`CodecOutput`]().
-
-Otherwise, a compiler error will be triggered.
+## Quirks and details
 
 ### Iterator related optimizations
 
@@ -82,42 +111,17 @@ Note
 
 Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAdapter`]() concept.
 
-### Default return-type-creation mechanism
+### Supported return types
 
-It can be helpful to understand what happens during the default return-type-creation mechanism.
+Here is the list of supported `encode`/`decode` return types:
 
-Given the following requirements:
+* `std::array<CharT, std::size_t>`
+* [`SequenceContainer`]()s that are [`CopyConstructible`]() or [`MoveConstructible`]()
+  * And either
+    * [`Constructible`]() from an [`Iterator`]() range
+  * Or
+    * [`DefaultConstructible`]()
+    * [`Iterable`](), with [`RandomAccessIterator`]()
+    * Have a `size_type` member type alias
+    * Have a `resize(size_type)` member function
 
-* For a type `T`, assuming `mgs::codecs::output_traits<T>` has **NOT** been specialized by the user
-* For a type `U`, modeling the [`IterableTransformedInputAdapter`]() concept
-
-The following steps will be executed:
-
-* `mgs::codecs::output_traits<T>::create` delegates the call to an internal converter
-* If `T` is a `std::array<CharT, std::size_t>`
-  * `U` must model [`IterableTransformedInputAdapter<CharT const*>`]()
-* Else if `T` models [`DefaultConstructible`]() and either [`CopyConstructible`]() or [`MoveConstructible`]()
-  * If `T`:
-    * Has [`RandomAccessIterator`]()s
-    * Has a `size_type` member type alias
-    * Has a `resize(size_type)` member function
-      * The fastest path is taken, especially if `U` models [`SizedTransformedInputAdapter`]()
-  * Else if `T`:
-      * Does not model [`AssociativeContainer`]()
-      * Models [`Constructible<U::iterator, U::sentinel>`]()
-          * `T`'s iterator range constructor is called
-* Otherwise, a compiler error will be triggered
-
-## Advanced customization
-
-### User-defined types (advanced)
-
-Partial specialization + SFINAE, how to use SizedTransformedInputAdapter
-
-### Write a codec variant
-
-show how to change base64 alphabet
-
-### Write a new codec
-
-use basic_codec, mention InputTransformer/SizedInputTransformer

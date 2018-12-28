@@ -46,6 +46,7 @@ public:
   value_type const& get() const;
   void seek_forward(difference_type n);
 
+  // FIXME write
   template <typename OutputIterator>
   std::size_t read(OutputIterator out, std::size_t n);
 

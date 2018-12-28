@@ -12,9 +12,6 @@ This section introduces Encoders and Decoders, and demonstrates how they are use
 
 If you wish to write your own codec, or want to know more about the library details, check out the [advanced section](advanced) as well.
 
-
-TODO where to put encoded_size and max_decoded_size??
-
 ## Table of contents
 {:.no_toc .text_delta}
 
@@ -65,9 +62,9 @@ Caveat
 {: .label .label-yellow }
 Encoders and Decoders are stateful objects designed for one-time use, be careful to not reuse them!
 
-## Use-cases
+### Use-cases
 
-### Adding support for user-defined types
+#### Adding support for user-defined types
 
 Although `mgs` supports lots of return types, you might use one in your code that is not supported by default.
 
@@ -92,7 +89,11 @@ struct output_traits<my_container> {
 }
 ```
 
-### Limiting memory usage
+Note
+{: .label .label-blue }
+`output_traits` has a second template parameter, defaulted to `void`, to allow SFINAE checks. 
+
+#### Limiting memory usage
 
 When dealing with huge volumes of data to encode/decode, memory consumption can become a problem.
 
@@ -136,3 +137,7 @@ int main() {
   std::copy(encoder.begin(), encoder.end(), std::ostreambuf_iterator<char>(ofs));
 }
 ```
+
+## Predicting encoded/decoded size
+
+lol

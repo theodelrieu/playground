@@ -28,10 +28,10 @@ Each codec has two symmetrical APIs: `encode` and `decode`.
 
 ### Input parameters
 
-Both can take the following parameters:
+Codecs share a common set of contraints on `encode`/`decode` input parameters. They can be one of the following:
 
-1. An [`Iterable`]()
-1. An [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
+1. [`Iterable`]()
+1. [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
 1. `std::istream&`
 
 ```cpp
@@ -81,7 +81,7 @@ If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) in
 Note
 {: .label .label-blue }
 
-More detail about input parameter requirements can be found [here](advanced).
+Codecs can have additional constraints, which are described in each codec's section (e.g. [`base64`]()).
 
 ### Return types
 
@@ -107,10 +107,14 @@ int main() {
 }
 ```
 
+Default types are listed in each codec's page (e.g. [`base64`]()).
+
 Note
 {: .label .label-blue }
 
-More detail about return type requirements can be found [here](advanced).
+You can find the list of supported return types [here]().
+
+If a type you wish to use is not supported by default, take a look [here]().
 
 ## Error handling
 
