@@ -30,7 +30,7 @@ Look at `base64`'s [`customization`]() section to learn more about it.
 
 ### basic_codec
 
-`mgs::codecs::basic_codec<T>` takes care of defining, and properly constraining the following functions:
+`mgs::codecs::basic_codec<T>` is a helper class which defines, and properly constrains the following functions:
 
 * `make_encoder`
 * `make_decoder`
@@ -41,7 +41,13 @@ It expects a single template parameter, which must model the [`CodecTraits`]() c
 
 ### basic_transformed_input_adapter
 
-`mgs::adapters::basic_transformed_input_adapter<T>` will define functions required by the `[IterableTransformedInputAdapter`]() concept. 
+`mgs::adapters::basic_transformed_input_adapter<T>` is a helper class which defines functions and type aliases required by the [`IterableTransformedInputAdapter`]() concept.
+The most important being:
+
+* `write`
+* `begin`
+* `end`
+* `operator==`/`operator!=`
 
 This class will help you create `Encoder`s and `Decoder`s.
 
@@ -81,6 +87,11 @@ public:
     out.clear();
     while (_current != _end)
       out.push_back(*_current++);
+  }
+
+  std::size_t max_transformed_size() const
+  {
+    return _end - _current;
   }
 
 private:
@@ -123,7 +134,8 @@ struct noop_codec_traits
 using noop_codec = codecs::basic_codec<noop_codec_traits>;
 
 int main() {
-  auto str = noop_codec::encode("No-op");
+  auto str = noop_codec::encode("Hello, World!");
+  // str == "Hello, World!"
 }
 ```
 
