@@ -187,3 +187,7 @@ Here is the list of supported `encode`/`decode` return types:
     * Have a `size_type` member type alias
     * Have a `resize(size_type)` member function
 
+Caveat
+{: .label .label-yellow }
+
+For `std::array`s, `mgs` will throw an error if the transformed data does not fit **EXACTLY** in the array.
