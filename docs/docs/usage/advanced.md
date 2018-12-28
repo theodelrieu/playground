@@ -30,18 +30,7 @@ Look at `base64`'s [`customization`]() section to learn more about it.
 
 ### basic_codec
 
-```cpp
-// Located in <mgs/codecs/basic_codec.hpp>
-
-namespace mgs {
-namespace codecs {
-template <typename CodecTraits>
-class basic_codec { /* ... */ };
-}
-}
-```
-
-This class will take care of defining, and properly constraining the following functions:
+`mgs::codecs::basic_codec<T>` takes care of defining, and properly constraining the following functions:
 
 * `make_encoder`
 * `make_decoder`
@@ -52,18 +41,9 @@ It expects a single template parameter, which must model the [`CodecTraits`]() c
 
 ### basic_transformed_input_adapter
 
-```cpp
-// Located in <mgs/adapters/basic_transformed_input_adapter.hpp>
+`mgs::adapters::basic_transformed_input_adapter<T>` will define functions required by the `[IterableTransformedInputAdapter`]() concept. 
 
-namespace mgs {
-namespace adapters {
-template <typename InputTransformer>
-class basic_transformed_input_adapter { /* ... */ };
-}
-}
-```
-
-This class will help you create encoders and decoders.
+This class will help you create `Encoder`s and `Decoder`s.
 
 It expects a single template parameter, which must model the [`InputTransformer`]() concept.
 
@@ -73,9 +53,79 @@ If the template parameter also models [`SizedInputTransformer`](), `basic_transf
 
 ### Example
 
-A working example can be found in the test suite, in `codecs_base/test/test_codecs_base.cpp`.
+Here is a working example inspired from `mgs`' test suite.
 
 It is a no-op codec, but it uses the previously mentioned building blocks and can be copy-pasted to get started easily.
+
+```cpp
+#include <mgs/adapters/basic_transformed_input_adapter.hpp>
+#include <mgs/codecs/basic_codec.hpp>
+
+using namespace mgs;
+
+class noop_transformer
+{
+public:
+  using underlying_iterator = char const*;
+  using underlying_sentinel = char const*;
+  using buffer_type = std::vector<char>;
+
+  noop_transformer() = default;
+  noop_transformer(char const* begin, char const* end)
+    : _current(begin), _end(end)
+  {
+  }
+
+  void operator()(buffer_type& out)
+  {
+    out.clear();
+    while (_current != _end)
+      out.push_back(*_current++);
+  }
+
+private:
+  char const* _current{};
+  char const* _end{};
+
+  friend bool operator==(noop_transformer const& lhs,
+                         noop_transformer const& rhs)
+  {
+    // A default-constructed value is a valid sentinel.
+    // As is the usual past-the-end iterator. Must check both cases.
+    if (lhs._current == lhs._end || rhs._current == rhs._end)
+      return lhs._current == lhs._end && rhs._current == rhs._end;
+    return lhs._current == rhs._current;
+  }
+};
+
+bool operator!=(noop_transformer const& lhs,
+                noop_transformer const& rhs)
+{
+  return !(lhs == rhs);
+}
+
+using noop_adapter = adapters::basic_transformed_input_adapter<noop_transformer>;
+
+struct noop_codec_traits
+{
+  using default_encoded_output = std::string;
+  using default_decoded_output = std::string;
+
+  static auto make_encoder(char const* begin, char const* end){
+    return noop_adapter(begin, end);
+  }
+
+  static auto make_decoder(char const* begin, char const* end){
+    return noop_adapter(begin, end);
+  }
+};
+
+using noop_codec = codecs::basic_codec<noop_codec_traits>;
+
+int main() {
+  auto str = noop_codec::encode("No-op");
+}
+```
 
 ## Quirks and details
 

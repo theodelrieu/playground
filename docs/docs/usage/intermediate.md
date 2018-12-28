@@ -8,7 +8,7 @@ parent: Usage
 # Intermediate usage
 {:.no_toc}
 
-This section introduces Encoders and Decoders, and demonstrates how they are used in more advanced features than those shown in the [basic section](basic).
+This section introduces `Encoder`s and `Decoder`s, and demonstrates how they are used in more advanced features than those shown in the [basic section](basic).
 
 If you wish to write your own codec, or want to know more about the library details, check out the [advanced section](advanced) as well.
 
@@ -22,7 +22,7 @@ If you wish to write your own codec, or want to know more about the library deta
 
 ## Encoders and Decoders
 
-Every codec is built on top of an Encoder and a Decoder.
+Every codec is built on top of an `Encoder` and a `Decoder`.
 
 Both model the [`IterableTransformedInputAdapter`]() concept and thus share a common API:
 
@@ -46,9 +46,7 @@ int main() {
   // 2. Using write
   auto decoder = base64::make_decoder(b64str.begin(), b64str.end());
   std::string decoded;
-  auto nb_written = decoder.write(std::back_inserter(decoded), 256);
-  while (nb_written != 0)
-    nb_written = decoder.write(std::back_inserter(decoded), 256);
+  while (auto nb_written = decoder.write(std::back_inserter(decoded), 256));
 }
 ```
 
@@ -60,7 +58,7 @@ Although more verbose, `write` is often faster than using iterators.
 
 Caveat
 {: .label .label-yellow }
-Encoders and Decoders are stateful objects designed for one-time use, be careful to not reuse them!
+`Encoder`s and `Decoder`s are stateful objects designed for one-time use, be careful to not reuse them!
 
 ### Use-cases
 
