@@ -140,4 +140,21 @@ int main() {
 
 ## Predicting encoded/decoded size
 
-lol
+Some codecs provide two methods to predict the future transformed size:
+
+```cpp
+#include <mgs/base64.hpp>
+
+using namespace mgs;
+
+int main() {
+  auto const encoded_size = base64::encoded_size(42);
+  auto const decoded_size = base64::max_decoded_size(encoded_size);
+}
+```
+
+Caveat
+{: .label .label-yellow }
+`max_decoded_size` might throw `invalid_input_error` if the given encoded size is invalid.
+
+e.g. `base64` encoded output is always a multiple of 4, so `base64::max_decoded_size(3)` will throw. 
