@@ -68,21 +68,23 @@ Encoders and Decoders are stateful objects designed for one-time use, be careful
 
 Although `mgs` supports lots of return types, you might use one in your code that is not supported by default.
 
-Here is the code needed to support `my_container`:
+As an example, here is the code needed to support [`QLinkedList`](http://doc.qt.io/qt-5/qlinkedlist.html):
 
 ```cpp
 #include <mgs/codecs/output_traits_fwd.hpp>
 
+#include <QLinkedList>
+
 namespace mgs {
 namespace codecs {
-template <>
-struct output_traits<my_container> {
-  template <typename IterableTransformedInputAdapter>
-  static my_container create(IterableTransformedInputAdapter&) {
-    // The parameter is either an Encoder or a Decoder.
-    // You can use iterators or the write member function.
-
-    // ...
+template <typename CharT>
+struct output_traits<QLinkedList<CharT>> {
+  // parameter is either an Encoder or a Decoder
+  template <typename U>
+  static QLinkedList<CharT> create(U& adapter) {
+    QLinkedList<CharT> list;
+    std::copy(adapter.begin(), adapter.end(), std::back_inserter(list));
+    return list;
   }
 };
 }

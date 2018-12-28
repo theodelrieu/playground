@@ -81,7 +81,7 @@ It is a no-op codec, but it uses the previously mentioned building blocks and ca
 
 ### Iterator related optimizations
 
-While codecs accepts every Iterable (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`RandomAccessIterator`]()s.
+While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`RandomAccessIterator`]()s.
 
 This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
 
