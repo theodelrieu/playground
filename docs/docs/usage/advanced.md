@@ -44,7 +44,7 @@ It expects a single template parameter, which must model the [`CodecTraits`]() c
 `mgs::adapters::basic_transformed_input_adapter<T>` is a helper class which defines functions and type aliases required by the [`IterableTransformedInputAdapter`]() concept.
 The most important being:
 
-* `write`
+* `read`
 * `begin`
 * `end`
 * `operator==`/`operator!=`
@@ -161,7 +161,7 @@ int main() {
 
   // allocate max_size bytes in one go
   std::string encoded_str(max_size, '\0');
-  auto const total_written = encoder.write(encoded_str.begin(), max_size);
+  auto const total_written = encoder.read(encoded_str.begin(), max_size);
 
   // do not forget to resize at the end!
   encoded_str.resize(total_written);

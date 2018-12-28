@@ -27,7 +27,7 @@ Every codec is built on top of an `Encoder` and a `Decoder`.
 Both model the [`IterableTransformedInputAdapter`]() concept and thus share a common API:
 
 1. `begin`/`end` member functions, each returning an [`InputIterator`]().
-2. `write` member function, returning the number of characters written.
+2. `read` member function, returning the number of characters read.
 
 To create them, use the codecs' `make_encoder`/`make_decoder` static member functions:
 
@@ -43,10 +43,10 @@ int main() {
   auto encoder = base64::make_encoder(str.begin(), str.end());
   std::string const b64str(encoder.begin(), encoder.end());
 
-  // 2. Using write
+  // 2. Using read
   auto decoder = base64::make_decoder(b64str.begin(), b64str.end());
   std::string decoded;
-  while (auto nb_written = decoder.write(std::back_inserter(decoded), 256));
+  while (auto nb_read = decoder.read(std::back_inserter(decoded), 256));
 }
 ```
 
@@ -54,7 +54,7 @@ Note
 {: .label .label-blue }
 Both ways will lazily transform the input.
 
-Although more verbose, `write` is often faster than using iterators.
+Although more verbose, `read` is often faster than using iterators.
 
 Caveat
 {: .label .label-yellow }
