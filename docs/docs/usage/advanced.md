@@ -67,8 +67,6 @@ It is a no-op codec, but it uses the previously mentioned building blocks and ca
 #include <mgs/adapters/basic_transformed_input_adapter.hpp>
 #include <mgs/codecs/basic_codec.hpp>
 
-using namespace mgs;
-
 class noop_transformer
 {
 public:
@@ -115,7 +113,7 @@ bool operator!=(noop_transformer const& lhs,
   return !(lhs == rhs);
 }
 
-using noop_adapter = adapters::basic_transformed_input_adapter<noop_transformer>;
+using noop_adapter = mgs::adapters::basic_transformed_input_adapter<noop_transformer>;
 
 struct noop_codec_traits
 {
@@ -131,7 +129,7 @@ struct noop_codec_traits
   }
 };
 
-using noop_codec = codecs::basic_codec<noop_codec_traits>;
+using noop_codec = mgs::codecs::basic_codec<noop_codec_traits>;
 
 int main() {
   auto str = noop_codec::encode("Hello, World!");
