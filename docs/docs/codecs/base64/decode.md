@@ -31,18 +31,18 @@ T decode(std::istream& is);                             (5)
 std::string decode(std::istream& is);                   (6)
 ```
 
-decodes the given input.
+Decodes the given input.
 
-1. decodes the contents of `it` and returns the result as a `T`.
+1. Decodes the contents of `it` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `Iterable` models [`Iterable`]() and calling overload (3) with its iterators is well-formed.
 2. Same effect as calling `decode<std::string>(it)`.
 
-3. decodes the contents of the range `[begin, end)` and returns the result as a `T`.
+3. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `begin` models [`InputIterator`](), `end` models [`Sentinel<InputIterator>`](), `T` models [`CodecOutput`]() and `typename std::iterator_traits<InputIterator>::value_type` models [`ByteIntegral`]().
 4. Same effect as calling `decode<std::string>(begin, end)`.
-5. decodes the contents of the input stream `is` and returns the result as a `T`.
+5. Decodes the contents of the input stream `is` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `T` models [`CodecOutput`]().
 6. Same effect as calling `decode<std::string>(is)`.

@@ -19,13 +19,28 @@ class base64;
 
 `mgs::base64` is a codec implementing the Base64 encoding scheme, as defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 
+## Member types
+
+| Member type              | Definition                  |
+|--------------------------+-----------------------------|
+| `codec_traits`           | [`CodecTraits`]()           |
+| `default_encoded_output` | `std::string`               |
+| `default_decoded_output` | `std::vector<std::uint8_t>` |
+
+## Member alias templates
+
+| Template                                              | Definition                                        |
+|-------------------------------------------------------+---------------------------------------------------|
+| `template <typename T, typename U = T> using encoder` | return type of `codec_traits::make_encoder(T, U)` |
+| `template <typename T, typename U = T> using decoder` | return type of `codec_traits::make_decoder(T, U)` |
+
 ## Static member functions
 
-|--------------------+-------------------------|
-| [`encode`](encode) | encodes input           |
-| [`decode`](decode) | decodes input           |
-| [`make_encoder`]() | constructs an encoder   |
-| [`make_decoder`]() | constructs a decoder    |
+|--------------------------------+-----------------------|
+| [`encode`](encode)             | encodes input         |
+| [`decode`](decode)             | decodes input         |
+| [`make_encoder`](make_encoder) | constructs an encoder |
+| [`make_decoder`](make_decoder) | constructs a decoder  |
 
 ## Example
 

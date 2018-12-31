@@ -14,4 +14,4 @@ code
 doc
 
 * move custom codec related content in separate section
-* expose encoder/decoder aliases
+* expose codec_traits, encoder/decoder aliases
