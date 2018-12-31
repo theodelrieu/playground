@@ -49,7 +49,7 @@ Decodes the given input.
 
 ## Notes
 
-Passing a `char[]` to overloads (1) and (2) will discard any input from the first decountered null terminator (`'\0'`).
+Passing a `char[]` to overloads (1) and (2) will discard any input from the first encountered null terminator (`'\0'`).
 
 ## Example
 
