@@ -1,3 +1,5 @@
+code
+
 * Support istream&
 * remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
@@ -7,3 +9,7 @@
 * for byte_integral, use std::numeric_limits<>::digits10 
 * move \0 handling in codecs::basic_codec
 * do not use aliases for codecs, redefine class
+
+doc
+
+* move custom codec related content in separate section
