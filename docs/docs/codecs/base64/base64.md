@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Base64
+title: base64
 nav_order: 1
 parent: Codecs
 has_children: true
@@ -23,7 +23,7 @@ class base64;
 
 |--------------------+-------------------------|
 | [`encode`](encode) | encodes input           |
-| [`decode`]()       | decodes input           |
+| [`decode`](decode) | decodes input           |
 | [`make_encoder`]() | constructs an encoder   |
 | [`make_decoder`]() | constructs a decoder    |
 

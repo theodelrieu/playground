@@ -1,7 +1,7 @@
 ---
 layout: default
 title: decode
-parent: Base64
+parent: base64
 grand_parent: Codecs
 nav_order: 2
 permalink: /docs/codecs/base64/decode

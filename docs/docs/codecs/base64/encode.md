@@ -1,7 +1,7 @@
 ---
 layout: default
 title: encode
-parent: Base64
+parent: base64
 grand_parent: Codecs
 nav_order: 1
 permalink: /docs/codecs/base64/encode
