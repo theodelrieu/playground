@@ -6,7 +6,7 @@ code
 * rename binary_to_text -> binary_to_base
 * use IterableTransformedInputAdapter everywhere except in iterator
 * put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
-* for byte_integral, use std::numeric_limits<>::digits10 
+* for byte_integral, use std::numeric_limits<>::digits10
 * move \0 handling in codecs::basic_codec
 * do not use aliases for codecs, redefine class
 * remove const from Iterable const& (because of classes like istream)
@@ -14,3 +14,4 @@ code
 doc
 
 * move custom codec related content in separate section
+* expose encoder/decoder aliases
