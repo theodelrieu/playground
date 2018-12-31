@@ -41,31 +41,26 @@ using namespace mgs;
 
 int main() {
   // 1. Iterable
-  std::string decoded_str("decoded text");
-  std::list<char> decoded_list(decoded_str.begin(), decoded_str.end());
+  std::string const decoded_str("decoded text");
+  std::string const encoded_str("ZGVjb2RlZCB0ZXh0");
+  std::list<char> const encoded_list(encoded_str.begin(), encoded_str.end());
 
-  std::string encoded_str("ZGVjb2RlZCB0ZXh0");
-  std::list<char> encoded_list(encoded_str.begin(), encoded_str.end());
-
-  assert(base64::encode(decoded_str) == base64::encode(decoded_list));
-  assert(base64::decode(encoded_str) == base64::decode(encoded_list));
+  auto encoded = base64::encode(decoded_str);
+  auto decoded = base64::decode(encoded_list);
 
   // 2. Iterator range
   char const* decoded_c_str = decoded_str.c_str();
   char const* encoded_c_str = encoded_str.c_str();
 
-  assert(base64::encode(decoded_c_str, decoded_c_str + decoded_str.size()) ==
-         base64::encode(decoded_list.begin(), decoded_list.end()));
-
-  assert(base64::decode(encoded_c_str, encoded_c_str + encoded_str.size()) ==
-         base64::decode(encoded_list.begin(), encoded_list.end()));
+  encoded = base64::encode(decoded_c_str, decoded_c_str + decoded_str.size());
+  decoded = base64::decode(encoded_c_str, encoded_c_str + encoded_str.size());
 
   // 3. Input stream
   std::ifstream decoded_file("decoded.txt");
   std::ifstream encoded_file("encoded.b64");
 
-  auto const encoded_content = base64::encode(decoded_file);
-  auto const decoded_content = base64::decode(encoded_file);
+  encoded = base64::encode(decoded_file);
+  decoded = base64::decode(encoded_file);
 }
 ```
 

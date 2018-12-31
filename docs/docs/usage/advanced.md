@@ -71,9 +71,39 @@ Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAda
 
 ## Write your own codec
 
-`mgs` provides some building blocks to help you write your codec.
+There are two possible use-cases when writing a codec:
 
-### basic_codec
+1. Write a variant of an existing one
+1. Write a new codec
+
+`mgs` provides building blocks for both cases.
+
+### Codec variant
+
+While codec variants cannot be customized (e.g. `base64` has no template parameters), the lower level constructs can.
+
+#### BaseX codecs
+
+Every `BaseX` codec (e.g. [`base64`](), [`base32`]() etc...) uses the same generic implementation: `mgs::binary_to_base::basic_codec`:
+
+```cpp
+// Header <mgs/codecs/binary_to_base/basic_codec.hpp>
+
+template <typename EncodingTraits, typename DecodingTraits = EncodingTraits>
+class basic_codec;
+```
+
+This class inherits from [`mgs::codecs::basic_codec`]() and thus defines the same member functions.
+
+By using this helper class, you can easily create a Base64-like codec (e.g. using a different alphabet, without padding).
+
+To do so, both template parameters must model the [`EncodingTraits`]() concept.
+
+### New codec
+
+If you cannot/do not want to create a codec variant, you can use more abstract building blocks.
+
+#### basic_codec
 
 `mgs::codecs::basic_codec<T>` is a helper class which defines, and properly constrains the following functions:
 
@@ -84,7 +114,7 @@ Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAda
 
 It expects a single template parameter, which must model the [`CodecTraits`]() concept.
 
-### basic_transformed_input_adapter
+#### basic_transformed_input_adapter
 
 `mgs::adapters::basic_transformed_input_adapter<T>` is a helper class which defines functions and type aliases required by the [`IterableTransformedInputAdapter`]() concept.
 The most important being:
@@ -102,7 +132,7 @@ Note
 {: .label .label-blue }
 If the template parameter also models [`SizedInputTransformer`](), `basic_transformed_input_adapter` will model [`SizedTransformedInputAdapter`]() as well.
 
-### Example
+#### Example
 
 Here is a working example inspired from `mgs`' test suite.
 

@@ -24,10 +24,12 @@ If you wish to write your own codec, or want to know more about the library deta
 
 Every codec is built on top of an `Encoder` and a `Decoder`.
 
-Both model the [`IterableTransformedInputAdapter`]() concept and thus share a common API:
+Both are stateful objects designed for one-time use, be careful to not reuse them!
+
+They model the [`IterableTransformedInputAdapter`]() concept and thus share a common API, allowing lazy encoding/decoding:
 
 1. `begin`/`end` member functions, each returning an [`InputIterator`]().
-2. `read` member function, returning the number of characters read.
+1. `read` member function, filling an [`OutputIterator`]() and returning the number of characters read.
 
 To create them, use the codecs' `make_encoder`/`make_decoder` static member functions:
 
@@ -52,13 +54,8 @@ int main() {
 
 Note
 {: .label .label-blue }
-Both ways will lazily transform the input.
 
-Although more verbose, `read` is often faster than using iterators.
-
-Caveat
-{: .label .label-yellow }
-`Encoder`s and `Decoder`s are stateful objects designed for one-time use, be careful to not reuse them!
+Although more verbose, `read` can be faster than iterators.
 
 ### Use-cases
 
