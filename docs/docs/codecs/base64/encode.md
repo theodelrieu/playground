@@ -40,7 +40,7 @@ Encodes the given input.
 
 3. Encodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `begin` models [`InputIterator`](), `end` models [`Sentinel<InputIterator>`]() and `T` models [`CodecOutput`]().
+    This overload only participates in overload resolution if `begin` models [`InputIterator`](), `end` models [`Sentinel<InputIterator>`](), `T` models [`CodecOutput`]() and `typename std::iterator_traits<InputIterator>::value_type` models [`ByteIntegral`]().
 4. Same effect as calling `encode<std::string>(begin, end)`.
 5. Encodes the contents of the input stream `is` and returns the result as a `T`.
 
