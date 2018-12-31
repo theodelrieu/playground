@@ -9,6 +9,7 @@ code
 * for byte_integral, use std::numeric_limits<>::digits10 
 * move \0 handling in codecs::basic_codec
 * do not use aliases for codecs, redefine class
+* remove const from Iterable const& (because of classes like istream)
 
 doc
 

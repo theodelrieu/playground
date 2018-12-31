@@ -23,6 +23,7 @@ template <typename CodecTraits>
 class basic_codec
 {
 public:
+  // TODO private
   template <typename Iterator,
             typename Sentinel = Iterator,
             typename = concepts::CodecTraits<CodecTraits, Iterator, Sentinel>>
