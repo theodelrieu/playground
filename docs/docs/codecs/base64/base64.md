@@ -36,11 +36,13 @@ class base64;
 
 ## Static member functions
 
-|--------------------------------+-----------------------|
-| [`encode`](encode)             | encodes input         |
-| [`decode`](decode)             | decodes input         |
-| [`make_encoder`](make_encoder) | constructs an encoder |
-| [`make_decoder`](make_decoder) | constructs a decoder  |
+|----------------------------------------+---------------------------------|
+| [`encode`](encode)                     | encodes input                   |
+| [`decode`](decode)                     | decodes input                   |
+| [`make_encoder`](make_encoder)         | constructs an encoder           |
+| [`make_decoder`](make_decoder)         | constructs a decoder            |
+| [`encoded_size`](encoded_size)         | calculates encoded size         |
+| [`max_decoded_size`](max_decoded_size) | calculates maximum decoded size |
 
 ## Example
 

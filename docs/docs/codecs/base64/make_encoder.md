@@ -11,7 +11,7 @@ permalink: /docs/codecs/base64/make_encoder
 
 ```cpp
 template <typename InputIterator, typename Sentinel>
-encoder<InputIterator, Sentinel> make_encoder(InputIterator begin, Sentinel end);
+static encoder<InputIterator, Sentinel> make_encoder(InputIterator begin, Sentinel end);
 ```
 
 Constructs an `Encoder` from an iterator range.

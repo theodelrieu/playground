@@ -11,24 +11,24 @@ permalink: /docs/codecs/base64/decode
 
 ```cpp
 template <typename T, typename Iterable>
-T decode(Iterable& it);                                 (1)
+static T decode(Iterable& it);                                 (1)
 
 template <typename Iterable>
-std::string decode(Iterable& it);                       (2)
+static std::string decode(Iterable& it);                       (2)
 
 template <typename T,
           typename InputIterator,
           typename Sentinel>
-T decode(InputIterator begin, Sentinel end);            (3)
+static T decode(InputIterator begin, Sentinel end);            (3)
 
 template <typename InputIterator,
           typename Sentinel>
-std::string decode(InputIterator begin, Sentinel end);  (4)
+static std::string decode(InputIterator begin, Sentinel end);  (4)
 
 template <typename T>
-T decode(std::istream& is);                             (5)
+static T decode(std::istream& is);                             (5)
 
-std::string decode(std::istream& is);                   (6)
+static std::string decode(std::istream& is);                   (6)
 ```
 
 Decodes the given input.

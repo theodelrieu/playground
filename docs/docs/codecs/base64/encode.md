@@ -11,24 +11,24 @@ permalink: /docs/codecs/base64/encode
 
 ```cpp
 template <typename T, typename Iterable>
-T encode(Iterable& it);                                 (1)
+static T encode(Iterable& it);                                 (1)
 
 template <typename Iterable>
-std::string encode(Iterable& it);                       (2)
+static std::string encode(Iterable& it);                       (2)
 
 template <typename T,
           typename InputIterator,
           typename Sentinel>
-T encode(InputIterator begin, Sentinel end);            (3)
+static T encode(InputIterator begin, Sentinel end);            (3)
 
 template <typename InputIterator,
           typename Sentinel>
-std::string encode(InputIterator begin, Sentinel end);  (4)
+static std::string encode(InputIterator begin, Sentinel end);  (4)
 
 template <typename T>
-T encode(std::istream& is);                             (5)
+static T encode(std::istream& is);                             (5)
 
-std::string encode(std::istream& is);                   (6)
+static std::string encode(std::istream& is);                   (6)
 ```
 
 Encodes the given input.
