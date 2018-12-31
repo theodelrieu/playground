@@ -18,11 +18,56 @@ This section introduces some advanced topics and revisit in a bit more detail pr
 
 ---
 
-## Customize an existing codec
+## Supported return types
 
-Some codecs can be eazily customized, this is the case for all the `baseX` codecs.
+Here is the list of supported `encode`/`decode` return types:
 
-Look at `base64`'s [`customization`]() section to learn more about it.
+* `std::array<T, std::size_t>`
+* [`SequenceContainer`]()s that are [`CopyConstructible`]() or [`MoveConstructible`]()
+  * And either
+    * [`Constructible`]() from an [`Iterator`]() range
+  * Or
+    * [`DefaultConstructible`]()
+    * [`Iterable`](), with [`RandomAccessIterator`]()
+    * Have a `size_type` member type
+    * Have a `resize(size_type)` member function
+
+Caveat
+{: .label .label-yellow }
+
+For `std::array`s, `mgs` will throw an exception if the transformed data does not fit **EXACTLY** in the array.
+
+## Iterator related optimizations
+
+While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`RandomAccessIterator`]()s.
+
+This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
+
+```cpp
+#include <mgs/base64.hpp>
+
+using namespace mgs;
+
+int main() {
+  std::string huge_string = /* ... */;
+
+  // std::string::iterator is a RandomAccessIterator, encoder will define max_transformed_size
+  auto encoder = base64::make_encoder(huge_string.begin(), huge_string.end());
+  auto const max_size = encoder.max_transformed_size();
+
+  // allocate max_size bytes in one go
+  std::string encoded_str(max_size, '\0');
+  auto const total_written = encoder.read(encoded_str.begin(), max_size);
+
+  // do not forget to resize at the end!
+  encoded_str.resize(total_written);
+}
+```
+
+Note
+{: .label .label-blue }
+
+Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAdapter`]() concept.
 
 ## Write your own codec
 
@@ -136,56 +181,3 @@ int main() {
   // str == "Hello, World!"
 }
 ```
-
-## Quirks and details
-
-### Iterator related optimizations
-
-While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`RandomAccessIterator`]()s.
-
-This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
-
-```cpp
-#include <mgs/base64.hpp>
-
-using namespace mgs;
-
-int main() {
-  // std::string::iterator is a RandomAccessIterator
-  std::string huge_string = /* ... */;
-
-  auto encoder = base64::make_encoder(huge_string.begin(), huge_string.end());
-  auto const max_size = encoder.max_transformed_size();
-
-  // allocate max_size bytes in one go
-  std::string encoded_str(max_size, '\0');
-  auto const total_written = encoder.read(encoded_str.begin(), max_size);
-
-  // do not forget to resize at the end!
-  encoded_str.resize(total_written);
-}
-```
-
-Note
-{: .label .label-blue }
-
-Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAdapter`]() concept.
-
-### Supported return types
-
-Here is the list of supported `encode`/`decode` return types:
-
-* `std::array<CharT, std::size_t>`
-* [`SequenceContainer`]()s that are [`CopyConstructible`]() or [`MoveConstructible`]()
-  * And either
-    * [`Constructible`]() from an [`Iterator`]() range
-  * Or
-    * [`DefaultConstructible`]()
-    * [`Iterable`](), with [`RandomAccessIterator`]()
-    * Have a `size_type` member type alias
-    * Have a `resize(size_type)` member function
-
-Caveat
-{: .label .label-yellow }
-
-For `std::array`s, `mgs` will throw an error if the transformed data does not fit **EXACTLY** in the array.
