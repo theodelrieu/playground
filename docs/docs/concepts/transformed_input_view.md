@@ -1,7 +1,7 @@
 ---
 layout: default
 title: TransformedInputView
-nav_order: 2
+nav_order: 3
 parent: Concepts
 permalink: /docs/concepts/transformed_input_view
 ---
