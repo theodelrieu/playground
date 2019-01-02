@@ -10,17 +10,17 @@ permalink: /docs/codecs/base64/make_encoder
 # mgs::base64::make_encoder
 
 ```cpp
-template <typename InputIterator, typename Sentinel>
-static encoder<InputIterator, Sentinel> make_encoder(InputIterator begin, Sentinel end);
+template <typename I, typename S>
+static encoder<I, S> make_encoder(I begin, S end);
 ```
 
 Constructs an `Encoder` from an iterator range.
 
 Calling `make_encoder` is well-formed if:
 
-* `InputIterator` models [`InputIterator`]()
-* `Sentinel` models [`Sentinel<InputIterator>`]()
-* `encoder<InputIterator, Sentinel>` models [`IterableTransformedInputAdapter`]()
+* `I` models [`InputIterator`]()
+* `S` models [`Sentinel<I>`]()
+* `encoder<I, S>` models [`IterableTransformedInputAdapter`]()
 
 ## Example
 
