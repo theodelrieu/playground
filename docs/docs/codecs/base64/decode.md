@@ -36,20 +36,20 @@ Decodes the given input.
 1. Decodes the contents of `it` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `Iterable` models [`Iterable`]() and calling overload (3) with its iterators is well-formed.
-2. Same effect as calling `decode<std::string>(it)`.
+2. Same as calling `decode<std::string>(it)`.
 
 3. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `begin` models [`InputIterator`](), `end` models [`Sentinel<InputIterator>`](), `T` models [`CodecOutput`]() and `typename std::iterator_traits<InputIterator>::value_type` models [`ByteIntegral`]().
-4. Same effect as calling `decode<std::string>(begin, end)`.
+4. Same as calling `decode<std::string>(begin, end)`.
 5. Decodes the contents of the input stream `is` and returns the result as a `T`.
 
     This overload only participates in overload resolution if `T` models [`CodecOutput`]().
-6. Same effect as calling `decode<std::string>(is)`.
+6. Same as calling `decode<std::string>(is)`.
 
 ## Notes
 
-Passing a `char[]` to overloads (1) and (2) will discard any input from the first encountered null terminator (`'\0'`).
+Passing a `char[]` to overloads (1) and (2) will discard the last character if it is the null terminator (`'\0'`).
 
 ## Example
 

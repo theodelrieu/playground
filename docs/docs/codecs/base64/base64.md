@@ -24,8 +24,6 @@ class base64;
 | Member type              | Definition                  |
 |--------------------------+-----------------------------|
 | `codec_traits`           | [`CodecTraits`]()           |
-| `default_encoded_output` | `std::string`               |
-| `default_decoded_output` | `std::vector<std::uint8_t>` |
 
 ## Member alias templates
 

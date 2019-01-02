@@ -69,7 +69,7 @@ Caveat
 
 Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
 
-It will stop encoding at the first encountered null character (`'\0'`).
+It will discard the last character if it is the null terminator (`'\0'`).
 
 If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) instead.
 
