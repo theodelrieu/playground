@@ -21,3 +21,10 @@ code
 doc
 
 * move custom codec related content in separate section
+* document concept-like type aliases
+* InputTransformer
+* SizedInputTransformer
+* SizedTransformedInputView
+* CodecTraits
+* Codec
+* binary_to_base::EncodingTraits
