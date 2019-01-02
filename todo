@@ -6,11 +6,17 @@ code
 * rename binary_to_text -> binary_to_base
 * use IterableTransformedInputAdapter everywhere except in iterator
 * put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
-* for byte_integral, use std::numeric_limits<>::digits10
+* for byte_integral, use std::numeric_limits<>::digits
 * move \0 handling in codecs::basic_codec + just look at last char
 * do not use aliases for codecs, redefine class
-* remove const from Iterable const& (because of classes like istream)
+* add Iterable& and Iterable const& for rvalue support
 * support std::byte, ByteIntegral -> Byte
+* move concepts in mgs/concepts instead of mgs/meta/concepts
+* move concepts aliases in namespace mgs (+ namespace concepts)
+* rename adapters -> view
+* Semiregular for TransformedInputView, add underlying_*() methods in InputTransformer
+* IterableTransformedInputAdapter -> TransformedInputView
+* Add ReadableTransformedInputView (with read method inside)
 
 doc
 
