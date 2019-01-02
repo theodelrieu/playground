@@ -10,41 +10,41 @@ permalink: /docs/codecs/base64/encode
 # mgs::base64::encode
 
 ```cpp
-template <typename T, typename Iterable>
-static T encode(Iterable& it);                                 (1)
+template <typename T, typename It>
+static T encode(It& it);                                          (1)
 
-template <typename Iterable>
-static std::string encode(Iterable& it);                       (2)
+template <typename It>
+static std::string encode(It& it);                                (2)
+
+template <typename T, typename I, typename S>
+static T encode(I begin, S end);                                  (3)
+
+template <typename I, typename S>
+static std::string encode(I begin, S end);                        (4)
 
 template <typename T,
-          typename InputIterator,
-          typename Sentinel>
-static T encode(InputIterator begin, Sentinel end);            (3)
+          typename CharT,
+          typename Traits>
+static T encode(std::basic_istream<CharT, Traits>& is);           (5)
 
-template <typename InputIterator,
-          typename Sentinel>
-static std::string encode(InputIterator begin, Sentinel end);  (4)
-
-template <typename T>
-static T encode(std::istream& is);                             (5)
-
-static std::string encode(std::istream& is);                   (6)
+template <typename CharT, typename Traits>
+static std::string encode(std::basic_istream<CharT, Traits>& is); (6)
 ```
 
 Encodes the given input.
 
 1. Encodes the contents of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `Iterable` models [`Iterable`]() and calling overload (3) with its iterators is well-formed.
+    This overload only participates in overload resolution if `It` models [`Iterable`]() and calling overload (3) with its iterators is well-formed.
 2. Same as calling `encode<std::string>(it)`.
 
 3. Encodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `begin` models [`InputIterator`](), `end` models [`Sentinel<InputIterator>`](), `T` models [`CodecOutput`]() and `typename std::iterator_traits<InputIterator>::value_type` models [`ByteIntegral`]().
+    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<base64::encoder<I, S>>`]() and `typename std::iterator_traits<I>::value_type` models [`Byte`]().
 4. Same as calling `encode<std::string>(begin, end)`.
 5. Encodes the contents of the input stream `is` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `T` models [`CodecOutput`]().
+    This overload only participates in overload resolution if `CharT` models [`Byte`]() and `T` models [`CodecOutput<base64::encoder<std::istreambuf_iterator<CharT, Traits>>`]().
 6. Same as calling `encode<std::string>(is)`.
 
 ## Notes

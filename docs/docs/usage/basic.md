@@ -32,7 +32,7 @@ Codecs share a common set of contraints on `encode`/`decode` input parameters. T
 
 1. [`Iterable`]()
 1. [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
-1. `std::istream&`
+1. `std::basic_istream&`
 
 ```cpp
 #include <mgs/base64.hpp>

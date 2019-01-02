@@ -1,6 +1,6 @@
 code
 
-* Support istream&
+* Support basic_istream&
 * remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
 * rename binary_to_text -> binary_to_base
@@ -10,6 +10,7 @@ code
 * move \0 handling in codecs::basic_codec + just look at last char
 * do not use aliases for codecs, redefine class
 * remove const from Iterable const& (because of classes like istream)
+* support std::byte, ByteIntegral -> Byte
 
 doc
 
