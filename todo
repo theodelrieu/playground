@@ -22,15 +22,15 @@ code
 
 doc
 
-* move custom codec related content in separate section
 * document concept-like type aliases
-* CodecTraits
 * Codec
 * binary_to_base::EncodingTraits
 * use Byte in codecs/base64 doc (as an additional constraint)
 
+* Add a prerequisites section before Usage, explaining concepts etc
+* move custom codec related content in separate section
+
 * use list iterators in basic
 * move predicted size in basic
 * show default base64 types in basic
-* remove using std::begin, add note explaining this is implicit
 * use std::Same to require exact type
