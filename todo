@@ -27,6 +27,7 @@ doc
 * CodecTraits
 * Codec
 * binary_to_base::EncodingTraits
+* use Byte in codecs/base64 doc (as an additional constraint)
 
 * use list iterators in basic
 * move predicted size in basic
