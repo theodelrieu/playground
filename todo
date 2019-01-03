@@ -24,7 +24,6 @@ doc
 
 * move custom codec related content in separate section
 * document concept-like type aliases
-* InputTransformer
 * SizedInputTransformer
 * SizedTransformedInputView
 * CodecTraits
