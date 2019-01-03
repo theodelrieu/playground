@@ -28,7 +28,9 @@ Here is the list of supported `encode`/`decode` return types:
     * [`Constructible`]() from an [`Iterator`]() range
   * Or
     * [`DefaultConstructible`]()
-    * [`Iterable`](), with [`RandomAccessIterator`]()
+    * [`Iterable`]()
+    * Have a [`RandomAccessIterator`]() associated iterator type 
+    * Have a [`SizedSentinel`]() associated sentinel type 
     * Have a `size_type` member type
     * Have a `resize(size_type)` member function
 

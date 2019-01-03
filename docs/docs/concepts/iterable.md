@@ -13,8 +13,8 @@ Defined in header `<mgs/concepts/iterable.hpp>`
 ```cpp
 template <typename T>
 concept Iterable = requires(T& a) {
- requires { using std::begin; begin(a) } -> Iterator;
- requires { using std::end; end(a) } -> Sentinel<decltype(begin(a))>;
+ { begin(a) } -> std::Iterator;
+ { end(a) } -> std::Sentinel<decltype(begin(a))>;
 };
 ```
 
@@ -23,14 +23,14 @@ The `Iterable<T>` concept is satisfied when `T` can be iterated over.
 ## Notation
 
 * `it` - value of type `T&`
-* `I` - value type of `using std::begin; begin(it)`
+* `I` - value type of `begin(it)`
 
 ## Valid expressions
 
-| Expression                     | Return type       |
-|--------------------------------+-------------------|
-| `using std::begin; begin(it);` | [`Iterator`]()    |
-| `using std::end; end(it);`     | [`Sentinel<I>`]() |
+| Expression                    | Return type       |
+|-------------------------------+-------------------|
+| `using std::begin; begin(it)` | [`Iterator`]()    |
+| `using std::end; end(it)`     | [`Sentinel<I>`]() |
 
 ## Example
 

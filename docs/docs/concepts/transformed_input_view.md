@@ -33,10 +33,10 @@ Transformed input can be iterated over.
 
 ## Associated types
 
-| Member type              | Definition                             |
-|--------------------------+----------------------------------------|
-| `T::underlying_iterator` | [`InputIterator`]()                    |
-| `T::underlying_sentinel` | [`Sentinel<T::underlying_iterator>`]() |
+| Member type              | Definition                                  |
+|--------------------------+---------------------------------------------|
+| `T::underlying_iterator` | [`std::InputIterator`]()                    |
+| `T::underlying_sentinel` | [`std::Sentinel<T::underlying_iterator>`]() |
 
 ## Notation
 

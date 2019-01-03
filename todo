@@ -34,3 +34,5 @@ doc
 * use list iterators in basic
 * move predicted size in basic
 * show default base64 types in basic
+* remove using std::begin, add note explaining this is implicit
+* use std::Same to require exact type
