@@ -18,6 +18,7 @@ code
 * IterableTransformedInputAdapter -> TransformedInputView
 * Add ReadableTransformedInputView (with read method inside)
 * do not inherit from runtime_error
+* rename basic_* to *_interface, mimick C++20 ranges
 
 doc
 
