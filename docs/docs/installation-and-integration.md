@@ -38,7 +38,7 @@ Each release can be downloaded [here]().
 CMake files are released to ease integration:
 
 ```cmake
-set(CMAKE_PREFIX_PATH "/path/to/mgs/;${CMAKE_PREFIX_PATH}")
+list(APPEND CMAKE_MODULE_PATH "/path/to/mgs/")
 find_package(mgs 0.1 REQUIRED)
 
 add_executable(foo main.cpp)
@@ -48,7 +48,7 @@ target_link_libraries(foo mgs::mgs)
 Alternatively, you can use CMake components:
 
 ```cmake
-set(CMAKE_PREFIX_PATH "/path/to/mgs/;${CMAKE_PREFIX_PATH}")
+list(APPEND CMAKE_MODULE_PATH "/path/to/mgs/")
 find_package(mgs 0.1 REQUIRED COMPONENTS base64 base64url)
 
 add_executable(foo main.cpp)

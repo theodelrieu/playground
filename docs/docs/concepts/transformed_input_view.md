@@ -15,16 +15,16 @@ template <typename T>
 concept TransformedInputView =
   std::Semiregular<T> &&
   Iterable<T> &&
-  requires(T& v) {
-    requires std::InputIterator<typename T::underlying_iterator>;
-    requires std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
-    requires std::Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
+  requires {
+    std::InputIterator<typename T::underlying_iterator>;
+    std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
+    std::Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
   };
 ```
 
 A `TransformedInputView` generates a sequence of elements by transforming its underlying iterator-sentinel range.
 
-Transformed input can be iterated over.
+Transformed input can be retrieved by iterating over the view.
 
 ## Refinements
 
