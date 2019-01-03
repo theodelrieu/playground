@@ -34,7 +34,9 @@ The concept `ReadableTransformedInputView<T, O>` refines [`TransformedInputView`
 
 ## Template arguments
 
-* `O`, which must model [`std::OutputIterator<T::value_type>`]()
+| Template argument | Definition                   | Constraints                              |
+|-------------------+------------------------------+------------------------------------------|
+| `O`               | Iterator type used in `read` | [`std::OutputIterator<T::value_type>`]() |
 
 ## Notation
 
