@@ -17,6 +17,7 @@ code
 * Semiregular for TransformedInputView, add underlying_*() methods in InputTransformer
 * IterableTransformedInputAdapter -> TransformedInputView
 * Add ReadableTransformedInputView (with read method inside)
+* do not inherit from runtime_error
 
 doc
 
@@ -28,3 +29,7 @@ doc
 * CodecTraits
 * Codec
 * binary_to_base::EncodingTraits
+
+* use list iterators in basic
+* move predicted size in basic
+* show default base64 types in basic
