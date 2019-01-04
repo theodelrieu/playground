@@ -23,15 +23,15 @@ The `CodecOutput<T, View>` concept is satisfied when `T` can be created from `Vi
 
 It relies on the customization point `mgs::codecs::output_traits<T>::create(View&)`, declared in header `<mgs/codecs/output_traits_fwd.hpp>`.
 
-## Notation
-
-* `v` - a value of type `View&`
-
 ## Template arguments
 
 | Template argument | Definition                                                        | Constraints                |
 |-------------------+-------------------------------------------------------------------+----------------------------|
 | `View`            | View passed to the `output_traits<T>::create` customization point | [`TransformedInputView`]() |
+
+## Notation
+
+* `v` - a value of type `View&`
 
 ## Valid expressions
 
