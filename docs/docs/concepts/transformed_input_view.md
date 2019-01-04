@@ -26,7 +26,7 @@ A `TransformedInputView` generates a sequence of elements by transforming its un
 
 Transformed input can be retrieved by iterating over the view.
 
-## Refinements
+## Model of
 
 * [`std::Semiregular`]()
 * [`Iterable`]()
@@ -45,7 +45,7 @@ Transformed input can be retrieved by iterating over the view.
 
 ## Valid expressions
 
-In addition to the expressions defined by the refined concepts, the following expressions must be valid.
+In addition to the expressions defined by the modeled concepts, the following expressions must be valid.
 
 | Expression     | Return type   |
 |----------------+---------------|

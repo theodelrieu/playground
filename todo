@@ -24,8 +24,7 @@ doc
 
 * document concept-like type aliases
 * Codec
-* binary_to_base::EncodingTraits
-* use Byte in codecs/base64 doc (as an additional constraint)
+* use Byte in concept BinaryCodec
 
 * Add a prerequisites section before Usage, explaining concepts etc
 * move custom codec related content in separate section

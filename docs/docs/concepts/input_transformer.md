@@ -33,7 +33,7 @@ An `InputTransformer` is a building block used in most [`TransformedInputView`](
 
 It is responsible for the input transformation.
 
-## Refinements
+## Model of
 
 * [`std::Semiregular`]()
 
@@ -55,7 +55,7 @@ It is responsible for the input transformation.
 
 ## Valid expressions
 
-In addition to the expressions defined by the refined concepts, the following expressions must be valid.
+In addition to the expressions defined by the modeled concepts, the following expressions must be valid.
 
 | Expression                   | Return type                                  |
 |------------------------------+----------------------------------------------|
