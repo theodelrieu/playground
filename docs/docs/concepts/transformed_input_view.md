@@ -53,9 +53,9 @@ In addition to the expressions defined by the modeled concepts, the following ex
 
 ## Expression semantics
 
-| Expression | Precondition                    | Semantics                               | Postcondition |
-|------------+---------------------------------+-----------------------------------------+---------------|
-| `T(i, s)`  | `[i, s)` denotes a valid range. | Constructs a view from the input range. |               |
+| Expression | Precondition                          | Semantics                               | Postcondition |
+|------------+---------------------------------------+-----------------------------------------+---------------|
+| `T(i, s)`  | `[i, s)` denotes a valid input range. | Constructs a view from the input range. |               |
 
 ## Example
 

@@ -11,15 +11,17 @@ permalink: /docs/concepts/codec_traits
 Defined in header `<mgs/concepts/codec_traits.hpp>`
 
 ```cpp
-template <typename T, typename I, typename S = I>
+template <typename T, typename I1, typename S1 = I1, typename I2 = I1, typename S2 = S1>
 concept CodecTraits =
-  std::InputIterator<I> &&
-  std::Sentinel<S, I> &&
-  requires(I i, S s) {
-    { T::make_encoder(i, s) } -> TransformedInputView;
-    { T::make_decoder(i, s) } -> TransformedInputView;
-    CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i, s))>;
-    CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i, s))>;
+  std::InputIterator<I1> &&
+  std::Sentinel<S1, I1> &&
+  std::InputIterator<I2> &&
+  std::Sentinel<S2, I2> &&
+  requires(I1 i1, S1 s1, I2 i2, S2 s2) {
+    { T::make_encoder(i1, s1) } -> TransformedInputView;
+    { T::make_decoder(i2, s2) } -> TransformedInputView;
+    CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i1, s1))>;
+    CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i2, s2))>;
   };
 ```
 
@@ -29,10 +31,12 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 ## Notation
 
-* `i` - value of type `I`
-* `s` - value of type `S`
-* `Encoder` - type returned by `T::make_encoder(i, s)`
-* `Decoder` - type returned by `T::make_decoder(i, s)`
+* `i1` - value of type `I1`
+* `s1` - value of type `S1`
+* `i2` - value of type `I2`
+* `s2` - value of type `S2`
+* `Encoder` - type returned by `T::make_encoder(i1, s1)`
+* `Decoder` - type returned by `T::make_decoder(i2, s2)`
 
 ## Associated types
 
@@ -43,24 +47,26 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 ## Template arguments
 
-| Template argument | Definition                                               | Constraints              |
-|-------------------+----------------------------------------------------------+--------------------------|
-| `I`               | Iterator type passed to `make_encoder`                   | [`std::InputIterator`]() |
-| `S`               | Sentinel type passed to `make_encoder`, defaulted to `I` | [`std::Sentinel<I>`]()   |
+| Template argument | Definition                                                | Constraints              |
+|-------------------+-----------------------------------------------------------+--------------------------|
+| `I1`              | Iterator type passed to `make_encoder`                    | [`std::InputIterator`]() |
+| `S1`              | Sentinel type passed to `make_encoder`, defaulted to `I1` | [`std::Sentinel<I1>`]()  |
+| `I2`              | Iterator type passed to `make_decoder`                    | [`std::InputIterator`]() |
+| `S2`              | Sentinel type passed to `make_decoder`, defaulted to `I2` | [`std::Sentinel<I2>`]()  |
 
 ## Valid expressions
 
 | Expression                | Return type                |
 |---------------------------+----------------------------|
-| `T::make_encoder(i, s)`   | [`TransformedInputView`]() |
-| `T::make_decoder(i, s)` | [`TransformedInputView`]() |
+| `T::make_encoder(i1, s1)` | [`TransformedInputView`]() |
+| `T::make_decoder(i2, s2)` | [`TransformedInputView`]() |
 
 ## Expression semantics
 
-| Expression              | Precondition                         | Semantics                       | Postcondition |
-|-------------------------+--------------------------------------+---------------------------------+---------------|
-| `T::make_encoder(i, s)` | `[i, s)` denotes a valid input range | Creates and return an `Encoder` |               |
-| `T::make_decoder(i, s)` | `[i, s)` denotes a valid input range | Creates and return an `Decoder` |               |
+| Expression                | Precondition                           | Semantics                       | Postcondition |
+|---------------------------+----------------------------------------+---------------------------------+---------------|
+| `T::make_encoder(i1, s1)` | `[i1, s1)` denotes a valid input range | Creates and return an `Encoder` |               |
+| `T::make_decoder(i2, s2)` | `[i2, s2)` denotes a valid input range | Creates and return an `Decoder` |               |
 
 ## Example
 
