@@ -23,7 +23,6 @@ code
 doc
 
 * document concept-like type aliases
-* Codec
 * use Byte in concept BinaryCodec
 
 * Add a prerequisites section before Usage, explaining concepts etc
