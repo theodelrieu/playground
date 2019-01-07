@@ -6,11 +6,12 @@ has_children: true
 permalink: /docs/usage
 ---
 
-This section presents 3 different usage levels.
+This section is composed of following subsections:
 
+* **[Prerequisites](prerequisites):** notions required to fully understand this documentation.
 * **[Basic](basic):** should cover most of your needs.
 * **[Intermediate](intermediate):** custom containers support, lazy encoding.
-* **[Advanced](advanced):** learn the quirks needed to write your own codec.
+* **[Advanced](advanced):** supported types, optimizations, and more wizardry.
 
 Note
 {: .label .label-blue}
