@@ -37,14 +37,14 @@ template <typename SignedIntegral>
 void f(SignedIntegral i){}
 ```
 
-Furthermore, passing an unsigned integral type will not yield any error... Now let's add the unsigned integral overload:
+Furthermore, passing an unsigned integral type will not yield any error... Now let's add an overload:
 
 ```cpp
 template <typename UnsignedIntegral>
 void f(UnsignedIntegral i){}
 ```
 
-Unfortunately, this will yield a compiler error:
+Unfortunately, this yields a compiler error:
 
 `error: redefinition of ‘template<class UnsignedIntegral> void f(UnsignedIntegral)’`
 
@@ -66,7 +66,7 @@ template <typename UnsignedIntegral,
 void f(UnsignedIntegral i){}
 ```
 
-It works... Now imagine what you have to write when you want to make sure a type support equality/inequality operators.
+It works... Now just imagine what you have to write when you want to make sure a type support equality/inequality operators.
 
 #### Embracing concepts
 

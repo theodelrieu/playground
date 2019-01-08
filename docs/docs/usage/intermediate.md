@@ -10,8 +10,6 @@ parent: Usage
 
 This section introduces `Encoder`s and `Decoder`s, and demonstrates how they are used in more advanced features than those shown in the [basic section](basic).
 
-If you wish to write your own codec, or want to know more about the library details, check out the [advanced section](advanced) as well.
-
 ## Table of contents
 {:.no_toc .text_delta}
 
@@ -28,8 +26,8 @@ Both are stateful objects designed for one-time use, be careful to not reuse the
 
 They model the [`IterableTransformedInputAdapter`]() concept and thus share a common API, allowing lazy encoding/decoding:
 
-1. `begin`/`end` member functions, each returning an [`InputIterator`]().
-1. `read` member function, filling an [`OutputIterator`]() and returning the number of characters read.
+1. `begin`/`end` member functions, each returning an [`std::InputIterator`]().
+1. `read` member function, filling an [`std::OutputIterator`]() and returning the number of characters read.
 
 To create them, use the codecs' `make_encoder`/`make_decoder` static member functions:
 
@@ -134,24 +132,3 @@ int main() {
   std::copy(encoder.begin(), encoder.end(), std::ostreambuf_iterator<char>(ofs));
 }
 ```
-
-## Predicting encoded/decoded size
-
-Some codecs provide two methods to predict the future transformed size:
-
-```cpp
-#include <mgs/base64.hpp>
-
-using namespace mgs;
-
-int main() {
-  auto const encoded_size = base64::encoded_size(42);
-  auto const decoded_size = base64::max_decoded_size(encoded_size);
-}
-```
-
-Caveat
-{: .label .label-yellow }
-`max_decoded_size` might throw `invalid_input_error` if the given encoded size is invalid.
-
-e.g. `base64` encoded output is always a multiple of 4, so `base64::max_decoded_size(3)` will throw. 

@@ -12,8 +12,6 @@ This section demonstrates the library's most common usage.
 
 It is sufficient for users wanting to encode and decode data with no particular constraints.
 
-If this does not suit your needs, check out the [intermediate section](intermediate).
-
 ## Table of contents
 {:.no_toc .text_delta}
 
@@ -31,7 +29,7 @@ Each codec has two symmetrical APIs: `encode` and `decode`.
 Codecs share a common set of contraints on `encode`/`decode` input parameters. They can be one of the following:
 
 1. [`Iterable`]()
-1. [`Iterator`]() range (more precisely: an [`InputIterator`]() and a [`Sentinel`]())
+1. [`std::Iterator`]() range (more precisely: an [`std::InputIterator`]() and a [`std::Sentinel`]())
 1. `std::basic_istream&`
 
 ```cpp
@@ -71,7 +69,7 @@ Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
 
 It will discard the last character if it is the null terminator (`'\0'`).
 
-If you want to avoid this behavior, use the [`Iterator`]() range overloads(2) instead.
+If you want to avoid this behavior, use the [`std::Iterator`]() range overloads(2) instead.
 
 Note
 {: .label .label-blue }
@@ -129,3 +127,24 @@ Note
 
 I am well aware that using exceptions will put off users who disable them.
 I would like to support this use-case in future versions.
+
+## Predicting encoded/decoded size
+
+Some codecs provide two methods to predict the future transformed size:
+
+```cpp
+#include <mgs/base64.hpp>
+
+using namespace mgs;
+
+int main() {
+  auto const encoded_size = base64::encoded_size(42);
+  auto const decoded_size = base64::max_decoded_size(encoded_size);
+}
+```
+
+Caveat
+{: .label .label-yellow }
+`max_decoded_size` might throw `invalid_input_error` if the given encoded size is invalid.
+
+e.g. `base64` encoded output is always a multiple of 4, so `base64::max_decoded_size(3)` will throw. 

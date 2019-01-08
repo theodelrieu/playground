@@ -8,7 +8,6 @@ permalink: /docs/usage
 
 This section is composed of following subsections:
 
-* **[Prerequisites](prerequisites):** notions required to fully understand this documentation.
 * **[Basic](basic):** should cover most of your needs.
 * **[Intermediate](intermediate):** custom containers support, lazy encoding.
 * **[Advanced](advanced):** supported types, optimizations, and more wizardry.

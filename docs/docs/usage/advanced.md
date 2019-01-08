@@ -23,14 +23,14 @@ This section introduces some advanced topics and revisit in a bit more detail pr
 Here is the list of supported `encode`/`decode` return types:
 
 * `std::array<T, std::size_t>`
-* [`SequenceContainer`]()s that are [`CopyConstructible`]() or [`MoveConstructible`]()
+* Sequence containers that are [`std::CopyConstructible`]() or [`std::MoveConstructible`]()
   * And either
-    * [`Constructible`]() from an [`Iterator`]() range
+    * [`std::Constructible`]() from an [`std::Iterator`]() range
   * Or
-    * [`DefaultConstructible`]()
+    * [`std::DefaultConstructible`]()
     * [`Iterable`]()
-    * Have a [`RandomAccessIterator`]() associated iterator type 
-    * Have a [`SizedSentinel`]() associated sentinel type 
+    * Have a [`std::RandomAccessIterator`]() associated iterator type 
+    * Have a [`std::SizedSentinel`]() associated sentinel type 
     * Have a `size_type` member type
     * Have a `resize(size_type)` member function
 
@@ -41,7 +41,7 @@ For `std::array`s, `mgs` will throw an exception if the transformed data does no
 
 ## Iterator related optimizations
 
-While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`RandomAccessIterator`]()s.
+While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`std::RandomAccessIterator`]()s.
 
 This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
 
