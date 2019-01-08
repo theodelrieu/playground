@@ -11,6 +11,8 @@ permalink: /docs/concepts/encoding_traits
 Defined in header `<mgs/binary_to_base/concepts/encoding_traits.hpp>`
 
 ```cpp
+#include <mgs/binary_to_base/padding_policy.hpp>
+
 template <std::size_t N>
 constexpr std::size_t is_power_of_2()
 {

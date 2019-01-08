@@ -16,7 +16,7 @@ concept ReadableTransformedInputView =
   TransformedInputView<T> &&
   std::OutputIterator<O, typename T::value_type> &&
   requires(T& v, O o, std::size_t n) {
-    { v.read(o, n) } -> std::size_t;
+    { v.read(o, n) } -> std::Same<std::size_t>;
   };
 ```
 

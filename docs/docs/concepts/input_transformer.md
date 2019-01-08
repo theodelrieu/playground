@@ -15,17 +15,17 @@ template <typename T>
 concept InputTransformer =
   std::Semiregular<T> &&
   requires(T& v, T const& cv, typename T::buffer_type& b) {
-    Iterator<typename T::underlying_iterator>;
-    Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
+    std::Iterator<typename T::underlying_iterator>;
+    std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
     Iterable<typename T::buffer_type>;
     std::Semiregular<typename T::buffer_type>;
     std::Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
 
-    { begin(b) } -> RandomAccessIterator;
-    { end(b) } -> SizedSentinel<decltype(begin(b))>;
-    { v(b) } -> Same<void>;
-    { cv.iterator() } -> typename T::underlying_iterator;
-    { cv.sentinel() } -> typename T::underlying_sentinel;
+    { begin(b) } -> std::RandomAccessIterator;
+    { end(b) } -> std::SizedSentinel<decltype(begin(b))>;
+    { v(b) } -> std::Same<void>;
+    { cv.iterator() } -> std::Same<typename T::underlying_iterator>;
+    { cv.sentinel() } -> std::Same<typename T::underlying_sentinel>;
   };
 ```
 

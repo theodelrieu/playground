@@ -22,7 +22,7 @@ concept Codec =
   std::Iterator<I2> &&
   std::Sentinel<S2, I2> &&
   requires(A1& a1, A2& a2, I1 i1, S1 s1, I2 i2, S2 s2) {
-    CodecTraits<typename T::codec_traits, I1, S1, I2, S2>;
+    CodecTraits<typename T::codec_traits, I1, I2, S1, S2>;
     CodecOutput<R1, typename T::template encoder<I1, S1>>;
     CodecOutput<R2, typename T::template decoder<I2, S2>>;
 
@@ -56,16 +56,16 @@ It is `mgs`' fundamental component.
 
 ## Template arguments
 
-| Template argument | Definition                                                                                | Constraints                           |
-|-------------------+-------------------------------------------------------------------------------------------+---------------------------------------|
-| `A1`              | Type passed to `encode`. Defaulted to `codec_traits::default_decoded_output`.             |                                       |
-| `A2`              | Type passed to `decode`. Defaulted to `codec_traits::default_encoded_output`.             |                                       |
-| `R1`              | `encode` return type. Defaulted to `codec_traits::default_encoded_output`.                | [`CodecOutput<T::encoder<I1, S1>>`]() |
-| `R2`              | `decode` return type. Defaulted to `codec_traits::default_decoded_output`.                | [`CodecOutput<T::decoder<I2, S2>>`]() |
-| `I1`              | Iterator type associated with `A1`. Defaulted to `decltype(begin(a1))`.                   | [`std::InputIterator`]()              |
-| `S1`              | Sentinel type associated with `A1`. Defaulted to `decltype(end(a1))`, falls back to `I1`. | [`std::Sentinel<I1>`]()               |
-| `I2`              | Iterator type associated with `A2`. Defaulted to `decltype(begin(a2))`.                   | [`std::InputIterator`]()              |
-| `S2`              | Sentinel type associated with `A2`. Defaulted to `decltype(end(a2))`, falls back to `I2`  | [`std::Sentinel<I2>`]()               |
+| Template argument | Definition                                                                                                        | Constraints                           |
+|-------------------+-------------------------------------------------------------------------------------------------------------------+---------------------------------------|
+| `A1`              | Type passed to `encode`. Defaulted to `codec_traits::default_decoded_output`.                                     |                                       |
+| `A2`              | Type passed to `decode`. Defaulted to `codec_traits::default_encoded_output`.                                     |                                       |
+| `R1`              | `encode` return type. Defaulted to `codec_traits::default_encoded_output`.                                        | [`CodecOutput<T::encoder<I1, S1>>`]() |
+| `R2`              | `decode` return type. Defaulted to `codec_traits::default_decoded_output`.                                        | [`CodecOutput<T::decoder<I2, S2>>`]() |
+| `I1`              | Iterator type associated with `A1`, defaulted to `decltype(begin(a1))`.                                           | [`std::InputIterator`]()              |
+| `S1`              | Sentinel type associated with `A1`, defaulted to `decltype(end(a1))`, falls back to `I1` if `end(a1)` is invalid. | [`std::Sentinel<I1>`]()               |
+| `I2`              | Iterator type associated with `A2`, defaulted to `decltype(begin(a2))`.                                           | [`std::InputIterator`]()              |
+| `S2`              | Sentinel type associated with `A2`, defaulted to `decltype(end(a2))`, falls back to `I2` if `end(a2)` is invalid. | [`std::Sentinel<I2>`]()               |
 
 ## Member types
 

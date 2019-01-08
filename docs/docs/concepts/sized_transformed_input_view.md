@@ -15,7 +15,7 @@ template <typename T>
 concept SizedTransformedInputView =
   TransformedInputView<T> &&
   requires(T const& cv) {
-    { cv.max_transformed_size() } -> std::size_t;
+    { cv.max_transformed_size() } -> std::Same<std::size_t>;
   };
 ```
 

@@ -6,16 +6,18 @@ parent: Concepts
 permalink: /docs/concepts/codec_output
 ---
 
-# mgs::CodecTraits
+# mgs::CodecOutput
 
 Defined in header `<mgs/concepts/codec_output.hpp>`
 
 ```cpp
+#include <mgs/codecs/output_traits_fwd.hpp>
+
 template <typename T, typename View>
 concept CodecOutput =
   TransformedInputView<View> &&
   requires (V& view) {
-    Same<T, decltype(codecs::output_traits<T>::create(view))>;
+    { codecs::output_traits<T>::create(view) } -> std::Same<T>;
   };
 ```
 
