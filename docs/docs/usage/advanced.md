@@ -75,7 +75,66 @@ As mentioned previously, `mgs` emulates C++20 concepts to properly constrain its
 
 This subsection will explain how to use `mgs` emulated concepts, if you are looking for a quick introduction first, you can take a look [here](/docs/concepts).
 
-### 
+### Using type traits
+
+`mgs` exposes a type trait and a variable template for every concept.
+
+Here is how to constraint a function on [`Iterable`](/docs/concepts/iterable):
+
+```cpp
+#include <mgs/concepts/iterable.hpp>
+
+using namespace mgs;
+
+template <typename T, typename = std::enable_if_t<concepts::is_iterable_v<T>>>
+void f(T const&)
+{
+}
+```
+
+### Using type aliases
+
+`mgs` also exposes an alias which bears the concept name.
+
+```cpp
+#include <mgs/concepts/iterable.hpp>
+
+using namespace mgs;
+
+template <typename T, typename = Iterable<T>>
+void f(T const&) {}
+
+// alternative
+template <typename T>
+void g(Iterable<T> const&) {}
+```
+
+This is very handy, however there is a caveat. The latter version cannot be used reliably with overloads.
+
+Imagine we have two aliases `Integral` and `SignedIntegral`:
+
+```cpp
+template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
+using Integral = T;
+
+template <typename T, typename = std::enable_if_t<std::is_signed<T>::value &&
+                                                  std::is_integral<T>::value>>
+using SignedIntegral = T;
+```
+
+Let's try to use them:
+
+```cpp
+template <typename T>
+void f(Integral<T>) {}
+
+template <typename T>
+void f(SignedIntegral<T>) {} // this fails to compile
+```
+
+Since those are just aliases to their first template parameter, the compiler complains that we redefined `f`, even with the `std::enable_if`s in the aliases!
+
+Long story short, do not use those aliases to constrain overload sets.
 
 Note
 {: .label .label-blue }
