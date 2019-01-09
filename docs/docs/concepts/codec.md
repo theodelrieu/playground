@@ -106,6 +106,30 @@ It is `mgs`' fundamental component.
 | `T::decode<R2>(i2, s2)` | `[i2, s2)` denotes a valid range | Decodes the input range and returns a value of type `R2`                       |               |
 | `T::decode<R2>(a2)`     |                                  | Decodes the input and returns a value of type `R2`                             |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
+          typename R1 = /* ... */, typename R2 = /* ... */,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */>
+struct is_codec { /* ... */ };
+}
+
+template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
+          typename R1 = /* ... */, typename R2 = /* ... */,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */,
+          typename = std::enable_if_t<concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
+using Codec = T;
+}
+```
+
 ## Example
 
 ```cpp

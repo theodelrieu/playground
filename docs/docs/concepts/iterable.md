@@ -32,6 +32,22 @@ The `Iterable<T>` concept is satisfied when `T` can be iterated over.
 | `using std::begin; begin(it)` | [`Iterator`]()    |
 | `using std::end; end(it)`     | [`Sentinel<I>`]() |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_iterable { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_iterable<T>::value>>
+using Iterable = T;
+}
+```
+
 ## Example
 
 ```cpp

@@ -58,6 +58,22 @@ In addition to the expressions defined by the refined concepts, the following ex
 |----------------+-----------------------------------------------------------------------+---------------------------------------------------------------------------+---------------|
 | `v.read(o, n)` | Copying `n` elements of type `T::value_type` into `o` is well-defined | Copies up-to `n` elements into `o` and return the number of read elements |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_readable_transformed_input_view { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_readable_transformed_input_view<T>::value>>
+using ReadableTransformedInputView = T;
+}
+```
+
 ## Example
 
 ```cpp

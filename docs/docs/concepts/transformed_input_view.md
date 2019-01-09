@@ -57,6 +57,22 @@ In addition to the expressions defined by the modeled concepts, the following ex
 |------------+---------------------------------------+-----------------------------------------+---------------|
 | `T(i, s)`  | `[i, s)` denotes a valid input range. | Constructs a view from the input range. |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_transformed_input_view { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_transformed_input_view<T>::value>>
+using TransformedInputView = T;
+}
+```
+
 ## Example
 
 ```cpp

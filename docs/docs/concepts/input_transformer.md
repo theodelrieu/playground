@@ -74,6 +74,23 @@ In addition to the expressions defined by the modeled concepts, the following ex
 | `cv.iterator()` |              | Returns the input range current iterator |                                                                                                                       |
 | `cv.sentinel()` |              | Returns the input range sentinel         |                                                                                                                       |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_input_transformer { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_input_transformer<T>::value>>
+using InputTransformer = T;
+}
+}
+```
+
 ## Example
 
 ```cpp

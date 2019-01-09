@@ -23,6 +23,22 @@ The concept `Byte<T>` is satisfied if `T` either:
 * is [`std::byte`](https://en.cppreference.com/w/cpp/types/byte)
 * models [`std::Integral`](https://en.cppreference.com/w/cpp/concepts/Integral) and can represent the same number of bits as `unsigned char`.
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_byte { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_byte<T>::value>>
+using Byte = T;
+}
+```
+
 ## Example
 
 ```cpp

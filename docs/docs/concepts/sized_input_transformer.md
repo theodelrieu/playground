@@ -43,6 +43,23 @@ In addition to the expressions defined by the refined concepts, the following ex
 |-----------------------------+--------------+-----------------------------------------------------------------+---------------|
 | `cv.max_transformed_size()` |              | Returns the maximum transformed size of the current input range |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T>
+struct is_sized_input_transformer { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_sized_input_transformer<T>::value>>
+using SizedInputTransformer = T;
+}
+}
+```
+
 ## Example
 
 ```cpp

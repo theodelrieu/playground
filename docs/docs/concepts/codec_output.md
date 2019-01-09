@@ -47,6 +47,22 @@ It relies on the customization point `mgs::codecs::output_traits<T>::create(View
 |---------------------------------------+--------------+-----------------------------------------------------------------------------------------------------------------------------------+---------------|
 | `codecs::output_traits<T>::create(v)` |              | Creates a `T` from `v`'s transformed input (if `codecs::output_traits<T>` is not specialized, the default implementation is used) |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T, typename View>
+struct is_codec_output { /* ... */ };
+}
+
+template <typename T, typename View,
+          typename = std::enable_if_t<concepts::is_codec_output<T, View>::value>>
+using CodecOutput = T;
+}
+```
+
 ## Example
 
 ```cpp

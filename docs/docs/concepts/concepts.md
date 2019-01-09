@@ -10,6 +10,8 @@ permalink: /docs/concepts
 
 This section briefly introduces C++ concepts and lists every concept defined in `mgs`.
 
+## Concept definition syntax
+
 Here is a toy concept definition, which will be useful to read and understand more advanced concepts:
 
 ```cpp
@@ -44,3 +46,30 @@ e.g. the equivalent writing of `9.` is `std::Same<decltype((value.size())), U>`.
 Note
 {: .label .label-blue }
 It is strongly recommended to read the [cppreference concepts page](https://en.cppreference.com/w/cpp/language/constraints) to learn more about this feature.
+
+## Concept emulation
+
+Concepts are a C++20 feature, and thus are not present in the code.
+
+To emulate them, `mgs` defines for each concept:
+
+* a `is_XXX` type trait
+* a `XXX` type alias
+
+Taking back the `Foo` toy concept from above:
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T, typename U>
+struct is_foo { /* ... */ };
+}
+
+template <typename T, typename U,
+          typename = std::enable_if_t<concepts::is_foo<T, U>::value>>
+using Foo = T;
+}
+```
+
+To know more about concept emulation and how to use it well, take a look at the [advanced section](/docs/usage/advanced).

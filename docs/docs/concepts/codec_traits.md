@@ -72,6 +72,26 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 | `T::make_encoder(i1, s1)` | `[i1, s1)` denotes a valid input range | Creates and return an `Encoder` |               |
 | `T::make_decoder(i2, s2)` | `[i2, s2)` denotes a valid input range | Creates and return an `Decoder` |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace concepts {
+
+template <typename T,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */>
+struct is_codec_traits { /* ... */ };
+}
+
+template <typename T,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */,
+          typename = std::enable_if_t<concepts::is_codec_traits<T, I1, I2, S1, S2>::value>>
+using CodecTraits = T;
+}
+```
+
 ## Example
 
 ```cpp

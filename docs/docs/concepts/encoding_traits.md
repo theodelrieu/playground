@@ -60,6 +60,24 @@ They define the codec's alphabet, the padding policy and character (if padding i
 |------------------+--------------+-----------------------------------------------------+---------------|
 | `T::index_of(c)` |              | Returns the index of `c` in `T::alphabet`, or `-1`. |               |
 
+## Concept emulation
+
+```cpp
+namespace mgs {
+namespace binary_to_base {
+namespace concepts {
+
+template <typename T>
+struct is_encoding_traits { /* ... */ };
+}
+
+template <typename T,
+          typename = std::enable_if_t<concepts::is_encoding_traits<T>::value>>
+using EncodingTraits = T;
+}
+}
+```
+
 ## Example
 
 ```cpp

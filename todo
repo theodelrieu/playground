@@ -22,12 +22,7 @@ code
 
 doc
 
-* document concept-like type aliases
-
-* Add a prerequisites section before Usage, explaining concepts etc
 * move custom codec related content in separate section
 
 * use list iterators in basic
-* move predicted size in basic
 * show default base64 types in basic
-* use std::Same to require exact type
