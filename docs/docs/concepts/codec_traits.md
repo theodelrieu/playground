@@ -82,12 +82,17 @@ template <typename T,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */>
 struct is_codec_traits { /* ... */ };
+
+template <typename T,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */>
+constexpr auto is_codec_traits_v = is_codec_traits<T, I1, I2, S1, S2>::value;
 }
 
 template <typename T,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */,
-          typename = std::enable_if_t<concepts::is_codec_traits<T, I1, I2, S1, S2>::value>>
+          typename = std::enable_if_t<concepts::is_codec_traits_v<T, I1, I2, S1, S2>>>
 using CodecTraits = T;
 }
 ```
@@ -101,9 +106,8 @@ using CodecTraits = T;
 using namespace mgs;
 
 int main() {
-  static_assert(concepts::is_codec_traits<base64::codec_traits>::value, "");
-  static_assert(
-    concepts::is_codec_traits<base64::codec_traits, std::istreambuf_iterator<char>>::value, "");
+  static_assert(concepts::is_codec_traits_v<base64::codec_traits>, "");
+  static_assert(concepts::is_codec_traits_v<base64::codec_traits, std::istreambuf_iterator<char>>, "");
 
   base64::codec_traits::default_encoded_output encoded = base64::encode("Hello, World!");
   base64::codec_traits::default_decoded_output decoded = base64::decode(encoded);

@@ -69,10 +69,13 @@ namespace concepts {
 
 template <typename T>
 struct is_encoding_traits { /* ... */ };
+
+template <typename T>
+constexpr auto is_encoding_traits_v = is_encoding_traits<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_encoding_traits<T>::value>>
+          typename = std::enable_if_t<concepts::is_encoding_traits_v<T>>>
 using EncodingTraits = T;
 }
 }
@@ -101,7 +104,7 @@ struct binary_traits {
 };
 
 int main() {
-  static_assert(binary_to_base::concepts::is_encoding_traits<binary_traits>::value, "");
+  static_assert(binary_to_base::concepts::is_encoding_traits_v<binary_traits>, "");
 
   using binary_codec = binary_to_base::basic_codec<binary_traits>;
   // encodes to 01100001

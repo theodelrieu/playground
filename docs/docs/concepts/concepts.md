@@ -54,6 +54,7 @@ Concepts are a C++20 feature, and thus are not present in the code.
 To emulate them, `mgs` defines for each concept:
 
 * a `is_XXX` type trait
+* a `is_XXX_v` variable template
 * a `XXX` type alias
 
 Taking back the `Foo` toy concept from above:
@@ -64,10 +65,13 @@ namespace concepts {
 
 template <typename T, typename U>
 struct is_foo { /* ... */ };
+
+template <typename T, typename U>
+constexpr auto is_foo_v = is_foo<T, U>::value;
 }
 
 template <typename T, typename U,
-          typename = std::enable_if_t<concepts::is_foo<T, U>::value>>
+          typename = std::enable_if_t<concepts::is_foo_v<T, U>>>
 using Foo = T;
 }
 ```

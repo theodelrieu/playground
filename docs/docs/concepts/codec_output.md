@@ -55,10 +55,13 @@ namespace concepts {
 
 template <typename T, typename View>
 struct is_codec_output { /* ... */ };
+
+template <typename T, typename View>
+constexpr auto is_codec_output_v = is_codec_output<T, View>::value;
 }
 
 template <typename T, typename View,
-          typename = std::enable_if_t<concepts::is_codec_output<T, View>::value>>
+          typename = std::enable_if_t<concepts::is_codec_output_v<T, View>>>
 using CodecOutput = T;
 }
 ```
@@ -92,9 +95,9 @@ using namespace mgs;
 int main() {
   using encoder = base64::encoder<char const*>;
   
-  static_assert(concepts::is_codec_output<std::string, encoder>::value, "");
-  static_assert(concepts::is_codec_output<QLinkedList<char>, encoder>::value, "");
+  static_assert(concepts::is_codec_output_v<std::string, encoder>, "");
+  static_assert(concepts::is_codec_output_v<QLinkedList<char>, encoder>, "");
 
-  static_assert(!concepts::is_codec_output<QList<char>, encoder>::value, "");
+  static_assert(!concepts::is_codec_output_v<QList<char>, encoder>, "");
 }
 ```

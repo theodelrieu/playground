@@ -118,6 +118,13 @@ template <typename T,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */>
 struct is_codec { /* ... */ };
+
+template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
+          typename R1 = /* ... */, typename R2 = /* ... */,
+          typename I1 = /* ... */, typename I2 = /* ... */,
+          typename S1 = /* ... */, typename S2 = /* ... */>
+constexpr auto is_codec_v = is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value;
 }
 
 template <typename T,
@@ -125,7 +132,7 @@ template <typename T,
           typename R1 = /* ... */, typename R2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */,
-          typename = std::enable_if_t<concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
+          typename = std::enable_if_t<concepts::is_codec_v<T, A1, A2, R1, R2, I1, I2, S1, S2>>>
 using Codec = T;
 }
 ```
@@ -141,13 +148,13 @@ using Codec = T;
 using namespace mgs;
 
 int main() {
-  static_assert(concepts::is_codec<base64>::value, "");
-  static_assert(concepts::is_codec<base64, std::string, std::vector<unsigned char>>::value, "");
-  static_assert(concepts::is_codec<base64,
-                                   std::string, std::stringstream,
-                                   char*, std::istreambuf_iterator<char>>::value, "");
+  static_assert(concepts::is_codec_v<base64>, "");
+  static_assert(concepts::is_codec_v<base64, std::string, std::vector<unsigned char>>, "");
+  static_assert(concepts::is_codec_v<base64,
+                                    std::string, std::stringstream,
+                                    char*, std::istreambuf_iterator<char>>, "");
 
   // std::stringstream is not Iterable, defaulted Iterator type will be invalid
-  static_assert(!concepts::is_codec<base64, std::string, std::stringstream, char*>::value, "");
+  static_assert(!concepts::is_codec_v<base64, std::string, std::stringstream, char*>, "");
 }
 ```

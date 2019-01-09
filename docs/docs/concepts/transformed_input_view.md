@@ -65,10 +65,13 @@ namespace concepts {
 
 template <typename T>
 struct is_transformed_input_view { /* ... */ };
+
+template <typename T>
+constexpr auto is_transformed_input_view_v = is_transformed_input_view<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_transformed_input_view<T>::value>>
+          typename = std::enable_if_t<concepts::is_transformed_input_view_v<T>>>
 using TransformedInputView = T;
 }
 ```
@@ -88,7 +91,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_transformed_input_view<decltype(encoder)>::value, "");
+  static_assert(concepts::is_transformed_input_view_v<decltype(encoder)>, "");
 
   for (auto c : encoder) {
     std::cout << c;

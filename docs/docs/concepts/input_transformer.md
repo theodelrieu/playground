@@ -82,10 +82,13 @@ namespace concepts {
 
 template <typename T>
 struct is_input_transformer { /* ... */ };
+
+template <typename T>
+constexpr auto is_input_transformer_v = is_input_transformer<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_input_transformer<T>::value>>
+          typename = std::enable_if_t<concepts::is_input_transformer_v<T>>>
 using InputTransformer = T;
 }
 }
@@ -126,5 +129,5 @@ private:
   underlying_sentinel _end{};
 };
 
-static_assert(concepts::is_input_transformer<noop_transformer>::value, "");
+static_assert(concepts::is_input_transformer_v<noop_transformer>, "");
 ```

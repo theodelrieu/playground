@@ -20,6 +20,7 @@ code
 * do not inherit from runtime_error
 * rename basic_* to *_interface, mimick C++20 ranges
 * use unsigned char instead of std::uint8_t
+* variable templates for every concept trait 
 
 doc
 

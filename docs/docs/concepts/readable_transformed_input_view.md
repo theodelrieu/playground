@@ -66,10 +66,13 @@ namespace concepts {
 
 template <typename T>
 struct is_readable_transformed_input_view { /* ... */ };
+
+template <typename T>
+constexpr auto is_readable_transformed_input_view_v = is_readable_transformed_input_view<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_readable_transformed_input_view<T>::value>>
+          typename = std::enable_if_t<concepts::is_readable_transformed_input_view_v<T>>>
 using ReadableTransformedInputView = T;
 }
 ```
@@ -89,7 +92,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_readable_transformed_input_view<decltype(encoder)>::value, "");
+  static_assert(concepts::is_readable_transformed_input_view_v<decltype(encoder)>, "");
 
   auto const nb_read = encoder.read(std::ostreambuf_iterator<char>(std::cout), std::size_t(-1));
   std::cout << "Read " << nb_read << " characters" << std::endl;

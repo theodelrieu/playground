@@ -51,10 +51,13 @@ namespace concepts {
 
 template <typename T>
 struct is_sized_transformed_input_view { /* ... */ };
+
+template <typename T>
+constexpr auto is_sized_transformed_input_view_v = is_sized_transformed_input_view<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_sized_transformed_input_view<T>::value>>
+          typename = std::enable_if_t<concepts::is_sized_transformed_input_view_v<T>>>
 using SizedTransformedInputView = T;
 }
 }
@@ -72,7 +75,7 @@ int main() {
   std::string s("Hello, World!");
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
-  static_assert(concepts::is_sized_transformed_input_view<decltype(encoder)>::value, "");
+  static_assert(concepts::is_sized_transformed_input_view_v<decltype(encoder)>, "");
 
   auto const max_size = encoder.max_transformed_size();
 }

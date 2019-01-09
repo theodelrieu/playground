@@ -31,10 +31,13 @@ namespace concepts {
 
 template <typename T>
 struct is_byte { /* ... */ };
+
+template <typename T>
+constexpr auto is_byte_v = is_byte<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_byte<T>::value>>
+          typename = std::enable_if_t<concepts::is_byte_v<T>>>
 using Byte = T;
 }
 ```
@@ -49,10 +52,10 @@ using Byte = T;
 
 using namespace mgs;
 
-static_assert(concepts::is_byte<std::byte>::value, "");
-static_assert(concepts::is_byte<unsigned char>::value, "");
-static_assert(concepts::is_byte<char>::value, "");
+static_assert(concepts::is_byte_v<std::byte>, "");
+static_assert(concepts::is_byte_v<unsigned char>, "");
+static_assert(concepts::is_byte_v<char>, "");
 
-static_assert(!concepts::is_byte<int>::value, "");
-static_assert(!concepts::is_byte<bool>::value, "");
+static_assert(!concepts::is_byte_v<int>, "");
+static_assert(!concepts::is_byte_v<bool>, "");
 ```

@@ -51,10 +51,13 @@ namespace concepts {
 
 template <typename T>
 struct is_sized_input_transformer { /* ... */ };
+
+template <typename T>
+constexpr auto is_sized_input_transformer_v = is_sized_input_transformer<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_sized_input_transformer<T>::value>>
+          typename = std::enable_if_t<concepts::is_sized_input_transformer_v<T>>>
 using SizedInputTransformer = T;
 }
 }
@@ -76,5 +79,5 @@ public:
   }
 };
 
-static_assert(concepts::is_sized_input_transformer<noop_transformer>::value, "");
+static_assert(concepts::is_sized_input_transformer_v<noop_transformer>, "");
 ```

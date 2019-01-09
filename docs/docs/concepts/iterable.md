@@ -40,10 +40,13 @@ namespace concepts {
 
 template <typename T>
 struct is_iterable { /* ... */ };
+
+template <typename T>
+constexpr auto is_iterable_v = is_iterable<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_iterable<T>::value>>
+          typename = std::enable_if_t<concepts::is_iterable_v<T>>>
 using Iterable = T;
 }
 ```
@@ -70,9 +73,9 @@ auto end(stringstream_wrapper&) {
   return std::istreambuf_iterator<char>();
 }
 
-static_assert(concepts::is_iterable<std::vector<int>>::value, "");
-static_assert(concepts::is_iterable<char[10]>::value, "");
-static_assert(concepts::is_iterable<stringstream_wrapper>::value, "");
+static_assert(concepts::is_iterable_v<std::vector<int>>, "");
+static_assert(concepts::is_iterable_v<char[10]>, "");
+static_assert(concepts::is_iterable_v<stringstream_wrapper>, "");
 
-static_assert(!concepts::is_iterable<std::stringstream>::value, "");
+static_assert(!concepts::is_iterable_v<std::stringstream>, "");
 ```
