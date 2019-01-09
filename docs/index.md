@@ -61,17 +61,15 @@ More advanced use-cases are discussed in later sections.
 
 The goal of this library is to be a collection of codecs.
 
-Here is the current list of supported codecs:
-
-* base64
-* base64url
-* base32
-* base32hex
-* base16
+You can find the list of supported codecs [here](/docs/codecs).
 
 ## Requirements
 
 `mgs` is header-only, and only requires a C++14 compiler.
+
+Documentation-wise, basic knowledge of C++ concepts is recommended.
+
+Although they are not yet available and thus not used in the code, the documentation relies on them. Consider taking a look [here](/docs/concepts) to have a quick introduction.
 
 ## Credits
 
