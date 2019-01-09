@@ -50,7 +50,7 @@ using Byte = T;
 using namespace mgs;
 
 static_assert(concepts::is_byte<std::byte>::value, "");
-static_assert(concepts::is_byte<std::uint8_t>::value, "");
+static_assert(concepts::is_byte<unsigned char>::value, "");
 static_assert(concepts::is_byte<char>::value, "");
 
 static_assert(!concepts::is_byte<int>::value, "");

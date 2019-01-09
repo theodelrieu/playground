@@ -19,10 +19,8 @@ code
 * Add ReadableTransformedInputView (with read method inside)
 * do not inherit from runtime_error
 * rename basic_* to *_interface, mimick C++20 ranges
+* use unsigned char instead of std::uint8_t
 
 doc
 
 * move custom codec related content in separate section
-
-* use list iterators in basic
-* show default base64 types in basic

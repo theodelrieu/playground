@@ -42,16 +42,16 @@ int main() {
   std::string const decoded_str("decoded text");
   std::string const encoded_str("ZGVjb2RlZCB0ZXh0");
   std::list<char> const encoded_list(encoded_str.begin(), encoded_str.end());
+  std::list<char> const decoded_list(decoded_str.begin(), decoded_str.end());
 
   auto encoded = base64::encode(decoded_str);
   auto decoded = base64::decode(encoded_list);
+  // decltype(encoded) -> std::string
+  // decltype(decoded) -> std::vector<unsigned char>
 
   // 2. Iterator range
-  char const* decoded_c_str = decoded_str.c_str();
-  char const* encoded_c_str = encoded_str.c_str();
-
-  encoded = base64::encode(decoded_c_str, decoded_c_str + decoded_str.size());
-  decoded = base64::decode(encoded_c_str, encoded_c_str + encoded_str.size());
+  encoded = base64::encode(decoded_list.begin(), decoded_list.end());
+  decoded = base64::decode(encoded_list.begin(), encoded_list.end());
 
   // 3. Input stream
   std::ifstream decoded_file("decoded.txt");
@@ -91,12 +91,11 @@ int main() {
   auto const encoded = base64::encode("decoded text");
   auto const decoded = base64::decode(encoded);
 
-  // For base64:
-  // decltype(encoded) -> std::string
-  // decltype(decoded) -> std::vector<std::uint8_t>
+  // decltype(encoded) -> std::string const
+  // decltype(decoded) -> std::vector<unsigned char> const
 
   auto const encoded_vec = base64::encode<std::vector<char>>("decoded text");
-  auto const decoded_list = base64::decode<std::list<std::uint8_t>>(encoded_vec);
+  auto const decoded_list = base64::decode<std::list<unsigned char>>(encoded_vec);
 }
 ```
 
@@ -147,4 +146,4 @@ Caveat
 {: .label .label-yellow }
 `max_decoded_size` might throw `invalid_input_error` if the given encoded size is invalid.
 
-e.g. `base64` encoded output is always a multiple of 4, so `base64::max_decoded_size(3)` will throw. 
+e.g. `base64` encoded output is always a multiple of 4, so `base64::max_decoded_size(3)` will throw.
