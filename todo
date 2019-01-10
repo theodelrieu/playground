@@ -13,7 +13,7 @@ code
 * move concepts in mgs/concepts instead of mgs/meta/concepts
 * move concepts aliases in namespace mgs (+ namespace concepts)
 * rename adapters -> view
-* Semiregular for TransformedInputView, add underlying_*() methods in InputTransformer
+* remove Semiregular for TransformedInputView, add underlying_*() methods in InputTransformer
 * IterableTransformedInputAdapter -> TransformedInputView
 * Add ReadableTransformedInputView (with read method inside)
 * do not inherit from runtime_error
@@ -21,7 +21,10 @@ code
 * use unsigned char instead of std::uint8_t
 * variable templates for every concept trait 
 * improve and add tests 
+* remove 
+* use view_interface and CRTP
 
 doc
 
 * move custom codec related content in separate section
+* remove Semiregular for TransformedInputView and InputTransformer

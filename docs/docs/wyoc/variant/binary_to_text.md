@@ -11,7 +11,7 @@ permalink: /docs/wyoc/variant/binary_to_text
 
 This section explains how to create binary-to-text codec variants (e.g. [`base64`](/docs/codecs/base64) with a different alphabet).
 
-## Defining the encoding traits
+## Define the encoding traits
 
 To create your codec variant, you first need to define an encoding traits type, which must model [`binary_to_text::EncodingTraits`](/docs/concepts/encoding_traits).
 
@@ -44,7 +44,7 @@ struct base64_encoding_traits
 };
 ```
 
-## Creating the codec variant
+## Create the codec variant
 
 `mgs` uses a generic implementation for every binary-to-text codec, which can be parameterized with encoding traits:
 
