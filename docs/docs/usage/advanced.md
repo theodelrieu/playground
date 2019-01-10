@@ -27,8 +27,8 @@ Here is the list of supported `encode`/`decode` return types:
   * Or
     * [`std::DefaultConstructible`]()
     * [`Iterable`]()
-    * Have a [`std::RandomAccessIterator`]() associated iterator type 
-    * Have a [`std::SizedSentinel`]() associated sentinel type 
+    * Have a [`std::RandomAccessIterator`]() associated iterator type
+    * Have a [`std::SizedSentinel`]() associated sentinel type
     * Have a `size_type` member type
     * Have a `resize(size_type)` member function
 
@@ -109,7 +109,7 @@ template <typename T>
 void g(Iterable<T> const&) {}
 ```
 
-This is very handy, however there is a caveat. The latter version cannot be used reliably with overloads.
+This is quite handy, however there is a caveat with overloads.
 
 Imagine we have two aliases `Integral` and `SignedIntegral`:
 
@@ -126,15 +126,37 @@ Let's try to use them:
 
 ```cpp
 template <typename T>
-void f(Integral<T>) {}
+void f(SignedIntegral<T>) {}
 
 template <typename T>
-void f(SignedIntegral<T>) {} // this fails to compile
+void f(Integral<T>) {} // this fails to compile
 ```
 
-Since those are just aliases to their first template parameter, the compiler complains that we redefined `f`, even with the `std::enable_if`s in the aliases!
+Since those are just aliases to their first template parameter, the compiler complains that we redefined `f`, even with the `std::enable_if`s in the aliases' template parameters!
 
-Long story short, do not use those aliases to constrain overload sets.
+Hopefully, there is a way to force overload resolution by setting a priority to each of them:
+
+```cpp
+template <std::size_t N> struct priority_tag : priority_tag<N - 1>{};
+template <> struct priority_tag<0>{};
+
+// SignedIntegral is more specialized than Integral, hence priority_tag<1>
+template <typename T>
+void f(SignedIntegral<T>, priority_tag<1>) {}
+
+// Fallback overload
+template <typename T>
+void f(Integral<T>, priority_tag<0>) {}
+
+int main() {
+  priority_tag<1> tag;
+  f(2, tag); // calls first overload
+  f(2u, tag); // calls second overload
+  f("", tag); // fails to compile
+}
+```
+
+Usually, you would rather have `priority_tag`s in `f_impl` methods, and have a top-level `f` forwarding the calls.
 
 Note
 {: .label .label-blue }
