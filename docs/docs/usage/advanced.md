@@ -156,7 +156,7 @@ int main() {
 }
 ```
 
-Usually, you would rather have `priority_tag`s in `f_impl` methods, and have a top-level `f` forwarding the calls.
+Usually, you would rather have `priority_tag`s in `f_impl` methods, and have a top-level `f` forwarding the call to `f_impl`.
 
 Note
 {: .label .label-blue }
