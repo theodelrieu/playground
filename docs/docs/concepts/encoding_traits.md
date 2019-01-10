@@ -6,12 +6,12 @@ parent: Concepts
 permalink: /docs/concepts/encoding_traits
 ---
 
-# mgs::binary_to_base::EncodingTraits
+# mgs::binary_to_text::EncodingTraits
 
-Defined in header `<mgs/binary_to_base/concepts/encoding_traits.hpp>`
+Defined in header `<mgs/binary_to_text/concepts/encoding_traits.hpp>`
 
 ```cpp
-#include <mgs/binary_to_base/padding_policy.hpp>
+#include <mgs/binary_to_text/padding_policy.hpp>
 
 template <std::size_t N>
 constexpr std::size_t is_power_of_2()
@@ -32,7 +32,7 @@ concept EncodingTraits =
   };
 ```
 
-`EncodingTraits` are helper types used in the implementation of `binary_to_base`'s `Encoder` and `Decoder`.
+`EncodingTraits` are helper types used in the implementation of `binary_to_text`'s `Encoder` and `Decoder`.
 
 They define the codec's alphabet, the padding policy and character (if padding is desired).
 
@@ -45,7 +45,7 @@ They define the codec's alphabet, the padding policy and character (if padding i
 | Static data member     | Definition               | Type                             | Constraints                                     |
 |------------------------+--------------------------+----------------------------------+-------------------------------------------------|
 | `T::alphabet`          | Base's alphabet          | `char[]`                         | `sizeof(T::alphabet)` must be a power of 2      |
-| `T::padding_policy`    | Base's padding policy    | `binary_to_base::padding_policy` | Must be either `none`, `optional` or `required` |
+| `T::padding_policy`    | Base's padding policy    | `binary_to_text::padding_policy` | Must be either `none`, `optional` or `required` |
 | `T::padding_character` | Base's padding character | `char`                           | Not needed when `padding_policy` is `none`      |
 
 ## Valid expressions
@@ -64,7 +64,7 @@ They define the codec's alphabet, the padding policy and character (if padding i
 
 ```cpp
 namespace mgs {
-namespace binary_to_base {
+namespace binary_to_text {
 namespace concepts {
 
 template <typename T>
@@ -84,15 +84,15 @@ using EncodingTraits = T;
 ## Example
 
 ```cpp
-#include <mgs/binary_to_base/concepts/encoding_traits.hpp>
-#include <mgs/binary_to_base/padding_policy.hpp>
-#include <mgs/binary_to_base/basic_codec.hpp>
+#include <mgs/binary_to_text/concepts/encoding_traits.hpp>
+#include <mgs/binary_to_text/padding_policy.hpp>
+#include <mgs/binary_to_text/basic_codec.hpp>
 
 using namespace mgs;
 // using C++17 inline variables for simplicity
 struct binary_traits {
   inline static char const[] alphabet = {'0', '1'};
-  inline static auto const padding_policy = binary_to_base::padding_policy::none;
+  inline static auto const padding_policy = binary_to_text::padding_policy::none;
 
   static int index_of(char c) {
     if (c == '0')
@@ -104,9 +104,9 @@ struct binary_traits {
 };
 
 int main() {
-  static_assert(binary_to_base::concepts::is_encoding_traits_v<binary_traits>, "");
+  static_assert(binary_to_text::concepts::is_encoding_traits_v<binary_traits>, "");
 
-  using binary_codec = binary_to_base::basic_codec<binary_traits>;
+  using binary_codec = binary_to_text::basic_codec<binary_traits>;
   // encodes to 01100001
   binary_codec::encode("a");
 }

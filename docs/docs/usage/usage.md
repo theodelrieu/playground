@@ -6,6 +6,8 @@ has_children: true
 permalink: /docs/usage
 ---
 
+# Usage
+
 This section is composed of following subsections:
 
 * **[Basic](basic):** should cover most of your needs.

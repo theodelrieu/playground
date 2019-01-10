@@ -6,4 +6,6 @@ has_children: true
 permalink: /docs/codecs
 ---
 
+# Codecs
+
 This section lists every available codec in `mgs`.

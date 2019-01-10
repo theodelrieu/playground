@@ -3,7 +3,6 @@ code
 * Support basic_istream&
 * remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
-* rename binary_to_text -> binary_to_base
 * use IterableTransformedInputAdapter everywhere except in iterator
 * put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
 * for byte_integral, use std::numeric_limits<>::digits
@@ -21,6 +20,7 @@ code
 * rename basic_* to *_interface, mimick C++20 ranges
 * use unsigned char instead of std::uint8_t
 * variable templates for every concept trait 
+* improve and add tests 
 
 doc
 

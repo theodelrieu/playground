@@ -1,33 +1,19 @@
-TODO split
-## Write your own codec
+---
+layout: default
+title: Write your own codec
+nav_order: 4
+has_children: true
+permalink: /docs/wyoc
+---
+
+# Write your own codec
 
 There are two possible use-cases when writing a codec:
 
 1. Write a variant of an existing one
-1. Write a new codec
+1. Write a new one
 
 `mgs` provides building blocks for both cases.
-
-### Codec variant
-
-While codec variants cannot be customized (e.g. `base64` has no template parameters), the lower level constructs can.
-
-#### BaseX codecs
-
-Every `BaseX` codec (e.g. [`base64`](), [`base32`]() etc...) uses the same generic implementation: `mgs::binary_to_base::basic_codec`:
-
-```cpp
-// Header <mgs/codecs/binary_to_base/basic_codec.hpp>
-
-template <typename EncodingTraits, typename DecodingTraits = EncodingTraits>
-class basic_codec;
-```
-
-This class inherits from [`mgs::codecs::basic_codec`]() and thus defines the same member functions.
-
-By using this helper class, you can easily create a Base64-like codec (e.g. using a different alphabet, without padding).
-
-To do so, both template parameters must model the [`EncodingTraits`]() concept.
 
 ### New codec
 

@@ -1,0 +1,18 @@
+
+## "Binary to base" codecs
+
+
+Every `BaseX` codec (e.g. [`base64`](), [`base32`]() etc...) uses the same generic implementation: `mgs::binary_to_text::basic_codec`:
+
+```cpp
+// Header <mgs/codecs/binary_to_text/basic_codec.hpp>
+
+template <typename EncodingTraits, typename DecodingTraits = EncodingTraits>
+class basic_codec;
+```
+
+This class inherits from [`mgs::codecs::basic_codec`]() and thus defines the same member functions.
+
+By using this helper class, you can easily create a Base64-like codec (e.g. using a different alphabet, without padding).
+
+To do so, both template parameters must model the [`EncodingTraits`]() concept.
