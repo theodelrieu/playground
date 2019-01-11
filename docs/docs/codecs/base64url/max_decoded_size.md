@@ -7,10 +7,10 @@ nav_order: 6
 permalink: /docs/codecs/base64url/max_decoded_size
 ---
 
-# mgs::base64url::decoded_size
+# mgs::base64url::max_decoded_size
 
 ```cpp
-constexpr static std::size_t decoded_size(std::size_t encoded_size);
+constexpr static std::size_t max_decoded_size(std::size_t encoded_size);
 ```
 
 Returns maximum decoded size assuming an input of size `encoded_size`.

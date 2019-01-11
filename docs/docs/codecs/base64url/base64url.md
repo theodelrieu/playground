@@ -18,7 +18,7 @@ class base64url_nopad;
 
 ---
 
-`mgs::base64url` is a codec implementing the Base64 encoding scheme, as defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
+`mgs::base64url` is a codec implementing the base64url encoding scheme, as defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 
 `mgs::base64url_nopad` only differs in padding policy, and thus share the same APIs and constraints.
 
