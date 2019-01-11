@@ -22,9 +22,7 @@ static T decode(I begin, S end);                                  (3)
 template <typename I, typename S>
 static std::string decode(I begin, S end);                        (4)
 
-template <typename T,
-          typename CharT,
-          typename Traits>
+template <typename T, typename CharT, typename Traits>
 static T decode(std::basic_istream<CharT, Traits>& is);           (5)
 
 template <typename CharT, typename Traits>
@@ -35,17 +33,21 @@ Decodes the given input.
 
 1. Decodes the contents of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `It` models [`Iterable`]() and calling overload (3) with its iterators is well-formed.
-2. Same as calling `decode<std::string>(it)`.
+    This overload only participates in overload resolution if `It` models [`Iterable`](/docs/concepts/iterable) and calling overload (3) with its iterators is well-formed.
+1. Has the same effect as calling `decode<std::string>(it)`.
 
-3. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
+1. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<base64::decoder<I, S>>`]() and `typename std::iterator_traits<I>::value_type` models [`Byte`]().
-4. Same as calling `decode<std::string>(begin, end)`.
-5. Decodes the contents of the input stream `is` and returns the result as a `T`.
+    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<decltype(T::make_encoder(begin, end))>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
+1. Same as calling `decode<std::string>(begin, end)`.
+1. Decodes the contents of the input stream `is` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `CharT` models [`Byte`]() and `T` models [`CodecOutput<base64::decoder<std::istreambuf_iterator<CharT, Traits>>`]().
-6. Same as calling `decode<std::string>(is)`.
+    Has the same effect as calling `decode<T>(std::istreambuf_iterator<CharT, Traits>(is), std::istreambuf_iterator<CharT, Traits>())`.
+1. Has the same effect as calling `decode<std::string>(is)`.
+
+## Exceptions
+
+All overloads may throw an exception derived from `exceptions::decode_error`.
 
 ## Notes
 
