@@ -1,13 +1,12 @@
 ---
 layout: default
-title: Binary-to-text codecs
-parent: Codec variant
-grand_parent: Write your own codec
+title: Binary-to-text codec variant
+parent: Write your own codec
 nav_order: 1
-permalink: /docs/wyoc/variant/binary_to_text
+permalink: /docs/wyoc/variant
 ---
 
-# Binary-to-text codecs
+# Binary-to-text codec variant
 
 This section explains how to create binary-to-text codec variants (e.g. [`base64`](/docs/codecs/base64) with a different alphabet).
 

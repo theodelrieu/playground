@@ -13,7 +13,7 @@ code
 * move concepts in mgs/concepts instead of mgs/meta/concepts
 * move concepts aliases in namespace mgs (+ namespace concepts)
 * rename adapters -> ranges
-* remove Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
+* Keep Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
 * IterableTransformedInputAdapter -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
 * do not inherit from runtime_error
@@ -26,5 +26,4 @@ code
 
 doc
 
-* move custom codec related content in separate section
-* remove Semiregular for TransformedInputView and InputTransformer
+* change make_encoder to codec_traits::make_encoder 
