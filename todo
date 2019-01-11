@@ -12,17 +12,17 @@ code
 * support std::byte, ByteIntegral -> Byte
 * move concepts in mgs/concepts instead of mgs/meta/concepts
 * move concepts aliases in namespace mgs (+ namespace concepts)
-* rename adapters -> view
-* remove Semiregular for TransformedInputView, add underlying_*() methods in InputTransformer
-* IterableTransformedInputAdapter -> TransformedInputView
-* Add ReadableTransformedInputView (with read method inside)
+* rename adapters -> ranges
+* remove Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
+* IterableTransformedInputAdapter -> TransformedInputRange
+* Add ReadableTransformedInputRange (with read method inside)
 * do not inherit from runtime_error
 * rename basic_* to *_interface, mimick C++20 ranges
 * use unsigned char instead of std::uint8_t
 * variable templates for every concept trait 
 * improve and add tests 
-* remove 
-* use view_interface and CRTP
+* Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
+* TransformerInputRange
 
 doc
 
