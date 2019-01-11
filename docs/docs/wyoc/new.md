@@ -71,25 +71,25 @@ Note
 {: .label .label-blue }
 Although `noop_transformer` copies the whole input range in one go, it could very well copy small chunks instead.
 
-## Write a transformed input view
+## Write a transformed input range
 
-Transformed input views allows iterating over transformed input.
+Transformed input ranges allows iterating over transformed input.
 
 `mgs` provides building blocks to easily create one from an input transformer:
 
 ```cpp
-#include <mgs/views/basic_transformed_input_view.hpp>
-#include <mgs/views/basic_readable_transformed_input_view.hpp>
+#include <mgs/ranges/basic_transformed_input_range.hpp>
+#include <mgs/ranges/basic_readable_transformed_input_range.hpp>
 
 using namespace mgs;
 
-using noop_view = views::basic_transformed_input_view<noop_transformer>;
-using readable_noop_view = views::basic_readable_transformed_input_view<noop_transformer>;
+using noop_range = ranges::basic_transformed_input_range<noop_transformer>;
+using readable_noop_range = ranges::basic_readable_transformed_input_range<noop_transformer>;
 
 int main() {
   std::string s("Hello, World!");
-  noop_view nv(s.c_str(), s.c_str() + s.size());
-  readable_noop_view rnv(s.c_str(), s.c_str() + s.size());
+  noop_range nv(s.c_str(), s.c_str() + s.size());
+  readable_noop_range rnv(s.c_str(), s.c_str() + s.size());
 
   std::string s2(nv.begin(), nv.end()); // "Hello, World!"
 
@@ -98,11 +98,11 @@ int main() {
 }
 ```
 
-`noop_view` models [`TransformedInputView`](/docs/concepts/transformed_input_view) and `readable_noop_view` models [`ReadableTransformedInputView`](/docs/concepts/readable_transformed_input_view).
+`noop_range` models [`TransformedInputRange`](/docs/concepts/transformed_input_range) and `readable_noop_range` models [`ReadableTransformedInputRange`](/docs/concepts/readable_transformed_input_range).
 
 Note
 {: .label .label-blue }
-Since `noop_transformer` also models [`SizedInputTransformer`](/docs/concepts/sized_input_transformer), both views will model [`SizedTransformedInputView`](/docs/concepts/sized_transformed_input_view).
+Since `noop_transformer` also models [`SizedInputTransformer`](/docs/concepts/sized_input_transformer), both ranges will model [`SizedTransformedInputRange`](/docs/concepts/sized_transformed_input_range).
 
 ## Define the codec traits
 

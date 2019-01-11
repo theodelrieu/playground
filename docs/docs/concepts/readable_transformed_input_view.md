@@ -1,30 +1,30 @@
 ---
 layout: default
-title: ReadableTransformedInputView
+title: ReadableTransformedInputRange
 nav_order: 4
 parent: Concepts
-permalink: /docs/concepts/readable_transformed_input_view
+permalink: /docs/concepts/readable_transformed_input_range
 ---
 
-# mgs::ReadableTransformedInputView
+# mgs::ReadableTransformedInputRange
 
-Defined in header `<mgs/concepts/readable_transformed_input_view.hpp>`
+Defined in header `<mgs/concepts/readable_transformed_input_range.hpp>`
 
 ```cpp
 template <typename T, typename O>
-concept ReadableTransformedInputView =
-  TransformedInputView<T> &&
+concept ReadableTransformedInputRange =
+  TransformedInputRange<T> &&
   std::OutputIterator<O, typename T::value_type> &&
   requires(T& v, O o, std::size_t n) {
     { v.read(o, n) } -> std::Same<std::size_t>;
   };
 ```
 
-The concept `ReadableTransformedInputView<T, O>` refines [`TransformedInputView`]() by adding support for block reads, which usually perform better than reading elements one by one.
+The concept `ReadableTransformedInputRange<T, O>` refines [`TransformedInputRange`]() by adding support for block reads, which usually perform better than reading elements one by one.
 
 ## Refinements
 
-* [`TransformedInputView`]()
+* [`TransformedInputRange`]()
 
 ## Associated types
 
@@ -65,15 +65,15 @@ namespace mgs {
 namespace concepts {
 
 template <typename T>
-struct is_readable_transformed_input_view { /* ... */ };
+struct is_readable_transformed_input_range { /* ... */ };
 
 template <typename T>
-constexpr auto is_readable_transformed_input_view_v = is_readable_transformed_input_view<T>::value;
+constexpr auto is_readable_transformed_input_range_v = is_readable_transformed_input_range<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_readable_transformed_input_view_v<T>>>
-using ReadableTransformedInputView = T;
+          typename = std::enable_if_t<concepts::is_readable_transformed_input_range_v<T>>>
+using ReadableTransformedInputRange = T;
 }
 ```
 
@@ -83,7 +83,7 @@ using ReadableTransformedInputView = T;
 #include <iostream>
 
 #include <mgs/base64.hpp>
-#include <mgs/concepts/readable_transformed_input_view.hpp>
+#include <mgs/concepts/readable_transformed_input_range.hpp>
 
 using namespace mgs;
 
@@ -92,7 +92,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_readable_transformed_input_view_v<decltype(encoder)>, "");
+  static_assert(concepts::is_readable_transformed_input_range_v<decltype(encoder)>, "");
 
   auto const nb_read = encoder.read(std::ostreambuf_iterator<char>(std::cout), std::size_t(-1));
   std::cout << "Read " << nb_read << " characters" << std::endl;

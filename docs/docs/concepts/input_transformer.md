@@ -29,7 +29,7 @@ concept InputTransformer =
   };
 ```
 
-An `InputTransformer` is a building block used in most [`TransformedInputView`](transformed_input_view)s.
+An `InputTransformer` is a building block used in most [`TransformedInputRange`](transformed_input_range)s.
 
 It is responsible for the input transformation.
 

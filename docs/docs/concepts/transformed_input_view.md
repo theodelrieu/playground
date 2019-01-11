@@ -1,18 +1,18 @@
 ---
 layout: default
-title: TransformedInputView
+title: TransformedInputRange
 nav_order: 3
 parent: Concepts
-permalink: /docs/concepts/transformed_input_view
+permalink: /docs/concepts/transformed_input_range
 ---
 
-# mgs::TransformedInputView
+# mgs::TransformedInputRange
 
-Defined in header `<mgs/concepts/transformed_input_view.hpp>`
+Defined in header `<mgs/concepts/transformed_input_range.hpp>`
 
 ```cpp
 template <typename T>
-concept TransformedInputView =
+concept TransformedInputRange =
   std::Semiregular<T> &&
   Iterable<T> &&
   requires {
@@ -22,9 +22,9 @@ concept TransformedInputView =
   };
 ```
 
-A `TransformedInputView` generates a sequence of elements by transforming its underlying iterator-sentinel range.
+A `TransformedInputRange` generates a sequence of elements by transforming its underlying iterator-sentinel range.
 
-Transformed input can be retrieved by iterating over the view.
+Transformed input can be retrieved by iterating over the range.
 
 ## Model of
 
@@ -55,7 +55,7 @@ In addition to the expressions defined by the modeled concepts, the following ex
 
 | Expression | Precondition                          | Semantics                               | Postcondition |
 |------------+---------------------------------------+-----------------------------------------+---------------|
-| `T(i, s)`  | `[i, s)` denotes a valid input range. | Constructs a view from the input range. |               |
+| `T(i, s)`  | `[i, s)` denotes a valid input range. | Constructs a range from the input range. |               |
 
 ## Concept emulation
 
@@ -64,15 +64,15 @@ namespace mgs {
 namespace concepts {
 
 template <typename T>
-struct is_transformed_input_view { /* ... */ };
+struct is_transformed_input_range { /* ... */ };
 
 template <typename T>
-constexpr auto is_transformed_input_view_v = is_transformed_input_view<T>::value;
+constexpr auto is_transformed_input_range_v = is_transformed_input_range<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_transformed_input_view_v<T>>>
-using TransformedInputView = T;
+          typename = std::enable_if_t<concepts::is_transformed_input_range_v<T>>>
+using TransformedInputRange = T;
 }
 ```
 
@@ -82,7 +82,7 @@ using TransformedInputView = T;
 #include <iostream>
 
 #include <mgs/base64.hpp>
-#include <mgs/concepts/transformed_input_view.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 
 using namespace mgs;
 
@@ -91,7 +91,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_transformed_input_view_v<decltype(encoder)>, "");
+  static_assert(concepts::is_transformed_input_range_v<decltype(encoder)>, "");
 
   for (auto c : encoder) {
     std::cout << c;

@@ -20,8 +20,8 @@ concept CodecTraits =
   std::InputIterator<I2> &&
   std::Sentinel<S2, I2> &&
   requires(I1 i1, S1 s1, I2 i2, S2 s2) {
-    { T::make_encoder(i1, s1) } -> TransformedInputView;
-    { T::make_decoder(i2, s2) } -> TransformedInputView;
+    { T::make_encoder(i1, s1) } -> TransformedInputRange;
+    { T::make_decoder(i2, s2) } -> TransformedInputRange;
     CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i1, s1))>;
     CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i2, s2))>;
   };
@@ -62,8 +62,8 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 | Expression                | Return type                |
 |---------------------------+----------------------------|
-| `T::make_encoder(i1, s1)` | [`TransformedInputView`]() |
-| `T::make_decoder(i2, s2)` | [`TransformedInputView`]() |
+| `T::make_encoder(i1, s1)` | [`TransformedInputRange`]() |
+| `T::make_decoder(i2, s2)` | [`TransformedInputRange`]() |
 
 ## Expression semantics
 
