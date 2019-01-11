@@ -26,6 +26,5 @@ code
 
 doc
 
-* change make_encoder to codec_traits::make_encoder 
 * hide codec functions pages
 * document other codecs

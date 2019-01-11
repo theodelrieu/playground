@@ -96,7 +96,9 @@ If its template parameter models [`SizedInputTransformer`](/docs/concepts/sized_
 
 Now that we have our no-op encoder, we can almost create our codec.
 
-We still have to write a small codec traits type, which must model [`CodecTraits`](/docs/concepts/codec_traits) and which will define: 
+We still have to write a small codec traits type, which will be used by the next building block.
+
+This type must model [`CodecTraits`](/docs/concepts/codec_traits) and defines: 
 
 * default types returned by `encode` and `decode`
 * `make_encoder` and `make_decoder` functions 

@@ -96,20 +96,3 @@ template <typename T,
 using CodecTraits = T;
 }
 ```
-
-## Example
-
-```cpp
-#include <mgs/concepts/codec_traits.hpp>
-#include <mgs/base64.hpp>
-
-using namespace mgs;
-
-int main() {
-  static_assert(concepts::is_codec_traits_v<base64::codec_traits>, "");
-  static_assert(concepts::is_codec_traits_v<base64::codec_traits, std::istreambuf_iterator<char>>, "");
-
-  base64::codec_traits::default_encoded_output encoded = base64::encode("Hello, World!");
-  base64::codec_traits::default_decoded_output decoded = base64::decode(encoded);
-}
-```

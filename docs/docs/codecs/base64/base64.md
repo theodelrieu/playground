@@ -21,16 +21,10 @@ class base64;
 
 ## Member types
 
-| Member type              | Definition                  |
-|--------------------------+-----------------------------|
-| `codec_traits`           | [`CodecTraits`]()           |
-
-## Member alias templates
-
-| Template                                              | Definition                                        |
-|-------------------------------------------------------+---------------------------------------------------|
-| `template <typename T, typename U = T> using encoder` | return type of `codec_traits::make_encoder(T, U)` |
-| `template <typename T, typename U = T> using decoder` | return type of `codec_traits::make_decoder(T, U)` |
+| Member type              | Definition                   |
+|--------------------------+------------------------------|
+| `default_encoded_output` | `std::string`                |
+| `default_decoded_output` | `std::vector<unsigned char>` |
 
 ## Static member functions
 

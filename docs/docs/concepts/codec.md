@@ -17,25 +17,26 @@ template <typename T,
           typename I1 = /* see below */, typename I2 = /* see below */,
           typename S1 = /* see below */, typename S2 = /* see below */>
 concept Codec =
-  std::Iterator<I1> &&
+  std::InputIterator<I1> &&
   std::Sentinel<S1, I1> &&
-  std::Iterator<I2> &&
+  std::InputIterator<I2> &&
   std::Sentinel<S2, I2> &&
   requires(A1& a1, A2& a2, I1 i1, S1 s1, I2 i2, S2 s2) {
-    CodecTraits<typename T::codec_traits, I1, I2, S1, S2>;
-    CodecOutput<R1, typename T::template encoder<I1, S1>>;
-    CodecOutput<R2, typename T::template decoder<I2, S2>>;
+    { T::make_encoder(i1, s1) } -> TransformedInputRange;
+    { T::make_decoder(i2, s2) } -> TransformedInputRange;
 
-    { T::codec_traits::make_encoder(i1, s1) } -> std::Same<typename T::template encoder<I1, S1>>;
-    { T::codec_traits::make_decoder(i2, s2) } -> std::Same<typename T::template decoder<I2, S2>>;
+    CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i1, s1))>;
+    CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i2, s2))>;
+    CodecOutput<R1, decltype(T::make_encoder(i1, s1))>;
+    CodecOutput<R2, decltype(T::make_decoder(i2, s2))>;
 
-    { T::encode(i1, s1) } -> std::Same<typename T::codec_traits::default_encoded_output>;
-    { T::encode(a1) } -> std::Same<typename T::codec_traits::default_encoded_output>;
+    { T::encode(i1, s1) } -> std::Same<typename T::default_encoded_output>;
+    { T::encode(a1) } -> std::Same<typename T::default_encoded_output>;
     { T::encode<R1>(i1, s1) } -> std::Same<R1>;
     { T::encode<R1>(a1) } -> std::Same<R1>;
 
-    { T::decode(i2, s2) } -> std::Same<typename T::codec_traits::default_decoded_output>;
-    { T::decode(a2) } -> std::Same<typename T::codec_traits::default_decoded_output>;
+    { T::decode(i2, s2) } -> std::Same<typename T::default_decoded_output>;
+    { T::decode(a2) } -> std::Same<typename T::default_decoded_output>;
     { T::decode<R2>(i2, s2) } -> std::Same<R2>;
     { T::decode<R2>(a2) } -> std::Same<R2>;
   };
@@ -56,55 +57,53 @@ It is `mgs`' fundamental component.
 
 ## Template arguments
 
-| Template argument | Definition                                                                                                        | Constraints                           |
-|-------------------+-------------------------------------------------------------------------------------------------------------------+---------------------------------------|
-| `A1`              | Type passed to `encode`. Defaulted to `codec_traits::default_decoded_output`.                                     |                                       |
-| `A2`              | Type passed to `decode`. Defaulted to `codec_traits::default_encoded_output`.                                     |                                       |
-| `R1`              | `encode` return type. Defaulted to `codec_traits::default_encoded_output`.                                        | [`CodecOutput<T::encoder<I1, S1>>`]() |
-| `R2`              | `decode` return type. Defaulted to `codec_traits::default_decoded_output`.                                        | [`CodecOutput<T::decoder<I2, S2>>`]() |
-| `I1`              | Iterator type associated with `A1`, defaulted to `decltype(begin(a1))`.                                           | [`std::InputIterator`]()              |
-| `S1`              | Sentinel type associated with `A1`, defaulted to `decltype(end(a1))`, falls back to `I1` if `end(a1)` is invalid. | [`std::Sentinel<I1>`]()               |
-| `I2`              | Iterator type associated with `A2`, defaulted to `decltype(begin(a2))`.                                           | [`std::InputIterator`]()              |
-| `S2`              | Sentinel type associated with `A2`, defaulted to `decltype(end(a2))`, falls back to `I2` if `end(a2)` is invalid. | [`std::Sentinel<I2>`]()               |
+| Template argument | Definition                                                                                                        | Constraints                                                                     |
+|-------------------+-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------|
+| `A1`              | Type passed to `encode`. Defaulted to `T::default_decoded_output`.                                                |                                                                                 |
+| `A2`              | Type passed to `decode`. Defaulted to `T::default_encoded_output`.                                                |                                                                                 |
+| `R1`              | `encode` return type. Defaulted to `T::default_encoded_output`.                                                   | [`CodecOutput<decltype(T::make_encoder(i1, s1))>`](/docs/concepts/codec_output) |
+| `R2`              | `decode` return type. Defaulted to `T::default_decoded_output`.                                                   | [`CodecOutput<decltype(T::make_decoder(i2, s2))>`](/docs/concepts/codec_output)                            |
+| `I1`              | Iterator type associated with `A1`, defaulted to `decltype(begin(a1))`.                                           | [`std::InputIterator`]()                                                        |
+| `S1`              | Sentinel type associated with `A1`, defaulted to `decltype(end(a1))`, falls back to `I1` if `end(a1)` is invalid. | [`std::Sentinel<I1>`]()                                                         |
+| `I2`              | Iterator type associated with `A2`, defaulted to `decltype(begin(a2))`.                                           | [`std::InputIterator`]()                                                        |
+| `S2`              | Sentinel type associated with `A2`, defaulted to `decltype(end(a2))`, falls back to `I2` if `end(a2)` is invalid. | [`std::Sentinel<I2>`]()                                                         |
 
 ## Member types
 
-| Member type       | Definition         | Type                   | Constraints                       |
-|-------------------+--------------------+------------------------+-----------------------------------|
-| `T::codec_traits` | Codec traits class | Implementation defined | [`CodecTraits<I1, S1, I2, S2>`]() |
-
-## Member alias templates
-
-| Template                                              | Definition                                        |
-|-------------------------------------------------------+---------------------------------------------------|
-| `template <typename I, typename S = I> using encoder` | return type of `codec_traits::make_encoder(I, S)` |
-| `template <typename I, typename S = I> using decoder` | return type of `codec_traits::make_decoder(I, S)` |
+| Member type              | Definition                                                        | Type                   | Constraints                                                                     |
+|--------------------------+-------------------------------------------------------------------+------------------------+---------------------------------------------------------------------------------|
+| `default_encoded_output` | Type returned by `encode` when no template parameter is specified | Implementation defined | [`CodecOutput<decltype(T::make_encoder(i1, s1))>`](/docs/concepts/codec_output) |
+| `default_decoded_output` | Type returned by `decode` when no template parameter is specified | Implementation defined | [`CodecOutput<decltype(T::make_decoder(i2, s2))>`](/docs/concepts/codec_output) |
 
 ## Valid expressions
 
-| Expression              | Return type                               |
-|-------------------------+-------------------------------------------|
-| `T::encode(i1, s1)`     | `T::codec_traits::default_encoded_output` |
-| `T::encode(a1)`         | `T::codec_traits::default_encoded_output` |
-| `T::encode<R1>(i1, s1)` | `R1`                                      |
-| `T::encode<R1>(a1)`     | `R1`                                      |
-| `T::decode(i2, s2)`     | `T::codec_traits::default_decoded_output` |
-| `T::decode(a2)`         | `T::codec_traits::default_decoded_output` |
-| `T::decode<R2>(i2, s2)` | `R2`                                      |
-| `T::decode<R2>(a2)`     | `R2`                                      |
+| Expression                | Return type                                                       |
+|---------------------------+-------------------------------------------------------------------|
+| `T::make_encoder(i1, s1)` | [`TransformedInputRange`](/docs/concepts/transformed_input_range) |
+| `T::make_decoder(i2, s2)` | [`TransformedInputRange`](/docs/concepts/transformed_input_range) |
+| `T::encode(i1, s1)`       | `T::default_encoded_output`                                       |
+| `T::encode(a1)`           | `T::default_encoded_output`                                       |
+| `T::encode<R1>(i1, s1)`   | `R1`                                                              |
+| `T::encode<R1>(a1)`       | `R1`                                                              |
+| `T::decode(i2, s2)`       | `T::default_decoded_output`                                       |
+| `T::decode(a2)`           | `T::default_decoded_output`                                       |
+| `T::decode<R2>(i2, s2)`   | `R2`                                                              |
+| `T::decode<R2>(a2)`       | `R2`                                                              |
 
 ## Expression semantics
 
-| Expression              | Precondition                     | Semantics                                                                      | Postcondition |
-|-------------------------+----------------------------------+--------------------------------------------------------------------------------+---------------|
-| `T::encode(i1, s1)`     | `[i1, s1)` denotes a valid range | Encodes the input range and returns a value of the default encoded output type |               |
-| `T::encode(a1)`         |                                  | Encodes the input and returns a value of the default encoded output type       |               |
-| `T::encode<R1>(i1, s1)` | `[i1, s1)` denotes a valid range | Encodes the input range and returns a value of type `R1`                       |               |
-| `T::encode<R1>(a1)`     |                                  | Encodes the input and returns a value of type `R1`                             |               |
-| `T::decode(i2, s2)`     | `[i2, s2)` denotes a valid range | Decodes the input range and returns a value of the default decoded output type |               |
-| `T::decode(a2)`         |                                  | Decodes the input and returns a value of the default decoded output type       |               |
-| `T::decode<R2>(i2, s2)` | `[i2, s2)` denotes a valid range | Decodes the input range and returns a value of type `R2`                       |               |
-| `T::decode<R2>(a2)`     |                                  | Decodes the input and returns a value of type `R2`                             |               |
+| Expression                | Precondition                           | Semantics                                                                      |
+|---------------------------+----------------------------------------+--------------------------------------------------------------------------------|
+| `T::make_encoder(i1, s1)` | `[i1, s1)` denotes a valid input range | Creates an encoder from the input range                                        |
+| `T::make_decoder(i2, s2)` | `[i2, s2)` denotes a valid input range | Creates a decoder from the input range                                         |
+| `T::encode(i1, s1)`       | `[i1, s1)` denotes a valid input range | Encodes the input range and returns a value of the default encoded output type |
+| `T::encode(a1)`           |                                        | Encodes the input and returns a value of the default encoded output type       |
+| `T::encode<R1>(i1, s1)`   | `[i1, s1)` denotes a valid input range | Encodes the input range and returns a value of type `R1`                       |
+| `T::encode<R1>(a1)`       |                                        | Encodes the input and returns a value of type `R1`                             |
+| `T::decode(i2, s2)`       | `[i2, s2)` denotes a valid input range | Decodes the input range and returns a value of the default decoded output type |
+| `T::decode(a2)`           |                                        | Decodes the input and returns a value of the default decoded output type       |
+| `T::decode<R2>(i2, s2)`   | `[i2, s2)` denotes a valid input range | Decodes the input range and returns a value of type `R2`                       |
+| `T::decode<R2>(a2)`       |                                        | Decodes the input and returns a value of type `R2`                             |
 
 ## Concept emulation
 
