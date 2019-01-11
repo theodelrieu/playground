@@ -17,7 +17,6 @@ code
 * IterableTransformedInputAdapter -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
 * do not inherit from runtime_error
-* rename basic_* to *_interface, mimick C++20 ranges
 * use unsigned char instead of std::uint8_t
 * variable templates for every concept trait 
 * improve and add tests 
@@ -26,4 +25,4 @@ code
 
 doc
 
-* document other codecs
+migrate to readthedocs
