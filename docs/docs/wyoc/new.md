@@ -73,36 +73,32 @@ Although `noop_transformer` copies the whole input range in one go, it could ver
 
 ## Write a transformed input range
 
-Transformed input ranges allows iterating over transformed input.
+Transformed input ranges allow iterating over transformed input.
 
-`mgs` provides building blocks to easily create one from an input transformer:
+`mgs` provides a building block to easily create one from an input transformer:
 
 ```cpp
-#include <mgs/ranges/basic_transformed_input_range.hpp>
-#include <mgs/ranges/basic_readable_transformed_input_range.hpp>
+#include <mgs/ranges/transformed_input_range.hpp>
 
 using namespace mgs;
 
-using noop_range = ranges::basic_transformed_input_range<noop_transformer>;
-using readable_noop_range = ranges::basic_readable_transformed_input_range<noop_transformer>;
+using noop_range = ranges::transformed_input_range<noop_transformer>;
 
 int main() {
   std::string s("Hello, World!");
   noop_range nv(s.c_str(), s.c_str() + s.size());
-  readable_noop_range rnv(s.c_str(), s.c_str() + s.size());
+  auto nv2 = nv;
 
   std::string s2(nv.begin(), nv.end()); // "Hello, World!"
 
   // will output "Hello, World!"
-  rnv.read(std::ostreambuf_iterator<char>(std::cout), s.size());
+  nv2.read(std::ostreambuf_iterator<char>(std::cout), s.size());
 }
 ```
 
-`noop_range` models [`TransformedInputRange`](/docs/concepts/transformed_input_range) and `readable_noop_range` models [`ReadableTransformedInputRange`](/docs/concepts/readable_transformed_input_range).
+`ranges::transformed_input_range` takes an [`InputTransformer`](/docs/concepts/input_transformer) and models [`ReadableTransformedInputRange`](/docs/concepts/readable_transformed_input_range).
 
-Note
-{: .label .label-blue }
-Since `noop_transformer` also models [`SizedInputTransformer`](/docs/concepts/sized_input_transformer), both ranges will model [`SizedTransformedInputRange`](/docs/concepts/sized_transformed_input_range).
+If its template parameter models [`SizedInputTransformer`](/docs/concepts/sized_input_transformer), it will also model [`SizedTransformedInputRange`](/docs/concepts/sized_transformed_input_range).
 
 ## Define the codec traits
 
