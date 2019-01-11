@@ -38,7 +38,7 @@ Decodes the given input.
 
 1. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<decltype(T::make_encoder(begin, end))>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
+    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<decltype(T::make_decoder(begin, end))>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
 1. Same as calling `decode<std::string>(begin, end)`.
 1. Decodes the contents of the input stream `is` and returns the result as a `T`.
 
