@@ -30,26 +30,6 @@ public:
   using base::make_encoder;
   using base::make_decoder;
 
-  template <typename T = typename base::default_encoded_output,
-            std::size_t N = 0>
-  static codecs::concepts::
-      CodecOutput<T, typename base::template encoder<char const*>>
-      encode(char const (&tab)[N])
-  {
-    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
-    return base::template encode<T>(std::begin(tab), end_it);
-  }
-
-  template <typename T = typename base::default_decoded_output,
-            std::size_t N = 0>
-  static codecs::concepts::
-      CodecOutput<T, typename base::template decoder<char const*>>
-      decode(char const (&tab)[N])
-  {
-    auto const end_it = std::find(std::begin(tab), std::end(tab), '\0');
-    return base::template decode<T>(std::begin(tab), end_it);
-  }
-
   static constexpr std::size_t encoded_size(std::size_t decoded_size)
   {
     return detail::encoded_size<EncodingTraits>{}(decoded_size);

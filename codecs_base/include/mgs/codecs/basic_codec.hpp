@@ -131,6 +131,28 @@ public:
     return basic_codec::decode<T>(std::istreambuf_iterator<CharT, Traits>(is),
                                   std::istreambuf_iterator<CharT, Traits>());
   }
+
+  template <typename T = default_encoded_output, std::size_t N = 0>
+  static codecs::concepts::CodecOutput<T, encoder<char const*>> encode(
+      char const (&tab)[N])
+  {
+    auto const begin = std::begin(tab);
+    auto end = std::end(tab);
+    if (tab[N - 1] == '\0')
+      --end;
+    return encode<T>(begin, end);
+  }
+
+  template <typename T = default_decoded_output, std::size_t N = 0>
+  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(
+      char const (&tab)[N])
+  {
+    auto const begin = std::begin(tab);
+    auto end = std::end(tab);
+    if (tab[N - 1] == '\0')
+      --end;
+    return decode<T>(begin, end);
+  }
 };
 }
 }

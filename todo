@@ -5,7 +5,6 @@ code
 * use IterableTransformedInputAdapter everywhere except in iterator
 * put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
 * for byte_integral, use std::numeric_limits<>::digits
-* move \0 handling in codecs::basic_codec + just look at last char
 * do not use aliases for codecs, redefine class
 * add Iterable& and Iterable const& for rvalue support
 * support std::byte, ByteIntegral -> Byte
