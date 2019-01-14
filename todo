@@ -1,6 +1,5 @@
 code
 
-* Support basic_istream&
 * remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
 * use IterableTransformedInputAdapter everywhere except in iterator
@@ -27,4 +26,3 @@ code
 doc
 
 * migrate to readthedocs
-

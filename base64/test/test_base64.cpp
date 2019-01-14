@@ -91,11 +91,26 @@ TEST_CASE("base64 low level", "[base64]")
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
-    std::ifstream random_data(testFilePaths[0]);
-    std::ifstream b64_random_data(testFilePaths[1]);
 
-    stream_check<base64::encoder>(random_data, b64_random_data);
-    stream_check<base64::decoder>(b64_random_data, random_data);
+    SECTION("huge files")
+    {
+      std::ifstream random_data(testFilePaths[0]);
+      std::ifstream b64_random_data(testFilePaths[1]);
+
+      stream_check<base64::encoder>(random_data, b64_random_data);
+      stream_check<base64::decoder>(b64_random_data, random_data);
+    }
+
+    SECTION("small buffers")
+    {
+      std::string clear("abcde");
+      std::string encoded("YWJjZGU=");
+      std::stringstream ss(clear);
+      std::stringstream ss2(encoded);
+
+      CHECK(base64::encode(ss) == encoded);
+      CHECK(base64::decode<std::string>(ss2) == clear);
+    }
   }
 
   SECTION("invalid input")

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iosfwd>
 #include <utility>
 
 #include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
@@ -81,6 +82,18 @@ public:
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
+  template <typename T = default_encoded_output,
+            typename CharT = void,
+            typename Traits = void,
+            typename Encoder = adapters::concepts::TransformedInputAdapter<
+                encoder<std::istreambuf_iterator<CharT, Traits>>>>
+  static concepts::CodecOutput<T, Encoder> encode(
+      std::basic_istream<CharT, Traits>& is)
+  {
+    return basic_codec::encode<T>(std::istreambuf_iterator<CharT, Traits>(is),
+                                  std::istreambuf_iterator<CharT, Traits>());
+  }
+
   template <typename T = default_decoded_output,
             typename Iterator = void,
             typename Sentinel = void,
@@ -105,6 +118,18 @@ public:
     using std::end;
 
     return basic_codec::decode<T>(begin(it), end(it));
+  }
+
+  template <typename T = default_decoded_output,
+            typename CharT = void,
+            typename Traits = void,
+            typename decoder = adapters::concepts::TransformedInputAdapter<
+                decoder<std::istreambuf_iterator<CharT, Traits>>>>
+  static concepts::CodecOutput<T, decoder> decode(
+      std::basic_istream<CharT, Traits>& is)
+  {
+    return basic_codec::decode<T>(std::istreambuf_iterator<CharT, Traits>(is),
+                                  std::istreambuf_iterator<CharT, Traits>());
   }
 };
 }
