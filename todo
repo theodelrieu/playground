@@ -22,6 +22,7 @@ code
 * improve and add tests 
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * TransformerInputRange
+* Redesign tests from scratch
 
 doc
 
