@@ -1,5 +1,42 @@
 code
 
+Tests:
+
+Write very generic functions first.
+Then, regroup common stuff (e.g. custom sentinel, encoding twice)
+General to every codec:
+
+* Input / Expected output (with both iterators, and iterable)
+template <typename Codec, typename Iterable, typename CodecOutput>
+void test_encode(Iterable const&, CodecOutput const& expected);
+
+template <typename Codec, typename I, typename S, typename CodecOutput>
+void test_encode(I, S, CodecOutput const& expected);
+
+template <typename Codec, typename I, typename S, typename Iterable>
+void test_make_encoder(I, S, Iterable const& expected);
+
+template <typename Codec, typename I1, typename S1, typename I2, typename S2>
+void test_make_encoder(I1, S1, I2, S2);
+
+template <typename Codec, typename Iterable, typename CodecOutput>
+void test_decode(Iterable const&, CodecOutput const& expected);
+
+template <typename Codec, typename I, typename S, typename CodecOutput>
+void test_decode(I, S, CodecOutput const& expected);
+
+template <typename Codec, typename I, typename S, typename Iterable>
+void test_make_decoder(I, S, Iterable const& expected);
+
+template <typename Codec, typename I1, typename S1, typename I2, typename S2>
+void test_make_decoder(I1, S1, I2, S2);
+
+specific-to-codec things to test:
+
+* invalid input
+* size prediction
+* huge files
+
 * remove conan workspaces, create one repo per recipe
 * add constraint in binary_to_text::basic_codec (assert iterator value_type is byte_integral)
 * use IterableTransformedInputAdapter everywhere except in iterator
@@ -8,20 +45,21 @@ code
 * do not use aliases for codecs, redefine class
 * add Iterable& and Iterable const& for rvalue support
 * support std::byte, ByteIntegral -> Byte
-* move concepts in mgs/concepts instead of mgs/meta/concepts
 * move concepts aliases in namespace mgs (+ namespace concepts)
 * rename adapters -> ranges
 * Keep Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
 * IterableTransformedInputAdapter -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
 * do not inherit from runtime_error
-* variable templates for every concept trait 
-* improve and add tests 
+* variable templates for every concept trait
+* improve and add tests
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * TransformerInputRange
 * Redesign tests from scratch
+* remove stream support, use iterators instead
 
 doc
 
 * migrate to readthedocs
 * fix documentation about '\0'
+* remove streams, use iterators instead
