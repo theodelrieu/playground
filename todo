@@ -15,7 +15,6 @@ code
 * IterableTransformedInputAdapter -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
 * do not inherit from runtime_error
-* use unsigned char instead of std::uint8_t
 * variable templates for every concept trait 
 * improve and add tests 
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator

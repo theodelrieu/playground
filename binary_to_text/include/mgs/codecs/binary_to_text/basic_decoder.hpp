@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <bitset>
 #include <cassert>
-#include <cstdint>
 #include <cstdlib>
 #include <limits>
 
@@ -52,7 +51,7 @@ private:
                 "The impossible has occurred");
 
 public:
-  using buffer_type = detail::static_vector<std::uint8_t, 256>;
+  using buffer_type = detail::static_vector<unsigned char, 256>;
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
   using encoding_traits = EncodingTraits;
@@ -84,7 +83,7 @@ private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::input_iterator_tag)
   {
-    detail::static_vector<std::uint8_t, nb_bytes_to_read> ret;
+    detail::static_vector<unsigned char, nb_bytes_to_read> ret;
     ret.resize(nb_bytes_to_read);
 
     auto i = 0;

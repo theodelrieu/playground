@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <utility>
 #include <vector>
@@ -39,7 +38,7 @@ struct basic_codec_traits
   }
 
   using default_encoded_output = std::string;
-  using default_decoded_output = std::vector<std::uint8_t>;
+  using default_decoded_output = std::vector<unsigned char>;
 };
 }
 }

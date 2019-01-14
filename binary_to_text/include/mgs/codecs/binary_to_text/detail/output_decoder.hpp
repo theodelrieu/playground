@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bitset>
-#include <cstddef>
 
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
@@ -31,7 +30,7 @@ struct output_decoder
 
     for (auto i = 0u; i < n; ++i)
     {
-      out[i] = static_cast<std::uint8_t>(
+      out[i] = static_cast<unsigned char>(
           (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
               .to_ulong());
     }
@@ -46,7 +45,7 @@ struct output_decoder
 
     for (auto i = 0u; i < BitshiftTraits::nb_decoded_bytes; ++i)
     {
-      out[i] = static_cast<std::uint8_t>(
+      out[i] = static_cast<unsigned char>(
           (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
               .to_ulong());
     }
