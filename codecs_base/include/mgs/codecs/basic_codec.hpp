@@ -136,22 +136,18 @@ public:
   static codecs::concepts::CodecOutput<T, encoder<char const*>> encode(
       char const (&tab)[N])
   {
-    auto const begin = std::begin(tab);
-    auto end = std::end(tab);
-    if (tab[N - 1] == '\0')
-      --end;
-    return encode<T>(begin, end);
+    auto const begin_it = std::begin(tab);
+    auto const end_it = std::find(begin_it, std::end(tab), '\0');
+    return encode<T>(begin_it, end_it);
   }
 
   template <typename T = default_decoded_output, std::size_t N = 0>
   static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(
       char const (&tab)[N])
   {
-    auto const begin = std::begin(tab);
-    auto end = std::end(tab);
-    if (tab[N - 1] == '\0')
-      --end;
-    return decode<T>(begin, end);
+    auto const begin_it = std::begin(tab);
+    auto const end_it = std::find(begin_it, std::end(tab), '\0');
+    return decode<T>(begin_it, end_it);
   }
 };
 }

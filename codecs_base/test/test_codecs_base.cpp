@@ -153,6 +153,21 @@ TEST_CASE("codecs_base", "[codecs_base]")
     static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");
     static_assert(concepts::is_codec_output<valid_type, Encoder>::value, "");
 
+    SECTION("C arrays")
+    {
+      unsigned char tab[10] = {};
+      char tab2[10] = {};
+      char tab3[10] = "abcdefghi";
+
+      auto const v = noop_codec::encode(tab);
+      auto const v2 = noop_codec::encode(tab2);
+      auto const v3 = noop_codec::encode(tab3);
+
+      CHECK(v.size() == 10);
+      CHECK(v2.size() == 0);
+      CHECK(v3.size() == 9);
+    }
+
     SECTION("User-defined types")
     {
       auto v = noop_codec::encode<valid_type>(str);

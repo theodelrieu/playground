@@ -25,3 +25,4 @@ code
 doc
 
 * migrate to readthedocs
+* fix documentation about '\0'
