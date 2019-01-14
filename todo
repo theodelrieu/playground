@@ -25,6 +25,5 @@ code
 
 doc
 
-* fix encoded_size for other codecs
 * migrate to readthedocs
 
