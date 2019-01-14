@@ -23,6 +23,6 @@ Returns exact encoded size assuming an input of size `decoded_size`.
 using namespace mgs;
 
 int main() {
-  static_assert(base16::encoded_size(8) == 12, "");
+  static_assert(base16::encoded_size(8) == 16, "");
 }
 ```
