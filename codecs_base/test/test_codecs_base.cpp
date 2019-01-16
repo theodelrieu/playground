@@ -6,11 +6,7 @@
 #include <deque>
 #include <forward_list>
 #include <list>
-#include <map>
-#include <set>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 
 #include <mgs/adapters/basic_transformed_input_adapter.hpp>
@@ -185,88 +181,19 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
     SECTION("Containers")
     {
-      auto const input = "test"s;
+      auto const input_str = "test"s;
+      std::vector<unsigned char> input_vec(input_str.begin(), input_str.end());
+      std::list<char> input_list(input_str.begin(), input_str.end());
+      std::forward_list<std::uint8_t> input_flist(input_str.begin(), input_str.end());
+      std::deque<std::int8_t> input_deque(input_str.begin(), input_str.end());
+      std::array<char, 4> input_array(input_str.begin(), input_str.end());
 
-      SECTION("Sequence")
-      {
-        SECTION("std::string")
-        {
-          test_helpers::run_codec_tests<std::string>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::vector<char>")
-        {
-          test_helpers::run_codec_tests<std::vector<char>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::vector<std::uint8_t>")
-        {
-          test_helpers::run_codec_tests<std::vector<std::uint8_t>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::list<char>")
-        {
-          test_helpers::run_codec_tests<std::list<char>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::forward_list<char>")
-        {
-          test_helpers::run_codec_tests<std::forward_list<char>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::deque<std::uint8_t>")
-        {
-          test_helpers::run_codec_tests<std::deque<std::uint8_t>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-
-        SECTION("std::array<std::uint8_t, 4>")
-        {
-          test_helpers::run_codec_tests<std::array<std::uint8_t, 4>>(
-              noop_codec{}, "test"s, "test"s);
-        }
-      }
-
-      SECTION("Associative")
-      {
-        static_assert(!concepts::is_codec_output<std::map<char, char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(!concepts::is_codec_output<std::multimap<char, char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(!concepts::is_codec_output<std::multiset<char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(!concepts::is_codec_output<std::set<char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(!concepts::is_codec_output<std::unordered_map<char, char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(
-            !concepts::is_codec_output<std::unordered_multimap<char, char>,
-                                       Encoder::iterator>::value,
-            "");
-
-        static_assert(!concepts::is_codec_output<std::unordered_multiset<char>,
-                                                 Encoder::iterator>::value,
-                      "");
-
-        static_assert(!concepts::is_codec_output<std::unordered_set<char>,
-                                                 Encoder::iterator>::value,
-                      "");
-      }
+      test_helpers::run_codec_tests<noop_codec>(input_str, input_str);
+      test_helpers::run_codec_tests<noop_codec>(input_vec, input_vec);
+      test_helpers::run_codec_tests<noop_codec>(input_list, input_list);
+      test_helpers::run_codec_tests<noop_codec>(input_flist, input_flist);
+      test_helpers::run_codec_tests<noop_codec>(input_deque, input_deque);
+      test_helpers::run_codec_tests<noop_codec>(input_array, input_array);
 
       SECTION("std::array out of bounds")
       {

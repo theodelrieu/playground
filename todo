@@ -6,31 +6,6 @@ Write very generic functions first.
 Then, regroup common stuff (e.g. custom sentinel, encoding twice)
 General to every codec:
 
-* Input / Expected output (with both iterators, and iterable)
-template <typename Codec, typename Iterable, typename CodecOutput>
-void test_encode(Iterable const&, CodecOutput const& expected);
-
-template <typename Codec, typename I, typename S, typename CodecOutput>
-void test_encode(I, S, CodecOutput const& expected);
-
-template <typename Codec, typename I, typename S, typename Iterable>
-void test_make_encoder(I, S, Iterable const& expected);
-
-template <typename Codec, typename I1, typename S1, typename I2, typename S2>
-void test_make_encoder(I1, S1, I2, S2);
-
-template <typename Codec, typename Iterable, typename CodecOutput>
-void test_decode(Iterable const&, CodecOutput const& expected);
-
-template <typename Codec, typename I, typename S, typename CodecOutput>
-void test_decode(I, S, CodecOutput const& expected);
-
-template <typename Codec, typename I, typename S, typename Iterable>
-void test_make_decoder(I, S, Iterable const& expected);
-
-template <typename Codec, typename I1, typename S1, typename I2, typename S2>
-void test_make_decoder(I1, S1, I2, S2);
-
 specific-to-codec things to test:
 
 * invalid input
@@ -56,10 +31,8 @@ specific-to-codec things to test:
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * TransformerInputRange
 * Redesign tests from scratch
-* remove stream support, use iterators instead
 
 doc
 
 * migrate to readthedocs
 * fix documentation about '\0'
-* remove streams, use iterators instead
