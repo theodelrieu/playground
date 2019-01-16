@@ -141,6 +141,30 @@ void test_std_container_input(Iterable1 const& decoded_input,
 
   basic_codec_tests<Codec>(decoded, encoded);
 }
+
+struct stream_sentinel
+{
+};
+
+bool operator==(std::istreambuf_iterator<char> lhs, stream_sentinel)
+{
+  return lhs.equal({});
+}
+
+bool operator==(stream_sentinel, std::istreambuf_iterator<char> rhs)
+{
+  return rhs.equal({});
+}
+
+bool operator!=(std::istreambuf_iterator<char> lhs, stream_sentinel s)
+{
+  return !(lhs == s);
+}
+
+bool operator!=(stream_sentinel s, std::istreambuf_iterator<char> rhs)
+{
+  return !(s == rhs);
+}
 }
 
 template <typename Codec, typename Iterable1, typename Iterable2>
@@ -157,7 +181,7 @@ void test_input_streams(Iterable1 const& decoded_input,
 
   using iterator = std::istreambuf_iterator<char>;
 
-  iterator sentinel;
+  detail::stream_sentinel sentinel;
 
   test_encode<Codec>(iterator(decoded_ss), sentinel, encoded_input);
 
