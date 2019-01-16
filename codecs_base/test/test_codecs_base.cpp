@@ -181,29 +181,22 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
     SECTION("Containers")
     {
-      auto const input_str = "test"s;
-      std::vector<unsigned char> input_vec(input_str.begin(), input_str.end());
-      std::list<char> input_list(input_str.begin(), input_str.end());
-      std::forward_list<std::uint8_t> input_flist(input_str.begin(), input_str.end());
-      std::deque<std::int8_t> input_deque(input_str.begin(), input_str.end());
-      std::array<char, 4> input_array(input_str.begin(), input_str.end());
+      std::array<char, 4> const input_array{'t', 'e', 's', 't'};
 
-      test_helpers::run_codec_tests<noop_codec>(input_str, input_str);
-      test_helpers::run_codec_tests<noop_codec>(input_vec, input_vec);
-      test_helpers::run_codec_tests<noop_codec>(input_list, input_list);
-      test_helpers::run_codec_tests<noop_codec>(input_flist, input_flist);
-      test_helpers::run_codec_tests<noop_codec>(input_deque, input_deque);
-      test_helpers::run_codec_tests<noop_codec>(input_array, input_array);
+      test_helpers::basic_codec_tests<noop_codec>(input_array, input_array);
+
+      test_helpers::test_std_container_inputs<noop_codec>(input_array, input_array);
+      test_helpers::test_std_container_outputs<noop_codec>(input_array, input_array);
 
       SECTION("std::array out of bounds")
       {
-        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input)),
+        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input_array)),
                         exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input)),
+        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input_array)),
                         exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input)),
+        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input_array)),
                         exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input)),
+        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input_array)),
                         exceptions::unexpected_eof_error);
       }
     }

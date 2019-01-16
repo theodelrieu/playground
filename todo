@@ -31,6 +31,7 @@ specific-to-codec things to test:
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * TransformerInputRange
 * Redesign tests from scratch
+* check if iterator is a forward instead of input 
 
 doc
 
