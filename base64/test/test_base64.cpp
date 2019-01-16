@@ -204,7 +204,9 @@ TEST_CASE("base64 codec", "[base64]")
 {
   SECTION("Regular tests")
   {
+    test_helpers::run_basic_codec_tests<base64>("abcd"s, "YWJjZA=="s);
     test_helpers::run_basic_codec_tests<base64>("abcde"s, "YWJjZGU="s);
+    test_helpers::run_basic_codec_tests<base64>("abcde"s, "YWJjZGVm"s);
   }
 
   SECTION("encoded_size")
