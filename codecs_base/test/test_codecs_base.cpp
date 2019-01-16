@@ -185,8 +185,7 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
       test_helpers::basic_codec_tests<noop_codec>(input_array, input_array);
 
-      test_helpers::test_std_container_inputs<noop_codec>(input_array, input_array);
-      test_helpers::test_std_container_outputs<noop_codec>(input_array, input_array);
+      test_helpers::test_std_containers<noop_codec>(input_array, input_array);
 
       SECTION("std::array out of bounds")
       {

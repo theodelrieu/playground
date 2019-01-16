@@ -210,4 +210,11 @@ void test_std_container_inputs(Iterable1& decoded_input,
   detail::test_std_container_input<Codec, std::deque<std::uint8_t>>(
       decoded_input, encoded_input);
 }
+
+template <typename Codec, typename Iterable1, typename Iterable2>
+void test_std_containers(Iterable1& decoded_input, Iterable2& encoded_input)
+{
+  test_std_container_outputs<Codec>(decoded_input, encoded_input);
+  test_std_container_inputs<Codec>(decoded_input, encoded_input);
+}
 }
