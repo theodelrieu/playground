@@ -86,6 +86,18 @@ void test_decode(I i, S s, Iterable const& expected)
   detail::check_equal(decoded, expected);
 }
 
+template <typename Codec, typename Iterable1, typename Iterable2>
+void test_back_and_forth(Iterable1 const& decoded_input,
+                         Iterable2 const& encoded_input)
+{
+  auto encoded = Codec::encode(decoded_input);
+  detail::check_equal(encoded, encoded_input);
+  auto decoded = Codec::decode(encoded);
+  detail::check_equal(decoded, decoded_input);
+  encoded = Codec::encode(decoded_input);
+  detail::check_equal(encoded, encoded_input);
+}
+
 template <typename Codec, typename I, typename S, typename Iterable>
 void test_make_decoder(I i, S s, Iterable const& expected)
 {

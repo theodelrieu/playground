@@ -32,6 +32,26 @@ struct invalid_type
 struct valid_type
 {
   std::vector<std::uint8_t> vec;
+
+  auto begin()
+  {
+    return vec.begin();
+  }
+
+  auto end()
+  {
+    return vec.end();
+  }
+
+  auto begin() const
+  {
+    return vec.begin();
+  }
+
+  auto end() const
+  {
+    return vec.end();
+  }
 };
 
 template <typename Iterator, typename Sentinel>
@@ -142,9 +162,10 @@ TEST_CASE("codecs_base", "[codecs_base]")
 {
   SECTION("codec output")
   {
-    auto const str = "test"s;
+    std::array<char, 4> const input{'t', 'e', 's', 't'};
 
-    using Encoder = decltype(noop_codec::make_encoder(str.begin(), str.end()));
+
+    using Encoder = decltype(noop_codec::make_encoder(input.begin(), input.end()));
 
     static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");
     static_assert(concepts::is_codec_output<valid_type, Encoder>::value, "");
@@ -166,43 +187,28 @@ TEST_CASE("codecs_base", "[codecs_base]")
 
     SECTION("User-defined types")
     {
-      auto v = noop_codec::encode<valid_type>(str);
-      CHECK(std::equal(v.vec.begin(), v.vec.end(), str.begin(), str.end()));
-
-      auto v2 = noop_codec::encode<valid_type>(str.begin(), str.end());
-      CHECK(v.vec == v2.vec);
-
-      auto v3 = noop_codec::decode<valid_type>(str.begin(), str.end());
-      CHECK(v.vec == v3.vec);
-
-      auto v4 = noop_codec::decode<valid_type>(str);
-      CHECK(v.vec == v4.vec);
+      test_helpers::basic_codec_tests<noop_codec, valid_type>(input, input);
     }
 
-    SECTION("Streams")
+    SECTION("Common tests")
     {
-      test_helpers::test_input_streams<noop_codec>("test"s, "test"s);
+      test_helpers::basic_codec_tests<noop_codec>(input, input);
+
+      test_helpers::test_std_containers<noop_codec>(input, input);
+      test_helpers::test_input_streams<noop_codec>(input, input);
+      test_helpers::test_back_and_forth<noop_codec>(input, input);
     }
 
-    SECTION("Containers")
+    SECTION("Array conversion")
     {
-      std::array<char, 4> const input_array{'t', 'e', 's', 't'};
-
-      test_helpers::basic_codec_tests<noop_codec>(input_array, input_array);
-
-      test_helpers::test_std_containers<noop_codec>(input_array, input_array);
-
-      SECTION("std::array out of bounds")
-      {
-        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input_array)),
-                        exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input_array)),
-                        exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input_array)),
-                        exceptions::unexpected_eof_error);
-        CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input_array)),
-                        exceptions::unexpected_eof_error);
-      }
+      CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input)),
+                      exceptions::unexpected_eof_error);
+      CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input)),
+                      exceptions::unexpected_eof_error);
+      CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input)),
+                      exceptions::unexpected_eof_error);
+      CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input)),
+                      exceptions::unexpected_eof_error);
     }
   }
 }

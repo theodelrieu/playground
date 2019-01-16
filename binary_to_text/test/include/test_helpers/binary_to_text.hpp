@@ -49,8 +49,6 @@ static_assert(!mgs::meta::concepts::iterator::is_sentinel<
               "");
 }
 
-// stream + sentinel
-// stream
 // inception
 // back and forth
 
