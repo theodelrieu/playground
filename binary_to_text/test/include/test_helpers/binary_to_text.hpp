@@ -1,12 +1,6 @@
 #pragma once
 
-#include <deque>
-#include <forward_list>
-#include <iterator>
-#include <list>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <iosfwd>
 
 #include <catch.hpp>
 

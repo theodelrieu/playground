@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.3)
 
 add_library(binary_to_text_test_helpers INTERFACE)
 target_include_directories(binary_to_text_test_helpers INTERFACE include)
-target_link_libraries(binary_to_text_test_helpers INTERFACE binary_to_text CONAN_PKG::mgs_adapters CONAN_PKG::mgs_test_helpers)
+target_link_libraries(binary_to_text_test_helpers INTERFACE binary_to_text codecs_base_test_helpers CONAN_PKG::mgs_adapters CONAN_PKG::mgs_test_helpers)
 
 install(TARGETS binary_to_text_test_helpers
   EXPORT binary_to_text_test_helpers

@@ -37,3 +37,4 @@ doc
 
 * migrate to readthedocs
 * fix documentation about '\0'
+* note that CharT is there to support future C++20 char8_t

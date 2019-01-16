@@ -1,10 +1,12 @@
 #pragma once
+#include <iostream>
 
 #include <algorithm>
 #include <cstddef>
 #include <deque>
 #include <forward_list>
 #include <list>
+#include <sstream>
 #include <type_traits>
 #include <vector>
 
@@ -14,8 +16,8 @@ namespace test_helpers
 {
 namespace detail
 {
-template <typename Iterable, typename Iterable2>
-void check_equal(Iterable& lhs, Iterable2& rhs)
+template <typename Iterable1, typename Iterable2>
+void check_equal(Iterable1 const& lhs, Iterable2 const& rhs)
 {
   using std::begin;
   using std::end;
@@ -28,7 +30,7 @@ template <typename Codec,
           typename CodecOutput = typename Codec::default_encoded_output,
           typename Iterable1 = void,
           typename Iterable2 = void>
-void test_encode(Iterable1& it, Iterable2& expected)
+void test_encode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const encoded = Codec::template encode<CodecOutput>(it);
   detail::check_equal(encoded, expected);
@@ -39,14 +41,14 @@ template <typename Codec,
           typename I = void,
           typename S = void,
           typename Iterable>
-void test_encode(I i, S s, Iterable& expected)
+void test_encode(I i, S s, Iterable const& expected)
 {
   auto const encoded = Codec::template encode<CodecOutput>(i, s);
   detail::check_equal(encoded, expected);
 }
 
 template <typename Codec, typename I, typename S, typename Iterable>
-void test_make_encoder(I i, S s, Iterable& expected)
+void test_make_encoder(I i, S s, Iterable const& expected)
 {
   auto encoder = Codec::make_encoder(i, s);
   detail::check_equal(encoder, expected);
@@ -59,7 +61,7 @@ void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 
   using std::begin;
   using std::end;
-  
+
   CHECK(std::equal(begin(encoder), end(encoder), i2, s2));
 }
 
@@ -67,7 +69,7 @@ template <typename Codec,
           typename CodecOutput = typename Codec::default_decoded_output,
           typename Iterable1 = void,
           typename Iterable2 = void>
-void test_decode(Iterable1& it, Iterable2& expected)
+void test_decode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(it);
   detail::check_equal(decoded, expected);
@@ -78,14 +80,14 @@ template <typename Codec,
           typename I = void,
           typename S = void,
           typename Iterable = void>
-void test_decode(I i, S s, Iterable& expected)
+void test_decode(I i, S s, Iterable const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(i, s);
   detail::check_equal(decoded, expected);
 }
 
 template <typename Codec, typename I, typename S, typename Iterable>
-void test_make_decoder(I i, S s, Iterable& expected)
+void test_make_decoder(I i, S s, Iterable const& expected)
 {
   auto decoder = Codec::make_decoder(i, s);
   detail::check_equal(decoder, expected);
@@ -98,7 +100,7 @@ void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
 
   using std::begin;
   using std::end;
-  
+
   CHECK(std::equal(begin(decoder), end(decoder), i2, s2));
 }
 
@@ -107,7 +109,8 @@ template <typename Codec,
           typename DecodedOutput = EncodedOutput,
           typename Iterable1 = void,
           typename Iterable2 = void>
-void basic_codec_tests(Iterable1& decoded_input, Iterable2& encoded_input)
+void basic_codec_tests(Iterable1 const& decoded_input,
+                       Iterable2 const& encoded_input)
 {
   using std::begin;
   using std::end;
@@ -123,8 +126,12 @@ void basic_codec_tests(Iterable1& decoded_input, Iterable2& encoded_input)
 
 namespace detail
 {
-template <typename Codec, typename Container, typename Iterable1, typename Iterable2>
-void test_std_container_input(Iterable1& decoded_input, Iterable2 encoded_input)
+template <typename Codec,
+          typename Container,
+          typename Iterable1,
+          typename Iterable2>
+void test_std_container_input(Iterable1 const& decoded_input,
+                              Iterable2 encoded_input)
 {
   using std::begin;
   using std::end;
@@ -137,8 +144,37 @@ void test_std_container_input(Iterable1& decoded_input, Iterable2 encoded_input)
 }
 
 template <typename Codec, typename Iterable1, typename Iterable2>
-void test_std_container_outputs(Iterable1& decoded_input,
-                                Iterable2& encoded_input)
+void test_input_streams(Iterable1 const& decoded_input,
+                        Iterable2 const& encoded_input)
+{
+  std::string decoded_str(decoded_input.begin(), decoded_input.end());
+  std::string encoded_str(encoded_input.begin(), encoded_input.end());
+
+  std::stringstream decoded_ss(decoded_str,
+                               std::ios::in | std::ios::out | std::ios::binary);
+  std::stringstream encoded_ss(encoded_str,
+                               std::ios::in | std::ios::out | std::ios::binary);
+
+  using iterator = std::istreambuf_iterator<char>;
+
+  iterator sentinel;
+
+  test_encode<Codec>(iterator(decoded_ss), sentinel, encoded_input);
+
+  decoded_ss.seekg(0);
+
+  test_make_encoder<Codec>(iterator(decoded_ss), sentinel, encoded_input);
+
+  test_decode<Codec>(iterator(encoded_ss), sentinel, decoded_input);
+
+  encoded_ss.seekg(0);
+
+  test_make_decoder<Codec>(iterator(encoded_ss), sentinel, decoded_input);
+}
+
+template <typename Codec, typename Iterable1, typename Iterable2>
+void test_std_container_outputs(Iterable1 const& decoded_input,
+                                Iterable2 const& encoded_input)
 {
   basic_codec_tests<Codec, std::string>(decoded_input, encoded_input);
 
@@ -168,8 +204,8 @@ void test_std_container_outputs(Iterable1& decoded_input,
 }
 
 template <typename Codec, typename Iterable1, typename Iterable2>
-void test_std_container_inputs(Iterable1& decoded_input,
-                               Iterable2& encoded_input)
+void test_std_container_inputs(Iterable1 const& decoded_input,
+                               Iterable2 const& encoded_input)
 {
   detail::test_std_container_input<Codec, std::string>(decoded_input,
                                                        encoded_input);
@@ -212,7 +248,8 @@ void test_std_container_inputs(Iterable1& decoded_input,
 }
 
 template <typename Codec, typename Iterable1, typename Iterable2>
-void test_std_containers(Iterable1& decoded_input, Iterable2& encoded_input)
+void test_std_containers(Iterable1 const& decoded_input,
+                         Iterable2 const& encoded_input)
 {
   test_std_container_outputs<Codec>(decoded_input, encoded_input);
   test_std_container_inputs<Codec>(decoded_input, encoded_input);

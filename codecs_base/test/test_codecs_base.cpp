@@ -179,6 +179,11 @@ TEST_CASE("codecs_base", "[codecs_base]")
       CHECK(v.vec == v4.vec);
     }
 
+    SECTION("Streams")
+    {
+      test_helpers::test_input_streams<noop_codec>("test"s, "test"s);
+    }
+
     SECTION("Containers")
     {
       std::array<char, 4> const input_array{'t', 'e', 's', 't'};
