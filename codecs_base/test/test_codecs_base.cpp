@@ -164,7 +164,6 @@ TEST_CASE("codecs_base", "[codecs_base]")
   {
     std::array<char, 4> const input{'t', 'e', 's', 't'};
 
-
     using Encoder = decltype(noop_codec::make_encoder(input.begin(), input.end()));
 
     static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");
@@ -197,6 +196,7 @@ TEST_CASE("codecs_base", "[codecs_base]")
       test_helpers::test_std_containers<noop_codec>(input, input);
       test_helpers::test_input_streams<noop_codec>(input, input);
       test_helpers::test_back_and_forth<noop_codec>(input, input);
+      test_helpers::test_encode_twice<noop_codec>(input, input);
     }
 
     SECTION("Array conversion")

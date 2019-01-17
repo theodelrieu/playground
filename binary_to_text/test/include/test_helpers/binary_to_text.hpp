@@ -48,8 +48,4 @@ static_assert(!mgs::meta::concepts::iterator::is_sentinel<
                   std::vector<char>::iterator>::value,
               "");
 }
-
-// inception
-// back and forth
-
 }

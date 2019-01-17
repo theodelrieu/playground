@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 #include <algorithm>
 #include <cstddef>
@@ -86,6 +85,17 @@ void test_decode(I i, S s, Iterable const& expected)
   detail::check_equal(decoded, expected);
 }
 
+template <typename Codec, typename I1, typename S1, typename I2, typename S2>
+void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
+{
+  auto decoder = Codec::make_decoder(i1, s1);
+
+  using std::begin;
+  using std::end;
+
+  CHECK(std::equal(begin(decoder), end(decoder), i2, s2));
+}
+
 template <typename Codec, typename Iterable1, typename Iterable2>
 void test_back_and_forth(Iterable1 const& decoded_input,
                          Iterable2 const& encoded_input)
@@ -98,6 +108,21 @@ void test_back_and_forth(Iterable1 const& decoded_input,
   detail::check_equal(encoded, encoded_input);
 }
 
+template <typename Codec, typename Iterable1, typename Iterable2>
+void test_encode_twice(Iterable1 const& decoded_input,
+                       Iterable2 const& encoded_input)
+{
+  using std::begin;
+  using std::end;
+
+  auto encoder = Codec::make_encoder(begin(decoded_input), end(decoded_input));
+  auto const encoded_twice = Codec::encode(begin(encoder), end(encoder));
+  detail::check_equal(encoded_twice, encoded_input);
+  auto decoder = Codec::make_decoder(begin(encoded_twice), end(encoded_twice));
+  auto const decoded = Codec::decode(begin(decoder), end(decoder));
+  detail::check_equal(decoded, decoded_input);
+}
+
 template <typename Codec, typename I, typename S, typename Iterable>
 void test_make_decoder(I i, S s, Iterable const& expected)
 {
@@ -105,16 +130,6 @@ void test_make_decoder(I i, S s, Iterable const& expected)
   detail::check_equal(decoder, expected);
 }
 
-template <typename Codec, typename I1, typename S1, typename I2, typename S2>
-void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
-{
-  auto decoder = Codec::make_decoder(i1, s1);
-
-  using std::begin;
-  using std::end;
-
-  CHECK(std::equal(begin(decoder), end(decoder), i2, s2));
-}
 
 template <typename Codec,
           typename EncodedOutput = typename Codec::default_encoded_output,
