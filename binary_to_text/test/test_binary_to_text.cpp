@@ -19,7 +19,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 
-#include <test_helpers/binary_to_text.hpp>
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -60,66 +60,15 @@ using base2_decoder = typename base2::template decoder<I, S>;
 
 TEST_CASE("base2", "[binary_to_text]")
 {
-  std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
-  std::vector<std::string> encoded{
-      "01100001011000100110001101100100"s,
-      "0110000101100010011000110110010001100101"s,
-      "011000010110001001100011011001000110010101100110"s};
-
-  SECTION("encoding")
+  SECTION("Common tests")
   {
-    SECTION("common_checks")
-    {
-      common_checks<base2_encoder>(decoded, encoded);
-    }
+    auto const decoded = "abcdef"s;
+    auto const encoded = "011000010110001001100011011001000110010101100110"s;
+    test_helpers::basic_codec_tests<base2>(decoded, encoded);
 
-    SECTION("sentinel")
-    {
-      sentinel_check<base2_encoder>(decoded.back(), encoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base2_encoder>(
-          "a"s,
-          "01100001"s,
-          "0011000000110001001100010011000000110000001100000011000000110001"s);
-    }
-  }
-
-  SECTION("decoding")
-  {
-    SECTION("common_checks")
-    {
-      common_checks<base2_decoder>(encoded, decoded);
-    }
-
-    SECTION("sentinel")
-    {
-      sentinel_check<base2_decoder>(encoded.back(), decoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base2_decoder>(
-          "0011000000110001001100010011000000110000001100000011000000110001"s,
-          "01100001"s,
-          "a"s);
-    }
-  }
-
-  SECTION("back and forth")
-  {
-    SECTION("decode(encode())")
-    {
-      back_and_forth_check<base2_encoder, base2_decoder>("a"s);
-    }
-
-    SECTION("encode(decode())")
-    {
-      back_and_forth_check<base2_decoder, base2_encoder>(
-          "0011000000110001001100010011000000110000001100000011000000110001"s);
-    }
+    test_helpers::test_std_containers<base2>(decoded, encoded);
+    test_helpers::test_input_streams<base2>(decoded, encoded);
+    test_helpers::test_back_and_forth<base2>(decoded, encoded);
   }
 
   SECTION("invalid input")
@@ -127,26 +76,21 @@ TEST_CASE("base2", "[binary_to_text]")
     std::vector<std::string> invalid_chars{"***====="s, "23423423"s};
     std::vector<std::string> invalid_eof{"1010101"s, "101010101"s};
 
-    invalid_input_checks<base2_decoder, mgs::exceptions::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<base2_decoder, mgs::exceptions::unexpected_eof_error>(
-        invalid_eof);
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base2::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
+
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base2::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
   }
 
   SECTION("basic_codec")
   {
-    SECTION("C char arrays, handle null terminator")
-    {
-      char const tab[5] = "abcd";
-      char const tab2[33] = "01100001011000100110001101100100";
-
-      auto const encoded = base2::encode(tab);
-      auto const decoded = base2::decode<std::string>(tab2);
-
-      CHECK(encoded == "01100001011000100110001101100100"s);
-      CHECK(decoded == tab);
-    }
-
     SECTION("encoded_size")
     {
       CHECK(base2::encoded_size(0) == 0);
@@ -179,30 +123,18 @@ TEST_CASE("base2", "[binary_to_text]")
 
     SECTION("read")
     {
-      SECTION("small buffer")
-      {
-        auto const str = "abcd"s;
-        auto const encoded_str = "01100001011000100110001101100100"s;
-        auto enc = base2::make_encoder(str.begin(), str.end());
-        std::string encoded;
-        auto const nb_read = enc.read(std::back_inserter(encoded), 4000);
-        CHECK(encoded == encoded_str);
-        CHECK(nb_read == 32);
+      auto const str = "abcd"s;
+      auto const encoded_str = "01100001011000100110001101100100"s;
+      auto enc = base2::make_encoder(str.begin(), str.end());
+      REQUIRE(base2::encode(str) == encoded_str);
 
-        CHECK(enc.read(std::back_inserter(encoded), 4000) == 0);
-      }
-
-      SECTION("huge buffer")
-      {
-        // encoded > 256 bytes
-        auto const str = "abcdefghijklmnopqrstuvwxyz"s;
-        auto enc = base2::make_encoder(str.begin(), str.end());
-        std::string encoded;
-        auto nb_read = enc.read(std::back_inserter(encoded), 2);
-        CHECK(nb_read == 2);
-        nb_read = enc.read(std::back_inserter(encoded), 1000);
-        CHECK(nb_read == encoded.size() - 2);
-      }
+      std::string encoded;
+      auto nb_read = enc.read(std::back_inserter(encoded), 2);
+      CHECK(nb_read == 2);
+      CHECK(encoded == "01"s);
+      nb_read = enc.read(std::back_inserter(encoded), 1000);
+      CHECK(nb_read == encoded_str.size() - 2);
+      CHECK(encoded == encoded_str);
     }
   }
 }

@@ -40,10 +40,10 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::read(
 
   while (n > 0 && _buffer_size() != 0)
   {
-    using std::end;
+    using std::begin;
 
     auto const to_read = (std::min)(n, _buffer_size() - _index);
-    out = std::copy_n(end(_buffer) - to_read, to_read, out);
+    out = std::copy_n(begin(_buffer) + _index, to_read, out);
     _index += to_read;
     nb_read += to_read;
     n -= nb_read;
