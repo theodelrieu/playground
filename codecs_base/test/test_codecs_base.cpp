@@ -17,7 +17,8 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/static_asserts.hpp>
-#include <test_helpers/codecs_base.hpp>
+
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
