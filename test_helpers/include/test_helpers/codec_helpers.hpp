@@ -13,16 +13,21 @@
 
 namespace test_helpers
 {
-namespace detail
+template <typename I1, typename S1, typename I2, typename S2>
+void check_equal(I1 i1, S1 s1, I2 i2, S2 s2)
 {
+  CHECK(std::equal(i1, s1, i2, s2, [](auto l, auto r) {
+    return static_cast<unsigned char>(l) == static_cast<unsigned char>(r);
+  }));
+}
+
 template <typename Iterable1, typename Iterable2>
 void check_equal(Iterable1 const& lhs, Iterable2 const& rhs)
 {
   using std::begin;
   using std::end;
 
-  CHECK(std::equal(begin(lhs), end(lhs), begin(rhs), end(rhs)));
-}
+  check_equal(begin(lhs), end(lhs), begin(rhs), end(rhs));
 }
 
 template <typename Codec,
@@ -32,7 +37,7 @@ template <typename Codec,
 void test_encode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const encoded = Codec::template encode<CodecOutput>(it);
-  detail::check_equal(encoded, expected);
+  check_equal(encoded, expected);
 }
 
 template <typename Codec,
@@ -43,14 +48,14 @@ template <typename Codec,
 void test_encode(I i, S s, Iterable const& expected)
 {
   auto const encoded = Codec::template encode<CodecOutput>(i, s);
-  detail::check_equal(encoded, expected);
+  check_equal(encoded, expected);
 }
 
 template <typename Codec, typename I, typename S, typename Iterable>
 void test_make_encoder(I i, S s, Iterable const& expected)
 {
   auto encoder = Codec::make_encoder(i, s);
-  detail::check_equal(encoder, expected);
+  check_equal(encoder, expected);
 }
 
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
@@ -71,7 +76,7 @@ template <typename Codec,
 void test_decode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(it);
-  detail::check_equal(decoded, expected);
+  check_equal(decoded, expected);
 }
 
 template <typename Codec,
@@ -82,7 +87,7 @@ template <typename Codec,
 void test_decode(I i, S s, Iterable const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(i, s);
-  detail::check_equal(decoded, expected);
+  check_equal(decoded, expected);
 }
 
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
@@ -101,11 +106,11 @@ void test_back_and_forth(Iterable1 const& decoded_input,
                          Iterable2 const& encoded_input)
 {
   auto encoded = Codec::encode(decoded_input);
-  detail::check_equal(encoded, encoded_input);
+  check_equal(encoded, encoded_input);
   auto decoded = Codec::decode(encoded);
-  detail::check_equal(decoded, decoded_input);
+  check_equal(decoded, decoded_input);
   encoded = Codec::encode(decoded_input);
-  detail::check_equal(encoded, encoded_input);
+  check_equal(encoded, encoded_input);
 }
 
 template <typename Codec, typename Iterable1, typename Iterable2>
@@ -117,19 +122,18 @@ void test_encode_twice(Iterable1 const& decoded_input,
 
   auto encoder = Codec::make_encoder(begin(decoded_input), end(decoded_input));
   auto const encoded_twice = Codec::encode(begin(encoder), end(encoder));
-  detail::check_equal(encoded_twice, encoded_input);
+  check_equal(encoded_twice, encoded_input);
   auto decoder = Codec::make_decoder(begin(encoded_twice), end(encoded_twice));
   auto const decoded = Codec::decode(begin(decoder), end(decoder));
-  detail::check_equal(decoded, decoded_input);
+  check_equal(decoded, decoded_input);
 }
 
 template <typename Codec, typename I, typename S, typename Iterable>
 void test_make_decoder(I i, S s, Iterable const& expected)
 {
   auto decoder = Codec::make_decoder(i, s);
-  detail::check_equal(decoder, expected);
+  check_equal(decoder, expected);
 }
-
 
 template <typename Codec,
           typename EncodedOutput = typename Codec::default_encoded_output,

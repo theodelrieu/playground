@@ -32,6 +32,7 @@ specific-to-codec things to test:
 * TransformerInputRange
 * Redesign tests from scratch
 * check if iterator is a forward instead of input 
+*remove stream support
 
 doc
 

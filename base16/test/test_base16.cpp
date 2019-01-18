@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -9,8 +10,7 @@
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
-#include <test_helpers/binary_to_text.hpp>
-#include <test_helpers/codecs_base.hpp>
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -31,7 +31,7 @@ static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base16::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("base16 lazy", "[base16]")
+TEST_CASE("base16 tests", "[base16]")
 {
   std::vector<std::string> decoded{
       "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
@@ -43,73 +43,21 @@ TEST_CASE("base16 lazy", "[base16]")
       "666F6F6261"s,
       "666F6F626172"s,
   };
+  auto const encoded_lower = "666f6f626172"s;
+  auto const encoded_twice = "363636463646363236313732"s;
 
-  SECTION("encoding")
+  SECTION("Common tests")
   {
-    SECTION("common_checks")
+    for (auto i = 0; i < encoded.size(); ++i)
     {
-      common_checks<base16::encoder>(decoded, encoded);
+      test_helpers::basic_codec_tests<base16>(decoded[i], encoded[i]);
+      test_helpers::test_std_containers<base16>(decoded[i], encoded[i]);
+      test_helpers::test_input_streams<base16>(decoded[i], encoded[i]);
+      test_helpers::test_back_and_forth<base16>(decoded[i], encoded[i]);
     }
 
-    SECTION("sentinel")
-    {
-      sentinel_check<base16::encoder>(decoded.back(), encoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base16::encoder>(
-          decoded.back(), encoded.back(), "363636463646363236313732"s);
-    }
-  }
-
-  SECTION("decoding")
-  {
-    SECTION("common_checks")
-    {
-      SECTION("case sensitive")
-      {
-        common_checks<base16::decoder>(encoded, decoded);
-      }
-
-      SECTION("case insensitive")
-      {
-        std::vector<std::string> encoded_lower{
-            "66"s,
-            "666f"s,
-            "666f6f"s,
-            "666f6f62"s,
-            "666f6f6261"s,
-            "666f6f626172"s,
-        };
-
-        common_checks<base16::decoder>(encoded_lower, decoded);
-      }
-    }
-
-    SECTION("sentinel")
-    {
-      sentinel_check<base16::decoder>(encoded.back(), decoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base16::decoder>(
-          "363636463646363236313732"s, encoded.back(), decoded.back());
-    }
-  }
-
-  SECTION("back and forth")
-  {
-    SECTION("decode(encode())")
-    {
-      back_and_forth_check<base16::encoder, base16::decoder>(decoded.back());
-    }
-
-    SECTION("encode(decode())")
-    {
-      back_and_forth_check<base16::decoder, base16::encoder>(encoded.back());
-    }
+    test_helpers::test_encode_twice<base16>(decoded.back(), encoded_twice);
+    test_helpers::test_decode<base16>(encoded_lower, decoded.back());
   }
 
   SECTION("stream")
@@ -118,8 +66,17 @@ TEST_CASE("base16 lazy", "[base16]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b16_random_data(testFilePaths[1]);
 
-    stream_check<base16::encoder>(random_data, b16_random_data);
-    stream_check<base16::decoder>(b16_random_data, random_data);
+    using iterator = std::istreambuf_iterator<char>;
+
+    auto encoder = base16::make_encoder(iterator(random_data), iterator());
+    CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b16_random_data), iterator()));
+
+    random_data.seekg(0);
+    b16_random_data.seekg(0);
+
+    auto decoder = base16::make_decoder(iterator(b16_random_data), iterator());
+    test_helpers::check_equal(
+        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
@@ -127,10 +84,17 @@ TEST_CASE("base16 lazy", "[base16]")
     std::vector<std::string> invalid_chars{"=="s, "**"s, "0G"s};
     std::vector<std::string> invalid_eof{"0F0"s};
 
-    invalid_input_checks<base16::decoder, exceptions::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<base16::decoder, exceptions::unexpected_eof_error>(
-        invalid_eof);
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base16::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
+
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base16::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
   }
 
   SECTION("max_transformed_size")
@@ -200,17 +164,6 @@ TEST_CASE("base16 lazy", "[base16]")
                         mgs::exceptions::invalid_input_error);
       }
     }
-  }
-}
-
-TEST_CASE("base16 codec", "[base16]")
-{
-  using mgs::base16;
-
-  SECTION("Regular tests")
-  {
-    test_helpers::run_codec_tests<std::string>(
-        base16{}, "foobar"s, "666F6F626172"s);
   }
 
   SECTION("encoded_size")
