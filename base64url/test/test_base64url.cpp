@@ -9,8 +9,7 @@
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
-#include <test_helpers/binary_to_text.hpp>
-#include <test_helpers/codecs_base.hpp>
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -44,85 +43,62 @@ static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base64url::decoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("b64url lazy", "[base64url]")
+TEST_CASE("base64url", "[base64url]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
+  auto const encoded_twice = "WVdKalpHVm0="s;
 
-  SECTION("encoding")
+  SECTION("Common tests")
   {
-    SECTION("common_checks")
+    for (auto i = 0; i < encoded.size(); ++i)
     {
-      common_checks<base64url::encoder>(decoded, encoded);
+      test_helpers::basic_codec_tests<base64url>(decoded[i], encoded[i]);
+      test_helpers::test_std_containers<base64url>(decoded[i], encoded[i]);
+      test_helpers::test_input_streams<base64url>(decoded[i], encoded[i]);
+      test_helpers::test_back_and_forth<base64url>(decoded[i], encoded[i]);
     }
 
-    SECTION("sentinel")
-    {
-      sentinel_check<base64url::encoder>("abcde"s, "YWJjZGU="s);
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base64url::encoder>(
-          "abcde"s, "YWJjZGU="s, "WVdKalpHVT0="s);
-    }
-  }
-
-  SECTION("decoding")
-  {
-    SECTION("common_checks")
-    {
-      common_checks<base64url::decoder>(encoded, decoded);
-    }
-
-    SECTION("sentinel")
-    {
-      sentinel_check<base64url::decoder>("YWJjZGU="s, "abcde"s);
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base64url::decoder>(
-          "WVdKalpHVT0="s, "YWJjZGU="s, "abcde"s);
-    }
-  }
-
-  SECTION("back and forth")
-  {
-    SECTION("decode(encode())")
-    {
-      back_and_forth_check<base64url::encoder, base64url::decoder>("abcde"s);
-    }
-
-    SECTION("encode(decode())")
-    {
-      back_and_forth_check<base64url::decoder, base64url::encoder>("YWJjZGU="s);
-    }
+    test_helpers::test_encode_twice<base64url>(decoded.back(), encoded_twice);
   }
 
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
     std::ifstream random_data(testFilePaths[0]);
-    std::ifstream b64url_random_data(testFilePaths[1]);
+    std::ifstream b64_random_data(testFilePaths[1]);
 
-    stream_check<base64url::encoder>(random_data, b64url_random_data);
-    stream_check<base64url::decoder>(b64url_random_data, random_data);
+    using iterator = std::istreambuf_iterator<char>;
+
+    auto encoder = base64url::make_encoder(iterator(random_data), iterator());
+    test_helpers::check_equal(
+        encoder.begin(), encoder.end(), iterator(b64_random_data), iterator());
+
+    random_data.seekg(0);
+    b64_random_data.seekg(0);
+
+    auto decoder = base64url::make_decoder(iterator(b64_random_data), iterator());
+    test_helpers::check_equal(
+        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
   {
     std::vector<std::string> invalid_chars{
-        "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
+        "===="s, "*AAA"s, "Y==="s, "ZA+="s, "YW/j"s, "ZA===AAA"s, "ZAW@"s};
+    std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
-    std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base64url::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
 
-    invalid_input_checks<base64url::decoder, exceptions::invalid_input_error>(
-        invalid_chars);
-
-    invalid_input_checks<base64url::decoder, exceptions::unexpected_eof_error>(
-        invalid_eof);
-
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base64url::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
   }
 
   SECTION("max_transformed_size")
@@ -167,7 +143,7 @@ TEST_CASE("b64url lazy", "[base64url]")
       SECTION("Small string")
       {
         auto const encoded = "WVdKalpHVT0="s;
-
+        
         auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 8);
         dec.seek_forward(5);
@@ -176,8 +152,7 @@ TEST_CASE("b64url lazy", "[base64url]")
 
       SECTION("Huge string")
       {
-        auto const encoded =
-            base64url::encode<std::string>(std::string(10000, 0));
+        auto const encoded = base64url::encode<std::string>(std::string(10000, 0));
 
         auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 10002);
@@ -199,22 +174,62 @@ TEST_CASE("b64url lazy", "[base64url]")
       }
     }
   }
+
+  SECTION("encoded_size")
+  {
+    CHECK(base64url::encoded_size(0) == 0);
+    CHECK(base64url::encoded_size(1) == 4);
+    CHECK(base64url::encoded_size(2) == 4);
+    CHECK(base64url::encoded_size(3) == 4);
+    CHECK(base64url::encoded_size(4) == 8);
+    CHECK(base64url::encoded_size(5) == 8);
+    CHECK(base64url::encoded_size(6) == 8);
+  }
+
+  SECTION("max_decoded_size")
+  {
+    CHECK(base64url::max_decoded_size(0) == 0);
+    CHECK(base64url::max_decoded_size(4) == 3);
+    CHECK(base64url::max_decoded_size(8) == 6);
+    CHECK(base64url::max_decoded_size(32) == 24);
+
+    CHECK_THROWS_AS(base64url::max_decoded_size(1),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(2),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(3),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(5),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(6),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(7),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(33),
+                    exceptions::invalid_input_error);
+    CHECK_THROWS_AS(base64url::max_decoded_size(31),
+                    exceptions::invalid_input_error);
+  }
 }
 
 TEST_CASE("base64url_nopad", "[base64url]")
 {
-  std::vector<std::string> decoded{"abcd"s, "abcde"s};
-  std::vector<std::string> encoded_unpadded{"YWJjZA"s, "YWJjZGU"s};
-  std::vector<std::string> encoded_padded{"YWJjZA=="s, "YWJjZGU="s};
+  std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
+  std::vector<std::string> encoded_padded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
+  std::vector<std::string> encoded_unpadded{"YWJjZA"s, "YWJjZGU"s, "YWJjZGVm"s};
+  auto const encoded_twice = "WVdKalpHVm0"s;
 
-  SECTION("encode")
+  SECTION("Common tests")
   {
-    common_checks<base64url_nopad::encoder>(decoded, encoded_unpadded);
-  }
+    for (auto i = 0; i < encoded_unpadded.size(); ++i)
+    {
+      test_helpers::basic_codec_tests<base64url_nopad>(decoded[i], encoded_unpadded[i]);
+      test_helpers::test_std_containers<base64url_nopad>(decoded[i], encoded_unpadded[i]);
+      test_helpers::test_input_streams<base64url_nopad>(decoded[i], encoded_unpadded[i]);
+      test_helpers::test_back_and_forth<base64url_nopad>(decoded[i], encoded_unpadded[i]);
+    }
 
-  SECTION("decode")
-  {
-    common_checks<base64url_nopad::decoder>(encoded_padded, decoded);
+    test_helpers::test_encode_twice<base64url_nopad>(decoded.back(), encoded_twice);
   }
 
   SECTION("invalid input")
@@ -225,13 +240,22 @@ TEST_CASE("base64url_nopad", "[base64url]")
     std::vector<std::string> invalid_eof{"Y"s, "YWJjZ"s};
     std::vector<std::string> invalid_nopad_chars{"ZAAAA="s, "ZAW@=="s};
 
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::invalid_input_error>(invalid_chars);
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base64url_nopad::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
 
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::invalid_input_error>(invalid_nopad_chars);
-    invalid_input_checks<base64url_nopad::decoder,
-                         exceptions::unexpected_eof_error>(invalid_eof);
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base64url_nopad::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
+    for (auto const& elem : invalid_nopad_chars)
+    {
+      CHECK_THROWS_AS(base64url_nopad::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
   }
 
   SECTION("max_transformed_size")
@@ -313,60 +337,6 @@ TEST_CASE("base64url_nopad", "[base64url]")
                         mgs::exceptions::invalid_input_error);
       }
     }
-  }
-}
-
-TEST_CASE("base64url codec", "[base64url]")
-{
-  SECTION("Regular tests")
-  {
-    test_helpers::run_codec_tests<std::string>(
-        base64url{}, "abcde"s, "YWJjZGU="s);
-  }
-
-  SECTION("encoded_size")
-  {
-    CHECK(base64url::encoded_size(0) == 0);
-    CHECK(base64url::encoded_size(1) == 4);
-    CHECK(base64url::encoded_size(2) == 4);
-    CHECK(base64url::encoded_size(3) == 4);
-    CHECK(base64url::encoded_size(4) == 8);
-    CHECK(base64url::encoded_size(5) == 8);
-    CHECK(base64url::encoded_size(6) == 8);
-  }
-
-  SECTION("max_decoded_size")
-  {
-    CHECK(base64url::max_decoded_size(0) == 0);
-    CHECK(base64url::max_decoded_size(4) == 3);
-    CHECK(base64url::max_decoded_size(8) == 6);
-    CHECK(base64url::max_decoded_size(32) == 24);
-
-    CHECK_THROWS_AS(base64url::max_decoded_size(1),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(2),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(3),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(5),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(6),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(7),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(33),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(31),
-                    exceptions::invalid_input_error);
-  }
-}
-
-TEST_CASE("base64url_nopad codec", "[base64url]")
-{
-  SECTION("Regular tests")
-  {
-    test_helpers::run_codec_tests<std::string>(
-        base64url_nopad{}, "abcde"s, "YWJjZGU"s);
   }
 
   SECTION("encoded_size")

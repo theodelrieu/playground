@@ -61,7 +61,8 @@ TEST_CASE("base64", "[base64]")
     using iterator = std::istreambuf_iterator<char>;
 
     auto encoder = base64::make_encoder(iterator(random_data), iterator());
-    CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b64_random_data), iterator()));
+    test_helpers::check_equal(
+        encoder.begin(), encoder.end(), iterator(b64_random_data), iterator());
 
     random_data.seekg(0);
     b64_random_data.seekg(0);
