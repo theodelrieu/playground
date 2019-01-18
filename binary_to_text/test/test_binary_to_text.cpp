@@ -126,14 +126,14 @@ TEST_CASE("base2", "[binary_to_text]")
       auto const str = "abcd"s;
       auto const encoded_str = "01100001011000100110001101100100"s;
       auto enc = base2::make_encoder(str.begin(), str.end());
-      REQUIRE(base2::encode(str) == encoded_str);
 
       std::string encoded;
       auto nb_read = enc.read(std::back_inserter(encoded), 2);
       CHECK(nb_read == 2);
-      CHECK(encoded == "01"s);
-      nb_read = enc.read(std::back_inserter(encoded), 1000);
-      CHECK(nb_read == encoded_str.size() - 2);
+      nb_read = enc.read(std::back_inserter(encoded), 29);
+      CHECK(nb_read == 29);
+      nb_read = enc.read(std::back_inserter(encoded), 10);
+      CHECK(nb_read == 1);
       CHECK(encoded == encoded_str);
     }
   }
