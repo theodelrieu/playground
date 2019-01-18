@@ -12,8 +12,7 @@
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
-#include <test_helpers/binary_to_text.hpp>
-#include <test_helpers/codecs_base.hpp>
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -34,83 +33,42 @@ static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base64::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("base64 low level", "[base64]")
+TEST_CASE("base64", "[base64]")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};
+  auto const encoded_twice = "WVdKalpHVm0="s;
 
-  SECTION("encoding")
+  SECTION("Common tests")
   {
-    SECTION("common_checks")
+    for (auto i = 0; i < encoded.size(); ++i)
     {
-      common_checks<base64::encoder>(decoded, encoded);
+      test_helpers::basic_codec_tests<base64>(decoded[i], encoded[i]);
+      test_helpers::test_std_containers<base64>(decoded[i], encoded[i]);
+      test_helpers::test_input_streams<base64>(decoded[i], encoded[i]);
+      test_helpers::test_back_and_forth<base64>(decoded[i], encoded[i]);
     }
 
-    SECTION("sentinel")
-    {
-      sentinel_check<base64::encoder>("abcde"s, "YWJjZGU="s);
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base64::encoder>("abcde"s, "YWJjZGU="s, "WVdKalpHVT0="s);
-    }
-  }
-
-  SECTION("decoding")
-  {
-    SECTION("common_checks")
-    {
-      common_checks<base64::decoder>(encoded, decoded);
-    }
-
-    SECTION("sentinel")
-    {
-      sentinel_check<base64::decoder>("YWJjZGU="s, "abcde"s);
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base64::decoder>("WVdKalpHVT0="s, "YWJjZGU="s, "abcde"s);
-    }
-  }
-
-  SECTION("back and forth")
-  {
-    SECTION("decode(encode())")
-    {
-      back_and_forth_check<base64::encoder, base64::decoder>("abcde"s);
-    }
-
-    SECTION("encode(decode())")
-    {
-      back_and_forth_check<base64::decoder, base64::encoder>("YWJjZGU="s);
-    }
+    test_helpers::test_encode_twice<base64>(decoded.back(), encoded_twice);
   }
 
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
+    std::ifstream random_data(testFilePaths[0]);
+    std::ifstream b64_random_data(testFilePaths[1]);
 
-    SECTION("huge files")
-    {
-      std::ifstream random_data(testFilePaths[0]);
-      std::ifstream b64_random_data(testFilePaths[1]);
+    using iterator = std::istreambuf_iterator<char>;
 
-      stream_check<base64::encoder>(random_data, b64_random_data);
-      stream_check<base64::decoder>(b64_random_data, random_data);
-    }
+    auto encoder = base64::make_encoder(iterator(random_data), iterator());
+    CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b64_random_data), iterator()));
 
-    SECTION("small buffers")
-    {
-      std::string clear("abcde");
-      std::string encoded("YWJjZGU=");
-      std::stringstream ss(clear);
-      std::stringstream ss2(encoded);
+    random_data.seekg(0);
+    b64_random_data.seekg(0);
 
-      CHECK(base64::encode(ss) == encoded);
-      CHECK(base64::decode<std::string>(ss2) == clear);
-    }
+    auto decoder = base64::make_decoder(iterator(b64_random_data), iterator());
+    test_helpers::check_equal(
+        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
@@ -119,10 +77,17 @@ TEST_CASE("base64 low level", "[base64]")
         "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s};
     std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
-    invalid_input_checks<base64::decoder, exceptions::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<base64::decoder, exceptions::unexpected_eof_error>(
-        invalid_eof);
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base64::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
+
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base64::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
   }
 
   SECTION("max_transformed_size")
@@ -197,16 +162,6 @@ TEST_CASE("base64 low level", "[base64]")
                         mgs::exceptions::invalid_input_error);
       }
     }
-  }
-}
-
-TEST_CASE("base64 codec", "[base64]")
-{
-  SECTION("Regular tests")
-  {
-    test_helpers::run_basic_codec_tests<base64>("abcd"s, "YWJjZA=="s);
-    test_helpers::run_basic_codec_tests<base64>("abcde"s, "YWJjZGU="s);
-    test_helpers::run_basic_codec_tests<base64>("abcde"s, "YWJjZGVm"s);
   }
 
   SECTION("encoded_size")

@@ -31,7 +31,7 @@ static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base16::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("base16 tests", "[base16]")
+TEST_CASE("base16", "[base16]")
 {
   std::vector<std::string> decoded{
       "f"s, "fo"s, "foo"s, "foob"s, "fooba"s, "foobar"s};
