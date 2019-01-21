@@ -14,7 +14,7 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
 
-#include <mgs/ranges/transformed_input_range_iterator.hpp>
+#include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 using namespace mgs;
 using namespace std::string_literals;
@@ -30,7 +30,8 @@ public:
 
 private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
-  using iterator = ranges::transformed_input_range_iterator<noop_encoder>;
+  using iterator =
+      ranges::detail::transformed_input_range_iterator<noop_encoder>;
 
   friend iterator;
 

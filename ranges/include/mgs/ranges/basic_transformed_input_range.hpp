@@ -4,15 +4,15 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/ranges/concepts/input_transformer.hpp>
-#include <mgs/ranges/concepts/sized_input_transformer.hpp>
-#include <mgs/ranges/transformed_input_range_iterator.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
+#include <mgs/ranges/concepts/input_transformer.hpp>
+#include <mgs/ranges/concepts/sized_input_transformer.hpp>
+#include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 namespace mgs
 {
@@ -34,8 +34,10 @@ private:
   using buffer_t = typename InputTransformer::buffer_type;
   using buffer_iterator = meta::result_of_begin<buffer_t>;
 
+  friend detail::transformed_input_range_iterator<basic_transformed_input_range>;
+
 public:
-  using iterator = transformed_input_range_iterator<basic_transformed_input_range>;
+  using iterator = detail::transformed_input_range_iterator<basic_transformed_input_range>;
   using difference_type = std::streamoff;
   using value_type = typename std::iterator_traits<buffer_iterator>::value_type;
 

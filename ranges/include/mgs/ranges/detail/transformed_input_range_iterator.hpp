@@ -4,7 +4,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/core/derived_from.hpp>
 
 namespace mgs
@@ -13,19 +12,16 @@ inline namespace v1
 {
 namespace ranges
 {
+namespace detail
+{
 template <typename TransformedInputRange>
 class transformed_input_range_iterator
 {
-  static_assert(ranges::concepts::is_transformed_input_range<
-                    TransformedInputRange>::value,
-                "template parameter must be a TransformedInputRange");
-
 public:
   using value_type = typename TransformedInputRange::value_type;
   using difference_type = typename TransformedInputRange::difference_type;
 
-  using reference =
-      decltype(std::declval<TransformedInputRange const&>().get());
+  using reference = decltype(std::declval<TransformedInputRange>().get());
   using const_reference = reference;
 
   using pointer = value_type const*;
@@ -55,6 +51,7 @@ bool operator!=(
     transformed_input_range_iterator<TransformedInputRange> const&,
     transformed_input_range_iterator<
         TransformedInputRange> const&) noexcept;
+}
 }
 }
 }

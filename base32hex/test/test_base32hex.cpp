@@ -4,7 +4,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/ranges/concepts/iterable_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/base32hex.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -17,16 +17,16 @@ namespace range_concepts = mgs::ranges::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
-static_assert(range_concepts::is_iterable_transformed_input_range<
+static_assert(range_concepts::is_transformed_input_range<
                   base32hex::encoder<char*>>::value,
               "");
-static_assert(range_concepts::is_iterable_transformed_input_range<
+static_assert(range_concepts::is_transformed_input_range<
                   base32hex::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(range_concepts::is_iterable_transformed_input_range<
+static_assert(range_concepts::is_transformed_input_range<
                   base32hex::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(range_concepts::is_iterable_transformed_input_range<
+static_assert(range_concepts::is_transformed_input_range<
                   base32hex::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 

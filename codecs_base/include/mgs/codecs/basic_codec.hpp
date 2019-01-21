@@ -3,7 +3,7 @@
 #include <iosfwd>
 #include <utility>
 
-#include <mgs/ranges/concepts/iterable_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>

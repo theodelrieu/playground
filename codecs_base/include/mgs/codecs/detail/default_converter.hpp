@@ -10,7 +10,6 @@
 
 #include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
 #include <mgs/ranges/concepts/transformed_input_range.hpp>
-#include <mgs/ranges/transformed_input_range_iterator.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
@@ -101,7 +100,7 @@ private:
   template <typename T,
             typename = ranges::concepts::TransformedInputRange<T>,
             // FIXME require IterableStuff
-            typename Iterator = ranges::transformed_input_range_iterator<T>,
+            typename Iterator = typename T::iterator,
             typename R = Output,
             typename = std::enable_if_t<
                 (std::is_copy_constructible<R>::value ||
@@ -112,7 +111,9 @@ private:
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
   static R create_impl(T& range, meta::priority_tag<0>)
   {
-    return R(Iterator(range), Iterator());
+    using std::begin;
+    using std::end;
+    return R(begin(range), end(range));
   }
 
 public:

@@ -20,7 +20,7 @@ Calling `make_encoder` is well-formed if:
 
 * `I` models [`InputIterator`]()
 * `S` models [`Sentinel<I>`]()
-* `encoder<I, S>` models [`IterableTransformedInputRange`]()
+* `encoder<I, S>` models [`TransformedInputRange`]()
 
 ## Example
 

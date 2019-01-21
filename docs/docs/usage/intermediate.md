@@ -24,7 +24,7 @@ Every codec is built on top of an `Encoder` and a `Decoder`.
 
 Both are stateful objects designed for one-time use, be careful to not reuse them!
 
-They model the [`IterableTransformedInputRange`]() concept and thus share a common API, allowing lazy encoding/decoding:
+They model the [`TransformedInputRange`]() concept and thus share a common API, allowing lazy encoding/decoding:
 
 1. `begin`/`end` member functions, each returning an [`std::InputIterator`]().
 1. `read` member function, filling an [`std::OutputIterator`]() and returning the number of characters read.
