@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iosfwd>
 #include <utility>
 
 #include <mgs/ranges/concepts/transformed_input_range.hpp>
@@ -97,18 +96,6 @@ public:
     return basic_codec::encode<T>(begin(it), end(it));
   }
 
-  template <typename T = default_encoded_output,
-            typename CharT,
-            typename Traits,
-            typename Encoder = ranges::concepts::TransformedInputRange<
-                encoder<std::istreambuf_iterator<CharT, Traits>>>>
-  static concepts::CodecOutput<T, Encoder> encode(
-      std::basic_istream<CharT, Traits>& is)
-  {
-    return basic_codec::encode<T>(std::istreambuf_iterator<CharT, Traits>(is),
-                                  std::istreambuf_iterator<CharT, Traits>());
-  }
-
   template <typename T = default_decoded_output,
             typename Iterator,
             typename Sentinel,
@@ -150,47 +137,29 @@ public:
     return basic_codec::decode<T>(begin(it), end(it));
   }
 
+  template <typename T = default_encoded_output,
+            typename CharT,
+            std::size_t N,
+            typename = std::enable_if_t<
+                std::is_same<char, std::remove_const_t<CharT>>::value>>
+  static codecs::concepts::CodecOutput<T, encoder<CharT*>> encode(
+      CharT (&tab)[N])
+  {
+    auto const begin_it = std::begin(tab);
+    auto const end_it = std::find(begin_it, std::end(tab), '\0');
+    return encode<T>(begin_it, end_it);
+  }
+
   template <typename T = default_decoded_output,
             typename CharT,
-            typename Traits,
-            typename decoder = ranges::concepts::TransformedInputRange<
-                decoder<std::istreambuf_iterator<CharT, Traits>>>>
-  static concepts::CodecOutput<T, decoder> decode(
-      std::basic_istream<CharT, Traits>& is)
-  {
-    return basic_codec::decode<T>(std::istreambuf_iterator<CharT, Traits>(is),
-                                  std::istreambuf_iterator<CharT, Traits>());
-  }
-
-  template <typename T = default_encoded_output, std::size_t N>
-  static codecs::concepts::CodecOutput<T, encoder<char*>> encode(char (&tab)[N])
+            std::size_t N,
+            typename = std::enable_if_t<
+                std::is_same<char, std::remove_const_t<CharT>>::value>>
+  static codecs::concepts::CodecOutput<T, decoder<CharT*>> decode(
+      CharT (&tab)[N])
   {
     auto const begin_it = std::begin(tab);
     auto const end_it = std::find(begin_it, std::end(tab), '\0');
-    return encode<T>(begin_it, end_it);
-  }
-
-  template <typename T = default_encoded_output, std::size_t N>
-  static codecs::concepts::CodecOutput<T, encoder<char*>> encode(char const (&tab)[N])
-  {
-    auto const begin_it = std::cbegin(tab);
-    auto const end_it = std::find(begin_it, std::cend(tab), '\0');
-    return encode<T>(begin_it, end_it);
-  }
-
-  template <typename T = default_decoded_output, std::size_t N>
-  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(char (&tab)[N])
-  {
-    auto const begin_it = std::begin(tab);
-    auto const end_it = std::find(begin_it, std::end(tab), '\0');
-    return decode<T>(begin_it, end_it);
-  }
-
-  template <typename T = default_decoded_output, std::size_t N>
-  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(char const (&tab)[N])
-  {
-    auto const begin_it = std::cbegin(tab);
-    auto const end_it = std::find(begin_it, std::cend(tab), '\0');
     return decode<T>(begin_it, end_it);
   }
 };
