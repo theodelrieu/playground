@@ -82,6 +82,16 @@ public:
     return detail::encoded_size<EncodingTraits>{}(_end - _current);
   }
 
+  underlying_iterator const& get_iterator() const
+  {
+    return _current;
+  }
+
+  underlying_sentinel const& get_sentinel() const
+  {
+    return _end;
+  }
+
 private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::input_iterator_tag)
@@ -155,29 +165,9 @@ private:
     }
   }
 
-  template <typename I, typename S, typename T>
-  friend bool operator==(basic_encoder<I, S, T> const&,
-                         basic_encoder<I, S, T> const&);
-
   Iterator _current{};
   Sentinel _end{};
 };
-
-template <typename I, typename S, typename T>
-bool operator==(basic_encoder<I, S, T> const& lhs,
-                basic_encoder<I, S, T> const& rhs)
-{
-  return (lhs._current == lhs._end || rhs._current == rhs._end) ?
-             (lhs._current == lhs._end && rhs._current == rhs._end) :
-             lhs._current == rhs._current;
-}
-
-template <typename I, typename S, typename T>
-bool operator!=(basic_encoder<I, S, T> const& lhs,
-                basic_encoder<I, S, T> const& rhs)
-{
-  return !(lhs == rhs);
-}
 }
 }
 }

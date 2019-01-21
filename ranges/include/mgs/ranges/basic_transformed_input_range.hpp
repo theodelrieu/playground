@@ -43,7 +43,7 @@ public:
 
   basic_transformed_input_range() = default;
   basic_transformed_input_range(underlying_iterator begin,
-                                  underlying_sentinel end);
+                                underlying_sentinel end);
 
   value_type const& get() const;
   void seek_forward(difference_type n);
@@ -65,15 +65,7 @@ private:
 
   void _transform_input();
   std::size_t _buffer_size() const;
-
-  template <typename T>
-  friend bool operator==(basic_transformed_input_range<T> const& lhs,
-                         basic_transformed_input_range<T> const& rhs);
 };
-
-template <typename T>
-bool operator!=(basic_transformed_input_range<T> const& lhs,
-                basic_transformed_input_range<T> const& rhs);
 }
 }
 }

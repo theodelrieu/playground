@@ -31,6 +31,7 @@ public:
 
   transformed_input_range_iterator() = default;
   explicit transformed_input_range_iterator(TransformedInputRange const&);
+  explicit transformed_input_range_iterator(TransformedInputRange&&);
 
   reference operator*() const;
   pointer operator->() const;

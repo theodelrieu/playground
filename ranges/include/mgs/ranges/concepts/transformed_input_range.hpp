@@ -8,7 +8,7 @@
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/object/regular.hpp>
+#include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/detected/types/iterator.hpp>
@@ -23,7 +23,7 @@
 // clang-format off
 //
 // template <typename T>
-// concept TransformedInputRange = Regular<T> &&
+// concept TransformedInputRange = std::Semiregular<T> &&
 //   Iterable<T> &&
 //   requires(T const& v, T& u) {
 //      Iterator<typename T::underlying_iterator>;
@@ -82,13 +82,13 @@ private:
 
 public:
   using requirements =
-      std::tuple<meta::concepts::object::is_regular<T>,
+      std::tuple<meta::concepts::object::is_semiregular<T>,
                  meta::concepts::iterator::is_iterable<T>>;
 
   static auto constexpr value =
       has_get_method && has_seek_forward_method &&
       is_constructible_from_iterator_sentinel &&
-      meta::concepts::object::is_regular<T>::value &&
+      meta::concepts::object::is_semiregular<T>::value &&
       meta::concepts::iterator::is_iterable<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
       meta::concepts::iterator::is_iterator<underlying_iterator>::value &&

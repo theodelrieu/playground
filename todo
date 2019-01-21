@@ -8,7 +8,6 @@ code
 * variable templates for every concept trait
 * improve and add tests
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
-* TransformerInputRange
 * check if iterator is a forward instead of input 
 * remove stream support
 * remove useless default template arguments

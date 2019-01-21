@@ -18,6 +18,13 @@ transformed_input_range_iterator<TransformedInputRange>::
 }
 
 template <typename TransformedInputRange>
+transformed_input_range_iterator<TransformedInputRange>::
+    transformed_input_range_iterator(TransformedInputRange&& e)
+  : _range(std::move(e))
+{
+}
+
+template <typename TransformedInputRange>
 auto transformed_input_range_iterator<TransformedInputRange>::operator*() const
     -> reference
 {
@@ -53,7 +60,22 @@ bool operator==(
     transformed_input_range_iterator<TransformedInputRange> const& lhs,
     transformed_input_range_iterator<TransformedInputRange> const& rhs) noexcept
 {
-  return lhs._range == rhs._range;
+  using std::begin;
+  using std::end;
+
+  auto const lhs_buffer_size = lhs._range._buffer_size();
+  auto const rhs_buffer_size = rhs._range._buffer_size();
+
+  auto const& lhs_current = lhs._range.get_iterator();
+  auto const& rhs_current = rhs._range.get_iterator();
+
+  auto const& lhs_end = lhs._range.get_sentinel();
+  auto const& rhs_end = rhs._range.get_sentinel();
+  return lhs_buffer_size == rhs_buffer_size &&
+         lhs._range._index == rhs._range._index &&
+         ((lhs_current == lhs_end || rhs_current == rhs_end) ?
+              (lhs_current == lhs_end && rhs_current == rhs_end) :
+              lhs_current == rhs_current);
 }
 
 template <typename TransformedInputRange>

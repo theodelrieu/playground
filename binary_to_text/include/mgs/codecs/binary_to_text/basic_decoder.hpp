@@ -79,6 +79,16 @@ public:
     return detail::max_decoded_size<EncodingTraits>{}(_end - _current);
   }
 
+  underlying_iterator const& get_iterator() const
+  {
+    return _current;
+  }
+
+  underlying_sentinel const& get_sentinel() const
+  {
+    return _end;
+  }
+
 private:
   template <typename I, typename S>
   auto read_input_impl(I& current, S end, std::input_iterator_tag)

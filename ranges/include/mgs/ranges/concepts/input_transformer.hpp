@@ -2,28 +2,35 @@
 
 #include <tuple>
 
-#include <mgs/ranges/detail/detected/types/buffer_type.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
-#include <mgs/meta/concepts/object/regular.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
+#include <mgs/ranges/detail/detected/member_functions/get_iterator.hpp>
+#include <mgs/ranges/detail/detected/member_functions/get_sentinel.hpp>
+#include <mgs/ranges/detail/detected/types/buffer_type.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 
+// clang-format off
+//
 // template <typename T>
-// concept InputTransformer = Regular<T> &&
-//   requires Iterator<typename T::underlying_iterator> &&
-//   requires Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator> &&
-//   requires Iterable<typename T::buffer_type> &&
-//   requires RandomAccessIterator<meta::result_of_begin<typename T::buffer_type const&>> &&
-//   requires SizedSentinel<meta::result_of_end<typename T::buffer_type const&>, meta::result_of_begin<typename T::buffer_type const&>> &&
-//   requires Constructible<typename T::underlying_iterator, typename T::underlying_sentinel> &&
-//   requires(T& v, typename T::buffer_type& b) {
-//     { v(b) } -> void;
-//   }
+// concept InputTransformer = requires(T& v, T const& cv, typename T::buffer_type& b) {
+//   Iterator<typename T::underlying_iterator>;
+//   Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
+//   Iterable<typename T::buffer_type>;
+//   Constructible<typename T::underlying_iterator, typename T::underlying_sentinel>;
+//   { begin(b) } -> std::RandomAccessIterator;
+//   { end(b) } -> std::SizedSentinel<decltype(begin(b))>;
+//   { v(b) } -> void;
+//   { cv.get_iterator() } -> std::Same<typename T::underlying_iterator const&>;
+//   { cv.get_sentinel() } -> std::Same<typename T::underlying_sentinel const&>;
+// };
+//
+// clang-format on
+
 
 namespace mgs
 {
@@ -37,6 +44,9 @@ template <typename T>
 struct is_input_transformer
 {
 private:
+  using t_ref = std::add_lvalue_reference_t<T>;
+  using t_const_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
+
   using I = meta::detected_t<detail::detected::types::underlying_iterator, T>;
   using S = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
   using Buffer = meta::detected_t<detail::detected::types::buffer_type, T>;
@@ -46,17 +56,26 @@ private:
   static constexpr auto const has_function_call_op =
       meta::is_detected_exact<void,
                               meta::detected::operators::function_call,
-                              T&,
+                              t_ref,
                               Buffer&>::value;
+
+  static constexpr auto const has_iterator =
+      meta::is_detected_exact<I const&,
+                              detail::detected::member_functions::get_iterator,
+                              t_const_ref>::value;
+  static constexpr auto const has_sentinel =
+      meta::is_detected_exact<S const&,
+                              detail::detected::member_functions::get_sentinel,
+                              t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
       std::is_constructible<T, I, S>::value;
 
 public:
-  using requirements = std::tuple<meta::concepts::object::is_regular<T>>;
+  using requirements = std::tuple<>;
 
   static constexpr auto const value =
-      meta::concepts::object::is_regular<T>::value &&
+      has_iterator && has_sentinel &&
       meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
       meta::concepts::iterator::is_iterable<Buffer>::value &&
@@ -67,6 +86,12 @@ public:
   static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not an InputTransformer");
+    static_assert(has_iterator,
+                  "Invalid or missing function: 'underlying_iterator "
+                  "T::get_iterator() const'");
+    static_assert(has_sentinel,
+                  "Invalid or missing function: 'underlying_sentinel "
+                  "T::get_sentinel() const'");
     static_assert(meta::concepts::iterator::is_iterator<I>::value,
                   "T::underlying_iterator must be an Iterator");
     static_assert(

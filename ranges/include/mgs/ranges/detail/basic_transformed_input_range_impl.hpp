@@ -111,35 +111,6 @@ auto basic_transformed_input_range<InputTransformer>::end() const -> iterator
 {
   return iterator{{}};
 }
-
-template <typename T>
-bool operator==(basic_transformed_input_range<T> const& lhs,
-                basic_transformed_input_range<T> const& rhs)
-{
-  using std::begin;
-  using std::end;
-
-  auto const lhs_buffer_current = begin(lhs._buffer) + lhs._index;
-  auto const rhs_buffer_current = begin(rhs._buffer) + rhs._index;
-  auto const lhs_buffer_end = end(lhs._buffer);
-  auto const rhs_buffer_end = end(rhs._buffer);
-
-  if (lhs_buffer_current == lhs_buffer_end ||
-      rhs_buffer_current == rhs_buffer_end)
-  {
-    return lhs_buffer_current == lhs_buffer_end &&
-           rhs_buffer_current == rhs_buffer_end;
-  }
-  return lhs._index == rhs._index &&
-         static_cast<T const&>(lhs) == static_cast<T const&>(rhs);
-}
-
-template <typename T>
-bool operator!=(basic_transformed_input_range<T> const& lhs,
-                basic_transformed_input_range<T> const& rhs)
-{
-  return !(lhs == rhs);
-}
 }
 }
 }

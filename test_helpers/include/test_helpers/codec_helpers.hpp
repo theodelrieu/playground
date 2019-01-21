@@ -16,6 +16,8 @@ namespace test_helpers
 template <typename I1, typename S1, typename I2, typename S2>
 void check_equal(I1 i1, S1 s1, I2 i2, S2 s2)
 {
+  auto i = i1 == s1;
+  auto j = i2 == s2;
   CHECK(std::equal(i1, s1, i2, s2, [](auto l, auto r) {
     return static_cast<unsigned char>(l) == static_cast<unsigned char>(r);
   }));
@@ -32,8 +34,8 @@ void check_equal(Iterable1 const& lhs, Iterable2 const& rhs)
 
 template <typename Codec,
           typename CodecOutput = typename Codec::default_encoded_output,
-          typename Iterable1 = void,
-          typename Iterable2 = void>
+          typename Iterable1,
+          typename Iterable2>
 void test_encode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const encoded = Codec::template encode<CodecOutput>(it);
@@ -71,8 +73,8 @@ void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 
 template <typename Codec,
           typename CodecOutput = typename Codec::default_decoded_output,
-          typename Iterable1 = void,
-          typename Iterable2 = void>
+          typename Iterable1,
+          typename Iterable2>
 void test_decode(Iterable1 const& it, Iterable2 const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(it);
@@ -138,8 +140,8 @@ void test_make_decoder(I i, S s, Iterable const& expected)
 template <typename Codec,
           typename EncodedOutput = typename Codec::default_encoded_output,
           typename DecodedOutput = EncodedOutput,
-          typename Iterable1 = void,
-          typename Iterable2 = void>
+          typename Iterable1,
+          typename Iterable2>
 void basic_codec_tests(Iterable1 const& decoded_input,
                        Iterable2 const& encoded_input)
 {
@@ -162,7 +164,7 @@ template <typename Codec,
           typename Iterable1,
           typename Iterable2>
 void test_std_container_input(Iterable1 const& decoded_input,
-                              Iterable2 encoded_input)
+                              Iterable2 const& encoded_input)
 {
   using std::begin;
   using std::end;

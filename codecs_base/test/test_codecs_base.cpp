@@ -76,30 +76,20 @@ public:
       out.push_back(*_current++);
   }
 
+  underlying_iterator const& get_iterator() const
+  {
+    return _current;
+  }
+
+  underlying_sentinel const& get_sentinel() const
+  {
+    return _end;
+  }
+
 private:
   Iterator _current{};
   Sentinel _end{};
-
-  template <typename I, typename S>
-  friend bool operator==(noop_transformer<I, S> const& lhs,
-                         noop_transformer<I, S> const& rhs);
 };
-
-template <typename I, typename S>
-bool operator==(noop_transformer<I, S> const& lhs,
-                noop_transformer<I, S> const& rhs)
-{
-  return (lhs._current == lhs._end || rhs._current == rhs._end) ?
-             (lhs._current == lhs._end && rhs._current == rhs._end) :
-             lhs._current == rhs._current;
-}
-
-template <typename I, typename S>
-bool operator!=(noop_transformer<I, S> const& lhs,
-                noop_transformer<I, S> const& rhs)
-{
-  return !(lhs == rhs);
-}
 
 template <typename Iterator, typename Sentinel>
 class noop_range : public ranges::basic_transformed_input_range<
