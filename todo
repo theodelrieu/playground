@@ -4,7 +4,6 @@ code
 * do not use aliases for codecs, redefine class
 * move concepts aliases in namespace mgs (+ namespace concepts)
 * variable templates for every concept trait
-* remove stream support
 
 doc
 
