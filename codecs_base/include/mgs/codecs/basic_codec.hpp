@@ -8,7 +8,7 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/static_asserts.hpp>
@@ -68,7 +68,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Encoder = ranges::concepts::TransformedInputRange<
@@ -83,7 +83,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
             typename Encoder = ranges::concepts::TransformedInputRange<
@@ -109,7 +109,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Decoder = ranges::concepts::TransformedInputRange<
@@ -124,7 +124,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
             typename Decoder = ranges::concepts::TransformedInputRange<

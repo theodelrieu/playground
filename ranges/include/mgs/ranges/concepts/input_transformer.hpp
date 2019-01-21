@@ -4,7 +4,7 @@
 
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
@@ -78,7 +78,7 @@ public:
       has_iterator && has_sentinel &&
       meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
-      meta::concepts::iterator::is_iterable<Buffer>::value &&
+      mgs::concepts::is_iterable<Buffer>::value &&
       meta::concepts::iterator::is_random_access_iterator<BufferI>::value &&
       meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
@@ -99,7 +99,7 @@ public:
         "T::underlying_sentinel must be a Sentinel<T::underlying_iterator>");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
-    static_assert(meta::concepts::iterator::is_iterable<Buffer>::value,
+    static_assert(mgs::concepts::is_iterable<Buffer>::value,
                   "T::buffer_type must be Iterable");
     static_assert(
         meta::concepts::iterator::is_random_access_iterator<BufferI>::value,

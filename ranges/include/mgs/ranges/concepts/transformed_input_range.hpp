@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
@@ -62,12 +62,12 @@ private:
 public:
   using requirements =
       std::tuple<meta::concepts::object::is_semiregular<T>,
-                 meta::concepts::iterator::is_iterable<T>>;
+                 mgs::concepts::is_iterable<T>>;
 
   static auto constexpr value =
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_semiregular<T>::value &&
-      meta::concepts::iterator::is_iterable<T>::value &&
+      mgs::concepts::is_iterable<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
       meta::concepts::iterator::is_iterator<underlying_iterator>::value &&
       meta::concepts::iterator::is_sentinel<underlying_sentinel,

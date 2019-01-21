@@ -10,7 +10,7 @@
 #include <mgs/codecs/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/meta/concepts/iterator/iterable.hpp>
+#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/detected.hpp>
 
 // FIXME rewrite
@@ -65,7 +65,7 @@ struct is_codec<
     Iterable,
     EncodedOut,
     DecodedOut,
-    std::enable_if_t<meta::concepts::iterator::is_iterable<Iterable>::value>>
+    std::enable_if_t<mgs::concepts::is_iterable<Iterable>::value>>
 {
 private:
   using I = meta::result_of_begin<Iterable>;

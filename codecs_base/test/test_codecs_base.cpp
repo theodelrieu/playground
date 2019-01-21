@@ -19,7 +19,6 @@
 
 #include <test_helpers/codec_helpers.hpp>
 
-using namespace mgs;
 using namespace mgs::codecs;
 using namespace std::string_literals;
 
@@ -92,14 +91,14 @@ private:
 };
 
 template <typename Iterator, typename Sentinel>
-class noop_range : public ranges::basic_transformed_input_range<
-                         noop_transformer<Iterator, Sentinel>>
+class noop_range : public mgs::ranges::basic_transformed_input_range<
+                       noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
-  using ranges::basic_transformed_input_range<
+  using mgs::ranges::basic_transformed_input_range<
       noop_transformer<Iterator, Sentinel>>::basic_transformed_input_range;
 };
 
@@ -192,13 +191,13 @@ TEST_CASE("codecs_base", "[codecs_base]")
     SECTION("Array conversion")
     {
       CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input)),
-                      exceptions::unexpected_eof_error);
+                      mgs::exceptions::unexpected_eof_error);
       CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input)),
-                      exceptions::unexpected_eof_error);
+                      mgs::exceptions::unexpected_eof_error);
       CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input)),
-                      exceptions::unexpected_eof_error);
+                      mgs::exceptions::unexpected_eof_error);
       CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input)),
-                      exceptions::unexpected_eof_error);
+                      mgs::exceptions::unexpected_eof_error);
     }
   }
 }
