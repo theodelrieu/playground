@@ -59,6 +59,7 @@ sentinel end(sentinel_iterable&);
 TEST_CASE("Iterable", "[meta][concepts][iterator]")
 {
   static_assert(iterator_concepts::is_iterable<char [1]>::value, "");
+  static_assert(iterator_concepts::is_iterable<char const[1]>::value, "");
   static_assert(iterator_concepts::is_iterable<std::string>::value, "");
   static_assert(iterator_concepts::is_iterable<std::vector<int>>::value, "");
   static_assert(iterator_concepts::is_iterable<iterable>::value, "");

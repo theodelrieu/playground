@@ -83,6 +83,21 @@ public:
   }
 
   template <typename T = default_encoded_output,
+            typename U = void,
+            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterator = meta::result_of_begin<Iterable&>,
+            typename Sentinel = meta::result_of_end<Iterable&>,
+            typename Encoder = adapters::concepts::TransformedInputAdapter<
+                encoder<Iterator, Sentinel>>>
+  static concepts::CodecOutput<T, Encoder> encode(U& it)
+  {
+    using std::begin;
+    using std::end;
+
+    return basic_codec::encode<T>(begin(it), end(it));
+  }
+
+  template <typename T = default_encoded_output,
             typename CharT = void,
             typename Traits = void,
             typename Encoder = adapters::concepts::TransformedInputAdapter<
@@ -121,6 +136,21 @@ public:
   }
 
   template <typename T = default_decoded_output,
+            typename U = void,
+            typename Iterable = meta::concepts::iterator::Iterable<U>,
+            typename Iterator = meta::result_of_begin<Iterable&>,
+            typename Sentinel = meta::result_of_end<Iterable&>,
+            typename Decoder = adapters::concepts::TransformedInputAdapter<
+                decoder<Iterator, Sentinel>>>
+  static concepts::CodecOutput<T, Decoder> decode(U& it)
+  {
+    using std::begin;
+    using std::end;
+
+    return basic_codec::decode<T>(begin(it), end(it));
+  }
+
+  template <typename T = default_decoded_output,
             typename CharT = void,
             typename Traits = void,
             typename decoder = adapters::concepts::TransformedInputAdapter<
@@ -132,21 +162,35 @@ public:
                                   std::istreambuf_iterator<CharT, Traits>());
   }
 
-  template <typename T = default_encoded_output, std::size_t N = 0>
-  static codecs::concepts::CodecOutput<T, encoder<char const*>> encode(
-      char const (&tab)[N])
+  template <typename T = default_encoded_output, std::size_t N>
+  static codecs::concepts::CodecOutput<T, encoder<char*>> encode(char (&tab)[N])
   {
     auto const begin_it = std::begin(tab);
     auto const end_it = std::find(begin_it, std::end(tab), '\0');
     return encode<T>(begin_it, end_it);
   }
 
-  template <typename T = default_decoded_output, std::size_t N = 0>
-  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(
-      char const (&tab)[N])
+  template <typename T = default_encoded_output, std::size_t N>
+  static codecs::concepts::CodecOutput<T, encoder<char*>> encode(char const (&tab)[N])
+  {
+    auto const begin_it = std::cbegin(tab);
+    auto const end_it = std::find(begin_it, std::cend(tab), '\0');
+    return encode<T>(begin_it, end_it);
+  }
+
+  template <typename T = default_decoded_output, std::size_t N>
+  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(char (&tab)[N])
   {
     auto const begin_it = std::begin(tab);
     auto const end_it = std::find(begin_it, std::end(tab), '\0');
+    return decode<T>(begin_it, end_it);
+  }
+
+  template <typename T = default_decoded_output, std::size_t N>
+  static codecs::concepts::CodecOutput<T, decoder<char const*>> decode(char const (&tab)[N])
+  {
+    auto const begin_it = std::cbegin(tab);
+    auto const end_it = std::find(begin_it, std::cend(tab), '\0');
     return decode<T>(begin_it, end_it);
   }
 };
