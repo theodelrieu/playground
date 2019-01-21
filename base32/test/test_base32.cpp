@@ -9,8 +9,7 @@
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
-#include <test_helpers/binary_to_text.hpp>
-#include <test_helpers/codecs_base.hpp>
+#include <test_helpers/codec_helpers.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -31,61 +30,25 @@ static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
                   base32::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("b32 lazy", "[base32]")
+TEST_CASE("base32", "[base32]")
 {
   std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
   std::vector<std::string> encoded{
       "ME======"s, "MFRA===="s, "MFRGG==="s, "MFRGGZA="s, "MFRGGZDF"s};
 
-  SECTION("encoding")
+  auto const encoded_twice = "JVDFER2HLJCEM==="s;
+
+  SECTION("Common tests")
   {
-    SECTION("common_checks")
+    for (auto i = 0; i < encoded.size(); ++i)
     {
-      common_checks<base32::encoder>(decoded, encoded);
+      test_helpers::basic_codec_tests<base32>(decoded[i], encoded[i]);
+      test_helpers::test_std_containers<base32>(decoded[i], encoded[i]);
+      test_helpers::test_input_streams<base32>(decoded[i], encoded[i]);
+      test_helpers::test_back_and_forth<base32>(decoded[i], encoded[i]);
     }
 
-    SECTION("sentinel")
-    {
-      sentinel_check<base32::encoder>(decoded.back(), encoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base32::encoder>(
-          decoded.back(), encoded.back(), "JVDFER2HLJCEM==="s);
-    }
-  }
-
-  SECTION("decoding")
-  {
-    SECTION("common_checks")
-    {
-      common_checks<base32::decoder>(encoded, decoded);
-    }
-
-    SECTION("sentinel")
-    {
-      sentinel_check<base32::decoder>(encoded.back(), decoded.back());
-    }
-
-    SECTION("Inception")
-    {
-      inception_check<base32::decoder>(
-          "JVDFER2HLJCEM==="s, encoded.back(), decoded.back());
-    }
-  }
-
-  SECTION("back and forth")
-  {
-    SECTION("decode(encode())")
-    {
-      back_and_forth_check<base32::encoder, base32::decoder>(decoded.back());
-    }
-
-    SECTION("encode(decode())")
-    {
-      back_and_forth_check<base32::decoder, base32::encoder>(encoded.back());
-    }
+    test_helpers::test_encode_twice<base32>(decoded.back(), encoded_twice);
   }
 
   SECTION("stream")
@@ -94,8 +57,18 @@ TEST_CASE("b32 lazy", "[base32]")
     std::ifstream random_data(testFilePaths[0]);
     std::ifstream b32_random_data(testFilePaths[1]);
 
-    stream_check<base32::encoder>(random_data, b32_random_data);
-    stream_check<base32::decoder>(b32_random_data, random_data);
+    using iterator = std::istreambuf_iterator<char>;
+
+    auto encoder = base32::make_encoder(iterator(random_data), iterator());
+    test_helpers::check_equal(
+        encoder.begin(), encoder.end(), iterator(b32_random_data), iterator());
+
+    random_data.seekg(0);
+    b32_random_data.seekg(0);
+
+    auto decoder = base32::make_decoder(iterator(b32_random_data), iterator());
+    test_helpers::check_equal(
+        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
@@ -108,10 +81,17 @@ TEST_CASE("b32 lazy", "[base32]")
                                            "MFRA@==="s};
     std::vector<std::string> invalid_eof{"MFA"s, "MFRGGZDFA"s};
 
-    invalid_input_checks<base32::decoder, exceptions::invalid_input_error>(
-        invalid_chars);
-    invalid_input_checks<base32::decoder, exceptions::unexpected_eof_error>(
-        invalid_eof);
+    for (auto const& elem : invalid_chars)
+    {
+      CHECK_THROWS_AS(base32::decode(elem),
+                      mgs::exceptions::invalid_input_error);
+    }
+
+    for (auto const& elem : invalid_eof)
+    {
+      CHECK_THROWS_AS(base32::decode(elem),
+                      mgs::exceptions::unexpected_eof_error);
+    }
   }
 
   SECTION("max_transformed_size")
@@ -181,14 +161,6 @@ TEST_CASE("b32 lazy", "[base32]")
                         mgs::exceptions::invalid_input_error);
       }
     }
-  }
-}
-
-TEST_CASE("base32 codec", "[base32]")
-{
-  SECTION("Regular tests")
-  {
-    test_helpers::run_codec_tests<std::string>(base32{}, "abcde"s, "MFRGGZDF"s);
   }
 
   SECTION("encoded_size")
