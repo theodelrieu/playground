@@ -8,7 +8,6 @@
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
-#include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 #include <mgs/ranges/concepts/input_transformer.hpp>
 #include <mgs/ranges/concepts/sized_input_transformer.hpp>
@@ -38,15 +37,11 @@ private:
 
 public:
   using iterator = detail::transformed_input_range_iterator<basic_transformed_input_range>;
-  using difference_type = std::streamoff;
   using value_type = typename std::iterator_traits<buffer_iterator>::value_type;
 
   basic_transformed_input_range() = default;
   basic_transformed_input_range(underlying_iterator begin,
                                 underlying_sentinel end);
-
-  value_type const& get() const;
-  void seek_forward(difference_type n);
 
   template <typename OutputIterator>
   std::size_t read(OutputIterator out, std::size_t n);
@@ -63,6 +58,8 @@ private:
   buffer_t _buffer{};
   typename std::iterator_traits<buffer_iterator>::difference_type _index{};
 
+  value_type const& _get() const;
+  void _seek_forward();
   void _transform_input();
   std::size_t _buffer_size() const;
 };

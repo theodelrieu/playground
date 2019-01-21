@@ -19,9 +19,9 @@ class transformed_input_range_iterator
 {
 public:
   using value_type = typename TransformedInputRange::value_type;
-  using difference_type = typename TransformedInputRange::difference_type;
+  using difference_type = std::streamoff;
 
-  using reference = decltype(std::declval<TransformedInputRange>().get());
+  using reference = decltype(std::declval<TransformedInputRange>()._get());
   using const_reference = reference;
 
   using pointer = value_type const*;

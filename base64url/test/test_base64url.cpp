@@ -10,6 +10,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
+#include <test_helpers/noop_iterator.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -146,7 +147,7 @@ TEST_CASE("base64url", "[base64url]")
         
         auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 8);
-        dec.seek_forward(5);
+        dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }
 
@@ -159,7 +160,7 @@ TEST_CASE("base64url", "[base64url]")
 
         // trigger last decode operation, padding is removed, exact size is
         // returned
-        dec.seek_forward(9984);
+        dec.read(test_helpers::noop_iterator{}, 9984);
         CHECK(dec.max_transformed_size() == 16);
       }
 
@@ -306,7 +307,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
         auto dec =
             base64url_nopad::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 8);
-        dec.seek_forward(5);
+        dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }
 
@@ -321,7 +322,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
         // trigger last decode operation, padding is removed, exact size is
         // returned
-        dec.seek_forward(9984);
+        dec.read(test_helpers::noop_iterator{}, 9984);
         CHECK(dec.max_transformed_size() == 16);
       }
 

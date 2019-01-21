@@ -13,6 +13,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
+#include <test_helpers/noop_iterator.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -136,7 +137,7 @@ TEST_CASE("base64", "[base64]")
         
         auto dec = base64::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 8);
-        dec.seek_forward(5);
+        dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }
 
@@ -149,7 +150,7 @@ TEST_CASE("base64", "[base64]")
 
         // trigger last decode operation, padding is removed, exact size is
         // returned
-        dec.seek_forward(9984);
+        dec.read(test_helpers::noop_iterator{}, 9984);
         CHECK(dec.max_transformed_size() == 16);
       }
 

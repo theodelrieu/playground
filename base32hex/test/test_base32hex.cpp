@@ -10,6 +10,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
+#include <test_helpers/noop_iterator.hpp>
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -138,7 +139,7 @@ TEST_CASE("base32hex", "[base32hex]")
 
         auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 4);
-        dec.seek_forward(2);
+        dec.read(test_helpers::noop_iterator{}, 2);
         CHECK(dec.max_transformed_size() == 2);
       }
 

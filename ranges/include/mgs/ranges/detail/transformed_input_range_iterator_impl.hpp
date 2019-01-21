@@ -28,7 +28,7 @@ template <typename TransformedInputRange>
 auto transformed_input_range_iterator<TransformedInputRange>::operator*() const
     -> reference
 {
-  return _range.get();
+  return _range._get();
 }
 
 template <typename TransformedInputRange>
@@ -42,7 +42,7 @@ template <typename TransformedInputRange>
 auto transformed_input_range_iterator<TransformedInputRange>::operator++()
     -> transformed_input_range_iterator<TransformedInputRange>&
 {
-  _range.seek_forward(1);
+  _range._seek_forward();
   return *this;
 }
 

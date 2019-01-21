@@ -23,7 +23,7 @@ basic_transformed_input_range<InputTransformer>::
 }
 
 template <typename InputTransformer>
-auto basic_transformed_input_range<InputTransformer>::get() const
+auto basic_transformed_input_range<InputTransformer>::_get() const
     -> value_type const&
 {
   using std::begin;
@@ -46,7 +46,7 @@ std::size_t basic_transformed_input_range<InputTransformer>::read(
     out = std::copy_n(begin(_buffer) + _index, to_read, out);
     _index += to_read;
     nb_read += to_read;
-    n -= nb_read;
+    n -= to_read;
     if (_index == _buffer_size())
       _transform_input();
   }
@@ -54,22 +54,16 @@ std::size_t basic_transformed_input_range<InputTransformer>::read(
 }
 
 template <typename InputTransformer>
-void basic_transformed_input_range<InputTransformer>::seek_forward(
-    difference_type n)
+void basic_transformed_input_range<InputTransformer>::_seek_forward()
 {
-  assert(n > 0);
-
   using std::begin;
   using std::end;
 
   auto const end_it = end(_buffer);
 
-  while (n-- > 0)
-  {
-    ++_index;
-    if ((begin(_buffer) + _index) == end_it)
-      _transform_input();
-  }
+  ++_index;
+  if ((begin(_buffer) + _index) == end_it)
+    _transform_input();
 }
 
 template <typename InputTransformer>
