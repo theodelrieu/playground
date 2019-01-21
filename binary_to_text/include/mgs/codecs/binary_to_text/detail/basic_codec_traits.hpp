@@ -7,6 +7,9 @@
 #include <mgs/adapters/basic_transformed_input_adapter.hpp>
 #include <mgs/codecs/binary_to_text/basic_decoder.hpp>
 #include <mgs/codecs/binary_to_text/basic_encoder.hpp>
+#include <mgs/codecs/binary_to_text/concepts/byte.hpp>
+#include <mgs/meta/detected/types/value_type.hpp>
+#include <mgs/meta/iterator_traits.hpp>
 
 namespace mgs
 {
@@ -21,7 +24,11 @@ namespace detail
 template <typename EncodingTraits, typename DecodingTraits>
 struct basic_codec_traits
 {
-  template <typename Iterator, typename Sentinel>
+  template <typename Iterator,
+            typename Sentinel,
+            typename = std::enable_if_t<concepts::is_byte<
+                meta::detected_t<meta::detected::types::value_type,
+                                 meta::iterator_traits<Iterator>>>::value>>
   static auto make_encoder(Iterator begin, Sentinel end)
   {
     return adapters::basic_transformed_input_adapter<
@@ -29,7 +36,11 @@ struct basic_codec_traits
                                                            std::move(end));
   }
 
-  template <typename Iterator, typename Sentinel>
+  template <typename Iterator,
+            typename Sentinel,
+            typename = std::enable_if_t<concepts::is_byte<
+                meta::detected_t<meta::detected::types::value_type,
+                                 meta::iterator_traits<Iterator>>>::value>>
   static auto make_decoder(Iterator begin, Sentinel end)
   {
     return adapters::basic_transformed_input_adapter<
