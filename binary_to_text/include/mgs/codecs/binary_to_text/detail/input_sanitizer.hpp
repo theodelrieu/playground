@@ -18,8 +18,8 @@ namespace binary_to_text
 {
 namespace detail
 {
-template <typename RandomAccessIterator>
-[[noreturn]] void throw_invalid_input(RandomAccessIterator invalid_it)
+template <typename ForwardIterator>
+[[noreturn]] void throw_invalid_input(ForwardIterator invalid_it)
 {
   using namespace std::string_literals;
   throw exceptions::invalid_input_error{
@@ -44,8 +44,8 @@ auto find_invalid_byte(Input const& input)
   return current;
 }
 
-template <typename EncodingTraits, typename RandomAccessIterator, typename SizedSentinel>
-void ensures_only_padding_characters(RandomAccessIterator invalid_byte_it,
+template <typename EncodingTraits, typename ForwardIterator, typename SizedSentinel>
+void ensures_only_padding_characters(ForwardIterator invalid_byte_it,
                                      SizedSentinel const input_end)
 {
   while (invalid_byte_it != input_end)
@@ -65,9 +65,9 @@ constexpr bool invalid_padding_character_pos(std::size_t nb_non_padded_bytes)
 
 template <typename EncodingTraits,
           typename Input,
-          typename RandomAccessIterator>
+          typename ForwardIterator>
 void sanitize_invalid_input(Input const& input,
-                            RandomAccessIterator invalid_byte_it)
+                            ForwardIterator invalid_byte_it)
 {
   using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
