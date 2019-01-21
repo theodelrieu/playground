@@ -4,9 +4,9 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/adapters/concepts/input_transformer.hpp>
-#include <mgs/adapters/concepts/sized_input_transformer.hpp>
-#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
+#include <mgs/ranges/concepts/input_transformer.hpp>
+#include <mgs/ranges/concepts/sized_input_transformer.hpp>
+#include <mgs/ranges/transformed_input_range_iterator.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
@@ -18,10 +18,10 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 template <typename InputTransformer>
-class basic_transformed_input_adapter : private InputTransformer
+class basic_transformed_input_range : private InputTransformer
 {
   static_assert(concepts::is_input_transformer<InputTransformer>::value,
                 "Template parameter must be an InputTransformer");
@@ -35,12 +35,12 @@ private:
   using buffer_iterator = meta::result_of_begin<buffer_t>;
 
 public:
-  using iterator = transformed_input_adapter_iterator<basic_transformed_input_adapter>;
+  using iterator = transformed_input_range_iterator<basic_transformed_input_range>;
   using difference_type = std::streamoff;
   using value_type = typename std::iterator_traits<buffer_iterator>::value_type;
 
-  basic_transformed_input_adapter() = default;
-  basic_transformed_input_adapter(underlying_iterator begin,
+  basic_transformed_input_range() = default;
+  basic_transformed_input_range(underlying_iterator begin,
                                   underlying_sentinel end);
 
   value_type const& get() const;
@@ -65,15 +65,15 @@ private:
   std::size_t _buffer_size() const;
 
   template <typename T>
-  friend bool operator==(basic_transformed_input_adapter<T> const& lhs,
-                         basic_transformed_input_adapter<T> const& rhs);
+  friend bool operator==(basic_transformed_input_range<T> const& lhs,
+                         basic_transformed_input_range<T> const& rhs);
 };
 
 template <typename T>
-bool operator!=(basic_transformed_input_adapter<T> const& lhs,
-                basic_transformed_input_adapter<T> const& rhs);
+bool operator!=(basic_transformed_input_range<T> const& lhs,
+                basic_transformed_input_range<T> const& rhs);
 }
 }
 }
 
-#include <mgs/adapters/detail/basic_transformed_input_adapter_impl.hpp>
+#include <mgs/ranges/detail/basic_transformed_input_range_impl.hpp>

@@ -9,8 +9,8 @@ mgs_exceptions:
 mgs_cmake:
     folder: cmake
 
-mgs_adapters:
-    folder: adapters
+mgs_ranges:
+    folder: ranges
     includedirs: include
 
 mgs_test_helpers:

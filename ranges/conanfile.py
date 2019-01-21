@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
-class ConanMgsAdapters(ConanFile):
-    name = "mgs_adapters"
+class ConanMgsRanges(ConanFile):
+    name = "mgs_ranges"
     version = "0.1"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"

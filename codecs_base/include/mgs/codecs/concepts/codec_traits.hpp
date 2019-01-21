@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/adapters/concepts/transformed_input_adapter.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/make_encoder.hpp>
@@ -17,8 +17,8 @@
 //
 // template <typename T, Iterator I, Sentinel<I> S>
 // concept CodecTraits = requires(T t, I i, S s) {
-//   { T::make_encoder(i, s) } -> TransformedInputAdapter;
-//   { T::make_decoder(i, s) } -> TransformedInputAdapter;
+//   { T::make_encoder(i, s) } -> TransformedInputRange;
+//   { T::make_decoder(i, s) } -> TransformedInputRange;
 //   CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i, s))>;
 //   CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i, s))>;
 // };
@@ -55,9 +55,9 @@ private:
       meta::detected_t<detail::detected::types::default_decoded_output, T>;
 
   static constexpr auto const is_encoder =
-      adapters::concepts::is_transformed_input_adapter<Encoder>::value;
+      ranges::concepts::is_transformed_input_range<Encoder>::value;
   static constexpr auto const is_decoder =
-      adapters::concepts::is_transformed_input_adapter<Decoder>::value;
+      ranges::concepts::is_transformed_input_range<Decoder>::value;
 
   static constexpr auto const is_encoded_codec_output =
       is_codec_output<DefaultEncodedOutput, Encoder>::value;
@@ -77,9 +77,9 @@ public:
   {
     static_assert(value, "T is not a CodecTraits");
     static_assert(is_encoder,
-                  "T::make_encoder must return a TransformedInputAdapter");
+                  "T::make_encoder must return a TransformedInputRange");
     static_assert(is_decoder,
-                  "T::make_decoder must return a TransformedInputAdapter");
+                  "T::make_decoder must return a TransformedInputRange");
     static_assert(is_encoded_codec_output,
                   "T::default_encoded_output is not a CodecOutput");
     static_assert(is_decoded_codec_output,

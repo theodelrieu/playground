@@ -20,7 +20,7 @@ Calling `make_decoder` is well-formed if:
 
 * `I` models [`InputIterator`]()
 * `S` models [`Sentinel<I>`]()
-* `decoder<I, S>` models [`IterableTransformedInputAdapter`]()
+* `decoder<I, S>` models [`IterableTransformedInputRange`]()
 
 ## Example
 

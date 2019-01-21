@@ -2,9 +2,9 @@
 
 #include <tuple>
 
-#include <mgs/adapters/detail/detected/types/buffer_type.hpp>
-#include <mgs/adapters/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/adapters/detail/detected/types/underlying_sentinel.hpp>
+#include <mgs/ranges/detail/detected/types/buffer_type.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/iterator/iterable.hpp>
@@ -29,7 +29,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 namespace concepts
 {

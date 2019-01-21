@@ -24,7 +24,7 @@ Every codec is built on top of an `Encoder` and a `Decoder`.
 
 Both are stateful objects designed for one-time use, be careful to not reuse them!
 
-They model the [`IterableTransformedInputAdapter`]() concept and thus share a common API, allowing lazy encoding/decoding:
+They model the [`IterableTransformedInputRange`]() concept and thus share a common API, allowing lazy encoding/decoding:
 
 1. `begin`/`end` member functions, each returning an [`std::InputIterator`]().
 1. `read` member function, filling an [`std::OutputIterator`]() and returning the number of characters read.
@@ -74,9 +74,9 @@ template <typename CharT>
 struct output_traits<QLinkedList<CharT>> {
   // parameter is either an Encoder or a Decoder
   template <typename U>
-  static QLinkedList<CharT> create(U& adapter) {
+  static QLinkedList<CharT> create(U& range) {
     QLinkedList<CharT> list;
-    std::copy(adapter.begin(), adapter.end(), std::back_inserter(list));
+    std::copy(range.begin(), range.end(), std::back_inserter(list));
     return list;
   }
 };

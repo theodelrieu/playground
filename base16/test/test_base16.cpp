@@ -5,7 +5,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
+#include <mgs/ranges/concepts/iterable_transformed_input_range.hpp>
 #include <mgs/base16.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -14,20 +14,20 @@
 
 using namespace std::string_literals;
 using namespace mgs;
-namespace adapter_concepts = mgs::adapters::concepts;
+namespace range_concepts = mgs::ranges::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
 static_assert(
-    adapter_concepts::is_iterable_transformed_input_adapter<base16::encoder<char*>>::value,
+    range_concepts::is_iterable_transformed_input_range<base16::encoder<char*>>::value,
     "");
-static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
+static_assert(range_concepts::is_iterable_transformed_input_range<
                   base16::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
+static_assert(range_concepts::is_iterable_transformed_input_range<
                   base16::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(adapter_concepts::is_iterable_transformed_input_adapter<
+static_assert(range_concepts::is_iterable_transformed_input_range<
                   base16::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -101,11 +101,11 @@ TEST_CASE("base16", "[base16]")
   {
     SECTION("encoder")
     {
-      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+      static_assert(range_concepts::is_sized_transformed_input_range<
                         base16::encoder<char const*>>::value,
                     "");
       static_assert(
-          !adapter_concepts::is_sized_transformed_input_adapter<
+          !range_concepts::is_sized_transformed_input_range<
               base16::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -128,11 +128,11 @@ TEST_CASE("base16", "[base16]")
 
     SECTION("decoder")
     {
-      static_assert(adapter_concepts::is_sized_transformed_input_adapter<
+      static_assert(range_concepts::is_sized_transformed_input_range<
                         base16::decoder<char const*>>::value,
                     "");
       static_assert(
-          !adapter_concepts::is_sized_transformed_input_adapter<
+          !range_concepts::is_sized_transformed_input_range<
               base16::decoder<std::list<char>::const_iterator>>::value,
           "");
 

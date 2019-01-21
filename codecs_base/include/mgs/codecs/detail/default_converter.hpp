@@ -8,9 +8,9 @@
 #include <utility>
 #include <vector>
 
-#include <mgs/adapters/concepts/sized_transformed_input_adapter.hpp>
-#include <mgs/adapters/concepts/transformed_input_adapter.hpp>
-#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
+#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/ranges/transformed_input_range_iterator.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
@@ -30,26 +30,26 @@ namespace detail
 {
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    adapters::concepts::SizedTransformedInputAdapter<
+    ranges::concepts::SizedTransformedInputRange<
         T,
-        meta::result_of_begin<RandomAccessContainer&>>& adapter,
+        meta::result_of_begin<RandomAccessContainer&>>& range,
     meta::priority_tag<1>)
 {
   using std::begin;
 
-  auto const max_size = adapter.max_transformed_size();
+  auto const max_size = range.max_transformed_size();
   RandomAccessContainer cont(max_size, 0);
 
-  auto const total_read = adapter.read(begin(cont), max_size);
+  auto const total_read = range.read(begin(cont), max_size);
   cont.resize(total_read);
   return cont;
 }
 
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    adapters::concepts::TransformedInputAdapter<
+    ranges::concepts::TransformedInputRange<
         T,
-        meta::result_of_begin<RandomAccessContainer&>>& adapter,
+        meta::result_of_begin<RandomAccessContainer&>>& range,
     meta::priority_tag<0>)
 {
   using std::begin;
@@ -59,9 +59,9 @@ RandomAccessContainer fill_random_access_container(
   RandomAccessContainer cont(block_size, 0);
 
   auto total_read = 0;
-  for (auto nb_read = adapter.read(begin(cont) + total_read, block_size);
+  for (auto nb_read = range.read(begin(cont) + total_read, block_size);
        nb_read != 0;
-       nb_read = adapter.read(begin(cont) + total_read, block_size))
+       nb_read = range.read(begin(cont) + total_read, block_size))
   {
     total_read += nb_read;
     cont.resize(total_read + block_size);
@@ -89,19 +89,19 @@ private:
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
-  static R create_impl(adapters::concepts::TransformedInputAdapter<T>& adapter,
+  static R create_impl(ranges::concepts::TransformedInputRange<T>& range,
                        meta::priority_tag<1>)
   {
-    return fill_random_access_container<R>(adapter, meta::priority_tag<1>{});
+    return fill_random_access_container<R>(range, meta::priority_tag<1>{});
   }
 
   // Default overload, non-associative containers which:
   // - can be constructed with an Iterator range
   // - are copy or move constructible
   template <typename T,
-            typename = adapters::concepts::TransformedInputAdapter<T>,
+            typename = ranges::concepts::TransformedInputRange<T>,
             // FIXME require IterableStuff
-            typename Iterator = adapters::transformed_input_adapter_iterator<T>,
+            typename Iterator = ranges::transformed_input_range_iterator<T>,
             typename R = Output,
             typename = std::enable_if_t<
                 (std::is_copy_constructible<R>::value ||
@@ -110,17 +110,17 @@ private:
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
-  static R create_impl(T& adapter, meta::priority_tag<0>)
+  static R create_impl(T& range, meta::priority_tag<0>)
   {
-    return R(Iterator(adapter), Iterator());
+    return R(Iterator(range), Iterator());
   }
 
 public:
   template <typename T>
-  static auto create(adapters::concepts::TransformedInputAdapter<T>& adapter)
-      -> decltype(create_impl(adapter, meta::priority_tag<1>{}))
+  static auto create(ranges::concepts::TransformedInputRange<T>& range)
+      -> decltype(create_impl(range, meta::priority_tag<1>{}))
   {
-    return create_impl(adapter, meta::priority_tag<1>{});
+    return create_impl(range, meta::priority_tag<1>{});
   }
 };
 
@@ -130,14 +130,14 @@ struct default_converter<std::array<C, N>>
   template <typename T>
   static std::array<C, N> create(
       // FIXME C const*
-      adapters::concepts::TransformedInputAdapter<T, C*>& adapter)
+      ranges::concepts::TransformedInputRange<T, C*>& range)
   {
     std::array<C, N> ret;
 
-    auto const nb_read = adapter.read(ret.begin(), N);
+    auto const nb_read = range.read(ret.begin(), N);
     if (nb_read != N)
       throw exceptions::unexpected_eof_error("output buffer is too large");
-    if (adapter.read(ret.begin(), 1) != 0)
+    if (range.read(ret.begin(), 1) != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }

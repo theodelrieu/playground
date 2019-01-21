@@ -67,7 +67,7 @@ int main() {
 Note
 {: .label .label-blue }
 
-Codecs defining `max_transformed_size` also model the [`SizedTransformedInputAdapter`]() concept.
+Codecs defining `max_transformed_size` also model the [`SizedTransformedInputRange`]() concept.
 
 ## Emulated concepts
 

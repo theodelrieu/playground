@@ -5,17 +5,17 @@
 #include <limits>
 #include <tuple>
 
-#include <mgs/adapters/basic_transformed_input_adapter.hpp>
+#include <mgs/ranges/basic_transformed_input_range.hpp>
 
 namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 template <typename InputTransformer>
-basic_transformed_input_adapter<InputTransformer>::
-    basic_transformed_input_adapter(underlying_iterator begin,
+basic_transformed_input_range<InputTransformer>::
+    basic_transformed_input_range(underlying_iterator begin,
                                     underlying_sentinel end)
   : InputTransformer(std::move(begin), std::move(end))
 {
@@ -23,7 +23,7 @@ basic_transformed_input_adapter<InputTransformer>::
 }
 
 template <typename InputTransformer>
-auto basic_transformed_input_adapter<InputTransformer>::get() const
+auto basic_transformed_input_range<InputTransformer>::get() const
     -> value_type const&
 {
   using std::begin;
@@ -33,7 +33,7 @@ auto basic_transformed_input_adapter<InputTransformer>::get() const
 
 template <typename InputTransformer>
 template <typename OutputIterator>
-std::size_t basic_transformed_input_adapter<InputTransformer>::read(
+std::size_t basic_transformed_input_range<InputTransformer>::read(
     OutputIterator out, std::size_t n)
 {
   std::size_t nb_read{};
@@ -54,7 +54,7 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::read(
 }
 
 template <typename InputTransformer>
-void basic_transformed_input_adapter<InputTransformer>::seek_forward(
+void basic_transformed_input_range<InputTransformer>::seek_forward(
     difference_type n)
 {
   assert(n > 0);
@@ -73,7 +73,7 @@ void basic_transformed_input_adapter<InputTransformer>::seek_forward(
 }
 
 template <typename InputTransformer>
-void basic_transformed_input_adapter<InputTransformer>::_transform_input()
+void basic_transformed_input_range<InputTransformer>::_transform_input()
 {
   using std::begin;
 
@@ -82,7 +82,7 @@ void basic_transformed_input_adapter<InputTransformer>::_transform_input()
 }
 
 template <typename InputTransformer>
-std::size_t basic_transformed_input_adapter<InputTransformer>::_buffer_size() const
+std::size_t basic_transformed_input_range<InputTransformer>::_buffer_size() const
 {
   using std::begin;
   using std::end;
@@ -93,28 +93,28 @@ std::size_t basic_transformed_input_adapter<InputTransformer>::_buffer_size() co
 template <typename InputTransformer>
 template <typename T, typename SFINAE>
 std::size_t
-basic_transformed_input_adapter<InputTransformer>::max_transformed_size() const
+basic_transformed_input_range<InputTransformer>::max_transformed_size() const
 {
   return _buffer_size() - _index +
          static_cast<InputTransformer const&>(*this).max_transformed_size();
 }
 
 template <typename InputTransformer>
-auto basic_transformed_input_adapter<InputTransformer>::begin() const
+auto basic_transformed_input_range<InputTransformer>::begin() const
     -> iterator
 {
   return iterator{*this};
 }
 
 template <typename InputTransformer>
-auto basic_transformed_input_adapter<InputTransformer>::end() const -> iterator
+auto basic_transformed_input_range<InputTransformer>::end() const -> iterator
 {
   return iterator{{}};
 }
 
 template <typename T>
-bool operator==(basic_transformed_input_adapter<T> const& lhs,
-                basic_transformed_input_adapter<T> const& rhs)
+bool operator==(basic_transformed_input_range<T> const& lhs,
+                basic_transformed_input_range<T> const& rhs)
 {
   using std::begin;
   using std::end;
@@ -135,8 +135,8 @@ bool operator==(basic_transformed_input_adapter<T> const& lhs,
 }
 
 template <typename T>
-bool operator!=(basic_transformed_input_adapter<T> const& lhs,
-                basic_transformed_input_adapter<T> const& rhs)
+bool operator!=(basic_transformed_input_range<T> const& lhs,
+                basic_transformed_input_range<T> const& rhs)
 {
   return !(lhs == rhs);
 }

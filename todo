@@ -1,13 +1,12 @@
 code
 
 * remove conan workspaces, create one repo per recipe
-* use IterableTransformedInputAdapter everywhere except in iterator
-* put seek_forward and get as private, friend iterator, change TransformedInputAdapter concept, add those two methods as specific requirements of iterator
+* use IterableTransformedInputRange everywhere except in iterator
+* put seek_forward and get as private, friend iterator, change TransformedInputRange concept, add those two methods as specific requirements of iterator
 * do not use aliases for codecs, redefine class
 * move concepts aliases in namespace mgs (+ namespace concepts)
-* rename adapters -> ranges
 * Keep Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
-* IterableTransformedInputAdapter -> TransformedInputRange
+* IterableTransformedInputRange -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
 * variable templates for every concept trait
 * improve and add tests

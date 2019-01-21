@@ -4,7 +4,7 @@ from conans.client.command import main as main_conan
 
 
 PACKAGES = [
-    "adapters",
+    "ranges",
     "base16",
     "base32",
     "base32hex",

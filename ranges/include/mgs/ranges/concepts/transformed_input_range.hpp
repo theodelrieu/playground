@@ -4,11 +4,11 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/adapters/detail/detected/member_functions/get.hpp>
-#include <mgs/adapters/detail/detected/member_functions/read.hpp>
-#include <mgs/adapters/detail/detected/member_functions/seek_forward.hpp>
-#include <mgs/adapters/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/adapters/detail/detected/types/underlying_sentinel.hpp>
+#include <mgs/ranges/detail/detected/member_functions/get.hpp>
+#include <mgs/ranges/detail/detected/member_functions/read.hpp>
+#include <mgs/ranges/detail/detected/member_functions/seek_forward.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
+#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/object/regular.hpp>
@@ -21,7 +21,7 @@
 // clang-format off
 //
 // template <typename T, OutputIterator OI = typename T::value_type*>
-// concept TransformedInputAdapter = Regular<T> &&
+// concept TransformedInputRange = Regular<T> &&
 // requires(T const& v, T& u) {
 //    requires Iterator<typename T::underlying_iterator>;
 //    requires Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
@@ -41,14 +41,14 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 namespace concepts
 {
 template <typename T,
           typename OutputIterator = std::add_pointer_t<
               meta::detected_t<meta::detected::types::value_type, T>>>
-struct is_transformed_input_adapter
+struct is_transformed_input_range
 {
 private:
   using value_type = meta::detected_t<meta::detected::types::value_type, T>;
@@ -98,7 +98,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a TransformedInputAdapter");
+    static_assert(value, "T is not a TransformedInputRange");
     static_assert(
         has_get_method,
         "Invalid or missing function: 'T::value_type const& get() const'");
@@ -125,9 +125,9 @@ template <
     typename T,
     typename OutputIterator = std::add_pointer_t<
         meta::detected_t<meta::detected::types::value_type, T>>,
-    std::enable_if_t<is_transformed_input_adapter<T, OutputIterator>::value,
+    std::enable_if_t<is_transformed_input_range<T, OutputIterator>::value,
                      int> = 0>
-using TransformedInputAdapter = T;
+using TransformedInputRange = T;
 }
 }
 }

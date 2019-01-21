@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include <mgs/adapters/concepts/iterable_transformed_input_adapter.hpp>
+#include <mgs/ranges/concepts/iterable_transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/decode.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/encode.hpp>
@@ -26,8 +26,8 @@
 //   using Encoder = decltype(T::make_encoder(a, b));
 //   using Decoder = decltype(T::make_encoder(a, b));
 //
-//   IterableInputAdapter<Encoder>;
-//   IterableInputAdapter<Decoder>;
+//   IterableInputRange<Encoder>;
+//   IterableInputRange<Decoder>;
 //
 //   EncodedOutput<EncodedOut, result_of_begin<Encoder>>;
 //   DecodedOutput<DecodedOut, result_of_begin<Decoder>>;
@@ -88,8 +88,8 @@ private:
 
 public:
   static constexpr auto const value =
-      adapters::concepts::is_iterable_transformed_input_adapter<Encoder>::value &&
-      adapters::concepts::is_iterable_transformed_input_adapter<Decoder>::value &&
+      ranges::concepts::is_iterable_transformed_input_range<Encoder>::value &&
+      ranges::concepts::is_iterable_transformed_input_range<Decoder>::value &&
       is_codec_output<EncodedOut, EncoderIterator>::value &&
       is_codec_output<DecodedOut, DecoderIterator>::value &&
       meta::is_detected_exact<EncodedOut,

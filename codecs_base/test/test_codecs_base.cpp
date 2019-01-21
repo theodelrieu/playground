@@ -9,8 +9,8 @@
 #include <string>
 #include <utility>
 
-#include <mgs/adapters/basic_transformed_input_adapter.hpp>
-#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
+#include <mgs/ranges/basic_transformed_input_range.hpp>
+#include <mgs/ranges/transformed_input_range_iterator.hpp>
 #include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
@@ -103,15 +103,15 @@ bool operator!=(noop_transformer<I, S> const& lhs,
 }
 
 template <typename Iterator, typename Sentinel>
-class noop_adapter : public adapters::basic_transformed_input_adapter<
+class noop_range : public ranges::basic_transformed_input_range<
                          noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
-  using adapters::basic_transformed_input_adapter<
-      noop_transformer<Iterator, Sentinel>>::basic_transformed_input_adapter;
+  using ranges::basic_transformed_input_range<
+      noop_transformer<Iterator, Sentinel>>::basic_transformed_input_range;
 };
 
 struct noop_codec_traits
@@ -121,12 +121,12 @@ struct noop_codec_traits
 
   template <typename Iterator, typename Sentinel>
   static auto make_encoder(Iterator begin, Sentinel end){
-    return noop_adapter<Iterator, Sentinel>(std::move(begin), std::move(end));
+    return noop_range<Iterator, Sentinel>(std::move(begin), std::move(end));
   }
 
   template <typename Iterator, typename Sentinel>
   static auto make_decoder(Iterator begin, Sentinel end){
-    return noop_adapter<Iterator, Sentinel>(std::move(begin), std::move(end));
+    return noop_range<Iterator, Sentinel>(std::move(begin), std::move(end));
   }
 };
 
@@ -140,20 +140,20 @@ namespace codecs
 template <>
 struct output_traits<valid_type>
 {
-  template <typename InputAdapter>
-  static valid_type create(InputAdapter& adapter)
+  template <typename InputRange>
+  static valid_type create(InputRange& range)
   {
-    return {{adapter.begin(), adapter.end()}};
+    return {{range.begin(), range.end()}};
   }
 };
 
 template <typename T>
 struct output_traits<std::vector<T>>
 {
-  template <typename InputAdapter>
-  static std::vector<T> create(InputAdapter& adapter)
+  template <typename InputRange>
+  static std::vector<T> create(InputRange& range)
   {
-    return {adapter.begin(), adapter.end()};
+    return {range.begin(), range.end()};
   }
 };
 }

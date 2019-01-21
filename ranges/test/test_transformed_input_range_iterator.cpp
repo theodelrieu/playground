@@ -14,7 +14,7 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
 
-#include <mgs/adapters/transformed_input_adapter_iterator.hpp>
+#include <mgs/ranges/transformed_input_range_iterator.hpp>
 
 using namespace mgs;
 using namespace std::string_literals;
@@ -30,7 +30,7 @@ public:
 
 private:
   using underlying_iterator_traits = std::iterator_traits<UnderlyingIterator>;
-  using iterator = adapters::transformed_input_adapter_iterator<noop_encoder>;
+  using iterator = ranges::transformed_input_range_iterator<noop_encoder>;
 
   friend iterator;
 
@@ -99,7 +99,7 @@ bool operator!=(noop_encoder<T> const& lhs, noop_encoder<T> const& rhs) noexcept
 }
 }
 
-TEST_CASE("transformed_input_adapter_iterator", "[adapters][transformed_input_adapter_iterator]")
+TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_iterator]")
 {
   std::stringstream ss("abcdefghijklmnopqrstuvwxyz");
   using Iterator = std::istreambuf_iterator<char>;

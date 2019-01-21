@@ -4,7 +4,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 namespace detail
 {

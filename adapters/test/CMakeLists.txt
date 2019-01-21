@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.3)
-
-add_executable(test_transformed_input_adapter_iterator test_transformed_input_adapter_iterator.cpp $<TARGET_OBJECTS:catch_main>)
-target_link_libraries(test_transformed_input_adapter_iterator adapters CONAN_PKG::catch2)
-
-add_test(NAME test_transformed_input_adapter_iterator COMMAND test_transformed_input_adapter_iterator)

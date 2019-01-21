@@ -11,7 +11,7 @@ class ConanMgsBinaryToText(ConanFile):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
         if self.develop:
             self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
-            self.build_requires("mgs_adapters/%s@mgs/testing" % self.version)
+            self.build_requires("mgs_ranges/%s@mgs/testing" % self.version)
             self.build_requires("catch2/2.2.2@bincrafters/stable")
 
     def requirements(self):

@@ -4,8 +4,8 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/adapters/concepts/input_transformer.hpp>
-#include <mgs/adapters/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/ranges/concepts/input_transformer.hpp>
+#include <mgs/ranges/detail/detected/member_functions/max_transformed_size.hpp>
 
 // template <typename T>
 // concept SizedInputTransformer = InputTransformer<T> &&
@@ -17,7 +17,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 namespace concepts
 {

@@ -3,15 +3,15 @@
 #include <cstddef>
 #include <tuple>
 
-#include <mgs/adapters/concepts/transformed_input_adapter.hpp>
-#include <mgs/adapters/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/ranges/detail/detected/member_functions/max_transformed_size.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 
 // clang-format off
 //
 // template <typename T, OutputIterator OI = typename T::value_type*>
-// concept SizedTransformedInputAdapter = TransformedInputAdapter<T, OI> &&
+// concept SizedTransformedInputRange = TransformedInputRange<T, OI> &&
 //   requires (T const& v) {
 //     { v.max_transformed_size() } -> std::size_t
 //   };
@@ -22,14 +22,14 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace adapters
+namespace ranges
 {
 namespace concepts
 {
 template <typename T,
           typename OutputIterator = std::add_pointer_t<
               meta::detected_t<meta::detected::types::value_type, T>>>
-struct is_sized_transformed_input_adapter
+struct is_sized_transformed_input_range
 {
 private:
   using lvalue_const_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
@@ -42,15 +42,15 @@ private:
 
 public:
   using requirements =
-      std::tuple<is_transformed_input_adapter<T, OutputIterator>>;
+      std::tuple<is_transformed_input_range<T, OutputIterator>>;
 
   static constexpr auto const value =
-      is_transformed_input_adapter<T, OutputIterator>::value &&
+      is_transformed_input_range<T, OutputIterator>::value &&
       has_max_transformed_size;
 
   constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a SizedTransformedInputAdapter");
+    static_assert(value, "T is not a SizedTransformedInputRange");
     static_assert(has_max_transformed_size,
                   "Invalid or missing function: 'std::size_t "
                   "T::max_transformed_size() const'");
@@ -62,8 +62,8 @@ template <typename T,
           typename OutputIterator = std::add_pointer_t<
               meta::detected_t<meta::detected::types::value_type, T>>,
           typename = std::enable_if_t<
-              is_sized_transformed_input_adapter<T, OutputIterator>::value>>
-using SizedTransformedInputAdapter = T;
+              is_sized_transformed_input_range<T, OutputIterator>::value>>
+using SizedTransformedInputRange = T;
 }
 }
 }
