@@ -10,8 +10,8 @@
 
 // clang-format off
 //
-// template <typename T, OutputIterator OI = typename T::value_type*>
-// concept SizedTransformedInputRange = TransformedInputRange<T, OI> &&
+// template <typename T>
+// concept SizedTransformedInputRange = TransformedInputRange<T> &&
 //   requires (T const& v) {
 //     { v.max_transformed_size() } -> std::size_t
 //   };
@@ -26,9 +26,7 @@ namespace ranges
 {
 namespace concepts
 {
-template <typename T,
-          typename OutputIterator = std::add_pointer_t<
-              meta::detected_t<meta::detected::types::value_type, T>>>
+template <typename T>
 struct is_sized_transformed_input_range
 {
 private:
@@ -41,12 +39,10 @@ private:
           lvalue_const_ref>::value;
 
 public:
-  using requirements =
-      std::tuple<is_transformed_input_range<T, OutputIterator>>;
+  using requirements = std::tuple<is_transformed_input_range<T>>;
 
   static constexpr auto const value =
-      is_transformed_input_range<T, OutputIterator>::value &&
-      has_max_transformed_size;
+      is_transformed_input_range<T>::value && has_max_transformed_size;
 
   constexpr int trigger_static_asserts()
   {
@@ -59,10 +55,8 @@ public:
 };
 
 template <typename T,
-          typename OutputIterator = std::add_pointer_t<
-              meta::detected_t<meta::detected::types::value_type, T>>,
-          typename = std::enable_if_t<
-              is_sized_transformed_input_range<T, OutputIterator>::value>>
+          typename =
+              std::enable_if_t<is_sized_transformed_input_range<T>::value>>
 using SizedTransformedInputRange = T;
 }
 }

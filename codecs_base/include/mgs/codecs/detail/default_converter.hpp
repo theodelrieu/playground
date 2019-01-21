@@ -8,8 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
@@ -18,6 +16,9 @@
 #include <mgs/meta/detected/types/key_type.hpp>
 #include <mgs/meta/detected/types/size_type.hpp>
 #include <mgs/meta/priority_tag.hpp>
+#include <mgs/ranges/concepts/readable_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 namespace mgs
 {
@@ -27,12 +28,14 @@ namespace codecs
 {
 namespace detail
 {
-template <typename RandomAccessContainer, typename T>
-RandomAccessContainer fill_random_access_container(
-    ranges::concepts::SizedTransformedInputRange<
-        T,
-        meta::result_of_begin<RandomAccessContainer&>>& range,
-    meta::priority_tag<1>)
+template <typename RandomAccessContainer,
+          typename T,
+          typename = ranges::concepts::ReadableTransformedInputRange<
+              T,
+              meta::result_of_begin<RandomAccessContainer&>>,
+          typename = ranges::concepts::SizedTransformedInputRange<T>>
+RandomAccessContainer fill_random_access_container(T& range,
+                                                   meta::priority_tag<1>)
 {
   using std::begin;
 
@@ -46,7 +49,7 @@ RandomAccessContainer fill_random_access_container(
 
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    ranges::concepts::TransformedInputRange<
+    ranges::concepts::ReadableTransformedInputRange<
         T,
         meta::result_of_begin<RandomAccessContainer&>>& range,
     meta::priority_tag<0>)
@@ -130,8 +133,7 @@ struct default_converter<std::array<C, N>>
 {
   template <typename T>
   static std::array<C, N> create(
-      // FIXME C const*
-      ranges::concepts::TransformedInputRange<T, C*>& range)
+      ranges::concepts::ReadableTransformedInputRange<T, C*>& range)
   {
     std::array<C, N> ret;
 

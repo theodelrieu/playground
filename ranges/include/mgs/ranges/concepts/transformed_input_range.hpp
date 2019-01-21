@@ -16,14 +16,13 @@
 #include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 #include <mgs/ranges/detail/detected/member_functions/get.hpp>
-#include <mgs/ranges/detail/detected/member_functions/read.hpp>
 #include <mgs/ranges/detail/detected/member_functions/seek_forward.hpp>
 #include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 
 // clang-format off
 //
-// template <typename T, OutputIterator OI = typename T::value_type*>
+// template <typename T>
 // concept TransformedInputRange = Regular<T> &&
 //   Iterable<T> &&
 //   requires(T const& v, T& u) {
@@ -33,8 +32,7 @@
 //      typename T::difference_type;
 //      Same<typename T::iterator, result_of_begin<T>>;
 //      Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
-//      requires(typename T::difference_type n, OI out, std::size_t s) {
-//        { u.read(out, n) } -> std::size_t;
+//      requires(typename T::difference_type n) {
 //        { u.seek_forward(n) } -> void;
 //        { v.get() } -> value_type const&;
 //      }
@@ -50,9 +48,7 @@ namespace ranges
 {
 namespace concepts
 {
-template <typename T,
-          typename OutputIterator = std::add_pointer_t<
-              meta::detected_t<meta::detected::types::value_type, T>>>
+template <typename T>
 struct is_transformed_input_range
 {
 private:
@@ -65,15 +61,10 @@ private:
   using lvalue_ref = std::add_lvalue_reference_t<T>;
   using lvalue_const_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
 
-  using underlying_iterator = meta::detected_t<detail::detected::types::underlying_iterator, T>;
-  using underlying_sentinel = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
-
-  static auto constexpr const has_read_method =
-      meta::is_detected_exact<std::size_t,
-                              detail::detected::member_functions::read,
-                              lvalue_ref,
-                              OutputIterator,
-                              std::size_t>::value;
+  using underlying_iterator =
+      meta::detected_t<detail::detected::types::underlying_iterator, T>;
+  using underlying_sentinel =
+      meta::detected_t<detail::detected::types::underlying_sentinel, T>;
 
   static auto constexpr const has_get_method =
       meta::is_detected_convertible<value_type const&,
@@ -92,16 +83,14 @@ private:
 public:
   using requirements =
       std::tuple<meta::concepts::object::is_regular<T>,
-                 meta::concepts::iterator::is_iterable<T>,
-                 meta::concepts::iterator::is_iterator<OutputIterator>>;
+                 meta::concepts::iterator::is_iterable<T>>;
 
   static auto constexpr value =
-      has_get_method && has_seek_forward_method && has_read_method &&
+      has_get_method && has_seek_forward_method &&
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_regular<T>::value &&
       meta::concepts::iterator::is_iterable<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
-      meta::concepts::iterator::is_iterator<OutputIterator>::value &&
       meta::concepts::iterator::is_iterator<underlying_iterator>::value &&
       meta::concepts::iterator::is_sentinel<underlying_sentinel,
                                             underlying_iterator>::value &&
@@ -118,9 +107,6 @@ public:
     static_assert(
         has_seek_forward_method,
         "Invalid or missing function: 'void seek_forward(T::difference_type)'");
-    static_assert(has_read_method,
-                  "Invalid or missing function: 'std::size_t "
-                  "T::read(T::value_type*, std::size_t)'");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(std::is_signed<difference_type>::value,
@@ -136,12 +122,8 @@ public:
   }
 };
 
-template <
-    typename T,
-    typename OutputIterator = std::add_pointer_t<
-        meta::detected_t<meta::detected::types::value_type, T>>,
-    std::enable_if_t<is_transformed_input_range<T, OutputIterator>::value,
-                     int> = 0>
+template <typename T,
+          std::enable_if_t<is_transformed_input_range<T>::value, int> = 0>
 using TransformedInputRange = T;
 }
 }
