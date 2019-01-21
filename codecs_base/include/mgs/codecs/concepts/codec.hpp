@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/decode.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/encode.hpp>
@@ -88,8 +88,8 @@ private:
 
 public:
   static constexpr auto const value =
-      ranges::concepts::is_transformed_input_range<Encoder>::value &&
-      ranges::concepts::is_transformed_input_range<Decoder>::value &&
+      mgs::concepts::is_transformed_input_range<Encoder>::value &&
+      mgs::concepts::is_transformed_input_range<Decoder>::value &&
       is_codec_output<EncodedOut, EncoderIterator>::value &&
       is_codec_output<DecodedOut, DecoderIterator>::value &&
       meta::is_detected_exact<EncodedOut,

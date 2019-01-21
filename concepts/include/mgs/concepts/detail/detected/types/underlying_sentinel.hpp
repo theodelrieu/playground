@@ -4,7 +4,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace ranges
+namespace concepts
 {
 namespace detail
 {

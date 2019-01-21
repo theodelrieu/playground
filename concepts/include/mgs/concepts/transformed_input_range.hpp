@@ -4,8 +4,10 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/call_std/begin.hpp>
+#include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
+#include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
@@ -14,8 +16,6 @@
 #include <mgs/meta/detected/types/iterator_category.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 
 // clang-format off
 //
@@ -35,8 +35,6 @@
 namespace mgs
 {
 inline namespace v1
-{
-namespace ranges
 {
 namespace concepts
 {
@@ -67,7 +65,7 @@ public:
   static auto constexpr value =
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_semiregular<T>::value &&
-      mgs::concepts::is_iterable<T>::value &&
+      concepts::is_iterable<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
       meta::concepts::iterator::is_iterator<underlying_iterator>::value &&
       meta::concepts::iterator::is_sentinel<underlying_sentinel,
@@ -91,10 +89,10 @@ public:
   }
 };
 
-template <typename T,
-          std::enable_if_t<is_transformed_input_range<T>::value, int> = 0>
+}
+template <
+    typename T,
+    std::enable_if_t<concepts::is_transformed_input_range<T>::value, int> = 0>
 using TransformedInputRange = T;
-}
-}
 }
 }

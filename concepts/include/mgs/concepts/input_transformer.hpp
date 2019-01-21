@@ -2,17 +2,17 @@
 
 #include <tuple>
 
+#include <mgs/concepts/detail/detected/member_functions/get_iterator.hpp>
+#include <mgs/concepts/detail/detected/member_functions/get_sentinel.hpp>
+#include <mgs/concepts/detail/detected/types/buffer_type.hpp>
+#include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
+#include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
+#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
-#include <mgs/ranges/detail/detected/member_functions/get_iterator.hpp>
-#include <mgs/ranges/detail/detected/member_functions/get_sentinel.hpp>
-#include <mgs/ranges/detail/detected/types/buffer_type.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/ranges/detail/detected/types/underlying_sentinel.hpp>
 
 // clang-format off
 //
@@ -31,12 +31,9 @@
 //
 // clang-format on
 
-
 namespace mgs
 {
 inline namespace v1
-{
-namespace ranges
 {
 namespace concepts
 {
@@ -78,7 +75,7 @@ public:
       has_iterator && has_sentinel &&
       meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
-      mgs::concepts::is_iterable<Buffer>::value &&
+      concepts::is_iterable<Buffer>::value &&
       meta::concepts::iterator::is_random_access_iterator<BufferI>::value &&
       meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
@@ -99,7 +96,7 @@ public:
         "T::underlying_sentinel must be a Sentinel<T::underlying_iterator>");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
-    static_assert(mgs::concepts::is_iterable<Buffer>::value,
+    static_assert(concepts::is_iterable<Buffer>::value,
                   "T::buffer_type must be Iterable");
     static_assert(
         meta::concepts::iterator::is_random_access_iterator<BufferI>::value,
@@ -113,11 +110,10 @@ public:
     return 1;
   }
 };
+}
 
 template <typename T,
-          typename = std::enable_if_t<is_input_transformer<T>::value>>
+          typename = std::enable_if_t<concepts::is_input_transformer<T>::value>>
 using InputTransformer = T;
-}
-}
 }
 }

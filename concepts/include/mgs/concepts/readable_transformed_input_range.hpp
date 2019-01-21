@@ -4,9 +4,9 @@
 #include <tuple>
 #include <type_traits>
 
+#include <mgs/concepts/detail/detected/member_functions/read.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
-#include <mgs/ranges/detail/detected/member_functions/read.hpp>
 
 // clang-format off
 // template <typename T, typename O>
@@ -21,8 +21,6 @@
 namespace mgs
 {
 inline namespace v1
-{
-namespace ranges
 {
 namespace concepts
 {
@@ -44,7 +42,7 @@ public:
                                   is_transformed_input_range<T>>;
 
   static constexpr auto const value =
-      is_transformed_input_range<T>::value && has_read_method&&
+      is_transformed_input_range<T>::value && has_read_method &&
       meta::concepts::iterator::is_iterator<O>::value;
 
   constexpr int trigger_static_asserts()
@@ -56,13 +54,12 @@ public:
     return -1;
   }
 };
+}
 
 template <typename T,
           typename O,
           typename = std::enable_if_t<
-              is_readable_transformed_input_range<T, O>::value>>
+              concepts::is_readable_transformed_input_range<T, O>::value>>
 using ReadableTransformedInputRange = T;
-}
-}
 }
 }

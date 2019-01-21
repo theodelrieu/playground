@@ -4,8 +4,8 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/ranges/concepts/input_transformer.hpp>
-#include <mgs/ranges/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/input_transformer.hpp>
 
 // template <typename T>
 // concept SizedInputTransformer = InputTransformer<T> &&
@@ -17,8 +17,6 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace ranges
-{
 namespace concepts
 {
 template <typename T>
@@ -29,7 +27,7 @@ private:
       meta::is_detected_exact<
           std::size_t,
           detail::detected::member_functions::max_transformed_size,
-          T const&>::value;
+          std::add_lvalue_reference_t<std::add_const_t<T>>>::value;
 
 public:
   using requirements = std::tuple<is_input_transformer<T>>;
@@ -47,10 +45,10 @@ public:
   }
 };
 
+}
 template <typename T,
-          typename = std::enable_if_t<is_sized_input_transformer<T>::value>>
+          typename =
+              std::enable_if_t<concepts::is_sized_input_transformer<T>::value>>
 using SizedInputTransformer = T;
-}
-}
 }
 }

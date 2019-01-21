@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <tuple>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
-#include <mgs/ranges/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 
@@ -21,8 +21,6 @@
 namespace mgs
 {
 inline namespace v1
-{
-namespace ranges
 {
 namespace concepts
 {
@@ -53,12 +51,11 @@ public:
     return 1;
   }
 };
+}
 
 template <typename T,
-          typename =
-              std::enable_if_t<is_sized_transformed_input_range<T>::value>>
+          typename = std::enable_if_t<
+              concepts::is_sized_transformed_input_range<T>::value>>
 using SizedTransformedInputRange = T;
-}
-}
 }
 }

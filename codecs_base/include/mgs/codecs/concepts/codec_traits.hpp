@@ -3,12 +3,12 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/codecs/detail/detected/types/default_decoded_output.hpp>
 #include <mgs/codecs/detail/detected/types/default_encoded_output.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
@@ -55,9 +55,9 @@ private:
       meta::detected_t<detail::detected::types::default_decoded_output, T>;
 
   static constexpr auto const is_encoder =
-      ranges::concepts::is_transformed_input_range<Encoder>::value;
+      mgs::concepts::is_transformed_input_range<Encoder>::value;
   static constexpr auto const is_decoder =
-      ranges::concepts::is_transformed_input_range<Decoder>::value;
+      mgs::concepts::is_transformed_input_range<Decoder>::value;
 
   static constexpr auto const is_encoded_codec_output =
       is_codec_output<DefaultEncodedOutput, Encoder>::value;

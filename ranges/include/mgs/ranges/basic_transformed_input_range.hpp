@@ -9,8 +9,8 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
-#include <mgs/ranges/concepts/input_transformer.hpp>
-#include <mgs/ranges/concepts/sized_input_transformer.hpp>
+#include <mgs/concepts/input_transformer.hpp>
+#include <mgs/concepts/sized_input_transformer.hpp>
 #include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 namespace mgs

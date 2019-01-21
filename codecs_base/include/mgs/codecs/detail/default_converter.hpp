@@ -8,6 +8,9 @@
 #include <utility>
 #include <vector>
 
+#include <mgs/concepts/readable_transformed_input_range.hpp>
+#include <mgs/concepts/sized_transformed_input_range.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
@@ -16,9 +19,6 @@
 #include <mgs/meta/detected/types/key_type.hpp>
 #include <mgs/meta/detected/types/size_type.hpp>
 #include <mgs/meta/priority_tag.hpp>
-#include <mgs/ranges/concepts/readable_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 namespace mgs
 {
@@ -30,10 +30,10 @@ namespace detail
 {
 template <typename RandomAccessContainer,
           typename T,
-          typename = ranges::concepts::ReadableTransformedInputRange<
+          typename = mgs::ReadableTransformedInputRange<
               T,
               meta::result_of_begin<RandomAccessContainer&>>,
-          typename = ranges::concepts::SizedTransformedInputRange<T>>
+          typename = mgs::SizedTransformedInputRange<T>>
 RandomAccessContainer fill_random_access_container(T& range,
                                                    meta::priority_tag<1>)
 {
@@ -49,7 +49,7 @@ RandomAccessContainer fill_random_access_container(T& range,
 
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    ranges::concepts::ReadableTransformedInputRange<
+    mgs::ReadableTransformedInputRange<
         T,
         meta::result_of_begin<RandomAccessContainer&>>& range,
     meta::priority_tag<0>)
@@ -91,7 +91,7 @@ private:
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
-  static R create_impl(ranges::concepts::TransformedInputRange<T>& range,
+  static R create_impl(mgs::TransformedInputRange<T>& range,
                        meta::priority_tag<1>)
   {
     return fill_random_access_container<R>(range, meta::priority_tag<1>{});
@@ -101,7 +101,7 @@ private:
   // - can be constructed with an Iterator range
   // - are copy or move constructible
   template <typename T,
-            typename = ranges::concepts::TransformedInputRange<T>,
+            typename = mgs::TransformedInputRange<T>,
             // FIXME require IterableStuff
             typename Iterator = typename T::iterator,
             typename R = Output,
@@ -121,7 +121,7 @@ private:
 
 public:
   template <typename T>
-  static auto create(ranges::concepts::TransformedInputRange<T>& range)
+  static auto create(mgs::TransformedInputRange<T>& range)
       -> decltype(create_impl(range, meta::priority_tag<1>{}))
   {
     return create_impl(range, meta::priority_tag<1>{});
@@ -133,7 +133,7 @@ struct default_converter<std::array<C, N>>
 {
   template <typename T>
   static std::array<C, N> create(
-      ranges::concepts::ReadableTransformedInputRange<T, C*>& range)
+      mgs::ReadableTransformedInputRange<T, C*>& range)
   {
     std::array<C, N> ret;
 

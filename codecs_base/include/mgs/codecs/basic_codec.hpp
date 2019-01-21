@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
@@ -40,17 +40,15 @@ public:
   using default_decoded_output = typename CodecTraits::default_decoded_output;
 
   template <typename Iterator, typename Sentinel>
-  static ranges::concepts::TransformedInputRange<
-      encoder<Iterator, Sentinel>>
-  make_encoder(Iterator begin, Sentinel end)
+  static mgs::TransformedInputRange<encoder<Iterator, Sentinel>> make_encoder(
+      Iterator begin, Sentinel end)
   {
     return CodecTraits::make_encoder(std::move(begin), std::move(end));
   }
 
   template <typename Iterator, typename Sentinel>
-  static ranges::concepts::TransformedInputRange<
-      decoder<Iterator, Sentinel>>
-  make_decoder(Iterator begin, Sentinel end)
+  static mgs::TransformedInputRange<decoder<Iterator, Sentinel>> make_decoder(
+      Iterator begin, Sentinel end)
   {
     return CodecTraits::make_decoder(std::move(begin), std::move(end));
   }
@@ -58,8 +56,8 @@ public:
   template <typename T = default_encoded_output,
             typename Iterator,
             typename Sentinel,
-            typename Encoder = ranges::concepts::TransformedInputRange<
-                encoder<Iterator, Sentinel>>>
+            typename Encoder =
+                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Encoder> encode(Iterator it, Sentinel sent)
   {
     auto enc = CodecTraits::make_encoder(it, sent);
@@ -71,8 +69,8 @@ public:
             typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
-            typename Encoder = ranges::concepts::TransformedInputRange<
-                encoder<Iterator, Sentinel>>>
+            typename Encoder =
+                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Encoder> encode(U const& it)
   {
     using std::begin;
@@ -86,8 +84,8 @@ public:
             typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
-            typename Encoder = ranges::concepts::TransformedInputRange<
-                encoder<Iterator, Sentinel>>>
+            typename Encoder =
+                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Encoder> encode(U& it)
   {
     using std::begin;
@@ -99,8 +97,8 @@ public:
   template <typename T = default_decoded_output,
             typename Iterator,
             typename Sentinel,
-            typename Decoder = ranges::concepts::TransformedInputRange<
-                decoder<Iterator, Sentinel>>>
+            typename Decoder =
+                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Decoder> decode(Iterator it, Sentinel sent)
   {
     auto dec = CodecTraits::make_decoder(std::move(it), std::move(sent));
@@ -112,8 +110,8 @@ public:
             typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
-            typename Decoder = ranges::concepts::TransformedInputRange<
-                decoder<Iterator, Sentinel>>>
+            typename Decoder =
+                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Decoder> decode(U const& it)
   {
     using std::begin;
@@ -127,8 +125,8 @@ public:
             typename Iterable = mgs::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
-            typename Decoder = ranges::concepts::TransformedInputRange<
-                decoder<Iterator, Sentinel>>>
+            typename Decoder =
+                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Decoder> decode(U& it)
   {
     using std::begin;

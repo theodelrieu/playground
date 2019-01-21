@@ -6,7 +6,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace ranges
+namespace concepts
 {
 namespace detail
 {
@@ -15,8 +15,7 @@ namespace detected
 namespace member_functions
 {
 template <typename T, typename... Args>
-using seek_forward =
-    decltype(std::declval<T>().seek_forward(std::declval<Args>()...));
+using get_iterator = decltype(std::declval<T>().get_iterator(std::declval<Args>()...));
 }
 }
 }

@@ -4,7 +4,7 @@
 
 #include <catch.hpp>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/base32.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
@@ -14,20 +14,20 @@
 
 using namespace std::string_literals;
 using namespace mgs;
-namespace range_concepts = ranges::concepts;
+namespace concepts = concepts;
 
 extern std::vector<std::string> testFilePaths;
 
 static_assert(
-    range_concepts::is_transformed_input_range<base32::encoder<char*>>::value,
+    concepts::is_transformed_input_range<base32::encoder<char*>>::value,
     "");
-static_assert(range_concepts::is_transformed_input_range<
+static_assert(concepts::is_transformed_input_range<
                   base32::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(range_concepts::is_transformed_input_range<
+static_assert(concepts::is_transformed_input_range<
                   base32::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(range_concepts::is_transformed_input_range<
+static_assert(concepts::is_transformed_input_range<
                   base32::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -99,11 +99,11 @@ TEST_CASE("base32", "[base32]")
   {
     SECTION("encoder")
     {
-      static_assert(range_concepts::is_sized_transformed_input_range<
+      static_assert(concepts::is_sized_transformed_input_range<
                         base32::encoder<char const*>>::value,
                     "");
       static_assert(
-          !range_concepts::is_sized_transformed_input_range<
+          !concepts::is_sized_transformed_input_range<
               base32::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -126,11 +126,11 @@ TEST_CASE("base32", "[base32]")
 
     SECTION("decoder")
     {
-      static_assert(range_concepts::is_sized_transformed_input_range<
+      static_assert(concepts::is_sized_transformed_input_range<
                         base32::decoder<char const*>>::value,
                     "");
       static_assert(
-          !range_concepts::is_sized_transformed_input_range<
+          !concepts::is_sized_transformed_input_range<
               base32::decoder<std::list<char>::const_iterator>>::value,
           "");
 

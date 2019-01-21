@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/codecs/detail/detected/static_member_functions/create.hpp>
 #include <mgs/codecs/output_traits_fwd.hpp>
 #include <mgs/meta/detected.hpp>
@@ -32,13 +32,11 @@ private:
                               TransformedInputRange&>::value;
 
 public:
-  using requirements =
-      std::tuple<ranges::concepts::is_transformed_input_range<
-          TransformedInputRange>>;
+  using requirements = std::tuple<
+      mgs::concepts::is_transformed_input_range<TransformedInputRange>>;
 
   static constexpr auto const value =
-      ranges::concepts::is_transformed_input_range<
-          TransformedInputRange>::value &&
+      mgs::concepts::is_transformed_input_range<TransformedInputRange>::value &&
       has_create_method;
 
   static constexpr int trigger_static_asserts()

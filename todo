@@ -1,5 +1,6 @@
 code
 
+* put output_fwd.hpp in codecs_base, use codecs_base in concepts and codecs
 * remove conan workspaces, create one repo per recipe
 * do not use aliases for codecs, redefine class
 * move concepts aliases in namespace mgs (+ namespace concepts)
