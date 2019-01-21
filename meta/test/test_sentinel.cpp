@@ -9,7 +9,7 @@
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 #include <mgs/meta/concepts/comparison/strict_totally_ordered.hpp>
 
@@ -64,20 +64,20 @@ TEST_CASE("Sentinel", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_sentinel<void, void>::value, "");
   static_assert(!iterator_concepts::is_sentinel<struct incomplete, incomplete>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sentinel<non_weakly_equality_comparable, char*>,
       std::tuple<comparison_concepts::is_weakly_equality_comparable_with<
           non_weakly_equality_comparable,
           char*>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sentinel<pointer_sentinel, void*>,
       std::tuple<
           iterator_concepts::is_iterator<void*>,
           iterator_concepts::is_iterator_traits<std::iterator_traits<void*>>,
           iterator_concepts::is_weakly_incrementable<void*>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sentinel<non_semiregular, char*>,
       std::tuple<object_concepts::is_semiregular<non_semiregular>>>();
 }

@@ -5,7 +5,7 @@
 #include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace comparison_concepts = concepts::comparison;
@@ -55,7 +55,7 @@ TEST_CASE("WeaklyEqualityComparableWith", "[meta][concepts][comparison]")
                     fake_sentinel,
                     fake_sentinel>::value,
                 "");
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       comparison_concepts::is_weakly_equality_comparable_with<void, void>>();
 }
 
@@ -68,7 +68,7 @@ TEST_CASE("EqualityComparable", "[meta][concepts][comparison]")
   static_assert(
       !comparison_concepts::is_equality_comparable<fake_sentinel>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       comparison_concepts::is_equality_comparable<void>>();
 }
 
@@ -96,12 +96,12 @@ TEST_CASE("EqualityComparableWith", "[meta][concepts][comparison]")
                                                         fake_sentinel>::value,
       "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       comparison_concepts::is_equality_comparable_with<int, fake_iterator>,
       std::tuple<comparison_concepts::
                      is_weakly_equality_comparable_with<int, fake_iterator>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       comparison_concepts::is_equality_comparable_with<int, fake_sentinel>,
       std::tuple<comparison_concepts::is_equality_comparable<fake_sentinel>,
                  comparison_concepts::

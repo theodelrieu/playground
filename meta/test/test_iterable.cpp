@@ -11,7 +11,7 @@
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -72,10 +72,10 @@ TEST_CASE("Iterable", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_iterable<struct incomplete>::value, "");
   static_assert(!iterator_concepts::is_iterable<void>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_iterable<non_iterable>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_iterable<invalid_iterable>,
       std::tuple<iterator_concepts::is_sentinel<invalid_sentinel, char*>,
                  comparison_concepts::is_weakly_equality_comparable_with<

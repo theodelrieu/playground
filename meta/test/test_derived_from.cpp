@@ -4,7 +4,7 @@
 
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace core_concepts = concepts::core;
@@ -34,6 +34,6 @@ TEST_CASE("DerivedFrom", "[meta][concepts][core]")
   static_assert(!core_concepts::is_derived_from<derived, void>::value, "");
   static_assert(!core_concepts::is_derived_from<void, base>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       core_concepts::is_derived_from<int, int>>();
 }

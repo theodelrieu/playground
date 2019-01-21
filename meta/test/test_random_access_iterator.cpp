@@ -7,7 +7,7 @@
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -619,17 +619,17 @@ TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
       !iterator_concepts::is_random_access_iterator<struct incomplete>::value,
       "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_random_access_iterator<
           no_array_subscript_iterator>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_random_access_iterator<
           non_strict_totally_ordered_iterator>,
       std::tuple<comparison_concepts::is_strict_totally_ordered<
           non_strict_totally_ordered_iterator>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_random_access_iterator<
           invalid_free_substraction_iterator>,
       std::tuple<iterator_concepts::is_sized_sentinel<

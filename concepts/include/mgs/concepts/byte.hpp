@@ -19,10 +19,6 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace concepts
 {
 template <typename T>
@@ -43,14 +39,12 @@ struct is_byte
     static_assert(value,
                   "T must be Integral, and it must represent the same number "
                   "of bits as unsigned char");
-    return -1;
+    return 1;
   }
 };
+}
 
-template <typename T, typename = std::enable_if_t<is_byte<T>::value>>
+template <typename T, typename = std::enable_if_t<concepts::is_byte<T>::value>>
 using Byte = T;
-}
-}
-}
 }
 }

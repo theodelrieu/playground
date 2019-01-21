@@ -8,7 +8,7 @@
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace object_concepts = concepts::object;
@@ -53,12 +53,12 @@ TEST_CASE("Regular", "[meta][concepts][object]")
   static_assert(!object_concepts::is_regular<void>::value, "");
   static_assert(!object_concepts::is_regular<struct incomplete>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       object_concepts::is_regular<almost_regular>,
       std::tuple<
           comparison_concepts::is_equality_comparable<almost_regular>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       object_concepts::is_regular<almost_semiregular>,
       std::tuple<object_concepts::is_semiregular<almost_semiregular>>>();
 }

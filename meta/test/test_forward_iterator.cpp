@@ -9,7 +9,7 @@
 #include <mgs/meta/concepts/iterator/incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -91,7 +91,7 @@ TEST_CASE("ForwardIterator", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_forward_iterator<void>::value, "");
   static_assert(!iterator_concepts::is_forward_iterator<struct incomplete>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_forward_iterator<invalid_post_increment_iterator>,
       std::tuple<iterator_concepts::is_incrementable<
           invalid_post_increment_iterator>>>();

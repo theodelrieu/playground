@@ -12,7 +12,7 @@
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -91,14 +91,14 @@ TEST_CASE("SizedSentinel", "[meta][concepts][iterator]")
                                                       incomplete>::value,
                 "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sized_sentinel<pointer_sentinel, char*>>();
 
-  generate_failed_requirements_tests<iterator_concepts::is_sized_sentinel<
+  test_helpers::generate_failed_requirements_tests<iterator_concepts::is_sized_sentinel<
       invalid_difference_type_sized_sentinel,
       char*>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sized_sentinel<non_semiregular, char*>,
       std::tuple<iterator_concepts::is_sentinel<non_semiregular, char*>,
                  object_concepts::is_semiregular<non_semiregular>>>();

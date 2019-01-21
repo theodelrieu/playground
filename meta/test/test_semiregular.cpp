@@ -6,7 +6,7 @@
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace object_concepts = concepts::object;
@@ -107,11 +107,11 @@ TEST_CASE("Semiregular", "[meta][concepts][object]")
   static_assert(!object_concepts::is_semiregular<non_destructible>::value, "");
   static_assert(!object_concepts::is_semiregular<non_swappable>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       object_concepts::is_semiregular<non_swappable>,
       std::tuple<core_concepts::is_swappable<non_swappable>>>();
 
   // other types have a swap overload
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       object_concepts::is_semiregular<non_destructible>>();
 }

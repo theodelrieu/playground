@@ -5,7 +5,10 @@
 
 #include <mgs/meta/static_asserts.hpp>
 
-template <typename Requirement, typename ExpectedFailedRequirements = std::tuple<>>
+namespace test_helpers
+{
+template <typename Requirement,
+          typename ExpectedFailedRequirements = std::tuple<>>
 void generate_failed_requirements_tests()
 {
   using failed_requirements =
@@ -16,4 +19,5 @@ void generate_failed_requirements_tests()
       std::tuple_cat(std::tuple<Requirement>{}, ExpectedFailedRequirements{}));
   static_assert(std::is_same<combined, failed_requirements>::value,
                 "Mismatch when comparing failed requirements");
+}
 }

@@ -5,6 +5,7 @@ from conans.client.command import main as main_conan
 
 PACKAGES = [
     "ranges",
+    "concepts",
     "base16",
     "base32",
     "base32hex",

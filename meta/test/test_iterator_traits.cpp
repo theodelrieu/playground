@@ -7,7 +7,7 @@
 #include <mgs/meta/iterator_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -83,6 +83,6 @@ TEST_CASE("IteratorTraits", "[meta][concepts][iterator]")
   static_assert(
       !iterator_concepts::is_iterator_traits<struct incomplete>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_iterator_traits<int>>();
 }

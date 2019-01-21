@@ -2,6 +2,10 @@ mgs_meta:
     folder: meta
     includedirs: include
 
+mgs_concepts:
+  folder: concepts
+  includedirs: include
+
 mgs_exceptions:
     folder: exceptions
     includedirs: include

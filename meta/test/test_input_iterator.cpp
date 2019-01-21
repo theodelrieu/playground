@@ -9,7 +9,7 @@
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
@@ -76,16 +76,16 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_input_iterator<void>::value, "");
   static_assert(!iterator_concepts::is_input_iterator<struct incomplete>::value, "");
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<int>,
       std::tuple<
           iterator_concepts::is_iterator<int>,
           iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<invalid_reference_iterator>>();
 
-  generate_failed_requirements_tests<
+  test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<void*>,
       std::tuple<
           iterator_concepts::is_iterator<void*>,

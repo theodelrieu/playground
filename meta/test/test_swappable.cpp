@@ -3,7 +3,7 @@
 #include <mgs/meta/concepts/core/swappable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include "meta_test_helpers.hpp"
+#include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
 namespace core_concepts = concepts::core;
@@ -40,5 +40,5 @@ TEST_CASE("Swappable", "[meta][concepts][core]")
   static_assert(!core_concepts::is_swappable<void>::value, "");
   static_assert(!core_concepts::is_swappable<not_swappable>::value, "");
 
-  generate_failed_requirements_tests<core_concepts::is_swappable<void>>();
+  test_helpers::generate_failed_requirements_tests<core_concepts::is_swappable<void>>();
 }
