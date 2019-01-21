@@ -44,8 +44,8 @@ void test_encode(Iterable1 const& it, Iterable2 const& expected)
 
 template <typename Codec,
           typename CodecOutput = typename Codec::default_encoded_output,
-          typename I = void,
-          typename S = void,
+          typename I,
+          typename S,
           typename Iterable>
 void test_encode(I i, S s, Iterable const& expected)
 {
@@ -83,9 +83,9 @@ void test_decode(Iterable1 const& it, Iterable2 const& expected)
 
 template <typename Codec,
           typename CodecOutput = typename Codec::default_decoded_output,
-          typename I = void,
-          typename S = void,
-          typename Iterable = void>
+          typename I,
+          typename S,
+          typename Iterable>
 void test_decode(I i, S s, Iterable const& expected)
 {
   auto const decoded = Codec::template decode<CodecOutput>(i, s);

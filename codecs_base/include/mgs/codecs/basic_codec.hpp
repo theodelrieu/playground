@@ -57,8 +57,8 @@ public:
   }
 
   template <typename T = default_encoded_output,
-            typename Iterator = void,
-            typename Sentinel = void,
+            typename Iterator,
+            typename Sentinel,
             typename Encoder = ranges::concepts::TransformedInputRange<
                 encoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Encoder> encode(Iterator it, Sentinel sent)
@@ -68,7 +68,7 @@ public:
   }
 
   template <typename T = default_encoded_output,
-            typename U = void,
+            typename U,
             typename Iterable = meta::concepts::iterator::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
@@ -83,7 +83,7 @@ public:
   }
 
   template <typename T = default_encoded_output,
-            typename U = void,
+            typename U,
             typename Iterable = meta::concepts::iterator::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
@@ -98,8 +98,8 @@ public:
   }
 
   template <typename T = default_encoded_output,
-            typename CharT = void,
-            typename Traits = void,
+            typename CharT,
+            typename Traits,
             typename Encoder = ranges::concepts::TransformedInputRange<
                 encoder<std::istreambuf_iterator<CharT, Traits>>>>
   static concepts::CodecOutput<T, Encoder> encode(
@@ -110,8 +110,8 @@ public:
   }
 
   template <typename T = default_decoded_output,
-            typename Iterator = void,
-            typename Sentinel = void,
+            typename Iterator,
+            typename Sentinel,
             typename Decoder = ranges::concepts::TransformedInputRange<
                 decoder<Iterator, Sentinel>>>
   static concepts::CodecOutput<T, Decoder> decode(Iterator it, Sentinel sent)
@@ -121,7 +121,7 @@ public:
   }
 
   template <typename T = default_decoded_output,
-            typename U = void,
+            typename U,
             typename Iterable = meta::concepts::iterator::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable const&>,
             typename Sentinel = meta::result_of_end<Iterable const&>,
@@ -136,7 +136,7 @@ public:
   }
 
   template <typename T = default_decoded_output,
-            typename U = void,
+            typename U,
             typename Iterable = meta::concepts::iterator::Iterable<U>,
             typename Iterator = meta::result_of_begin<Iterable&>,
             typename Sentinel = meta::result_of_end<Iterable&>,
@@ -151,8 +151,8 @@ public:
   }
 
   template <typename T = default_decoded_output,
-            typename CharT = void,
-            typename Traits = void,
+            typename CharT,
+            typename Traits,
             typename decoder = ranges::concepts::TransformedInputRange<
                 decoder<std::istreambuf_iterator<CharT, Traits>>>>
   static concepts::CodecOutput<T, decoder> decode(

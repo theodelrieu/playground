@@ -4,13 +4,10 @@ code
 * put seek_forward and get as private, friend iterator, change TransformedInputRange concept, add those two methods as specific requirements of iterator
 * do not use aliases for codecs, redefine class
 * move concepts aliases in namespace mgs (+ namespace concepts)
-* Keep Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
 * variable templates for every concept trait
-* improve and add tests
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * check if iterator is a forward instead of input 
 * remove stream support
-* remove useless default template arguments
 
 doc
 
