@@ -25,17 +25,15 @@ specific-to-codec things to test:
 * Keep Semiregular for TransformedInputRange, add underlying_*() methods in InputTransformer
 * IterableTransformedInputAdapter -> TransformedInputRange
 * Add ReadableTransformedInputRange (with read method inside)
-* do not inherit from runtime_error
 * variable templates for every concept trait
 * improve and add tests
 * Use ForwardIterator with SizedSentinel, instead of RandomAccessIterator
 * TransformerInputRange
-* Redesign tests from scratch
 * check if iterator is a forward instead of input 
-*remove stream support
+* remove stream support
 
 doc
 
 * migrate to readthedocs
 * fix documentation about '\0'
-* note that CharT is there to support future C++20 char8_t
+* put back runtime_error
