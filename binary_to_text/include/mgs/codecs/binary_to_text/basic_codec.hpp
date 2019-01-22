@@ -6,7 +6,6 @@
 #include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>
 #include <mgs/codecs/binary_to_text/detail/max_decoded_size.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
-#include <mgs/codecs/concepts/codec_output.hpp>
 
 namespace mgs
 {

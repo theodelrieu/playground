@@ -2,13 +2,13 @@
 
 #include <utility>
 
-#include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/codecs/concepts/codec_output.hpp>
-#include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
+#include <mgs/concepts/codec_output.hpp>
+#include <mgs/concepts/codec_traits.hpp>
+#include <mgs/concepts/iterable.hpp>
+#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/static_asserts.hpp>
@@ -24,15 +24,11 @@ class basic_codec
 {
 public:
   // TODO private
-  template <typename Iterator,
-            typename Sentinel = Iterator,
-            typename = concepts::CodecTraits<CodecTraits, Iterator, Sentinel>>
+  template <typename Iterator, typename Sentinel = Iterator>
   using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
 
-  template <typename Iterator,
-            typename Sentinel = Iterator,
-            typename = concepts::CodecTraits<CodecTraits, Iterator, Sentinel>>
+  template <typename Iterator, typename Sentinel = Iterator>
   using decoder = decltype(CodecTraits::make_decoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
 
@@ -58,7 +54,7 @@ public:
             typename Sentinel,
             typename Encoder =
                 mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Encoder> encode(Iterator it, Sentinel sent)
+  static mgs::CodecOutput<T, Encoder> encode(Iterator it, Sentinel sent)
   {
     auto enc = CodecTraits::make_encoder(it, sent);
     return output_traits<T>::create(enc);
@@ -71,7 +67,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Encoder =
                 mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Encoder> encode(U const& it)
+  static mgs::CodecOutput<T, Encoder> encode(U const& it)
   {
     using std::begin;
     using std::end;
@@ -86,7 +82,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable&>,
             typename Encoder =
                 mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Encoder> encode(U& it)
+  static mgs::CodecOutput<T, Encoder> encode(U& it)
   {
     using std::begin;
     using std::end;
@@ -99,7 +95,7 @@ public:
             typename Sentinel,
             typename Decoder =
                 mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Decoder> decode(Iterator it, Sentinel sent)
+  static mgs::CodecOutput<T, Decoder> decode(Iterator it, Sentinel sent)
   {
     auto dec = CodecTraits::make_decoder(std::move(it), std::move(sent));
     return output_traits<T>::create(dec);
@@ -112,7 +108,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable const&>,
             typename Decoder =
                 mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Decoder> decode(U const& it)
+  static mgs::CodecOutput<T, Decoder> decode(U const& it)
   {
     using std::begin;
     using std::end;
@@ -127,7 +123,7 @@ public:
             typename Sentinel = meta::result_of_end<Iterable&>,
             typename Decoder =
                 mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
-  static concepts::CodecOutput<T, Decoder> decode(U& it)
+  static mgs::CodecOutput<T, Decoder> decode(U& it)
   {
     using std::begin;
     using std::end;
@@ -140,8 +136,7 @@ public:
             std::size_t N,
             typename = std::enable_if_t<
                 std::is_same<char, std::remove_const_t<CharT>>::value>>
-  static codecs::concepts::CodecOutput<T, encoder<CharT*>> encode(
-      CharT (&tab)[N])
+  static mgs::CodecOutput<T, encoder<CharT*>> encode(CharT (&tab)[N])
   {
     auto const begin_it = std::begin(tab);
     auto const end_it = std::find(begin_it, std::end(tab), '\0');
@@ -153,8 +148,7 @@ public:
             std::size_t N,
             typename = std::enable_if_t<
                 std::is_same<char, std::remove_const_t<CharT>>::value>>
-  static codecs::concepts::CodecOutput<T, decoder<CharT*>> decode(
-      CharT (&tab)[N])
+  static mgs::CodecOutput<T, decoder<CharT*>> decode(CharT (&tab)[N])
   {
     auto const begin_it = std::begin(tab);
     auto const end_it = std::find(begin_it, std::end(tab), '\0');

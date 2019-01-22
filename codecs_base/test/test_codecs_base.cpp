@@ -10,16 +10,16 @@
 #include <utility>
 
 #include <mgs/codecs/basic_codec.hpp>
-#include <mgs/codecs/concepts/codec.hpp>
-#include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
+#include <mgs/concepts/codec.hpp>
+#include <mgs/concepts/codec_output.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
 
-using namespace mgs::codecs;
+using namespace mgs;
 using namespace std::string_literals;
 
 namespace
@@ -146,6 +146,9 @@ struct output_traits<std::vector<T>>
 };
 }
 }
+
+// FIXME
+// static_assert(concepts::is_codec<noop_codec>::value, "");
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {

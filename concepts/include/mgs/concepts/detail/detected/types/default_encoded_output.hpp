@@ -4,7 +4,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace codecs
+namespace concepts
 {
 namespace detail
 {

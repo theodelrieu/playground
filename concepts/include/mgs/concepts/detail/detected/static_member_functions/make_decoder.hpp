@@ -6,7 +6,7 @@ namespace mgs
 {
 inline namespace v1
 {
-namespace codecs
+namespace concepts
 {
 namespace detail
 {
@@ -15,7 +15,7 @@ namespace detected
 namespace static_member_functions
 {
 template <typename T, typename... Args>
-using create = decltype(T::create(std::declval<Args>()...));
+using make_decoder = decltype(T::make_decoder(std::declval<Args>()...));
 }
 }
 }

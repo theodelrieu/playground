@@ -11,3 +11,4 @@ doc
 * migrate to readthedocs
 * fix documentation about '\0'
 * put back runtime_error
+* fix codec traits template args order
