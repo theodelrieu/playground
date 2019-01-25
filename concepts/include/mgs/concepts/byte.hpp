@@ -30,9 +30,9 @@ struct is_byte
 #if __cplusplus >= 201703L
       std::is_same<std::byte, T>::value ||
 #endif
-      std::is_integral<T>::value &&
-          std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed ==
-              std::numeric_limits<unsigned char>::digits;
+      (std::is_integral<T>::value &&
+       std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed ==
+           std::numeric_limits<unsigned char>::digits);
 
   static constexpr int trigger_static_asserts()
   {

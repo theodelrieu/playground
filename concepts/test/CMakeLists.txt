@@ -10,7 +10,7 @@ function(create_concepts_tests)
     ${filenames}
     $<TARGET_OBJECTS:catch_main>
   )
-  target_link_libraries(test_concepts concepts CONAN_PKG::catch2 CONAN_PKG::mgs_meta)
+  target_link_libraries(test_concepts concepts CONAN_PKG::catch2 CONAN_PKG::mgs_meta CONAN_PKG::mgs_test_helpers)
 
   add_test(NAME test_concepts COMMAND test_concepts)
 endfunction()

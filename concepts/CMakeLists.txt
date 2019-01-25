@@ -11,6 +11,13 @@ target_include_directories(concepts INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
+include(CTest)
+
+if (BUILD_TESTING)
+  enable_testing()
+  add_subdirectory(test)
+endif()
+
 include(MgsExportAndInstallTarget)
 
 mgs_export_and_install_target(concepts)

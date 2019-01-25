@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
 add_executable(test_transformed_input_range_iterator test_transformed_input_range_iterator.cpp $<TARGET_OBJECTS:catch_main>)
-target_link_libraries(test_transformed_input_range_iterator ranges CONAN_PKG::catch2)
+target_link_libraries(test_transformed_input_range_iterator ranges CONAN_PKG::mgs_test_helpers)
 
 add_test(NAME test_transformed_input_range_iterator COMMAND test_transformed_input_range_iterator)

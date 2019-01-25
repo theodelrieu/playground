@@ -1,5 +1,6 @@
 code
 
+* test concepts
 * remove conan workspaces, create one repo per recipe
 * do not use aliases for codecs, redefine class
 * move concepts aliases in namespace mgs (+ namespace concepts)
