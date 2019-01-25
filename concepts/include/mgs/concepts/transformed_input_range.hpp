@@ -8,6 +8,7 @@
 #include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
 #include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/call_std/begin.hpp>
+#include <mgs/meta/concepts/core/constructible.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
@@ -55,7 +56,8 @@ private:
       meta::detected_t<detail::detected::types::underlying_sentinel, T>;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      std::is_constructible<T, underlying_iterator, underlying_sentinel>::value;
+      meta::concepts::core::
+          is_constructible<T, underlying_iterator, underlying_sentinel>::value;
 
 public:
   using requirements =

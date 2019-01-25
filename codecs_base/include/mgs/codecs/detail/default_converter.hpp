@@ -13,6 +13,7 @@
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
+#include <mgs/meta/concepts/core/constructible.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/member_functions/resize.hpp>
@@ -87,7 +88,7 @@ private:
             typename = std::enable_if_t<
                 meta::concepts::iterator::is_random_access_iterator<
                     meta::result_of_begin<R&>>::value &&
-                std::is_default_constructible<R>::value &&
+                meta::concepts::core::is_constructible<R>::value &&
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
@@ -108,7 +109,8 @@ private:
             typename = std::enable_if_t<
                 (std::is_copy_constructible<R>::value ||
                  std::is_move_constructible<R>::value) &&
-                std::is_constructible<R, Iterator, Iterator>::value &&
+                meta::concepts::core::is_constructible<R, Iterator, Iterator>::
+                    value &&
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>

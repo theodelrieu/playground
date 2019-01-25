@@ -10,15 +10,18 @@
 #include <mgs/concepts/iterable.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
+#include <mgs/meta/concepts/core/constructible.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
+#include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
 
 // clang-format off
 //
 // template <typename T>
-// concept InputTransformer = requires(T& v, T const& cv, typename T::buffer_type& b) {
-//   Iterator<typename T::underlying_iterator>;
+// concept InputTransformer = std::Semiregular<T> &&
+// requires(T& v, T const& cv, typename T::buffer_type& b) {
+//   InputIterator<typename T::underlying_iterator>;
 //   Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
 //   Iterable<typename T::buffer_type>;
 //   Constructible<typename T::underlying_iterator, typename T::underlying_sentinel>;
@@ -66,14 +69,20 @@ private:
                               t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      std::is_constructible<T, I, S>::value;
+      meta::concepts::core::is_constructible<T, I, S>::value;
 
 public:
-  using requirements = std::tuple<>;
+  using requirements =
+      std::tuple<meta::concepts::object::is_semiregular<T>,
+                 meta::concepts::iterator::is_input_iterator<I>,
+                 meta::concepts::iterator::is_sentinel<S, I>,
+                 meta::concepts::iterator::is_random_access_iterator<BufferI>,
+                 meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>,
+                 concepts::is_iterable<Buffer>>;
 
   static constexpr auto const value =
-      has_iterator && has_sentinel &&
-      meta::concepts::iterator::is_iterator<I>::value &&
+      meta::concepts::object::is_semiregular<T>::value && has_iterator &&
+      has_sentinel && meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
       concepts::is_iterable<Buffer>::value &&
       meta::concepts::iterator::is_random_access_iterator<BufferI>::value &&
@@ -89,21 +98,8 @@ public:
     static_assert(has_sentinel,
                   "Invalid or missing function: 'underlying_sentinel "
                   "T::get_sentinel() const'");
-    static_assert(meta::concepts::iterator::is_iterator<I>::value,
-                  "T::underlying_iterator must be an Iterator");
-    static_assert(
-        meta::concepts::iterator::is_sentinel<S, I>::value,
-        "T::underlying_sentinel must be a Sentinel<T::underlying_iterator>");
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
-    static_assert(concepts::is_iterable<Buffer>::value,
-                  "T::buffer_type must be Iterable");
-    static_assert(
-        meta::concepts::iterator::is_random_access_iterator<BufferI>::value,
-        "begin(T::buffer_type) must return a RandomAccessIterator");
-    static_assert(
-        meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>::value,
-        "end(T::buffer_type) must return a SizedSentinel");
     static_assert(
         has_function_call_op,
         "Invalid or missing function: 'void T::operator()(T::buffer_type&)'");

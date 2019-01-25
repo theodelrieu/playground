@@ -18,6 +18,7 @@ endfunction()
 create_meta_tests(
   bidirectional_iterator
   complete_type
+  constructible
   derived_from
   detected
   equality_comparable
