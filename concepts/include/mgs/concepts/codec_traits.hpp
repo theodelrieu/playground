@@ -46,16 +46,16 @@ template <typename T,
               meta::detected_t<meta::result_of_begin,
                                detail::default_encoded_output_lvalue_ref<T>>,
           typename S1 =
-              meta::detected_or<I1,
-                                meta::result_of_end,
-                                detail::default_encoded_output_lvalue_ref<T>>,
+              meta::detected_or_t<I1,
+                                  meta::result_of_end,
+                                  detail::default_encoded_output_lvalue_ref<T>>,
           typename I2 =
               meta::detected_t<meta::result_of_begin,
                                detail::default_decoded_output_lvalue_ref<T>>,
           typename S2 =
-              meta::detected_or<I2,
-                                meta::result_of_end,
-                                detail::default_decoded_output_lvalue_ref<T>>>
+              meta::detected_or_t<I2,
+                                  meta::result_of_end,
+                                  detail::default_decoded_output_lvalue_ref<T>>>
 struct is_codec_traits
 {
 private:
@@ -120,14 +120,14 @@ template <typename T,
           typename I1 = meta::detected_t<
               meta::result_of_begin,
               concepts::detail::default_encoded_output_lvalue_ref<T>>,
-          typename S1 = meta::detected_or<
+          typename S1 = meta::detected_or_t<
               I1,
               meta::result_of_end,
               concepts::detail::default_encoded_output_lvalue_ref<T>>,
           typename I2 = meta::detected_t<
               meta::result_of_begin,
               concepts::detail::default_decoded_output_lvalue_ref<T>>,
-          typename S2 = meta::detected_or<
+          typename S2 = meta::detected_or_t<
               I2,
               meta::result_of_end,
               concepts::detail::default_decoded_output_lvalue_ref<T>>,

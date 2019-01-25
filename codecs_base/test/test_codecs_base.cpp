@@ -147,8 +147,7 @@ struct output_traits<std::vector<T>>
 }
 }
 
-// FIXME
-// static_assert(concepts::is_codec<noop_codec>::value, "");
+static_assert(concepts::is_codec<noop_codec>::value, "");
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {

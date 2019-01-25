@@ -45,7 +45,7 @@ public:
       is_transformed_input_range<T>::value && has_read_method &&
       meta::concepts::iterator::is_iterator<O>::value;
 
-  constexpr int trigger_static_asserts()
+  static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not a ReadableTransformedInputRange");
     static_assert(has_read_method,

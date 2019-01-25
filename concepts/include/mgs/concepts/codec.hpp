@@ -59,25 +59,20 @@ inline namespace v1
 {
 namespace concepts
 {
-template <typename T,
-          typename A1 = detail::default_decoded_output<T>,
-          typename A2 = detail::default_encoded_output<T>,
-          typename R1 = detail::default_encoded_output<T>,
-          typename R2 = detail::default_decoded_output<T>,
-          typename I1 =
-              meta::detected_t<meta::result_of_begin,
-                               detail::default_encoded_output_lvalue_ref<T>>,
-          typename I2 =
-              meta::detected_t<meta::result_of_begin,
-                               detail::default_decoded_output_lvalue_ref<T>>,
-          typename S1 =
-              meta::detected_or<I1,
-                                meta::result_of_end,
-                                detail::default_encoded_output_lvalue_ref<T>>,
-          typename S2 =
-              meta::detected_or<I2,
-                                meta::result_of_end,
-                                detail::default_decoded_output_lvalue_ref<T>>>
+template <
+    typename T,
+    typename A1 = detail::default_decoded_output<T>,
+    typename A2 = detail::default_encoded_output<T>,
+    typename R1 = detail::default_encoded_output<T>,
+    typename R2 = detail::default_decoded_output<T>,
+    typename I1 = meta::detected_t<meta::result_of_begin,
+                                   std::add_lvalue_reference_t<A1>>,
+    typename I2 = meta::detected_t<meta::result_of_begin,
+                                   std::add_lvalue_reference_t<A2>>,
+    typename S1 = meta::
+        detected_or_t<I1, meta::result_of_end, std::add_lvalue_reference_t<A1>>,
+    typename S2 = meta::
+        detected_or_t<I2, meta::result_of_end, std::add_lvalue_reference_t<A2>>>
 struct is_codec
 {
 private:
@@ -113,7 +108,7 @@ private:
                        EncodeInput>;
 
   using EncodeIteratorsTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::encode,
+      meta::detected_t<detail::detected::static_member_functions::encode_tpl,
                        T,
                        R1,
                        I1,
@@ -134,7 +129,7 @@ private:
                        DecodeInput>;
 
   using DecodeIteratorsTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::decode,
+      meta::detected_t<detail::detected::static_member_functions::decode_tpl,
                        T,
                        R2,
                        I2,
@@ -158,30 +153,36 @@ private:
   static constexpr auto const has_template_decoded_output =
       is_codec_output<R2, Decoder>::value;
 
-  // Those could be false positives if both operands are meta::nonesuch.
-  // But other checks would fail anyway
   static constexpr auto const has_encode_iterators_default_result =
+      !std::is_same<EncodeIteratorsDefaultResult, meta::nonesuch>::value &&
       std::is_same<EncodeIteratorsDefaultResult, DefaultEncodedOutput>::value;
 
   static constexpr auto const has_encode_default_result =
+      !std::is_same<EncodeDefaultResult, meta::nonesuch>::value &&
       std::is_same<EncodeDefaultResult, DefaultEncodedOutput>::value;
 
   static constexpr auto const has_encode_iterators_template_result =
+      !std::is_same<EncodeIteratorsTemplateResult, meta::nonesuch>::value &&
       std::is_same<EncodeIteratorsTemplateResult, R1>::value;
 
   static constexpr auto const has_encode_template_result =
+      !std::is_same<EncodeTemplateResult, meta::nonesuch>::value &&
       std::is_same<EncodeTemplateResult, R1>::value;
 
   static constexpr auto const has_decode_iterators_default_result =
+      !std::is_same<DecodeIteratorsDefaultResult, meta::nonesuch>::value &&
       std::is_same<DecodeIteratorsDefaultResult, DefaultDecodedOutput>::value;
 
   static constexpr auto const has_decode_default_result =
+      !std::is_same<DecodeDefaultResult, meta::nonesuch>::value &&
       std::is_same<DecodeDefaultResult, DefaultDecodedOutput>::value;
 
   static constexpr auto const has_decode_iterators_template_result =
+      !std::is_same<DecodeIteratorsTemplateResult, meta::nonesuch>::value &&
       std::is_same<DecodeIteratorsTemplateResult, R2>::value;
 
   static constexpr auto const has_decode_template_result =
+      !std::is_same<DecodeTemplateResult, meta::nonesuch>::value &&
       std::is_same<DecodeTemplateResult, R2>::value;
 
 public:
@@ -204,36 +205,66 @@ public:
       has_decode_default_result && has_decode_iterators_template_result &&
       has_decode_template_result;
 
-  constexpr int trigger_static_asserts()
+  static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not a Codec");
-    // TODO
+
+    static_assert(
+        has_make_encoder,
+        "'T::make_encoder(I1, S1)' must return a TransformedInputRange");
+    static_assert(
+        has_make_decoder,
+        "'T::make_decoder(I2, S2)' must return a TransformedInputRange");
+
+    static_assert(has_default_encoded_output,
+                  "'T::default_encoded_output' must be a CodecOutput<Encoder>");
+    static_assert(has_default_decoded_output,
+                  "'T::default_decoded_output' must be a CodecOutput<Decoder>");
+    static_assert(has_template_encoded_output,
+                  "'R1' must be a CodecOutput<Encoder>");
+    static_assert(has_template_decoded_output,
+                  "'R2' must be a CodecOutput<Decoder>");
+
+    static_assert(
+        has_encode_iterators_default_result,
+        "'T::encode(I1, S1)' must return 'T::default_encoded_output'");
+    static_assert(
+        has_decode_iterators_default_result,
+        "'T::decode(I2, S2)' must return 'T::default_decoded_output'");
+    static_assert(has_encode_iterators_template_result,
+                  "'T::encode<R1>(I1, S1)' must return 'R1'");
+    static_assert(has_decode_iterators_template_result,
+                  "'T::decode<R2>(I2, S2)' must return 'R2'");
+
+    static_assert(has_encode_default_result,
+                  "'T::encode(A1&)' must return 'T::default_encoded_output'");
+    static_assert(has_decode_default_result,
+                  "'T::decode(A2&)' must return 'T::default_decoded_output'");
+    static_assert(has_encode_template_result,
+                  "'T::encode<R1>(A1&)' must return 'R1'");
+    static_assert(has_decode_template_result,
+                  "'T::decode<R2>(A2&)' must return 'R2'");
     return 1;
   }
 };
 }
 
-template <typename T,
-          typename A1 = concepts::detail::default_decoded_output<T>,
-          typename A2 = concepts::detail::default_encoded_output<T>,
-          typename R1 = concepts::detail::default_encoded_output<T>,
-          typename R2 = concepts::detail::default_decoded_output<T>,
-          typename I1 = meta::detected_t<
-              meta::result_of_begin,
-              concepts::detail::default_encoded_output_lvalue_ref<T>>,
-          typename I2 = meta::detected_t<
-              meta::result_of_begin,
-              concepts::detail::default_decoded_output_lvalue_ref<T>>,
-          typename S1 = meta::detected_or<
-              I1,
-              meta::result_of_end,
-              concepts::detail::default_encoded_output_lvalue_ref<T>>,
-          typename S2 = meta::detected_or<
-              I2,
-              meta::result_of_end,
-              concepts::detail::default_decoded_output_lvalue_ref<T>>,
-          typename = std::enable_if_t<
-              concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
+template <
+    typename T,
+    typename A1 = concepts::detail::default_decoded_output<T>,
+    typename A2 = concepts::detail::default_encoded_output<T>,
+    typename R1 = concepts::detail::default_encoded_output<T>,
+    typename R2 = concepts::detail::default_decoded_output<T>,
+    typename I1 = meta::detected_t<meta::result_of_begin,
+                                   std::add_lvalue_reference_t<A1>>,
+    typename I2 = meta::detected_t<meta::result_of_begin,
+                                   std::add_lvalue_reference_t<A2>>,
+    typename S1 = meta::
+        detected_or_t<I1, meta::result_of_end, std::add_lvalue_reference_t<A1>>,
+    typename S2 = meta::
+        detected_or_t<I2, meta::result_of_end, std::add_lvalue_reference_t<A2>>,
+    typename = std::enable_if_t<
+        concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
 using Codec = T;
 }
 }

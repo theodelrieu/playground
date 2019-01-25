@@ -42,7 +42,7 @@ public:
   static constexpr auto const value =
       is_transformed_input_range<T>::value && has_max_transformed_size;
 
-  constexpr int trigger_static_asserts()
+  static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not a SizedTransformedInputRange");
     static_assert(has_max_transformed_size,
