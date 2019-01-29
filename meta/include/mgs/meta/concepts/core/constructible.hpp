@@ -20,23 +20,29 @@ namespace core
 {
 namespace detail
 {
+template <typename T>
+struct is_valid_is_constructible_type
+{
+  static constexpr auto const value =
+      (std::is_object<T>::value && core::is_complete_type<T>::value) ||
+      std::is_array<T>::value || std::is_reference<T>::value ||
+      std::is_void<T>::value;
+};
+
 template <typename T, typename TupleArgs, typename = void>
 struct is_constructible_impl : std::false_type
 {
 };
 
-template <typename T, typename ...Args>
-using detect_constructible = decltype(T(std::declval<Args>()...));
-
 template <typename T, typename... Args>
 struct is_constructible_impl<
     T,
     std::tuple<Args...>,
-    std::enable_if_t<(std::is_object<T>::value ||
-                      std::is_reference<T>::value) &&
-                     is_detected<detect_constructible, T, Args...>::value>>
-  : std::true_type
+    meta::void_t<
+        std::enable_if_t<is_valid_is_constructible_type<T>::value>,
+        std::enable_if_t<is_valid_is_constructible_type<Args>::value>...>>
 {
+  static constexpr auto const value = std::is_constructible<T, Args...>::value;
 };
 }
 
