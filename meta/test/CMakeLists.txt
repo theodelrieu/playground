@@ -17,6 +17,7 @@ endfunction()
 
 create_meta_tests(
   bidirectional_iterator
+  common_reference
   complete_type
   constructible
   derived_from
