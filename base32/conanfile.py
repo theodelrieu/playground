@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsBase32(ConanFile):
     name = "mgs_base32"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
 

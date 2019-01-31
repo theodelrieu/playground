@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsCodecsBase(ConanFile):
     name = "mgs_codecs_base"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
 

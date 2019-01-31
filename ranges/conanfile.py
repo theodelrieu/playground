@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsRanges(ConanFile):
     name = "mgs_ranges"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"

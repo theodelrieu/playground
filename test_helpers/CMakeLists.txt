@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
-project(test_helpers VERSION 0.1 LANGUAGES CXX)
+project(test_helpers VERSION 0.1.0 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)

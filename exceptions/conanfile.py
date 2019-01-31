@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsExceptions(ConanFile):
     name = "mgs_exceptions"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"

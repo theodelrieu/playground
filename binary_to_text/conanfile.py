@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsBinaryToText(ConanFile):
     name = "mgs_binary_to_text"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"

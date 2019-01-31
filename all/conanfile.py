@@ -2,7 +2,7 @@ from conans import ConanFile
 
 class ConanMgsAll(ConanFile):
     name = "mgs"
-    version = "0.1"
+    version = "0.1.0"
 
     def requirements(self):
         self.requires("mgs_binary_to_text/%s@mgs/testing" % self.version)

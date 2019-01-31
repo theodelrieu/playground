@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsTestHelpers(ConanFile):
     name = "mgs_test_helpers"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt", "src/*"
 

@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class ConanMgsMeta(ConanFile):
     name = "mgs_meta"
-    version = "0.1"
+    version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"
