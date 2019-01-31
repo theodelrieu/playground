@@ -1,8 +1,4 @@
 #include <iterator>
-#include <list>
-#include <string>
-#include <tuple>
-#include <vector>
 
 #include <catch.hpp>
 
@@ -33,13 +29,137 @@ struct valid_range
   iterator begin();
   iterator end();
 };
+
+struct non_semiregular_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = iterator;
+
+  non_semiregular_range(underlying_iterator, underlying_sentinel);
+
+  iterator begin();
+  iterator end();
+};
+
+struct non_iterable_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = iterator;
+
+  non_iterable_range() = default;
+  non_iterable_range(underlying_iterator, underlying_sentinel);
+
+  iterator begin();
+};
+
+struct no_iterator_range
+{
+  using underlying_iterator = char const*;
+  using underlying_sentinel = char const*;
+
+  no_iterator_range() = default;
+  no_iterator_range(underlying_iterator, underlying_sentinel);
+
+  char const* begin();
+  char const* end();
+};
+
+struct no_underlying_iterator_range
+{
+  using iterator = char const*;
+  using underlying_sentinel = iterator;
+
+  no_underlying_iterator_range() = default;
+  no_underlying_iterator_range(iterator, underlying_sentinel);
+
+  iterator begin();
+  iterator end();
+};
+
+struct no_underlying_sentinel_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+
+  no_underlying_sentinel_range() = default;
+  no_underlying_sentinel_range(underlying_iterator, iterator);
+
+  iterator begin();
+  iterator end();
+};
+
+struct non_constructible_from_iterator_sentinel_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = iterator;
+
+  non_constructible_from_iterator_sentinel_range() = default;
+
+  iterator begin();
+  iterator end();
+};
+
+struct invalid_underlying_sentinel_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = std::istreambuf_iterator<char>;
+
+  invalid_underlying_sentinel_range() = default;
+  invalid_underlying_sentinel_range(underlying_iterator, underlying_sentinel);
+
+  iterator begin();
+  iterator end();
+};
+
+struct invalid_iterator_range
+{
+  using iterator = std::ostreambuf_iterator<char>;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = iterator;
+
+  invalid_iterator_range() = default;
+  invalid_iterator_range(underlying_iterator, underlying_sentinel);
+
+  iterator begin();
+  iterator end();
+};
 }
 
 TEST_CASE("TransformedInputRange", "[concepts]")
 {
   static_assert(concepts::is_transformed_input_range<valid_range>::value, "");
 
-  static_assert(!concepts::is_transformed_input_range<struct incomplete>::value, "");
+  static_assert(!concepts::is_transformed_input_range<struct incomplete>::value,
+                "");
   static_assert(!concepts::is_transformed_input_range<void>::value, "");
   static_assert(!concepts::is_transformed_input_range<void*>::value, "");
+
+  static_assert(
+      !concepts::is_transformed_input_range<non_semiregular_range>::value, "");
+  static_assert(
+      !concepts::is_transformed_input_range<non_iterable_range>::value, "");
+  static_assert(!concepts::is_transformed_input_range<no_iterator_range>::value,
+                "");
+  static_assert(!concepts::is_transformed_input_range<
+                    no_underlying_iterator_range>::value,
+                "");
+  static_assert(!concepts::is_transformed_input_range<
+                    no_underlying_sentinel_range>::value,
+                "");
+  static_assert(!concepts::is_transformed_input_range<
+                    non_constructible_from_iterator_sentinel_range>::value,
+                "");
+  static_assert(!concepts::is_transformed_input_range<
+                    invalid_underlying_sentinel_range>::value,
+                "");
+  static_assert(
+      !concepts::is_transformed_input_range<invalid_iterator_range>::value, "");
+
+  test_helpers::generate_failed_requirements_tests<
+      concepts::is_transformed_input_range<non_semiregular_range>,
+      std::tuple<object_concepts::is_semiregular<non_semiregular_range>>>();
 }
