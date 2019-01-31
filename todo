@@ -1,5 +1,6 @@
 code
 
+* add common_reference, CommonReference, Readable, Writable, OutputIterator (sigh)
 * test concepts
 * remove conan workspaces, create one repo per recipe
 * do not use aliases for codecs, redefine class
