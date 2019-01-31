@@ -20,5 +20,6 @@ create_concepts_tests(
   input_transformer
   iterable
   sized_input_transformer
+  sized_transformed_input_range
   transformed_input_range
 )
