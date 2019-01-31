@@ -19,4 +19,5 @@ create_concepts_tests(
   byte
   input_transformer
   iterable
+  sized_input_transformer
 )

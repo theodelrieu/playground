@@ -10,7 +10,7 @@
 // template <typename T>
 // concept SizedInputTransformer = InputTransformer<T> &&
 //   requires(T const& v) {
-//     { v.max_transformed_size() } -> std::size_t;
+//     { v.max_transformed_size() } -> std::Same<std::size_t>;
 //   }
 
 namespace mgs
