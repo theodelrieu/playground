@@ -19,6 +19,7 @@ create_meta_tests(
   bidirectional_iterator
   common_reference
   complete_type
+  convertible_to
   constructible
   derived_from
   detected
