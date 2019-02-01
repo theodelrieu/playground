@@ -57,7 +57,7 @@ struct readable_traits_impl<
 template <typename T>
 struct readable_traits_impl<
     T,
-    std::enable_if_t<is_detected<detected::types::element_type, T>::element>>
+    std::enable_if_t<is_detected<detected::types::element_type, T>::value>>
   : cond_value_type<detected_t<detected::types::element_type, T>>
 {
 };
