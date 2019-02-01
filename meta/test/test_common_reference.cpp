@@ -22,6 +22,14 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
 {
   static_assert(!is_detected<detected::types::type, common_reference<>>::value,
                 "");
+  static_assert(!is_detected<detected::types::type, common_reference<int, void const>>::value,
+                "");
+  static_assert(!is_detected<detected::types::type, common_reference<int, char[]>>::value,
+                "");
+  static_assert(!is_detected<detected::types::type,
+                             common_reference<int, struct incomplete>>::value,
+                "");
+
   static_assert(std::is_same<common_reference<int>::type, int>::value, "");
   static_assert(std::is_same<common_reference<int, int>::type, int>::value, "");
   static_assert(std::is_same<common_reference<int, int, int>::type, int>::value, "");
@@ -30,37 +38,62 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
                              int const volatile&>::value,
                 "");
 
-    static_assert(std::is_same<common_reference_t<B &, D &>, B &>::value, "");
-    static_assert(std::is_same<common_reference_t<B &, D const &>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B &, D const &, D &>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B const &, D &>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B &, D &, B &, D &>, B &>::value, "");
+  static_assert(std::is_same<common_reference_t<B&, D&>, B&>::value, "");
+  static_assert(std::is_same<common_reference_t<B&, D const&>, B const&>::value,
+                "");
+  static_assert(
+      std::is_same<common_reference_t<B&, D const&, D&>, B const&>::value, "");
+  static_assert(std::is_same<common_reference_t<B const&, D&>, B const&>::value,
+                "");
+  static_assert(std::is_same<common_reference_t<B&, D&, B&, D&>, B&>::value,
+                "");
 
-    static_assert(std::is_same<common_reference_t<B &&, D &&>, B &&>::value, "");
-    static_assert(std::is_same<common_reference_t<B const &&, D &&>, B const &&>::value, "");
-    static_assert(std::is_same<common_reference_t<B &&, D const &&>, B const &&>::value, "");
+  static_assert(std::is_same<common_reference_t<B&&, D&&>, B&&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B const&&, D&&>, B const&&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B&&, D const&&>, B const&&>::value, "");
 
-    static_assert(std::is_same<common_reference_t<B &, D &&>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B &, D const &&>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B const &, D &&>, B const &>::value, "");
+  static_assert(std::is_same<common_reference_t<B&, D&&>, B const&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B&, D const&&>, B const&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B const&, D&&>, B const&>::value, "");
 
-    static_assert(std::is_same<common_reference_t<B &&, D &>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B &&, D const &>, B const &>::value, "");
-    static_assert(std::is_same<common_reference_t<B const &&, D &>, B const &>::value, "");
+  static_assert(std::is_same<common_reference_t<B&&, D&>, B const&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B&&, D const&>, B const&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<B const&&, D&>, B const&>::value, "");
 
-    static_assert(std::is_same<common_reference_t<int, short>, int>::value, "");
-    static_assert(std::is_same<common_reference_t<int, short &>, int>::value, "");
-    static_assert(std::is_same<common_reference_t<int &, short &>, int>::value, "");
-    static_assert(std::is_same<common_reference_t<int &, short>, int>::value, "");
+  static_assert(std::is_same<common_reference_t<int, short>, int>::value, "");
+  static_assert(std::is_same<common_reference_t<int, short&>, int>::value, "");
+  static_assert(std::is_same<common_reference_t<int&, short&>, int>::value, "");
+  static_assert(std::is_same<common_reference_t<int&, short>, int>::value, "");
 
-    // tricky volatile reference case
-    static_assert(std::is_same<common_reference_t<int &&, int volatile &>, int>::value, "");
-    static_assert(std::is_same<common_reference_t<int volatile &, int &&>, int>::value, "");
-    static_assert(std::is_same<common_reference_t<int const volatile &&, int volatile &&>, int const volatile &&>::value, "");
-    static_assert(std::is_same<common_reference_t<int &&, int const &, int volatile &>, int const volatile &>(), "");
+  // tricky volatile reference case
+  static_assert(
+      std::is_same<common_reference_t<int&&, int volatile&>, int>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<int volatile&, int&&>, int>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<int const volatile&&, int volatile&&>,
+                   int const volatile&&>::value,
+      "");
+  static_assert(
+      std::is_same<common_reference_t<int&&, int const&, int volatile&>,
+                   int const volatile&>(),
+      "");
 
-    // Array types?? Yup!
-    static_assert(std::is_same<common_reference_t<int (&)[10], int (&&)[10]>, int const(&)[10]>::value, "");
-    static_assert(std::is_same<common_reference_t<int const (&)[10], int volatile (&)[10]>, int const volatile(&)[10]>::value, "");
-    static_assert(std::is_same<common_reference_t<int (&)[10], int (&)[11]>, int *>::value, "");
+  // Array types?? Yup!
+  static_assert(std::is_same<common_reference_t<int(&)[10], int(&&)[10]>,
+                             int const(&)[10]>::value,
+                "");
+  static_assert(
+      std::is_same<common_reference_t<int const(&)[10], int volatile(&)[10]>,
+                   int const volatile(&)[10]>::value,
+      "");
+  static_assert(
+      std::is_same<common_reference_t<int(&)[10], int(&)[11]>, int*>::value,
+      "");
 }

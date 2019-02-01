@@ -13,7 +13,6 @@ struct common_reference : detail::common_reference<Ts...>
 {
 };
 
-// TODO handle non complete type
 template <typename... Ts>
 using common_reference_t = typename common_reference<Ts...>::type;
 }
