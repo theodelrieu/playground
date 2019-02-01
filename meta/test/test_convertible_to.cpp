@@ -25,8 +25,6 @@ struct C
 };
 }
 
-void f(int (&f2)[]);
-
 TEST_CASE("ConvertibleTo", "[meta][concepts][core]")
 {
   static_assert(core_concepts::is_convertible_to<void, void>::value, "");

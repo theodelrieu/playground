@@ -36,6 +36,8 @@ struct has_common_reference_impl : std::false_type
   }
 };
 
+template <typename T>
+struct S;
 template <typename T, typename U>
 struct has_common_reference_impl<
     T,
@@ -45,6 +47,7 @@ struct has_common_reference_impl<
 private:
   using CommonRefTU = common_reference_t<T, U>;
   using CommonRefUT = common_reference_t<U, T>;
+  // S<CommonRefTU> s;
 
 public:
   static constexpr auto const value =
