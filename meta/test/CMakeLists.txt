@@ -30,6 +30,7 @@ create_meta_tests(
   iterator
   iterator_traits
   random_access_iterator
+  readable_traits
   regular
   semiregular
   sentinel
