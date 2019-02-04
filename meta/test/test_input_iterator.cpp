@@ -5,6 +5,7 @@
 
 #include <catch.hpp>
 
+#include <mgs/meta/concepts/core/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
@@ -13,6 +14,7 @@
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
+namespace core_concepts = concepts::core;
 
 namespace
 {
@@ -78,17 +80,21 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<int>,
-      std::tuple<
-          iterator_concepts::is_iterator<int>,
-          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>>();
+      std::tuple<iterator_concepts::is_iterator<int>,
+                 core_concepts::is_dereferenceable<int>,
+                 iterator_concepts::is_readable<int>>>();
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_input_iterator<invalid_reference_iterator>>();
+      iterator_concepts::is_input_iterator<invalid_reference_iterator>,
+      std::tuple<
+          iterator_concepts::is_readable<invalid_reference_iterator>,
+          core_concepts::has_common_reference<std::string&&, int&>,
+          core_concepts::has_common_reference<std::string&&, int const&>>>();
 
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<void*>,
-      std::tuple<
-          iterator_concepts::is_iterator<void*>,
-          iterator_concepts::is_iterator_traits<std::iterator_traits<void*>>,
-          iterator_concepts::is_weakly_incrementable<void*>>>();
+      std::tuple<iterator_concepts::is_iterator<void*>,
+                 core_concepts::is_dereferenceable<void*>,
+                 iterator_concepts::is_weakly_incrementable<void*>,
+                 iterator_concepts::is_readable<void*>>>();
 }

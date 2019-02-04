@@ -3,6 +3,7 @@
 
 #include <catch.hpp>
 
+#include <mgs/meta/concepts/core/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/iterator_traits.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
@@ -12,6 +13,7 @@
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
+namespace core_concepts = concepts::core;
 
 namespace
 {
@@ -24,8 +26,8 @@ struct output_iterator
   using iterator_category = std::output_iterator_tag;
 
   output_iterator& operator++();
-  void operator++(int);
-  void operator*();
+  output_iterator& operator++(int);
+  output_iterator& operator*();
 };
 
 struct non_dereferencable_iterator
@@ -38,6 +40,7 @@ struct non_dereferencable_iterator
 
   non_dereferencable_iterator& operator++();
   non_dereferencable_iterator& operator++(int);
+  void operator*();
 };
 
 struct non_weakly_incrementable_iterator
@@ -54,6 +57,7 @@ struct non_weakly_incrementable_iterator
 
 TEST_CASE("Iterator", "[meta][concepts][iterator]")
 {
+  static_assert(concepts::core::is_dereferenceable<char *>::value, "");
   static_assert(iterator_concepts::is_iterator<char*>::value, "");
   static_assert(iterator_concepts::is_iterator<output_iterator>::value, "");
 
@@ -67,11 +71,12 @@ TEST_CASE("Iterator", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_iterator<int>,
-      std::tuple<
-          iterator_concepts::is_iterator_traits<std::iterator_traits<int>>>>();
+      std::tuple<core_concepts::is_dereferenceable<int>>>();
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_iterator<non_dereferencable_iterator>>();
+      iterator_concepts::is_iterator<non_dereferencable_iterator>,
+      std::tuple<
+          core_concepts::is_dereferenceable<non_dereferencable_iterator>>>();
 
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_iterator<non_weakly_incrementable_iterator>,

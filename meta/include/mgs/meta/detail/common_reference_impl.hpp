@@ -59,7 +59,7 @@ struct common_ref_bullet_one_impl<T, true>
 
 template <typename X, typename Y>
 struct common_ref_bullet_one
-  : common_ref_bullet_one_impl<cond_res<copycv<X, Y>&, copycv<Y, X>&>>
+  : common_ref_bullet_one_impl<detected_t<cond_res, copycv<X, Y>&, copycv<Y, X>&>>
 {
 };
 
@@ -118,9 +118,13 @@ struct common_ref_impl<X&&, Y&&>
 {
 };
 
+
+template <typename A, typename B>
+using common_ref = typename common_ref_impl<A, B>::type;
+
 template <typename X, typename Y>
 struct common_ref_impl<X&&, Y&>
-  : common_ref_bullet_three<X&&, typename common_ref_impl<X const&, Y&>::type>
+  : common_ref_bullet_three<X&&, detected_t<common_ref, X const&, Y&>>
 {
 };
 
@@ -128,9 +132,6 @@ template <typename X, typename Y>
 struct common_ref_impl<X&, Y&&> : common_ref_impl<Y&&, X&>
 {
 };
-
-template <typename A, typename B>
-using common_ref = typename common_ref_impl<A, B>::type;
 
 // common_reference bullets
 template <typename T1, typename T2, typename = void>
