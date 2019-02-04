@@ -1,6 +1,6 @@
 code
 
-* add Readable, Writable, OutputIterator (sigh)
+* add OutputIterator (sigh)
 * move Concepts to meta namespace?
 * test concepts
 * remove conan workspaces, create one repo per recipe

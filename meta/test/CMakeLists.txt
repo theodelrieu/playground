@@ -38,4 +38,5 @@ create_meta_tests(
   sized_sentinel
   strict_totally_ordered
   swappable
+  writable
 )
