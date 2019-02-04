@@ -26,6 +26,42 @@ namespace iterator
 namespace detail
 {
 template <typename T>
+struct is_iterator_traits_primary_template : std::false_type
+{
+};
+
+template <typename T>
+struct is_iterator_traits_primary_template<meta::iterator_traits<T>>
+{
+  using traits = meta::iterator_traits<T>;
+
+  static constexpr auto const has_value_type =
+      is_detected<detected::types::value_type, traits>::value;
+
+  static constexpr auto const has_difference_type =
+      is_detected<detected::types::difference_type, traits>::value;
+
+  static constexpr auto const has_pointer =
+      is_detected<detected::types::pointer, traits>::value;
+
+  static constexpr auto const has_iterator_category =
+      is_detected<detected::types::iterator_category, traits>::value;
+
+  static constexpr auto const has_reference =
+      is_detected<detected::types::reference, traits>::value;
+
+  static constexpr auto const value = !has_pointer && !has_reference &&
+                                      !has_value_type && !has_difference_type &&
+                                      !has_iterator_category;
+};
+
+template <typename T>
+struct is_iterator_traits_primary_template<std::iterator_traits<T>>
+  : meta::iterator_traits<T>
+{
+};
+
+template <typename T>
 struct is_iterator_traits_impl : std::false_type
 {
   static constexpr int trigger_static_asserts()
