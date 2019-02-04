@@ -9,7 +9,7 @@
 #include <mgs/meta/detected/operators/post_decrement.hpp>
 #include <mgs/meta/detected/operators/pre_decrement.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
-#include <mgs/meta/iterator_traits.hpp>
+#include <mgs/meta/iter_concept.hpp>
 
 namespace mgs
 {
@@ -26,11 +26,10 @@ struct is_bidirectional_iterator
 {
   using requirements = std::tuple<is_forward_iterator<T>>;
   using lvalue_ref = std::add_lvalue_reference_t<T>;
-  using traits = meta::iterator_traits<T>;
 
-  static constexpr auto const has_correct_tag = core::is_derived_from<
-      detected_t<detected::types::iterator_category, traits>,
-      std::bidirectional_iterator_tag>::value;
+  static constexpr auto const has_correct_category =
+      core::is_derived_from<detected_t<meta::iter_concept, T>,
+                            std::bidirectional_iterator_tag>::value;
 
   static constexpr auto const has_pre_decrement =
       is_detected_exact<lvalue_ref,
@@ -42,15 +41,15 @@ struct is_bidirectional_iterator
           value;
 
   static constexpr auto const value = is_forward_iterator<T>::value &&
-                                      has_correct_tag && has_pre_decrement &&
-                                      has_post_decrement;
+                                      has_correct_category &&
+                                      has_pre_decrement && has_post_decrement;
 
   static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not a BidirectionalIterator");
-    static_assert(has_correct_tag,
-                  "'std::iterator_traits<T>::iterator_category' is not derived "
-                  "from 'std::bidirectional_iterator_tag'");
+    static_assert(has_correct_category,
+                  "Iterator category tag must derive from "
+                  "std::bidirectional_iterator_tag");
     static_assert(has_pre_decrement,
                   "Invalid or missing operator: 'T& operator--()'");
     static_assert(has_post_decrement,

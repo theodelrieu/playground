@@ -1,5 +1,6 @@
 code
 
+* move dereferenceable to iterator
 * add OutputIterator (sigh)
 * move Concepts to meta namespace?
 * test concepts

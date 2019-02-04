@@ -15,6 +15,7 @@
 #include <mgs/meta/detected/operators/substraction.hpp>
 #include <mgs/meta/detected/operators/substraction_assignment.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
+#include <mgs/meta/iter_reference_t.hpp>
 #include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator
@@ -33,14 +34,15 @@ template <typename T>
 struct is_random_access_iterator
 {
 private:
+  // TODO incrementable_traits
   using traits = meta::iterator_traits<T>;
 
   using lvalue_ref = std::add_lvalue_reference_t<T>;
   using difference_type = detected_t<detected::types::difference_type, traits>;
 
-  static constexpr auto const has_correct_tag = core::is_derived_from<
-      detected_t<detected::types::iterator_category, traits>,
-      std::random_access_iterator_tag>::value;
+  static constexpr auto const has_correct_category =
+      core::is_derived_from<detected_t<meta::iter_concept, T>,
+                            std::random_access_iterator_tag>::value;
 
   static constexpr auto const has_addition_assignment =
       is_detected_exact<lvalue_ref,
@@ -72,11 +74,11 @@ private:
                         lvalue_ref,
                         difference_type const>::value;
 
-  static constexpr auto const has_array_subscript = std::is_convertible<
-      detected_t<detected::operators::array_subscript,
-                 T const,
-                 difference_type const>,
-      detected_t<detected::types::reference, traits>>::value;
+  static constexpr auto const has_array_subscript =
+      is_detected_exact<detected_t<iter_reference_t, T>,
+                        detected::operators::array_subscript,
+                        T const,
+                        difference_type const>::value;
 
 public:
   using requirements = std::tuple<is_bidirectional_iterator<T>,
@@ -86,16 +88,16 @@ public:
   static auto constexpr value =
       is_bidirectional_iterator<T>::value &&
       comparison::is_strict_totally_ordered<T>::value &&
-      is_sized_sentinel<T, T>::value && has_correct_tag &&
+      is_sized_sentinel<T, T>::value && has_correct_category &&
       has_addition_assignment && has_addition_t_dt && has_addition_dt_t &&
       has_substraction && has_substraction_assignment && has_array_subscript;
 
   static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not a RandomAccessIterator");
-    static_assert(has_correct_tag,
-                  "'std::iterator_traits<T>::iterator_category' is not derived "
-                  "from 'std::random_access_iterator_tag'");
+    static_assert(has_correct_category,
+                  "Iterator category tag must derive from "
+                  "std::random_access_iterator_tag");
     static_assert(has_addition_assignment,
                   "Invalid or missing operator: 'T& "
                   "operator+=(std::iterator_traits<T>::difference_type)'");

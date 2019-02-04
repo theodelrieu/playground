@@ -39,22 +39,6 @@ bool operator==(invalid_post_increment_iterator,
 bool operator!=(invalid_post_increment_iterator,
                 invalid_post_increment_iterator);
 
-struct invalid_reference_iterator
-{
-  using value_type = int;
-  using pointer = value_type*;
-  using reference = value_type;
-  using difference_type = std::ptrdiff_t;
-  using iterator_category = std::forward_iterator_tag;
-
-  invalid_reference_iterator& operator++();
-  invalid_reference_iterator operator++(int);
-  value_type operator*();
-};
-
-bool operator==(invalid_reference_iterator, invalid_reference_iterator);
-bool operator!=(invalid_reference_iterator, invalid_reference_iterator);
-
 struct valid_forward_iterator
 {
   using value_type = int;
@@ -84,15 +68,9 @@ TEST_CASE("ForwardIterator", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_forward_iterator<
                     invalid_post_increment_iterator>::value,
                 "");
-  static_assert(!iterator_concepts::is_forward_iterator<
-                    invalid_reference_iterator>::value,
-                "");
 
   static_assert(!iterator_concepts::is_forward_iterator<void>::value, "");
   static_assert(!iterator_concepts::is_forward_iterator<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_forward_iterator<invalid_post_increment_iterator>,
-      std::tuple<iterator_concepts::is_incrementable<
-          invalid_post_increment_iterator>>>();
+  static_assert(!iterator_concepts::is_forward_iterator<void*>::value, "");
+  static_assert(!iterator_concepts::is_forward_iterator<struct incomplete*>::value, "");
 }
