@@ -14,7 +14,7 @@ namespace meta
 {
 namespace concepts
 {
-namespace core
+namespace iterator
 {
 namespace detail
 {

@@ -5,7 +5,8 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/core/dereferenceable.hpp>
+#include <mgs/meta/concepts/core/common_reference.hpp>
+#include <mgs/meta/concepts/iterator/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
@@ -81,7 +82,7 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<int>,
       std::tuple<iterator_concepts::is_iterator<int>,
-                 core_concepts::is_dereferenceable<int>,
+                 iterator_concepts::is_dereferenceable<int>,
                  iterator_concepts::is_readable<int>>>();
 
   test_helpers::generate_failed_requirements_tests<
@@ -94,7 +95,7 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_input_iterator<void*>,
       std::tuple<iterator_concepts::is_iterator<void*>,
-                 core_concepts::is_dereferenceable<void*>,
+                 iterator_concepts::is_dereferenceable<void*>,
                  iterator_concepts::is_weakly_incrementable<void*>,
                  iterator_concepts::is_readable<void*>>>();
 }

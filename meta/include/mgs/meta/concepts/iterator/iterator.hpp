@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/core/complete_type.hpp>
-#include <mgs/meta/concepts/core/dereferenceable.hpp>
+#include <mgs/meta/concepts/iterator/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/detected.hpp>
@@ -27,10 +27,10 @@ template <typename T>
 struct is_iterator
 {
   using requirements =
-      std::tuple<core::is_dereferenceable<T>, is_weakly_incrementable<T>>;
+      std::tuple<is_dereferenceable<T>, is_weakly_incrementable<T>>;
 
   static constexpr auto const value =
-      is_weakly_incrementable<T>::value && core::is_dereferenceable<T>::value;
+      is_weakly_incrementable<T>::value && is_dereferenceable<T>::value;
 
   static constexpr int trigger_static_asserts()
   {

@@ -4,7 +4,7 @@
 #include <catch.hpp>
 
 #include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
-#include <mgs/meta/concepts/core/dereferenceable.hpp>
+#include <mgs/meta/concepts/iterator/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
 #include <mgs/meta/concepts/iterator/sentinel.hpp>
 #include <mgs/meta/concepts/object/semiregular.hpp>
@@ -16,7 +16,6 @@
 
 using namespace mgs::meta;
 namespace iterator_concepts = concepts::iterator;
-namespace core_concepts = concepts::core;
 namespace comparison_concepts = concepts::comparison;
 namespace object_concepts = concepts::object;
 
@@ -75,7 +74,7 @@ TEST_CASE("Sentinel", "[meta][concepts][iterator]")
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_sentinel<pointer_sentinel, void*>,
       std::tuple<iterator_concepts::is_iterator<void*>,
-                 core_concepts::is_dereferenceable<void*>,
+                 iterator_concepts::is_dereferenceable<void*>,
                  iterator_concepts::is_weakly_incrementable<void*>>>();
 
   test_helpers::generate_failed_requirements_tests<
