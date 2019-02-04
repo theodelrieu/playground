@@ -27,6 +27,7 @@ create_meta_tests(
   forward_iterator
   incrementable
   input_iterator
+  iter_traits
   iterator
   iterator_traits
   random_access_iterator
