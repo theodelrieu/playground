@@ -14,7 +14,7 @@
 
 using namespace mgs::meta;
 
-TEST_CASE("ReadableTraits", "[meta]")
+TEST_CASE("readable_traits", "[meta]")
 {
   static_assert(!is_detected<iter_value_t, void>::value, "");
   static_assert(!is_detected<iter_value_t, struct incomplete>::value, "");
