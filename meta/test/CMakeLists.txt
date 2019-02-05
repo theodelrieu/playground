@@ -21,6 +21,7 @@ create_meta_tests(
   complete_type
   convertible_to
   constructible
+  dereferenceable
   derived_from
   detected
   equality_comparable
