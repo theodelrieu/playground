@@ -57,6 +57,9 @@ struct is_dereferenceable: detail::is_dereferenceable_impl<T>
     return 1;
   }
 };
+
+template <typename T, typename = std::enable_if_t<is_dereferenceable<T>::value>>
+using Dereferenceable = T;
 }
 }
 }
