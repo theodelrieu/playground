@@ -16,7 +16,25 @@ namespace meta
 namespace detail
 {
 template <typename T, typename = void>
-struct incrementable_traits_impl
+struct workaround_partial_ordering_bug
+{
+};
+
+template <typename T>
+struct workaround_partial_ordering_bug<
+    T,
+    std::enable_if_t<
+        !is_detected<detected::types::difference_type, T>::value &&
+        std::is_integral<
+            detected_t<detected::operators::substraction, T const&, T const&>>::
+            value>>
+{
+  using difference_type =
+      std::make_signed_t<detected::operators::substraction<T const&, T const&>>;
+};
+
+template <typename T, typename = void>
+struct incrementable_traits_impl : workaround_partial_ordering_bug<T>
 {
 };
 
@@ -37,21 +55,6 @@ struct incrementable_traits_impl<
     std::enable_if_t<is_detected<detected::types::difference_type, T>::value>>
 {
   using difference_type = detected::types::difference_type<T>;
-};
-
-template <typename T>
-struct incrementable_traits_impl<
-    T,
-    std::enable_if_t<
-        // needed to disambiguate with pointer specialization
-        !std::is_pointer<T>::value &&
-        !is_detected<detected::types::difference_type, T>::value &&
-        std::is_integral<
-            detected_t<detected::operators::substraction, T const&, T const&>>::
-            value>>
-{
-  using difference_type =
-      std::make_signed_t<detected::operators::substraction<T const&, T const&>>;
 };
 }
 
