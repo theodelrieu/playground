@@ -15,8 +15,8 @@
 #include <mgs/meta/detected/operators/substraction.hpp>
 #include <mgs/meta/detected/operators/substraction_assignment.hpp>
 #include <mgs/meta/detected/types/reference.hpp>
+#include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/iter_reference_t.hpp>
-#include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator
 
@@ -34,11 +34,8 @@ template <typename T>
 struct is_random_access_iterator
 {
 private:
-  // TODO incrementable_traits
-  using traits = meta::iterator_traits<T>;
-
   using lvalue_ref = std::add_lvalue_reference_t<T>;
-  using difference_type = detected_t<detected::types::difference_type, traits>;
+  using difference_type = detected_t<iter_difference_t, T>;
 
   static constexpr auto const has_correct_category =
       core::is_derived_from<detected_t<meta::iter_concept, T>,
