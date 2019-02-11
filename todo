@@ -10,7 +10,7 @@ code
 
 doc
 
-* use 0.1.0.0
+* use 0.1.0
 * migrate to readthedocs
 * fix documentation about '\0'
 * put back runtime_error
