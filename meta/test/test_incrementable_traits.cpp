@@ -25,7 +25,7 @@ struct both
   using difference_type = char;
 };
 
-unsigned int operator-(valid, valid);
+unsigned int operator-(both, both);
 }
 
 TEST_CASE("incrementable_traits", "[meta]")
@@ -44,10 +44,11 @@ TEST_CASE("incrementable_traits", "[meta]")
       "");
   static_assert(std::is_same<iter_difference_t<int*>, std::ptrdiff_t>::value,
                 "");
-  static_assert(std::is_same<iter_difference_t<int const*>, std::ptrdiff_t>::value,
-                "");
-  static_assert(std::is_same<iter_difference_t<int const* const>, std::ptrdiff_t>::value,
-                "");
+  static_assert(
+      std::is_same<iter_difference_t<int const*>, std::ptrdiff_t>::value, "");
+  static_assert(
+      std::is_same<iter_difference_t<int const* const>, std::ptrdiff_t>::value,
+      "");
   static_assert(std::is_same<iter_difference_t<valid>, int>::value, "");
   static_assert(std::is_same<iter_difference_t<both>, char>::value, "");
   static_assert(
