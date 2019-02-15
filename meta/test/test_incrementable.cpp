@@ -7,7 +7,6 @@
 #include <mgs/meta/concepts/iterator/incrementable.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/concepts/object/regular.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
@@ -21,30 +20,28 @@ namespace
 {
 struct non_post_incrementable
 {
+  using difference_type = std::ptrdiff_t;
   non_post_incrementable& operator++();
 };
 
 struct non_pre_incrementable
 {
-  void operator++(int);
-};
-
-struct non_semiregular
-{
-  non_semiregular() = delete;
-
-  non_semiregular& operator++();
+  using difference_type = std::ptrdiff_t;
   void operator++(int);
 };
 
 struct weakly_incrementable
 {
+  using difference_type = std::ptrdiff_t;
+
   weakly_incrementable& operator++();
-  void operator++(int);
+  weakly_incrementable operator++(int);
 };
 
 struct regular_and_weakly_incrementable
 {
+  using difference_type = std::ptrdiff_t;
+
   regular_and_weakly_incrementable& operator++();
   void operator++(int);
 };
@@ -54,12 +51,14 @@ bool operator!=(regular_and_weakly_incrementable, regular_and_weakly_incrementab
 
 struct non_regular
 {
+  using difference_type = std::ptrdiff_t;
   non_regular& operator++();
   non_regular operator++(int);
 };
 
 struct incrementable
 {
+  using difference_type = std::ptrdiff_t;
   incrementable& operator++();
   incrementable operator++(int);
 };
@@ -74,16 +73,14 @@ TEST_CASE("WeaklyIncrementable", "[meta][concepts][iterator]")
   static_assert(iterator_concepts::is_weakly_incrementable<char>::value, "");
   static_assert(iterator_concepts::is_weakly_incrementable<weakly_incrementable>::value, "");
   static_assert(iterator_concepts::is_weakly_incrementable<regular_and_weakly_incrementable>::value, "");
+  static_assert(iterator_concepts::is_weakly_incrementable<
+                    std::back_insert_iterator<std::string>>::value,
+                "");
 
   static_assert(!iterator_concepts::is_weakly_incrementable<void>::value, "");
   static_assert(!iterator_concepts::is_weakly_incrementable<struct incomplete>::value, "");
   static_assert(!iterator_concepts::is_weakly_incrementable<non_post_incrementable>::value, "");
   static_assert(!iterator_concepts::is_weakly_incrementable<non_pre_incrementable>::value, "");
-  static_assert(!iterator_concepts::is_weakly_incrementable<non_semiregular>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_weakly_incrementable<non_semiregular>,
-      std::tuple<object_concepts::is_semiregular<non_semiregular>>>();
 
   test_helpers::generate_failed_requirements_tests<
       iterator_concepts::is_weakly_incrementable<non_post_incrementable>>();
@@ -104,7 +101,6 @@ TEST_CASE("Incrementable", "[meta][concepts][iterator]")
   static_assert(!iterator_concepts::is_incrementable<struct incomplete>::value, "");
   static_assert(!iterator_concepts::is_incrementable<non_post_incrementable>::value, "");
   static_assert(!iterator_concepts::is_incrementable<non_pre_incrementable>::value, "");
-  static_assert(!iterator_concepts::is_incrementable<non_semiregular>::value, "");
   static_assert(!iterator_concepts::is_incrementable<void*>::value, "");
   static_assert(!iterator_concepts::is_incrementable<int (*)()>::value, "");
 

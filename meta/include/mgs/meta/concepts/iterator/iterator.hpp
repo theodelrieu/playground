@@ -7,7 +7,6 @@
 #include <mgs/meta/concepts/core/complete_type.hpp>
 #include <mgs/meta/concepts/iterator/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/dereference.hpp>
 

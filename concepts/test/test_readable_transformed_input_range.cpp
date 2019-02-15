@@ -2,6 +2,7 @@
 
 #include <catch.hpp>
 
+#include <mgs/meta/static_asserts.hpp>
 #include <mgs/concepts/readable_transformed_input_range.hpp>
 
 using namespace mgs;
@@ -20,7 +21,8 @@ struct valid_range
   iterator begin();
   iterator end();
 
-  std::size_t read()
+  template <typename O>
+  std::size_t read(O, std::size_t);
 };
 
 struct no_max_transformed_size_range
@@ -65,23 +67,33 @@ struct invalid_return_type_range
 
   int max_transformed_size() const;
 };
+
+struct invalid_read_range
+{
+  using iterator = char const*;
+  using underlying_iterator = iterator;
+  using underlying_sentinel = iterator;
+
+  invalid_read_range() = default;
+  invalid_read_range(underlying_iterator, underlying_sentinel);
+
+  iterator begin();
+  iterator end();
+
+  std::size_t read(char const*, std::size_t);
+};
 }
 
-TEST_CASE("SizedTransformedInputRange", "[concepts]")
+TEST_CASE("ReadableTransformedInputRange", "[concepts]")
 {
-  static_assert(concepts::is_sized_transformed_input_range<valid_range>::value, "");
-
-  static_assert(!concepts::is_sized_transformed_input_range<struct incomplete>::value,
-                "");
-  static_assert(!concepts::is_sized_transformed_input_range<void>::value, "");
-  static_assert(!concepts::is_sized_transformed_input_range<void*>::value, "");
-
-  static_assert(!concepts::is_sized_transformed_input_range<
-                    invalid_return_type_range>::value,
-                "");
-  static_assert(
-      !concepts::is_sized_transformed_input_range<non_const_range>::value, "");
-  static_assert(!concepts::is_sized_transformed_input_range<
-                    no_max_transformed_size_range>::value,
-                "");
+  static_assert(concepts::is_readable_transformed_input_range<valid_range, char*>::value, "");
+  static_assert(concepts::is_readable_transformed_input_range<valid_range, std::string::iterator>::value, "");
+  // static_assert(concepts::is_readable_transformed_input_range<valid_range, std::back_insert_iterator<std::string>>::value, "");
+  // meta::trigger_static_asserts<concepts::is_readable_transformed_input_range<valid_range, std::back_insert_iterator<std::vector<char>>>>();
+  // static_assert(!concepts::is_readable_transformed_input_range<valid_range, >::value, "");
+  //
+  // static_assert(!concepts::is_readable_transformed_input_range<struct incomplete>::value,
+  //               "");
+  // static_assert(!concepts::is_readable_transformed_input_range<void>::value, "");
+  // static_assert(!concepts::is_readable_transformed_input_range<void*>::value, "");
 }

@@ -21,7 +21,7 @@ struct output_iterator
   using value_type = void;
   using pointer = void;
   using reference = void;
-  using difference_type = void;
+  using difference_type = std::ptrdiff_t;
   using iterator_category = std::output_iterator_tag;
 
   output_iterator& operator++();
@@ -34,7 +34,7 @@ struct non_dereferencable_iterator
   using value_type = void;
   using pointer = void;
   using reference = void;
-  using difference_type = void;
+  using difference_type = std::ptrdiff_t;
   using iterator_category = std::output_iterator_tag;
 
   non_dereferencable_iterator& operator++();
@@ -47,7 +47,7 @@ struct non_weakly_incrementable_iterator
   using value_type = void;
   using pointer = void;
   using reference = void;
-  using difference_type = void;
+  using difference_type = std::ptrdiff_t;
   using iterator_category = std::output_iterator_tag;
 
   non_weakly_incrementable_iterator& operator*();
@@ -58,6 +58,9 @@ TEST_CASE("Iterator", "[meta][concepts][iterator]")
 {
   static_assert(iterator_concepts::is_iterator<char*>::value, "");
   static_assert(iterator_concepts::is_iterator<output_iterator>::value, "");
+  static_assert(iterator_concepts::is_iterator<
+                    std::back_insert_iterator<std::string>>::value,
+                "");
 
   static_assert(!iterator_concepts::is_iterator<char>::value, "");
   static_assert(!iterator_concepts::is_iterator<void>::value, "");

@@ -17,6 +17,8 @@ namespace
 {
 struct output_iterator
 {
+  using difference_type = std::ptrdiff_t;
+
   output_iterator& operator++();
   output_iterator& operator++(int);
   output_iterator& operator*();
@@ -27,6 +29,8 @@ struct output_iterator
 
 struct non_assignable_iterator
 {
+  using difference_type = std::ptrdiff_t;
+
   non_assignable_iterator& operator++();
   non_assignable_iterator& operator++(int);
   non_assignable_iterator& operator*();
