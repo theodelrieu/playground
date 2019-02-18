@@ -32,6 +32,10 @@ struct is_move_constructible
     return 1;
   }
 };
+
+template <typename T,
+          typename = std::enable_if_t<is_move_constructible<T>::value>>
+using MoveConstructible = T;
 }
 }
 }

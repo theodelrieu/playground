@@ -18,6 +18,7 @@
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
+#include <test_helpers/noop_transformer.hpp>
 
 using namespace mgs;
 using namespace std::string_literals;
@@ -54,52 +55,16 @@ struct valid_type
 };
 
 template <typename Iterator, typename Sentinel>
-class noop_transformer
-{
-public:
-  using underlying_iterator = Iterator;
-  using underlying_sentinel = Sentinel;
-  using buffer_type = std::vector<std::uint8_t>;
-
-  noop_transformer() = default;
-
-  noop_transformer(Iterator begin, Sentinel end)
-    : _current(std::move(begin)), _end(std::move(end))
-  {
-  }
-
-  void operator()(buffer_type& out)
-  {
-    out.clear();
-    while (_current != _end)
-      out.push_back(*_current++);
-  }
-
-  underlying_iterator const& get_iterator() const
-  {
-    return _current;
-  }
-
-  underlying_sentinel const& get_sentinel() const
-  {
-    return _end;
-  }
-
-private:
-  Iterator _current{};
-  Sentinel _end{};
-};
-
-template <typename Iterator, typename Sentinel>
 class noop_range : public mgs::ranges::basic_transformed_input_range<
-                       noop_transformer<Iterator, Sentinel>>
+                       test_helpers::noop_transformer<Iterator, Sentinel>>
 {
 public:
   using underlying_iterator = Iterator;
   using underlying_sentinel = Sentinel;
 
   using mgs::ranges::basic_transformed_input_range<
-      noop_transformer<Iterator, Sentinel>>::basic_transformed_input_range;
+      test_helpers::noop_transformer<Iterator,
+                                     Sentinel>>::basic_transformed_input_range;
 };
 
 struct noop_codec_traits

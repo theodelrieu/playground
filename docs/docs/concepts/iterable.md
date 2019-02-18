@@ -6,7 +6,7 @@ parent: Concepts
 permalink: /docs/meta/concepts/iterator/range
 ---
 
-# mgs::Range
+# mgs::meta::concepts::iterator::Range
 
 Defined in header `<mgs/meta/concepts/iterator/range.hpp>`
 

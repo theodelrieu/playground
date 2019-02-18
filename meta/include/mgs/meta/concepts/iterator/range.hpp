@@ -17,7 +17,11 @@ namespace mgs
 {
 inline namespace v1
 {
+namespace meta
+{
 namespace concepts
+{
+namespace iterator
 {
 template <typename T>
 struct is_range
@@ -72,10 +76,11 @@ public:
     return 1;
   }
 };
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_range<T>::value>>
+template <typename T, typename = std::enable_if_t<is_range<T>::value>>
 using Range = T;
+}
+}
+}
 }
 }

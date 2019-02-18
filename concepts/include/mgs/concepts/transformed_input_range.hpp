@@ -56,14 +56,13 @@ private:
           is_constructible<T, underlying_iterator, underlying_sentinel>::value;
 
 public:
-  using requirements =
-      std::tuple<meta::concepts::object::is_semiregular<T>,
-                 mgs::concepts::is_range<T>>;
+  using requirements = std::tuple<meta::concepts::object::is_semiregular<T>,
+                                  meta::concepts::iterator::is_range<T>>;
 
   static auto constexpr value =
       is_constructible_from_iterator_sentinel &&
       meta::concepts::object::is_semiregular<T>::value &&
-      concepts::is_range<T>::value &&
+      meta::concepts::iterator::is_range<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
       meta::concepts::iterator::is_input_iterator<underlying_iterator>::value &&
       meta::concepts::iterator::is_sentinel<underlying_sentinel,

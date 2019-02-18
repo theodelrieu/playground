@@ -62,7 +62,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::Range<U>,
+            typename Range = mgs::meta::concepts::iterator::Range<U>,
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Encoder =
@@ -77,7 +77,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::Range<U>,
+            typename Range = mgs::meta::concepts::iterator::Range<U>,
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Encoder =
@@ -103,7 +103,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::Range<U>,
+            typename Range = mgs::meta::concepts::iterator::Range<U>,
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Decoder =
@@ -118,7 +118,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::Range<U>,
+            typename Range = mgs::meta::concepts::iterator::Range<U>,
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Decoder =

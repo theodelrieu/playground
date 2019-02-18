@@ -14,6 +14,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/core/constructible.hpp>
+#include <mgs/meta/concepts/core/copy_constructible.hpp>
 #include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/member_functions/resize.hpp>
@@ -107,8 +108,7 @@ private:
             typename Iterator = typename T::iterator,
             typename R = Output,
             typename = std::enable_if_t<
-                (std::is_copy_constructible<R>::value ||
-                 std::is_move_constructible<R>::value) &&
+                meta::concepts::core::is_copy_constructible<R>::value &&
                 meta::concepts::core::is_constructible<R, Iterator, Iterator>::
                     value &&
                 // Associative containers' iterator-range constructors are not

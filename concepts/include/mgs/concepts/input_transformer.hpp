@@ -78,13 +78,13 @@ public:
                  meta::concepts::iterator::is_sentinel<S, I>,
                  meta::concepts::iterator::is_random_access_iterator<BufferI>,
                  meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>,
-                 concepts::is_range<Buffer>>;
+                 meta::concepts::iterator::is_range<Buffer>>;
 
   static constexpr auto const value =
       meta::concepts::object::is_semiregular<T>::value && has_iterator &&
       has_sentinel && meta::concepts::iterator::is_iterator<I>::value &&
       meta::concepts::iterator::is_sentinel<S, I>::value &&
-      concepts::is_range<Buffer>::value &&
+      meta::concepts::iterator::is_range<Buffer>::value &&
       meta::concepts::iterator::is_random_access_iterator<BufferI>::value &&
       meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
