@@ -33,7 +33,7 @@ Encodes the given input.
 
 1. Encodes the contents of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `It` models [`Iterable`](/docs/concepts/iterable) and calling overload (3) with its iterators is well-formed.
+    This overload only participates in overload resolution if `It` models [`Range`](/docs/meta/concepts/iterator/range) and calling overload (3) with its iterators is well-formed.
 1. Has the same effect as calling `encode<std::string>(it)`.
 
 1. Encodes the contents of the range `[begin, end)` and returns the result as a `T`.

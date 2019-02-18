@@ -11,7 +11,7 @@
 #include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
 #include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
-#include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>

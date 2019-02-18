@@ -28,7 +28,7 @@ Each codec has two symmetrical APIs: `encode` and `decode`.
 
 Codecs share a common set of contraints on `encode`/`decode` input parameters. They can be one of the following:
 
-1. [`Iterable`]()
+1. [`Range`]()
 1. [`std::Iterator`]() range (more precisely: an [`std::InputIterator`]() and a [`std::Sentinel`]())
 1. `std::basic_istream&`
 
@@ -38,7 +38,7 @@ Codecs share a common set of contraints on `encode`/`decode` input parameters. T
 using namespace mgs;
 
 int main() {
-  // 1. Iterable
+  // 1. Range
   std::string const decoded_str("decoded text");
   std::string const encoded_str("ZGVjb2RlZCB0ZXh0");
   std::list<char> const encoded_list(encoded_str.begin(), encoded_str.end());
@@ -65,7 +65,7 @@ int main() {
 Caveat
 {: .label .label-yellow }
 
-Using the [`Iterable`]()(1) overloads with a `char[]` has a caveat:
+Using the [`Range`]()(1) overloads with a `char[]` has a caveat:
 
 It will discard the last character if it is the null terminator (`'\0'`).
 

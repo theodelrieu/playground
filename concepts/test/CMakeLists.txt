@@ -18,7 +18,6 @@ endfunction()
 create_concepts_tests(
   byte
   input_transformer
-  iterable
   readable_transformed_input_range
   sized_input_transformer
   sized_transformed_input_range

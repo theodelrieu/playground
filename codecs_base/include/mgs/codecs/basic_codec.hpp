@@ -5,7 +5,7 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/concepts/codec_output.hpp>
 #include <mgs/concepts/codec_traits.hpp>
-#include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/iterator/input_iterator.hpp>
@@ -62,9 +62,9 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Iterable = mgs::Iterable<U>,
-            typename Iterator = meta::result_of_begin<Iterable const&>,
-            typename Sentinel = meta::result_of_end<Iterable const&>,
+            typename Range = mgs::Range<U>,
+            typename Iterator = meta::result_of_begin<Range const&>,
+            typename Sentinel = meta::result_of_end<Range const&>,
             typename Encoder =
                 mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
   static mgs::CodecOutput<T, Encoder> encode(U const& it)
@@ -77,9 +77,9 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Iterable = mgs::Iterable<U>,
-            typename Iterator = meta::result_of_begin<Iterable&>,
-            typename Sentinel = meta::result_of_end<Iterable&>,
+            typename Range = mgs::Range<U>,
+            typename Iterator = meta::result_of_begin<Range&>,
+            typename Sentinel = meta::result_of_end<Range&>,
             typename Encoder =
                 mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
   static mgs::CodecOutput<T, Encoder> encode(U& it)
@@ -103,9 +103,9 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Iterable = mgs::Iterable<U>,
-            typename Iterator = meta::result_of_begin<Iterable const&>,
-            typename Sentinel = meta::result_of_end<Iterable const&>,
+            typename Range = mgs::Range<U>,
+            typename Iterator = meta::result_of_begin<Range const&>,
+            typename Sentinel = meta::result_of_end<Range const&>,
             typename Decoder =
                 mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
   static mgs::CodecOutput<T, Decoder> decode(U const& it)
@@ -118,9 +118,9 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Iterable = mgs::Iterable<U>,
-            typename Iterator = meta::result_of_begin<Iterable&>,
-            typename Sentinel = meta::result_of_end<Iterable&>,
+            typename Range = mgs::Range<U>,
+            typename Iterator = meta::result_of_begin<Range&>,
+            typename Sentinel = meta::result_of_end<Range&>,
             typename Decoder =
                 mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
   static mgs::CodecOutput<T, Decoder> decode(U& it)

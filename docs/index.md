@@ -40,7 +40,7 @@ Some famous codecs: `base64`, `FLAC`, `zip`.
 using namespace mgs;
 
 int main() {
-  // Parameter must be Iterable
+  // Parameter must be Range
   std::string const a = base64::encode("Hello, World!");
   std::vector<std::uint8_t> const b = base64::decode(encoded);
 

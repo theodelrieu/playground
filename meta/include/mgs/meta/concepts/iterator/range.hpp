@@ -9,7 +9,7 @@
 #include <mgs/meta/detected.hpp>
 
 // template <typename T>
-// concept Iterable = requires(T& a) {
+// concept Range = requires(T& a) {
 //  requires { begin(a) } -> Iterator
 //  requires { end(a) } -> Sentinel<Iterator>
 // }
@@ -20,7 +20,7 @@ inline namespace v1
 namespace concepts
 {
 template <typename T>
-struct is_iterable
+struct is_range
 {
 private:
   using t_ref = std::add_lvalue_reference_t<T>;
@@ -51,7 +51,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not an Iterable");
+    static_assert(value, "T is not a Range");
     static_assert(
         has_begin,
         "There is not an available 'begin' member/free function for T");
@@ -75,7 +75,7 @@ public:
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_iterable<T>::value>>
-using Iterable = T;
+          typename = std::enable_if_t<concepts::is_range<T>::value>>
+using Range = T;
 }
 }

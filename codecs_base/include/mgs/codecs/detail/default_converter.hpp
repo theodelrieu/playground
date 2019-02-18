@@ -103,7 +103,7 @@ private:
   // - are copy or move constructible
   template <typename T,
             typename = mgs::TransformedInputRange<T>,
-            // FIXME require IterableStuff
+            // FIXME require RangeStuff
             typename Iterator = typename T::iterator,
             typename R = Output,
             typename = std::enable_if_t<

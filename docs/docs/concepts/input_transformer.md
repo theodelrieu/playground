@@ -17,7 +17,7 @@ concept InputTransformer =
   requires(T& v, T const& cv, typename T::buffer_type& b) {
     std::Iterator<typename T::underlying_iterator>;
     std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
-    Iterable<typename T::buffer_type>;
+    Range<typename T::buffer_type>;
     std::Semiregular<typename T::buffer_type>;
     std::Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
 
@@ -41,7 +41,7 @@ It is responsible for the input transformation.
 
 | Member type              | Definition                     | Constraints                                 |
 |--------------------------+--------------------------------+---------------------------------------------|
-| `T::buffer_type`         | Type storing transformed input | [`Iterable`](), [`std::Semiregular`]()      |
+| `T::buffer_type`         | Type storing transformed input | [`Range`](), [`std::Semiregular`]()      |
 | `T::underlying_iterator` | Input range iterator type      | [`std::InputIterator`]()                    |
 | `T::underlying_sentinel` | Input range sentinel type      | [`std::Sentinel<T::underlying_iterator>`]() |
 

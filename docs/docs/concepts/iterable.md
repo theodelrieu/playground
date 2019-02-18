@@ -1,24 +1,24 @@
 ---
 layout: default
-title: Iterable
+title: Range
 nav_order: 2
 parent: Concepts
-permalink: /docs/concepts/iterable
+permalink: /docs/meta/concepts/iterator/range
 ---
 
-# mgs::Iterable
+# mgs::Range
 
-Defined in header `<mgs/concepts/iterable.hpp>`
+Defined in header `<mgs/meta/concepts/iterator/range.hpp>`
 
 ```cpp
 template <typename T>
-concept Iterable = requires(T& a) {
+concept Range = requires(T& a) {
  { begin(a) } -> std::Iterator;
  { end(a) } -> std::Sentinel<decltype(begin(a))>;
 };
 ```
 
-The `Iterable<T>` concept is satisfied when `T` can be iterated over.
+The `Range<T>` concept is satisfied when `T` can be iterated over.
 
 ## Notation
 
@@ -39,15 +39,15 @@ namespace mgs {
 namespace concepts {
 
 template <typename T>
-struct is_iterable { /* ... */ };
+struct is_range { /* ... */ };
 
 template <typename T>
-constexpr auto is_iterable_v = is_iterable<T>::value;
+constexpr auto is_range_v = is_range<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_iterable_v<T>>>
-using Iterable = T;
+          typename = std::enable_if_t<concepts::is_range_v<T>>>
+using Range = T;
 }
 ```
 
@@ -57,7 +57,7 @@ using Iterable = T;
 #include <vector>
 #include <sstream>
 
-#include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator/range.hpp>
 
 using namespace mgs;
 
@@ -73,9 +73,9 @@ auto end(stringstream_wrapper&) {
   return std::istreambuf_iterator<char>();
 }
 
-static_assert(concepts::is_iterable_v<std::vector<int>>, "");
-static_assert(concepts::is_iterable_v<char[10]>, "");
-static_assert(concepts::is_iterable_v<stringstream_wrapper>, "");
+static_assert(concepts::is_range_v<std::vector<int>>, "");
+static_assert(concepts::is_range_v<char[10]>, "");
+static_assert(concepts::is_range_v<stringstream_wrapper>, "");
 
-static_assert(!concepts::is_iterable_v<std::stringstream>, "");
+static_assert(!concepts::is_range_v<std::stringstream>, "");
 ```

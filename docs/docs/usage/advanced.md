@@ -26,7 +26,7 @@ Here is the list of supported `encode`/`decode` return types:
     * [`std::Constructible`]() from an [`std::Iterator`]() range
   * Or
     * [`std::DefaultConstructible`]()
-    * [`Iterable`]()
+    * [`Range`]()
     * Have a [`std::RandomAccessIterator`]() associated iterator type
     * Have a [`std::SizedSentinel`]() associated sentinel type
     * Have a `size_type` member type
@@ -39,7 +39,7 @@ For `std::array`s, `mgs` will throw an exception if the transformed data does no
 
 ## Iterator related optimizations
 
-While codecs accepts every [`Iterable`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`std::RandomAccessIterator`]()s.
+While codecs accepts every [`Range`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`std::RandomAccessIterator`]()s.
 
 This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
 
@@ -79,14 +79,14 @@ This subsection will explain how to use `mgs` emulated concepts, if you are look
 
 `mgs` exposes a type trait and a variable template for every concept.
 
-Here is how to constraint a function on [`Iterable`](/docs/concepts/iterable):
+Here is how to constraint a function on [`Range`](/docs/meta/concepts/iterator/range):
 
 ```cpp
-#include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator/range.hpp>
 
 using namespace mgs;
 
-template <typename T, typename = std::enable_if_t<concepts::is_iterable_v<T>>>
+template <typename T, typename = std::enable_if_t<concepts::is_range_v<T>>>
 void f(T const&)
 {
 }
@@ -97,16 +97,16 @@ void f(T const&)
 `mgs` also exposes an alias which bears the concept name.
 
 ```cpp
-#include <mgs/concepts/iterable.hpp>
+#include <mgs/meta/concepts/iterator/range.hpp>
 
 using namespace mgs;
 
-template <typename T, typename = Iterable<T>>
+template <typename T, typename = Range<T>>
 void f(T const&) {}
 
 // alternative
 template <typename T>
-void g(Iterable<T> const&) {}
+void g(Range<T> const&) {}
 ```
 
 This is quite handy, however there is a caveat with overloads.

@@ -35,6 +35,7 @@ create_meta_tests(
   iterator_traits
   output_iterator
   random_access_iterator
+  range
   readable
   readable_traits
   regular

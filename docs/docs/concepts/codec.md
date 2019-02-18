@@ -153,7 +153,7 @@ int main() {
                                     std::string, std::stringstream,
                                     char*, std::istreambuf_iterator<char>>, "");
 
-  // std::stringstream is not Iterable, defaulted Iterator type will be invalid
+  // std::stringstream is not Range, defaulted Iterator type will be invalid
   static_assert(!concepts::is_codec_v<base64, std::string, std::stringstream, char*>, "");
 }
 ```
