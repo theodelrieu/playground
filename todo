@@ -2,6 +2,7 @@ code
 
 * move Concepts to meta namespace?
 * test concepts
+* try to take char const* instead of char tabs, and use strlen like string
 * remove conan workspaces, create one repo per recipe
 * move concepts aliases in namespace mgs (+ namespace concepts)
 * variable templates for every concept trait

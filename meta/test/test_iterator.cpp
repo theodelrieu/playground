@@ -5,7 +5,7 @@
 
 #include <mgs/meta/concepts/iterator/dereferenceable.hpp>
 #include <mgs/meta/concepts/iterator/iterator.hpp>
-#include <mgs/meta/concepts/iterator/iterator_traits.hpp>
+#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
 #include <mgs/meta/concepts/iterator/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 

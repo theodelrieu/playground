@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/meta/concepts/iterator/iterator_traits.hpp>
+#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 #include <mgs/meta/iterator_traits.hpp>
 #include <mgs/meta/readable_traits.hpp>

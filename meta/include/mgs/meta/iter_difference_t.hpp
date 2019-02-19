@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/meta/concepts/iterator/iterator_traits.hpp>
+#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/difference_type.hpp>
 #include <mgs/meta/incrementable_traits.hpp>

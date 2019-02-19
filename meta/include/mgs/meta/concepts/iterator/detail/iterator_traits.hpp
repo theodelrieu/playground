@@ -119,7 +119,6 @@ struct is_iterator_traits_impl<std::iterator_traits<T>>
   : is_iterator_traits_impl<meta::iterator_traits<T>>
 {
 };
-}
 
 template <typename T>
 struct is_iterator_traits : detail::is_iterator_traits_impl<T>
@@ -132,11 +131,9 @@ struct is_iterator_traits : detail::is_iterator_traits_impl<T>
     return detail::is_iterator_traits_impl<T>::trigger_static_asserts();
   }
 };
-
-template <typename T, typename = std::enable_if_t<is_iterator_traits<T>::value>>
-using IteratorTraits = T;
 }
-};
+}
+}
 }
 }
 }
