@@ -16,20 +16,20 @@ namespace meta
 {
 namespace concepts
 {
-namespace core
+namespace object
 {
 template <typename T>
 struct is_movable
 {
   using requirements =
-      std::tuple<is_assignable<std::add_lvalue_reference_t<T>, T>,
-                 is_move_constructible<T>,
-                 is_swappable<T>>;
+      std::tuple<core::is_assignable<std::add_lvalue_reference_t<T>, T>,
+                 core::is_move_constructible<T>,
+                 core::is_swappable<T>>;
 
   static constexpr auto const value =
       std::is_object<T>::value &&
-      is_assignable<std::add_lvalue_reference_t<T>, T>::value &&
-      is_move_constructible<T>::value && is_swappable<T>::value;
+      core::is_assignable<std::add_lvalue_reference_t<T>, T>::value &&
+      core::is_move_constructible<T>::value && core::is_swappable<T>::value;
 
   static constexpr int trigger_static_asserts()
   {
@@ -38,6 +38,9 @@ struct is_movable
     return 1;
   }
 };
+
+template <typename T, typename = std::enable_if_t<is_movable<T>::value>>
+using Movable = T;
 }
 }
 }

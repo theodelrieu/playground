@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/core/complete_type.hpp>
-#include <mgs/meta/concepts/core/movable.hpp>
+#include <mgs/meta/concepts/object/movable.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/post_increment.hpp>
 #include <mgs/meta/detected/operators/pre_increment.hpp>
@@ -81,9 +81,9 @@ private:
        std::is_integral<difference_type_t>::value);
 
 public:
-  using requirements = std::tuple<core::is_movable<T>>;
+  using requirements = std::tuple<object::is_movable<T>>;
 
-  static constexpr auto const value = core::is_movable<T>::value &&
+  static constexpr auto const value = object::is_movable<T>::value &&
                                       has_pre_increment && has_post_increment &&
                                       has_signed_difference_type;
 
