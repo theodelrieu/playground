@@ -23,7 +23,6 @@ template <typename CodecTraits>
 class basic_codec
 {
 public:
-  // TODO private
   template <typename Iterator, typename Sentinel = Iterator>
   using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
                                                      std::declval<Sentinel>()));
