@@ -5,7 +5,7 @@
 #include <mgs/concepts/readable_transformed_input_range.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-using namespace mgs;
+using namespace mgs::concepts;
 
 namespace
 {
@@ -71,38 +71,30 @@ struct invalid_return_type_range
 
 TEST_CASE("ReadableTransformedInputRange", "[concepts]")
 {
-  static_assert(
-      concepts::is_readable_transformed_input_range<valid_range, char*>::value,
-      "");
-  static_assert(concepts::is_readable_transformed_input_range<
-                    valid_range,
-                    std::string::iterator>::value,
+  static_assert(is_readable_transformed_input_range<valid_range, char*>::value,
                 "");
-  static_assert(concepts::is_readable_transformed_input_range<
+  static_assert(
+      is_readable_transformed_input_range<valid_range,
+                                          std::string::iterator>::value,
+      "");
+  static_assert(is_readable_transformed_input_range<
                     valid_range,
                     std::back_insert_iterator<std::string>>::value,
                 "");
 
-  static_assert(!concepts::is_readable_transformed_input_range<no_read_range,
-                                                               char*>::value,
-                "");
-  static_assert(!concepts::is_readable_transformed_input_range<non_const_range,
-                                                               char*>::value,
-                "");
   static_assert(
-      !concepts::is_readable_transformed_input_range<invalid_return_type_range,
+      !is_readable_transformed_input_range<no_read_range, char*>::value, "");
+  static_assert(
+      !is_readable_transformed_input_range<non_const_range, char*>::value, "");
+  static_assert(!is_readable_transformed_input_range<invalid_return_type_range,
                                                      char*>::value,
-      "");
+                "");
 
-  static_assert(
-      !concepts::is_readable_transformed_input_range<valid_range, void*>::value,
-      "");
-  static_assert(
-      !concepts::is_readable_transformed_input_range<valid_range,
+  static_assert(!is_readable_transformed_input_range<valid_range, void*>::value,
+                "");
+  static_assert(!is_readable_transformed_input_range<valid_range,
                                                      struct incomplete*>::value,
-      "");
-  static_assert(
-      !concepts::is_readable_transformed_input_range<void, char*>::value, "");
-  static_assert(
-      !concepts::is_readable_transformed_input_range<void*, char*>::value, "");
+                "");
+  static_assert(!is_readable_transformed_input_range<void, char*>::value, "");
+  static_assert(!is_readable_transformed_input_range<void*, char*>::value, "");
 }

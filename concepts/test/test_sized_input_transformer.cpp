@@ -11,8 +11,7 @@
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs;
-
+using namespace mgs::concepts;
 
 namespace
 {
@@ -82,13 +81,16 @@ struct non_const_transformer
 
 TEST_CASE("SizedInputTransformer", "[concepts]")
 {
-  static_assert(concepts::is_sized_input_transformer<valid_transformer>::value, "");
+  static_assert(is_sized_input_transformer<valid_transformer>::value, "");
 
-  static_assert(!concepts::is_sized_input_transformer<struct incomplete>::value, "");
-  static_assert(!concepts::is_sized_input_transformer<void>::value, "");
-  static_assert(!concepts::is_sized_input_transformer<void*>::value, "");
+  static_assert(!is_sized_input_transformer<struct incomplete>::value, "");
+  static_assert(!is_sized_input_transformer<void>::value, "");
+  static_assert(!is_sized_input_transformer<void*>::value, "");
 
-  static_assert(!concepts::is_sized_input_transformer<no_max_transformed_size_transformer>::value, "");
-  static_assert(!concepts::is_sized_input_transformer<invalid_return_type_transformer>::value, "");
-  static_assert(!concepts::is_sized_input_transformer<non_const_transformer>::value, "");
+  static_assert(
+      !is_sized_input_transformer<no_max_transformed_size_transformer>::value,
+      "");
+  static_assert(
+      !is_sized_input_transformer<invalid_return_type_transformer>::value, "");
+  static_assert(!is_sized_input_transformer<non_const_transformer>::value, "");
 }

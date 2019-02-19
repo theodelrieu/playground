@@ -7,13 +7,13 @@
 #include <mgs/concepts/detail/detected/types/buffer_type.hpp>
 #include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/meta/concepts/core/constructible.hpp>
-#include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
+#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/random_access_iterator.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
 
 // clang-format off
@@ -69,24 +69,24 @@ private:
                               t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      meta::concepts::core::is_constructible<T, I, S>::value;
+      meta::concepts::is_constructible<T, I, S>::value;
 
 public:
   using requirements =
-      std::tuple<meta::concepts::object::is_semiregular<T>,
-                 meta::concepts::iterator::is_input_iterator<I>,
-                 meta::concepts::iterator::is_sentinel<S, I>,
-                 meta::concepts::iterator::is_random_access_iterator<BufferI>,
-                 meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>,
-                 meta::concepts::iterator::is_range<Buffer>>;
+      std::tuple<meta::concepts::is_semiregular<T>,
+                 meta::concepts::is_input_iterator<I>,
+                 meta::concepts::is_sentinel<S, I>,
+                 meta::concepts::is_random_access_iterator<BufferI>,
+                 meta::concepts::is_sized_sentinel<BufferS, BufferI>,
+                 meta::concepts::is_range<Buffer>>;
 
   static constexpr auto const value =
-      meta::concepts::object::is_semiregular<T>::value && has_iterator &&
-      has_sentinel && meta::concepts::iterator::is_iterator<I>::value &&
-      meta::concepts::iterator::is_sentinel<S, I>::value &&
-      meta::concepts::iterator::is_range<Buffer>::value &&
-      meta::concepts::iterator::is_random_access_iterator<BufferI>::value &&
-      meta::concepts::iterator::is_sized_sentinel<BufferS, BufferI>::value &&
+      meta::concepts::is_semiregular<T>::value && has_iterator &&
+      has_sentinel && meta::concepts::is_iterator<I>::value &&
+      meta::concepts::is_sentinel<S, I>::value &&
+      meta::concepts::is_range<Buffer>::value &&
+      meta::concepts::is_random_access_iterator<BufferI>::value &&
+      meta::concepts::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
 
   static constexpr int trigger_static_asserts()

@@ -79,10 +79,10 @@ This subsection will explain how to use `mgs` emulated concepts, if you are look
 
 `mgs` exposes a type trait and a variable template for every concept.
 
-Here is how to constraint a function on [`Range`](/docs/meta/concepts/iterator/range):
+Here is how to constraint a function on [`Range`](/docs/meta/concepts/range):
 
 ```cpp
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 
 using namespace mgs;
 
@@ -97,7 +97,7 @@ void f(T const&)
 `mgs` also exposes an alias which bears the concept name.
 
 ```cpp
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 
 using namespace mgs;
 

@@ -6,7 +6,7 @@
 
 #include <mgs/concepts/detail/detected/member_functions/read.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/meta/concepts/iterator/output_iterator.hpp>
+#include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/iterator_t.hpp>
@@ -44,13 +44,13 @@ private:
 
 public:
   using requirements = std::tuple<
-      meta::concepts::iterator::
+      meta::concepts::
           is_output_iterator<O, meta::detected_t<meta::iter_value_t, iterator>>,
       is_transformed_input_range<T>>;
 
   static constexpr auto const value =
       is_transformed_input_range<T>::value && has_read_method &&
-      meta::concepts::iterator::is_output_iterator<
+      meta::concepts::is_output_iterator<
           O,
           meta::detected_t<meta::iter_value_t, iterator>>::value;
 

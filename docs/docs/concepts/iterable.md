@@ -3,12 +3,12 @@ layout: default
 title: Range
 nav_order: 2
 parent: Concepts
-permalink: /docs/meta/concepts/iterator/range
+permalink: /docs/meta/concepts/range
 ---
 
-# mgs::meta::concepts::iterator::Range
+# mgs::meta::concepts::Range
 
-Defined in header `<mgs/meta/concepts/iterator/range.hpp>`
+Defined in header `<mgs/meta/concepts/range.hpp>`
 
 ```cpp
 template <typename T>
@@ -57,7 +57,7 @@ using Range = T;
 #include <vector>
 #include <sstream>
 
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 
 using namespace mgs;
 

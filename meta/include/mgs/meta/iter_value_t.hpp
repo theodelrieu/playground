@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
+#include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 #include <mgs/meta/iterator_traits.hpp>
 #include <mgs/meta/readable_traits.hpp>
@@ -22,7 +22,7 @@ template <typename T>
 struct iter_value<
     T,
     std::enable_if_t<
-        !concepts::iterator::detail::is_iterator_traits_primary_template<
+        !concepts::detail::is_iterator_traits_primary_template<
             meta::iterator_traits<T>>::value &&
         is_detected<detected::types::value_type, T>::value>>
 {

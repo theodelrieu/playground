@@ -12,8 +12,8 @@
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 
 // clang-format off
@@ -88,16 +88,16 @@ private:
 
 public:
   using requirements =
-      std::tuple<meta::concepts::iterator::is_input_iterator<I1>,
-                 meta::concepts::iterator::is_sentinel<S1, I1>,
-                 meta::concepts::iterator::is_input_iterator<I2>,
-                 meta::concepts::iterator::is_sentinel<S2, I2>>;
+      std::tuple<meta::concepts::is_input_iterator<I1>,
+                 meta::concepts::is_sentinel<S1, I1>,
+                 meta::concepts::is_input_iterator<I2>,
+                 meta::concepts::is_sentinel<S2, I2>>;
 
   static constexpr auto const value =
-      meta::concepts::iterator::is_input_iterator<I1>::value &&
-      meta::concepts::iterator::is_sentinel<S1, I1>::value && is_encoder &&
-      meta::concepts::iterator::is_input_iterator<I2>::value &&
-      meta::concepts::iterator::is_sentinel<S2, I2>::value && is_decoder &&
+      meta::concepts::is_input_iterator<I1>::value &&
+      meta::concepts::is_sentinel<S1, I1>::value && is_encoder &&
+      meta::concepts::is_input_iterator<I2>::value &&
+      meta::concepts::is_sentinel<S2, I2>::value && is_decoder &&
       is_encoded_codec_output && is_decoded_codec_output;
 
   static constexpr int trigger_static_asserts()

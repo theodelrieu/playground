@@ -7,22 +7,19 @@
 #include <catch.hpp>
 
 #include <mgs/concepts/input_transformer.hpp>
-#include <mgs/meta/concepts/comparison/strict_totally_ordered.hpp>
-#include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
-#include <mgs/meta/concepts/iterator/iterator.hpp>
-#include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/random_access_iterator.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/strict_totally_ordered.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs;
-
-namespace comparison_concepts = mgs::meta::concepts::comparison;
-namespace object_concepts = mgs::meta::concepts::object;
-namespace iterator_concepts = mgs::meta::concepts::iterator;
+using namespace mgs::meta::concepts;
+using namespace mgs::concepts;
 
 namespace
 {
@@ -200,59 +197,49 @@ struct invalid_buffer_type_transformer
 
 TEST_CASE("InputTransformer", "[concepts]")
 {
-  static_assert(concepts::is_input_transformer<valid_transformer>::value, "");
+  static_assert(is_input_transformer<valid_transformer>::value, "");
 
-  static_assert(!concepts::is_input_transformer<struct incomplete>::value, "");
-  static_assert(!concepts::is_input_transformer<void>::value, "");
-  static_assert(!concepts::is_input_transformer<void*>::value, "");
+  static_assert(!is_input_transformer<struct incomplete>::value, "");
+  static_assert(!is_input_transformer<void>::value, "");
+  static_assert(!is_input_transformer<void*>::value, "");
 
-  static_assert(!concepts::is_input_transformer<
-                    non_default_constructible_transformer>::value,
-                "");
-  static_assert(!concepts::is_input_transformer<
-                    no_underlying_iterator_transformer>::value,
-                "");
-  static_assert(!concepts::is_input_transformer<
-                    no_underlying_sentinel_transformer>::value,
-                "");
-  static_assert(!concepts::is_input_transformer<
+  static_assert(
+      !is_input_transformer<non_default_constructible_transformer>::value, "");
+  static_assert(
+      !is_input_transformer<no_underlying_iterator_transformer>::value, "");
+  static_assert(
+      !is_input_transformer<no_underlying_sentinel_transformer>::value, "");
+  static_assert(!is_input_transformer<
                     non_iterator_sentinel_constructible_transformer>::value,
                 "");
+  static_assert(!is_input_transformer<no_buffer_type_transformer>::value, "");
   static_assert(
-      !concepts::is_input_transformer<no_buffer_type_transformer>::value, "");
-  static_assert(!concepts::is_input_transformer<
-                    no_function_call_operator_transformer>::value,
-                "");
-  static_assert(!concepts::is_input_transformer<
-                    no_get_iterator_transformer>::value,
-                "");
-  static_assert(
-      !concepts::is_input_transformer<no_get_sentinel_transformer>::value, "");
-
-  static_assert(!concepts::is_input_transformer<
-                    invalid_underlying_sentinel_transformer>::value,
-                "");
-
-  static_assert(!concepts::is_input_transformer<
-                    invalid_underlying_iterator_transformer>::value,
-                "");
+      !is_input_transformer<no_function_call_operator_transformer>::value, "");
+  static_assert(!is_input_transformer<no_get_iterator_transformer>::value, "");
+  static_assert(!is_input_transformer<no_get_sentinel_transformer>::value, "");
 
   static_assert(
-      !concepts::is_input_transformer<invalid_buffer_type_transformer>::value,
+      !is_input_transformer<invalid_underlying_sentinel_transformer>::value,
       "");
 
-  test_helpers::generate_failed_requirements_tests<
-      concepts::is_input_transformer<non_default_constructible_transformer>,
-      std::tuple<object_concepts::is_semiregular<
-          non_default_constructible_transformer>>>();
+  static_assert(
+      !is_input_transformer<invalid_underlying_iterator_transformer>::value,
+      "");
+
+  static_assert(!is_input_transformer<invalid_buffer_type_transformer>::value,
+                "");
 
   test_helpers::generate_failed_requirements_tests<
-      concepts::is_input_transformer<invalid_underlying_sentinel_transformer>,
+      is_input_transformer<non_default_constructible_transformer>,
+      std::tuple<is_semiregular<non_default_constructible_transformer>>>();
+
+  test_helpers::generate_failed_requirements_tests<
+      is_input_transformer<invalid_underlying_sentinel_transformer>,
       std::tuple<
-          iterator_concepts::is_sentinel<
+          is_sentinel<
               invalid_underlying_sentinel_transformer::underlying_sentinel,
               invalid_underlying_sentinel_transformer::underlying_iterator>,
-          comparison_concepts::is_weakly_equality_comparable_with<
+          is_weakly_equality_comparable_with<
               invalid_underlying_sentinel_transformer::underlying_sentinel,
               invalid_underlying_sentinel_transformer::underlying_iterator>>>();
 }

@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/meta/concepts/core/derived_from.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
 
 namespace mgs
 {

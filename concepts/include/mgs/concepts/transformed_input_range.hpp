@@ -6,12 +6,12 @@
 
 #include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/concepts/core/constructible.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
+#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/iterator.hpp>
 
@@ -52,20 +52,20 @@ private:
       meta::detected_t<detail::detected::types::underlying_sentinel, T>;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      meta::concepts::core::
+      meta::concepts::
           is_constructible<T, underlying_iterator, underlying_sentinel>::value;
 
 public:
-  using requirements = std::tuple<meta::concepts::object::is_semiregular<T>,
-                                  meta::concepts::iterator::is_range<T>>;
+  using requirements = std::tuple<meta::concepts::is_semiregular<T>,
+                                  meta::concepts::is_range<T>>;
 
   static auto constexpr value =
       is_constructible_from_iterator_sentinel &&
-      meta::concepts::object::is_semiregular<T>::value &&
-      meta::concepts::iterator::is_range<T>::value &&
+      meta::concepts::is_semiregular<T>::value &&
+      meta::concepts::is_range<T>::value &&
       std::is_same<ResultOfBegin, iterator>::value &&
-      meta::concepts::iterator::is_input_iterator<underlying_iterator>::value &&
-      meta::concepts::iterator::is_sentinel<underlying_sentinel,
+      meta::concepts::is_input_iterator<underlying_iterator>::value &&
+      meta::concepts::is_sentinel<underlying_sentinel,
                                             underlying_iterator>::value;
 
   static constexpr int trigger_static_asserts()
@@ -76,10 +76,10 @@ public:
     static_assert(is_constructible_from_iterator_sentinel,
                   "T is not Constructible from Iterator/Sentinel pair");
     static_assert(
-        meta::concepts::iterator::is_input_iterator<underlying_iterator>::value,
+        meta::concepts::is_input_iterator<underlying_iterator>::value,
         "T::underlying_iterator must be an InputIterator");
     static_assert(
-        meta::concepts::iterator::is_sentinel<underlying_sentinel,
+        meta::concepts::is_sentinel<underlying_sentinel,
                                               underlying_iterator>::value,
         "T::underlying_sentinel must be a Sentinel<T::underlying_iterator>");
     return 1;

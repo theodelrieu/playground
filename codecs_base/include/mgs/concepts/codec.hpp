@@ -11,12 +11,12 @@
 #include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
 #include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 
 // clang-format off
@@ -187,16 +187,16 @@ private:
 
 public:
   using requirements =
-      std::tuple<meta::concepts::iterator::is_input_iterator<I1>,
-                 meta::concepts::iterator::is_sentinel<S1, I1>,
-                 meta::concepts::iterator::is_input_iterator<I2>,
-                 meta::concepts::iterator::is_sentinel<S2, I2>>;
+      std::tuple<meta::concepts::is_input_iterator<I1>,
+                 meta::concepts::is_sentinel<S1, I1>,
+                 meta::concepts::is_input_iterator<I2>,
+                 meta::concepts::is_sentinel<S2, I2>>;
 
   static constexpr auto const value =
-      meta::concepts::iterator::is_input_iterator<I1>::value &&
-      meta::concepts::iterator::is_sentinel<S1, I1>::value &&
-      meta::concepts::iterator::is_input_iterator<I2>::value &&
-      meta::concepts::iterator::is_sentinel<S2, I2>::value &&
+      meta::concepts::is_input_iterator<I1>::value &&
+      meta::concepts::is_sentinel<S1, I1>::value &&
+      meta::concepts::is_input_iterator<I2>::value &&
+      meta::concepts::is_sentinel<S2, I2>::value &&
       has_make_encoder && has_make_decoder && has_default_encoded_output &&
       has_default_decoded_output && has_template_encoded_output &&
       has_template_decoded_output && has_encode_iterators_default_result &&

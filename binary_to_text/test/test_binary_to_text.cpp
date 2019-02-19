@@ -17,7 +17,7 @@
 #include <mgs/codecs/binary_to_text/basic_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/core/derived_from.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
 

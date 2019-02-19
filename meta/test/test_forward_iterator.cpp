@@ -5,14 +5,14 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/iterator/forward_iterator.hpp>
-#include <mgs/meta/concepts/iterator/incrementable.hpp>
+#include <mgs/meta/concepts/forward_iterator.hpp>
+#include <mgs/meta/concepts/incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace iterator_concepts = concepts::iterator;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -58,19 +58,16 @@ bool operator!=(valid_forward_iterator, valid_forward_iterator);
 
 TEST_CASE("ForwardIterator", "[meta][concepts][iterator]")
 {
-  static_assert(iterator_concepts::is_forward_iterator<char*>::value, "");
-  static_assert(
-      iterator_concepts::is_forward_iterator<valid_forward_iterator>::value, "");
+  static_assert(is_forward_iterator<char*>::value, "");
+  static_assert(is_forward_iterator<valid_forward_iterator>::value, "");
 
-  static_assert(!iterator_concepts::is_forward_iterator<
-                    std::istreambuf_iterator<char>>::value,
+  static_assert(!is_forward_iterator<std::istreambuf_iterator<char>>::value,
                 "");
-  static_assert(!iterator_concepts::is_forward_iterator<
-                    invalid_post_increment_iterator>::value,
+  static_assert(!is_forward_iterator<invalid_post_increment_iterator>::value,
                 "");
 
-  static_assert(!iterator_concepts::is_forward_iterator<void>::value, "");
-  static_assert(!iterator_concepts::is_forward_iterator<struct incomplete>::value, "");
-  static_assert(!iterator_concepts::is_forward_iterator<void*>::value, "");
-  static_assert(!iterator_concepts::is_forward_iterator<struct incomplete*>::value, "");
+  static_assert(!is_forward_iterator<void>::value, "");
+  static_assert(!is_forward_iterator<struct incomplete>::value, "");
+  static_assert(!is_forward_iterator<void*>::value, "");
+  static_assert(!is_forward_iterator<struct incomplete*>::value, "");
 }

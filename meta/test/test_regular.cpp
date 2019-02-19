@@ -2,18 +2,16 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/comparison/equality_comparable.hpp>
-#include <mgs/meta/concepts/core/swappable.hpp>
-#include <mgs/meta/concepts/object/regular.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
+#include <mgs/meta/concepts/equality_comparable.hpp>
+#include <mgs/meta/concepts/swappable.hpp>
+#include <mgs/meta/concepts/regular.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace object_concepts = concepts::object;
-namespace core_concepts = concepts::core;
-namespace comparison_concepts = concepts::comparison;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -45,20 +43,19 @@ bool operator!=(regular const&, regular const&);
 
 TEST_CASE("Regular", "[meta][concepts][object]")
 {
-  static_assert(object_concepts::is_regular<int>::value, "");
-  static_assert(!object_concepts::is_regular<semiregular>::value, "");
-  static_assert(object_concepts::is_regular<regular>::value, "");
-  static_assert(!object_concepts::is_regular<almost_regular>::value, "");
+  static_assert(is_regular<int>::value, "");
+  static_assert(!is_regular<semiregular>::value, "");
+  static_assert(is_regular<regular>::value, "");
+  static_assert(!is_regular<almost_regular>::value, "");
 
-  static_assert(!object_concepts::is_regular<void>::value, "");
-  static_assert(!object_concepts::is_regular<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      object_concepts::is_regular<almost_regular>,
-      std::tuple<
-          comparison_concepts::is_equality_comparable<almost_regular>>>();
+  static_assert(!is_regular<void>::value, "");
+  static_assert(!is_regular<struct incomplete>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      object_concepts::is_regular<almost_semiregular>,
-      std::tuple<object_concepts::is_semiregular<almost_semiregular>>>();
+      is_regular<almost_regular>,
+      std::tuple<is_equality_comparable<almost_regular>>>();
+
+  test_helpers::generate_failed_requirements_tests<
+      is_regular<almost_semiregular>,
+      std::tuple<is_semiregular<almost_semiregular>>>();
 }

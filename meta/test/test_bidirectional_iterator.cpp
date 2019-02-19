@@ -4,14 +4,14 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
-#include <mgs/meta/concepts/iterator/incrementable.hpp>
+#include <mgs/meta/concepts/bidirectional_iterator.hpp>
+#include <mgs/meta/concepts/incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace iterator_concepts = concepts::iterator;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -64,8 +64,10 @@ struct invalid_post_decrement_iterator
   reference operator*();
 };
 
-bool operator==(invalid_post_decrement_iterator, invalid_post_decrement_iterator);
-bool operator!=(invalid_post_decrement_iterator, invalid_post_decrement_iterator);
+bool operator==(invalid_post_decrement_iterator,
+                invalid_post_decrement_iterator);
+bool operator!=(invalid_post_decrement_iterator,
+                invalid_post_decrement_iterator);
 
 struct valid_bidirectional_iterator
 {
@@ -88,32 +90,24 @@ bool operator!=(valid_bidirectional_iterator, valid_bidirectional_iterator);
 
 TEST_CASE("BidirectionalIterator", "[meta][concepts][iterator]")
 {
-  static_assert(iterator_concepts::is_bidirectional_iterator<char*>::value, "");
-  static_assert(iterator_concepts::is_bidirectional_iterator<
-                    valid_bidirectional_iterator>::value,
+  static_assert(is_bidirectional_iterator<char*>::value, "");
+  static_assert(is_bidirectional_iterator<valid_bidirectional_iterator>::value,
                 "");
 
-  static_assert(!iterator_concepts::is_bidirectional_iterator<
-                    std::forward_list<char>>::value,
+  static_assert(!is_bidirectional_iterator<std::forward_list<char>>::value, "");
+  static_assert(!is_bidirectional_iterator<no_post_decrement_iterator>::value,
                 "");
-  static_assert(!iterator_concepts::is_bidirectional_iterator<
-                    no_post_decrement_iterator>::value,
+  static_assert(!is_bidirectional_iterator<no_pre_decrement_iterator>::value,
                 "");
-  static_assert(!iterator_concepts::is_bidirectional_iterator<
-                    no_pre_decrement_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_bidirectional_iterator<
-                    invalid_post_decrement_iterator>::value,
-                "");
+  static_assert(
+      !is_bidirectional_iterator<invalid_post_decrement_iterator>::value, "");
 
-  static_assert(!iterator_concepts::is_bidirectional_iterator<void>::value, "");
-  static_assert(!iterator_concepts::is_bidirectional_iterator<struct incomplete>::value, "");
+  static_assert(!is_bidirectional_iterator<void>::value, "");
+  static_assert(!is_bidirectional_iterator<struct incomplete>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_bidirectional_iterator<
-          invalid_post_decrement_iterator>>();
+      is_bidirectional_iterator<invalid_post_decrement_iterator>>();
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_bidirectional_iterator<
-          std::forward_list<char>::iterator>>();
+      is_bidirectional_iterator<std::forward_list<char>::iterator>>();
 }

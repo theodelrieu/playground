@@ -5,13 +5,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/core/derived_from.hpp>
-#include <mgs/meta/concepts/iterator/bidirectional_iterator.hpp>
-#include <mgs/meta/concepts/iterator/forward_iterator.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/iterator.hpp>
-#include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
+#include <mgs/meta/concepts/bidirectional_iterator.hpp>
+#include <mgs/meta/concepts/forward_iterator.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/random_access_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
 
 #include <mgs/ranges/basic_transformed_input_range.hpp>
@@ -41,9 +41,9 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::concepts::iterator::is_iterator<decltype(current)>::value,
+  static_assert(meta::concepts::is_iterator<decltype(current)>::value,
                 "");
-  static_assert(meta::concepts::iterator::is_sentinel<decltype(end),
+  static_assert(meta::concepts::is_sentinel<decltype(end),
                                                       decltype(current)>::value,
                 "");
   using encoder_tag = meta::detected::types::iterator_category<
@@ -53,7 +53,7 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
   static_assert(std::is_same<underlying_tag, encoder_tag>::value, "");
 
   static_assert(
-      meta::concepts::iterator::is_input_iterator<decltype(current)>::value,
+      meta::concepts::is_input_iterator<decltype(current)>::value,
       "");
   CHECK(*current == *current);
   CHECK(*current == 'a');

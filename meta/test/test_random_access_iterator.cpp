@@ -4,14 +4,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/iterator/random_access_iterator.hpp>
+#include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace iterator_concepts = concepts::iterator;
-namespace comparison_concepts = concepts::comparison;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -572,67 +571,52 @@ bool operator>=(valid_random_access_iterator, valid_random_access_iterator);
 
 TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
 {
-  static_assert(iterator_concepts::is_random_access_iterator<char*>::value, "");
-  static_assert(iterator_concepts::is_random_access_iterator<
-                    valid_random_access_iterator>::value,
+  static_assert(is_random_access_iterator<char*>::value, "");
+  static_assert(is_random_access_iterator<valid_random_access_iterator>::value,
                 "");
 
+  static_assert(!is_random_access_iterator<std::list<char>>::value, "");
+  static_assert(!is_random_access_iterator<no_array_subscript_iterator>::value,
+                "");
   static_assert(
-      !iterator_concepts::is_random_access_iterator<std::list<char>>::value,
+      !is_random_access_iterator<no_addition_assignment_iterator>::value, "");
+  static_assert(!is_random_access_iterator<no_member_addition_iterator>::value,
+                "");
+  static_assert(
+      !is_random_access_iterator<no_substraction_assignment_iterator>::value,
       "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    no_array_subscript_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    no_addition_assignment_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    no_member_addition_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    no_substraction_assignment_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    no_member_substraction_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    invalid_array_subscript_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    invalid_addition_assignment_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    invalid_member_addition_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
+  static_assert(
+      !is_random_access_iterator<no_member_substraction_iterator>::value, "");
+  static_assert(
+      !is_random_access_iterator<invalid_array_subscript_iterator>::value, "");
+  static_assert(
+      !is_random_access_iterator<invalid_addition_assignment_iterator>::value,
+      "");
+  static_assert(
+      !is_random_access_iterator<invalid_member_addition_iterator>::value, "");
+  static_assert(!is_random_access_iterator<
                     invalid_substraction_assignment_iterator>::value,
                 "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    invalid_member_substraction_iterator>::value,
-                "");
-  static_assert(!iterator_concepts::is_random_access_iterator<
-                    non_strict_totally_ordered_iterator>::value,
-                "");
-
-  static_assert(!iterator_concepts::is_random_access_iterator<void>::value, "");
   static_assert(
-      !iterator_concepts::is_random_access_iterator<struct incomplete>::value,
+      !is_random_access_iterator<invalid_member_substraction_iterator>::value,
+      "");
+  static_assert(
+      !is_random_access_iterator<non_strict_totally_ordered_iterator>::value,
       "");
 
-  test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_random_access_iterator<
-          no_array_subscript_iterator>>();
+  static_assert(!is_random_access_iterator<void>::value, "");
+  static_assert(!is_random_access_iterator<struct incomplete>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_random_access_iterator<
-          non_strict_totally_ordered_iterator>,
-      std::tuple<comparison_concepts::is_strict_totally_ordered<
-          non_strict_totally_ordered_iterator>>>();
+      is_random_access_iterator<no_array_subscript_iterator>>();
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_random_access_iterator<
-          invalid_free_substraction_iterator>,
-      std::tuple<iterator_concepts::is_sized_sentinel<
-          invalid_free_substraction_iterator,
-          invalid_free_substraction_iterator>>>();
+      is_random_access_iterator<non_strict_totally_ordered_iterator>,
+      std::tuple<
+          is_strict_totally_ordered<non_strict_totally_ordered_iterator>>>();
+
+  test_helpers::generate_failed_requirements_tests<
+      is_random_access_iterator<invalid_free_substraction_iterator>,
+      std::tuple<is_sized_sentinel<invalid_free_substraction_iterator,
+                                   invalid_free_substraction_iterator>>>();
 }

@@ -18,9 +18,9 @@
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
@@ -37,8 +37,8 @@ class basic_encoder
 private:
   static constexpr auto _ = meta::trigger_static_asserts<
       concepts::is_encoding_traits<EncodingTraits>,
-      meta::concepts::iterator::is_input_iterator<Iterator>,
-      meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>();
+      meta::concepts::is_input_iterator<Iterator>,
+      meta::concepts::is_sentinel<Sentinel, Iterator>>();
 
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,
                 "optional padding does not make sense when encoding");
@@ -76,7 +76,7 @@ public:
 
   template <typename I = Iterator,
             typename S = Sentinel,
-            typename = meta::concepts::iterator::SizedSentinel<S, I>>
+            typename = meta::SizedSentinel<S, I>>
   std::size_t max_transformed_size() const
   {
     return detail::encoded_size<EncodingTraits>{}(_end - _current);

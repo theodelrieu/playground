@@ -3,7 +3,7 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
+#include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/iterator_traits.hpp>
 
 namespace mgs
@@ -23,7 +23,7 @@ template <typename T>
 struct iter_traits_impl<
     T,
     std::enable_if_t<
-        concepts::iterator::detail::is_iterator_traits_primary_template<
+        concepts::detail::is_iterator_traits_primary_template<
             meta::iterator_traits<T>>::value>>
 {
   using type = T;
@@ -31,7 +31,7 @@ struct iter_traits_impl<
 
 template <typename T>
 struct iter_traits_impl<T,
-                        std::enable_if_t<concepts::iterator::detail::is_iterator_traits<
+                        std::enable_if_t<concepts::detail::is_iterator_traits<
                             // use our own iterator_traits for
                             // SFINAE-correctness purposes
                             meta::iterator_traits<T>>::value>>

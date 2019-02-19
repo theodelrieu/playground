@@ -8,7 +8,7 @@
 
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/concepts/codec_output.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 

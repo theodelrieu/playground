@@ -5,17 +5,16 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
-#include <mgs/meta/concepts/iterator/iterator.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
+#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/range.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs;
-namespace iterator_concepts = meta::concepts::iterator;
-namespace comparison_concepts = meta::concepts::comparison;
+using namespace mgs::meta;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -60,27 +59,25 @@ sentinel end(sentinel_range&);
 
 TEST_CASE("Range", "[concepts]")
 {
-  static_assert(iterator_concepts::is_range<char[1]>::value, "");
-  static_assert(iterator_concepts::is_range<char const[1]>::value, "");
-  static_assert(iterator_concepts::is_range<std::string>::value, "");
-  static_assert(iterator_concepts::is_range<std::vector<int>>::value, "");
-  static_assert(iterator_concepts::is_range<range>::value, "");
-  static_assert(iterator_concepts::is_range<sentinel_range>::value, "");
+  static_assert(is_range<char[1]>::value, "");
+  static_assert(is_range<char const[1]>::value, "");
+  static_assert(is_range<std::string>::value, "");
+  static_assert(is_range<std::vector<int>>::value, "");
+  static_assert(is_range<range>::value, "");
+  static_assert(is_range<sentinel_range>::value, "");
 
-  static_assert(!iterator_concepts::is_range<char*>::value, "");
-  static_assert(!iterator_concepts::is_range<non_range>::value, "");
-  static_assert(!iterator_concepts::is_range<invalid_range>::value, "");
+  static_assert(!is_range<char*>::value, "");
+  static_assert(!is_range<non_range>::value, "");
+  static_assert(!is_range<invalid_range>::value, "");
 
-  static_assert(!iterator_concepts::is_range<struct incomplete>::value, "");
-  static_assert(!iterator_concepts::is_range<void>::value, "");
+  static_assert(!is_range<struct incomplete>::value, "");
+  static_assert(!is_range<void>::value, "");
+
+  test_helpers::generate_failed_requirements_tests<is_range<non_range>>();
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_range<non_range>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::is_range<invalid_range>,
-      std::tuple<iterator_concepts::is_sentinel<invalid_sentinel, char*>,
-                 comparison_concepts::is_weakly_equality_comparable_with<
-                     invalid_sentinel,
-                     char*>>>();
+      is_range<invalid_range>,
+      std::tuple<
+          is_sentinel<invalid_sentinel, char*>,
+          is_weakly_equality_comparable_with<invalid_sentinel, char*>>>();
 }

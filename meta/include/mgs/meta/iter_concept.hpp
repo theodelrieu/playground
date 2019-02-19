@@ -51,7 +51,7 @@ struct iter_concept_impl<
         !is_detected<detected::types::iterator_category, T>::value &&
         // iterator_traits' primary template does not define any alias.
         // Therefore we must check that none is defined here.
-        concepts::iterator::detail::is_iterator_traits_primary_template<
+        concepts::detail::is_iterator_traits_primary_template<
             meta::iterator_traits<T>>::value>>
 {
   using type = std::random_access_iterator_tag;

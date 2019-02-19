@@ -5,11 +5,11 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/concepts/codec_output.hpp>
 #include <mgs/concepts/codec_traits.hpp>
-#include <mgs/meta/concepts/iterator/range.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
@@ -62,7 +62,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::meta::concepts::iterator::Range<U>,
+            typename Range = mgs::meta::Range<U>,
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Encoder =
@@ -77,7 +77,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::meta::concepts::iterator::Range<U>,
+            typename Range = mgs::meta::Range<U>,
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Encoder =
@@ -103,7 +103,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::meta::concepts::iterator::Range<U>,
+            typename Range = mgs::meta::Range<U>,
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Decoder =
@@ -118,7 +118,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::meta::concepts::iterator::Range<U>,
+            typename Range = mgs::meta::Range<U>,
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Decoder =

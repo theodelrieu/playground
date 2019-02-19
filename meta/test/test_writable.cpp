@@ -5,13 +5,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/iterator/writable.hpp>
+#include <mgs/meta/concepts/writable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace iterator_concepts = concepts::iterator;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -64,25 +64,20 @@ struct It2
 
 TEST_CASE("Writable", "[meta][concepts][iterator]")
 {
-  static_assert(!iterator_concepts::is_writable<void, int>::value, "");
-  static_assert(!iterator_concepts::is_writable<void*, int>::value, "");
-  static_assert(!iterator_concepts::is_writable<struct incomplete*, int>::value, "");
-  static_assert(!iterator_concepts::is_writable<struct incomplete, int>::value, "");
+  static_assert(!is_writable<void, int>::value, "");
+  static_assert(!is_writable<void*, int>::value, "");
+  static_assert(!is_writable<struct incomplete*, int>::value, "");
+  static_assert(!is_writable<struct incomplete, int>::value, "");
 
-  static_assert(!iterator_concepts::is_writable<It, std::string>::value, "");
-  static_assert(iterator_concepts::is_writable<It2, std::string>::value, "");
+  static_assert(!is_writable<It, std::string>::value, "");
+  static_assert(is_writable<It2, std::string>::value, "");
 
-  static_assert(iterator_concepts::is_writable<char*, char>::value, "");
-  static_assert(iterator_concepts::is_writable<char* const, char>::value, "");
-  static_assert(!iterator_concepts::is_writable<char const*, char>::value, "");
-  static_assert(iterator_concepts::is_writable<std::ostreambuf_iterator<char>,
-                                               char>::value,
+  static_assert(is_writable<char*, char>::value, "");
+  static_assert(is_writable<char* const, char>::value, "");
+  static_assert(!is_writable<char const*, char>::value, "");
+  static_assert(is_writable<std::ostreambuf_iterator<char>, char>::value, "");
+  static_assert(is_writable<std::back_insert_iterator<std::vector<int>>,
+                            int const&>::value,
                 "");
-  static_assert(iterator_concepts::is_writable<
-                    std::back_insert_iterator<std::vector<int>>,
-                    int const&>::value,
-                "");
-  static_assert(
-      iterator_concepts::is_writable<std::unique_ptr<float>, int const&>::value,
-      "");
+  static_assert(is_writable<std::unique_ptr<float>, int const&>::value, "");
 }

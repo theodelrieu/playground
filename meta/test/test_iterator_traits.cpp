@@ -3,14 +3,13 @@
 
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/iterator/detail/iterator_traits.hpp>
+#include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/iterator_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs::meta;
-namespace iterator_concepts = concepts::iterator;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -43,46 +42,40 @@ struct iterator_traits<valid_iterator>
 
 TEST_CASE("IteratorTraits", "[meta][concepts][iterator]")
 {
-  static_assert(
-      iterator_concepts::detail::is_iterator_traits<std::iterator_traits<char*>>::value,
-      "");
-  static_assert(iterator_concepts::detail::is_iterator_traits<
-                    std::iterator_traits<valid_iterator>>::value,
+  static_assert(detail::is_iterator_traits<std::iterator_traits<char*>>::value,
                 "");
-  static_assert(iterator_concepts::detail::is_iterator_traits<
+  static_assert(
+      detail::is_iterator_traits<std::iterator_traits<valid_iterator>>::value,
+      "");
+  static_assert(detail::is_iterator_traits<
                     std::iterator_traits<struct incomplete*>>::value,
                 "");
 
-  static_assert(iterator_concepts::detail::is_iterator_traits<
-                    mgs::meta::iterator_traits<char*>>::value,
-                "");
-  static_assert(iterator_concepts::detail::is_iterator_traits<
+  static_assert(
+      detail::is_iterator_traits<mgs::meta::iterator_traits<char*>>::value, "");
+  static_assert(detail::is_iterator_traits<
                     mgs::meta::iterator_traits<valid_iterator>>::value,
                 "");
-  static_assert(iterator_concepts::detail::is_iterator_traits<
+  static_assert(detail::is_iterator_traits<
                     mgs::meta::iterator_traits<struct incomplete*>>::value,
                 "");
 
-  static_assert(!iterator_concepts::detail::is_iterator_traits<
+  static_assert(!detail::is_iterator_traits<
                     std::iterator_traits<invalid_iterator>>::value,
                 "");
-  static_assert(!iterator_concepts::detail::is_iterator_traits<int>::value, "");
-  static_assert(!iterator_concepts::detail::is_iterator_traits<void>::value, "");
-  static_assert(!iterator_concepts::detail::is_iterator_traits<
-                    std::iterator_traits<void*>>::value,
+  static_assert(!detail::is_iterator_traits<int>::value, "");
+  static_assert(!detail::is_iterator_traits<void>::value, "");
+  static_assert(!detail::is_iterator_traits<std::iterator_traits<void*>>::value,
                 "");
-  static_assert(!iterator_concepts::detail::is_iterator_traits<
-                    std::iterator_traits<void*>>::value,
+  static_assert(!detail::is_iterator_traits<std::iterator_traits<void*>>::value,
                 "");
-  static_assert(
-      !iterator_concepts::detail::is_iterator_traits<std::iterator_traits<void>>::value,
-      "");
-  static_assert(!iterator_concepts::detail::is_iterator_traits<
+  static_assert(!detail::is_iterator_traits<std::iterator_traits<void>>::value,
+                "");
+  static_assert(!detail::is_iterator_traits<
                     std::iterator_traits<struct incomplete>>::value,
                 "");
-  static_assert(
-      !iterator_concepts::detail::is_iterator_traits<struct incomplete>::value, "");
+  static_assert(!detail::is_iterator_traits<struct incomplete>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      iterator_concepts::detail::is_iterator_traits<int>>();
+      detail::is_iterator_traits<int>>();
 }

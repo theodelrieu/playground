@@ -3,17 +3,15 @@
 #include <catch.hpp>
 
 #include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/object/semiregular.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs;
-
-namespace object_concepts = mgs::meta::concepts::object;
-namespace iterator_concepts = mgs::meta::concepts::iterator;
+using namespace mgs::meta::concepts;
+using namespace mgs::concepts;
 
 namespace
 {
@@ -131,35 +129,28 @@ struct invalid_iterator_range
 
 TEST_CASE("TransformedInputRange", "[concepts]")
 {
-  static_assert(concepts::is_transformed_input_range<valid_range>::value, "");
+  static_assert(is_transformed_input_range<valid_range>::value, "");
 
-  static_assert(!concepts::is_transformed_input_range<struct incomplete>::value,
-                "");
-  static_assert(!concepts::is_transformed_input_range<void>::value, "");
-  static_assert(!concepts::is_transformed_input_range<void*>::value, "");
+  static_assert(!is_transformed_input_range<struct incomplete>::value, "");
+  static_assert(!is_transformed_input_range<void>::value, "");
+  static_assert(!is_transformed_input_range<void*>::value, "");
 
+  static_assert(!is_transformed_input_range<non_semiregular_range>::value, "");
+  static_assert(!is_transformed_input_range<non_range>::value, "");
+  static_assert(!is_transformed_input_range<no_iterator_range>::value, "");
   static_assert(
-      !concepts::is_transformed_input_range<non_semiregular_range>::value, "");
+      !is_transformed_input_range<no_underlying_iterator_range>::value, "");
   static_assert(
-      !concepts::is_transformed_input_range<non_range>::value, "");
-  static_assert(!concepts::is_transformed_input_range<no_iterator_range>::value,
-                "");
-  static_assert(!concepts::is_transformed_input_range<
-                    no_underlying_iterator_range>::value,
-                "");
-  static_assert(!concepts::is_transformed_input_range<
-                    no_underlying_sentinel_range>::value,
-                "");
-  static_assert(!concepts::is_transformed_input_range<
+      !is_transformed_input_range<no_underlying_sentinel_range>::value, "");
+  static_assert(!is_transformed_input_range<
                     non_constructible_from_iterator_sentinel_range>::value,
                 "");
-  static_assert(!concepts::is_transformed_input_range<
-                    invalid_underlying_sentinel_range>::value,
-                "");
   static_assert(
-      !concepts::is_transformed_input_range<invalid_iterator_range>::value, "");
+      !is_transformed_input_range<invalid_underlying_sentinel_range>::value,
+      "");
+  static_assert(!is_transformed_input_range<invalid_iterator_range>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      concepts::is_transformed_input_range<non_semiregular_range>,
-      std::tuple<object_concepts::is_semiregular<non_semiregular_range>>>();
+      is_transformed_input_range<non_semiregular_range>,
+      std::tuple<is_semiregular<non_semiregular_range>>>();
 }

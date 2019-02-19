@@ -17,9 +17,9 @@
 #include <mgs/codecs/binary_to_text/detail/span.hpp>
 #include <mgs/codecs/binary_to_text/detail/static_vector.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
-#include <mgs/meta/concepts/iterator/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator/sentinel.hpp>
-#include <mgs/meta/concepts/iterator/sized_sentinel.hpp>
+#include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
@@ -36,9 +36,9 @@ class basic_decoder
 private:
   static constexpr auto _ =
       meta::trigger_static_asserts<
-          meta::concepts::iterator::is_input_iterator<Iterator>>() &&
+          meta::concepts::is_input_iterator<Iterator>>() &&
       meta::trigger_static_asserts<
-          meta::concepts::iterator::is_sentinel<Sentinel, Iterator>>() &&
+          meta::concepts::is_sentinel<Sentinel, Iterator>>() &&
       meta::trigger_static_asserts<
           concepts::is_encoding_traits<EncodingTraits>>();
 
@@ -73,7 +73,7 @@ public:
   template <typename I = Iterator,
             typename S = Sentinel,
             typename = std::enable_if_t<
-                meta::concepts::iterator::is_sized_sentinel<S, I>::value>>
+                meta::concepts::is_sized_sentinel<S, I>::value>>
   std::size_t max_transformed_size() const
   {
     return detail::max_decoded_size<EncodingTraits>{}(_end - _current);

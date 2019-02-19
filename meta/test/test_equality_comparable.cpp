@@ -1,14 +1,14 @@
 #include <catch.hpp>
 
-#include <mgs/meta/concepts/comparison/equality_comparable.hpp>
-#include <mgs/meta/concepts/comparison/equality_comparable_with.hpp>
-#include <mgs/meta/concepts/comparison/weakly_equality_comparable_with.hpp>
+#include <mgs/meta/concepts/equality_comparable.hpp>
+#include <mgs/meta/concepts/equality_comparable_with.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-namespace comparison_concepts = concepts::comparison;
+using namespace mgs::meta::concepts;
 
 namespace
 {
@@ -31,79 +31,55 @@ bool operator!=(fake_sentinel, fake_iterator);
 
 TEST_CASE("WeaklyEqualityComparableWith", "[meta][concepts][comparison]")
 {
+  static_assert(is_weakly_equality_comparable_with<int, float>::value, "");
+  static_assert(!is_weakly_equality_comparable_with<int, void>::value, "");
   static_assert(
-      comparison_concepts::is_weakly_equality_comparable_with<int,
-                                                              float>::value,
+      is_weakly_equality_comparable_with<fake_iterator, fake_iterator>::value,
       "");
   static_assert(
-      !comparison_concepts::is_weakly_equality_comparable_with<int,
-                                                               void>::value,
+      is_weakly_equality_comparable_with<fake_iterator, fake_sentinel>::value,
       "");
-  static_assert(comparison_concepts::is_weakly_equality_comparable_with<
-                    fake_iterator,
-                    fake_iterator>::value,
-                "");
-  static_assert(comparison_concepts::is_weakly_equality_comparable_with<
-                    fake_iterator,
-                    fake_sentinel>::value,
-                "");
-  static_assert(comparison_concepts::is_weakly_equality_comparable_with<
-                    fake_sentinel,
-                    fake_iterator>::value,
-                "");
-  static_assert(!comparison_concepts::is_weakly_equality_comparable_with<
-                    fake_sentinel,
-                    fake_sentinel>::value,
-                "");
+  static_assert(
+      is_weakly_equality_comparable_with<fake_sentinel, fake_iterator>::value,
+      "");
+  static_assert(
+      !is_weakly_equality_comparable_with<fake_sentinel, fake_sentinel>::value,
+      "");
   test_helpers::generate_failed_requirements_tests<
-      comparison_concepts::is_weakly_equality_comparable_with<void, void>>();
+      is_weakly_equality_comparable_with<void, void>>();
 }
 
 TEST_CASE("EqualityComparable", "[meta][concepts][comparison]")
 {
-  static_assert(comparison_concepts::is_equality_comparable<int>::value, "");
-  static_assert(!comparison_concepts::is_equality_comparable<void>::value, "");
-  static_assert(
-      comparison_concepts::is_equality_comparable<fake_iterator>::value, "");
-  static_assert(
-      !comparison_concepts::is_equality_comparable<fake_sentinel>::value, "");
+  static_assert(is_equality_comparable<int>::value, "");
+  static_assert(!is_equality_comparable<void>::value, "");
+  static_assert(is_equality_comparable<fake_iterator>::value, "");
+  static_assert(!is_equality_comparable<fake_sentinel>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      comparison_concepts::is_equality_comparable<void>>();
+      is_equality_comparable<void>>();
 }
 
 TEST_CASE("EqualityComparableWith", "[meta][concepts][comparison]")
 {
+  static_assert(is_equality_comparable_with<int, float>::value, "");
+  static_assert(!is_equality_comparable_with<void, float>::value, "");
   static_assert(
-      comparison_concepts::is_equality_comparable_with<int, float>::value, "");
+      is_equality_comparable_with<fake_iterator, fake_iterator>::value, "");
   static_assert(
-      !comparison_concepts::is_equality_comparable_with<void, float>::value,
-      "");
+      !is_equality_comparable_with<fake_iterator, fake_sentinel>::value, "");
   static_assert(
-      comparison_concepts::is_equality_comparable_with<fake_iterator,
-                                                       fake_iterator>::value,
-      "");
+      !is_equality_comparable_with<fake_sentinel, fake_iterator>::value, "");
   static_assert(
-      !comparison_concepts::is_equality_comparable_with<fake_iterator,
-                                                        fake_sentinel>::value,
-      "");
-  static_assert(
-      !comparison_concepts::is_equality_comparable_with<fake_sentinel,
-                                                        fake_iterator>::value,
-      "");
-  static_assert(
-      !comparison_concepts::is_equality_comparable_with<fake_sentinel,
-                                                        fake_sentinel>::value,
-      "");
+      !is_equality_comparable_with<fake_sentinel, fake_sentinel>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      comparison_concepts::is_equality_comparable_with<int, fake_iterator>,
-      std::tuple<comparison_concepts::
-                     is_weakly_equality_comparable_with<int, fake_iterator>>>();
+      is_equality_comparable_with<int, fake_iterator>,
+      std::tuple<is_weakly_equality_comparable_with<int, fake_iterator>>>();
 
   test_helpers::generate_failed_requirements_tests<
-      comparison_concepts::is_equality_comparable_with<int, fake_sentinel>,
-      std::tuple<comparison_concepts::is_equality_comparable<fake_sentinel>,
-                 comparison_concepts::
-                     is_weakly_equality_comparable_with<int, fake_sentinel>>>();
+      is_equality_comparable_with<int, fake_sentinel>,
+      std::tuple<is_equality_comparable<fake_sentinel>,
+
+                 is_weakly_equality_comparable_with<int, fake_sentinel>>>();
 }

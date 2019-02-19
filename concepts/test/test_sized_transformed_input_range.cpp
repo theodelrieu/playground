@@ -4,7 +4,7 @@
 
 #include <mgs/concepts/sized_transformed_input_range.hpp>
 
-using namespace mgs;
+using namespace mgs::concepts;
 
 namespace
 {
@@ -69,19 +69,17 @@ struct invalid_return_type_range
 
 TEST_CASE("SizedTransformedInputRange", "[concepts]")
 {
-  static_assert(concepts::is_sized_transformed_input_range<valid_range>::value, "");
+  static_assert(is_sized_transformed_input_range<valid_range>::value, "");
 
-  static_assert(!concepts::is_sized_transformed_input_range<struct incomplete>::value,
+  static_assert(!is_sized_transformed_input_range<struct incomplete>::value,
                 "");
-  static_assert(!concepts::is_sized_transformed_input_range<void>::value, "");
-  static_assert(!concepts::is_sized_transformed_input_range<void*>::value, "");
+  static_assert(!is_sized_transformed_input_range<void>::value, "");
+  static_assert(!is_sized_transformed_input_range<void*>::value, "");
 
-  static_assert(!concepts::is_sized_transformed_input_range<
-                    invalid_return_type_range>::value,
-                "");
   static_assert(
-      !concepts::is_sized_transformed_input_range<non_const_range>::value, "");
-  static_assert(!concepts::is_sized_transformed_input_range<
-                    no_max_transformed_size_range>::value,
-                "");
+      !is_sized_transformed_input_range<invalid_return_type_range>::value, "");
+  static_assert(!is_sized_transformed_input_range<non_const_range>::value, "");
+  static_assert(
+      !is_sized_transformed_input_range<no_max_transformed_size_range>::value,
+      "");
 }
