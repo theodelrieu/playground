@@ -131,13 +131,31 @@ TEST_CASE("codecs_base", "[codecs_base]")
       char tab2[10] = {};
       char tab3[10] = "abcdefghi";
 
-      auto const v = noop_codec::encode(tab);
-      auto const v2 = noop_codec::encode(tab2);
-      auto const v3 = noop_codec::encode(tab3);
+      SECTION("encode")
+      {
+        auto const v = noop_codec::encode(tab);
+        auto const v2 = noop_codec::encode(tab2);
+        auto const v3 = noop_codec::encode(tab3);
+        auto const v4 = noop_codec::encode(static_cast<char*>(tab3));
 
-      CHECK(v.size() == 10);
-      CHECK(v2.size() == 0);
-      CHECK(v3.size() == 9);
+        CHECK(v.size() == 10);
+        CHECK(v2.size() == 0);
+        CHECK(v3.size() == 9);
+        CHECK(v4.size() == 9);
+      }
+
+      SECTION("decode")
+      {
+        auto const v = noop_codec::decode(tab);
+        auto const v2 = noop_codec::decode(tab2);
+        auto const v3 = noop_codec::decode(tab3);
+        auto const v4 = noop_codec::decode(static_cast<char*>(tab3));
+
+        CHECK(v.size() == 10);
+        CHECK(v2.size() == 0);
+        CHECK(v3.size() == 9);
+        CHECK(v4.size() == 9);
+      }
     }
 
     SECTION("User-defined types")
