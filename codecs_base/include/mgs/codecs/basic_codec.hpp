@@ -23,6 +23,8 @@ namespace codecs
 template <typename CodecTraits>
 class basic_codec
 {
+  static_assert(concepts::is_codec_traits<CodecTraits>::value, "");
+
 public:
   template <typename Iterator, typename Sentinel = Iterator>
   using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
