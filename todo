@@ -2,7 +2,6 @@ code
 
 * remove conan workspaces, create one repo per recipe
 * move concepts aliases in namespace mgs (+ namespace concepts)
-* variable templates for every concept trait
 * mgs_detail regrouping everything that can be used by other packages + test_helpers
 
 doc
