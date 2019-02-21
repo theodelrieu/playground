@@ -114,12 +114,12 @@ As of now, `mgs` reports errors with exceptions.
 
 Every exception resides in the namespace `mgs::exceptions`.
 
-| class                  | derived from         | description                          |
-|------------------------+----------------------+--------------------------------------|
-| `exception`            | [`std::exception`]() | Base class for every `mgs` exception |
-| `decode_error`         | `exception`          | Base class for decoding exceptions   |
-| `invalid_input_error`  | `decode_error`       | Thrown on invalid encoded input      |
-| `unexpected_eof_error` | `decode_error`       | Thrown when more input was expected  |
+| class                  | derived from             | description                          |
+|------------------------+--------------------------+--------------------------------------|
+| `exception`            | [`std::runtime_error`]() | Base class for every `mgs` exception |
+| `decode_error`         | `exception`              | Base class for decoding exceptions   |
+| `invalid_input_error`  | `decode_error`           | Thrown on invalid encoded input      |
+| `unexpected_eof_error` | `decode_error`           | Thrown when more input was expected  |
 
 Note
 {: .label .label-yellow }
