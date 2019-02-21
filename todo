@@ -5,10 +5,12 @@ code
 
 doc
 
+* external links
 * use 0.1.0
-* migrate to readthedocs
-* fix documentation about '\0'
+* remove streams
+* fix documentation about '\0', in every api
 * fix codec traits template args order
+* migrate to readthedocs
 
 tests
 * use a mpl library to match static asserts

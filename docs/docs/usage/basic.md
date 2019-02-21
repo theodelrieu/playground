@@ -28,9 +28,9 @@ Each codec has two symmetrical APIs: `encode` and `decode`.
 
 Codecs share a common set of contraints on `encode`/`decode` input parameters. They can be one of the following:
 
-1. [`Range`]()
+1. [`std::Range`]()
 1. [`std::Iterator`]() range (more precisely: an [`std::InputIterator`]() and a [`std::Sentinel`]())
-1. `std::basic_istream&`
+1. `char*`
 
 ```cpp
 #include <mgs/base64.hpp>
@@ -53,21 +53,16 @@ int main() {
   encoded = base64::encode(decoded_list.begin(), decoded_list.end());
   decoded = base64::decode(encoded_list.begin(), encoded_list.end());
 
-  // 3. Input stream
-  std::ifstream decoded_file("decoded.txt");
-  std::ifstream encoded_file("encoded.b64");
-
-  encoded = base64::encode(decoded_file);
-  decoded = base64::decode(encoded_file);
+  // 3. char*
+  encoded = base64::encode("decoded text");
+  decoded = base64::decode(encoded.c_str());
 }
 ```
 
 Caveat
 {: .label .label-yellow }
 
-Using the [`Range`]()(1) overloads with a `char[]` has a caveat:
-
-It will discard the last character if it is the null terminator (`'\0'`).
+Passing a `char[]` to `encode/decode` will have the same effect than passing a `char*`. It will encode/decode upon the first encountered null terminator (`'\0'`).
 
 If you want to avoid this behavior, use the [`std::Iterator`]() range overloads(2) instead.
 

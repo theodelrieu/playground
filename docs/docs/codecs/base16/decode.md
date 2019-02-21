@@ -33,7 +33,7 @@ Decodes the given input.
 
 1. Decodes the contents of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `It` models [`Range`](/docs/meta/concepts/range) and calling overload (3) with its iterators is well-formed.
+    This overload only participates in overload resolution if `It` models [`Range`](/docs/meta/concepts/range) and calling overload (3) with its iterators is well-formed. If `T` is a C array of `char`, it has the same effect as calling `decode<T>(static_cast<char const*>(it))`.
 1. Has the same effect as calling `decode<std::string>(it)`.
 
 1. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
