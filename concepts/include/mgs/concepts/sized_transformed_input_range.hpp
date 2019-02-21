@@ -51,6 +51,10 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_sized_transformed_input_range_v =
+    is_sized_transformed_input_range<T>::value;
 }
 
 template <typename T,

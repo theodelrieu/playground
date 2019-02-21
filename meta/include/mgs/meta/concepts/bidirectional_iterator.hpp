@@ -55,6 +55,10 @@ struct is_bidirectional_iterator
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_bidirectional_iterator_v =
+    is_bidirectional_iterator<T>::value;
 }
 
 template <typename T,

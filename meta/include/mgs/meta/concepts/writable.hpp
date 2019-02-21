@@ -79,6 +79,9 @@ struct is_writable
     return 1;
   }
 };
+
+template <typename Out, typename T>
+constexpr auto is_writable_v = is_writable<Out, T>::value;
 }
 
 template <typename Out,

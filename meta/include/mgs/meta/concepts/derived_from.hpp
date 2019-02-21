@@ -48,6 +48,9 @@ struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
     return 1;
   }
 };
+
+template <typename Derived, typename Base>
+constexpr auto is_derived_from_v = is_derived_from<Derived, Base>::value;
 }
 
 template <typename Derived,

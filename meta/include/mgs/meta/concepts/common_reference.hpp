@@ -69,6 +69,9 @@ struct has_common_reference : detail::has_common_reference_impl<T, U>
 {
   using requirements = std::tuple<>;
 };
+
+template <typename T, typename U>
+constexpr auto has_common_reference_v = has_common_reference<T, U>::value;
 }
 
 template <typename T,

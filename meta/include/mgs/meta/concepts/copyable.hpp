@@ -36,6 +36,9 @@ struct is_copyable
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_copyable_v = is_copyable<T>::value;
 }
 
 template <typename T,

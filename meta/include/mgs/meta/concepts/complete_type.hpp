@@ -40,6 +40,9 @@ struct is_complete_type : detail::is_complete_type_impl<T>
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_complete_type_v = is_complete_type<T>::value;
 }
 
 template <typename T,

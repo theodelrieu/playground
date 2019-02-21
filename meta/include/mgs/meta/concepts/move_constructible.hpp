@@ -30,6 +30,9 @@ struct is_move_constructible
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_move_constructible_v = is_move_constructible<T>::value;
 }
 
 template <typename T,

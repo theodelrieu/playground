@@ -79,6 +79,9 @@ struct is_semiregular : detail::is_semiregular_impl<T>
     return detail::is_semiregular_impl<T>::trigger_static_asserts();
   }
 };
+
+template <typename T>
+constexpr auto is_semiregular_v = is_semiregular<T>::value;
 }
 
 template <typename T,

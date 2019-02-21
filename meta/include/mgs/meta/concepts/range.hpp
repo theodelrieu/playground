@@ -72,6 +72,9 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_range_v = is_range<T>::value;
 }
 
 template <typename T, typename = std::enable_if_t<concepts::is_range<T>::value>>

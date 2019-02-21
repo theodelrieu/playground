@@ -55,6 +55,9 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_swappable_v = is_swappable<T>::value;
 }
 
 template <typename T,

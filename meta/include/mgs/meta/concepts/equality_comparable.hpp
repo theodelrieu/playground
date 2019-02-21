@@ -25,6 +25,9 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_equality_comparable_v = is_equality_comparable<T>::value;
 }
 
 template <typename T,

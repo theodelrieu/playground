@@ -44,6 +44,9 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_input_iterator_v = is_input_iterator<T>::value;
 }
 
 template <typename T,

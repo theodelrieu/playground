@@ -58,6 +58,9 @@ public:
     return 1;
   }
 };
+
+template <typename LHS, typename RHS>
+constexpr auto is_assignable_v = is_assignable<LHS, RHS>::value;
 }
 
 template <typename LHS,

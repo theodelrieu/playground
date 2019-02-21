@@ -129,6 +129,9 @@ struct is_iterator_traits : detail::is_iterator_traits_impl<T>
     return detail::is_iterator_traits_impl<T>::trigger_static_asserts();
   }
 };
+
+template <typename T>
+constexpr auto is_iterator_traits_v = is_iterator_traits<T>::value;
 }
 }
 }

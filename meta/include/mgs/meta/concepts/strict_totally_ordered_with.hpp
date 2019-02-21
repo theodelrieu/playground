@@ -119,6 +119,10 @@ public:
     return 1;
   }
 };
+
+template <typename T, typename U>
+constexpr auto is_strict_totally_ordered_with_v =
+    is_strict_totally_ordered_with<T, U>::value;
 }
 
 template <typename T,

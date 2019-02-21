@@ -33,6 +33,10 @@ struct is_equality_comparable_with
     return 1;
   }
 };
+
+template <typename T, typename U>
+constexpr auto is_equality_comparable_with_v =
+    is_equality_comparable_with<T, U>::value;
 }
 
 template <typename T,

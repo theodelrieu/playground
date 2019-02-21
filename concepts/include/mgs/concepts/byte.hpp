@@ -42,6 +42,9 @@ struct is_byte
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_byte_v = is_byte<T>::value;
 }
 
 template <typename T, typename = std::enable_if_t<concepts::is_byte<T>::value>>

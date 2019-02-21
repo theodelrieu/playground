@@ -117,6 +117,10 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_random_access_iterator_v =
+    is_random_access_iterator<T>::value;
 }
 
 template <typename T,

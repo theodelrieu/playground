@@ -106,6 +106,9 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_input_transformer_v = is_input_transformer<T>::value;
 }
 
 template <typename T,

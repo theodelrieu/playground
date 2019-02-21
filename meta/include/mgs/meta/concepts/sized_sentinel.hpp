@@ -63,6 +63,9 @@ public:
     return 1;
   }
 };
+
+template <typename T, typename Iterator>
+constexpr auto is_sized_sentinel_v = is_sized_sentinel<T, Iterator>::value;
 }
 
 template <typename T,

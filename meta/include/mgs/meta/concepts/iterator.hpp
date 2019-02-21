@@ -35,6 +35,9 @@ struct is_iterator
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_iterator_v = is_iterator<T>::value;
 }
 
 template <typename T,

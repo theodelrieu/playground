@@ -36,6 +36,9 @@ struct is_movable
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_movable_v = is_movable<T>::value;
 }
 
 template <typename T,

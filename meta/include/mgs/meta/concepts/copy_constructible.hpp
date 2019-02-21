@@ -46,6 +46,9 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_copy_constructible_v = is_copy_constructible<T>::value;
 }
 
 template <typename T,

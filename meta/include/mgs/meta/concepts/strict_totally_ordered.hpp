@@ -74,6 +74,10 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_strict_totally_ordered_v =
+    is_strict_totally_ordered<T>::value;
 }
 
 template <typename T,

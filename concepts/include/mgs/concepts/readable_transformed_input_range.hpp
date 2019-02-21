@@ -63,6 +63,10 @@ public:
     return -1;
   }
 };
+
+template <typename T, typename O>
+constexpr auto is_readable_transformed_input_range_v =
+    is_readable_transformed_input_range<T, O>::value;
 }
 
 template <typename T,

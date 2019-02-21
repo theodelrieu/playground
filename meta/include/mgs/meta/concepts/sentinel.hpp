@@ -35,6 +35,9 @@ struct is_sentinel
     return 1;
   }
 };
+
+template <typename T, typename Iterator>
+constexpr auto is_sentinel_v = is_sentinel<T, Iterator>::value;
 }
 
 template <typename T,

@@ -42,6 +42,9 @@ struct is_output_iterator
     return 1;
   }
 };
+
+template <typename I, typename T>
+constexpr auto is_output_iterator_v = is_output_iterator<I, T>::value;
 }
 
 template <typename I,

@@ -98,6 +98,8 @@ public:
   }
 };
 
+template <typename T>
+constexpr auto is_weakly_incrementable_v = is_weakly_incrementable<T>::value;
 }
 
 template <typename T,

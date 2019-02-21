@@ -94,6 +94,9 @@ struct is_convertible_to : detail::is_convertible_to_impl<From, To>
     return detail::is_convertible_to_impl<From, To>::trigger_static_asserts();
   }
 };
+
+template <typename From, typename To>
+constexpr auto is_convertible_to_v = is_convertible_to<From, To>::value;
 }
 
 template <typename From,

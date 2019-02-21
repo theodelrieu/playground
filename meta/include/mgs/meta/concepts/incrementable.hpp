@@ -41,6 +41,9 @@ struct is_incrementable
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_incrementable_v = is_incrementable<T>::value;
 }
 
 template <typename T,

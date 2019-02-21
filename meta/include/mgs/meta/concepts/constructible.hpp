@@ -54,6 +54,9 @@ struct is_constructible : detail::is_constructible_impl<T, std::tuple<Args...>>
     return 1;
   }
 };
+
+template <typename T, typename... Args>
+constexpr auto is_constructible_v = is_constructible<T, Args...>::value;
 }
 }
 }

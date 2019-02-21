@@ -78,6 +78,9 @@ template <typename T>
 struct is_readable : detail::is_readable_impl<T>
 {
 };
+
+template <typename T>
+constexpr auto is_readable_v = is_readable<T>::value;
 }
 
 template <typename T,

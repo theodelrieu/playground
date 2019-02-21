@@ -48,6 +48,9 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_forward_iterator_v = is_forward_iterator<T>::value;
 }
 
 template <typename T,

@@ -66,7 +66,7 @@ public:
       std::is_same<ResultOfBegin, iterator>::value &&
       meta::concepts::is_input_iterator<underlying_iterator>::value &&
       meta::concepts::is_sentinel<underlying_sentinel,
-                                            underlying_iterator>::value;
+                                  underlying_iterator>::value;
 
   static constexpr int trigger_static_asserts()
   {
@@ -85,6 +85,10 @@ public:
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_transformed_input_range_v =
+    is_transformed_input_range<T>::value;
 }
 
 template <

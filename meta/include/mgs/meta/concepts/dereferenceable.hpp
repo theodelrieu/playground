@@ -55,6 +55,9 @@ struct is_dereferenceable: detail::is_dereferenceable_impl<T>
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_dereferenceable_v = is_dereferenceable<T>::value;
 }
 
 template <typename T,

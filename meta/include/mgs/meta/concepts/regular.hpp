@@ -28,6 +28,9 @@ struct is_regular
     return 1;
   }
 };
+
+template <typename T>
+constexpr auto is_regular_v = is_regular<T>::value;
 }
 
 template <typename T,
