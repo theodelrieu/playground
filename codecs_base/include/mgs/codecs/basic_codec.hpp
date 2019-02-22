@@ -68,7 +68,9 @@ public:
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Encoder =
-                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
+                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>,
+            typename = std::enable_if_t<
+                !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U const& it)
   {
     using std::begin;
@@ -83,7 +85,9 @@ public:
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Encoder =
-                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>>
+                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>,
+            typename = std::enable_if_t<
+                !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U& it)
   {
     using std::begin;
@@ -109,7 +113,9 @@ public:
             typename Iterator = meta::result_of_begin<Range const&>,
             typename Sentinel = meta::result_of_end<Range const&>,
             typename Decoder =
-                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
+                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>,
+            typename = std::enable_if_t<
+                !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U const& it)
   {
     using std::begin;
@@ -124,7 +130,9 @@ public:
             typename Iterator = meta::result_of_begin<Range&>,
             typename Sentinel = meta::result_of_end<Range&>,
             typename Decoder =
-                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>>
+                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>,
+            typename = std::enable_if_t<
+                !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U& it)
   {
     using std::begin;
@@ -133,36 +141,16 @@ public:
     return basic_codec::decode<T>(begin(it), end(it));
   }
 
-  template <typename T = default_encoded_output,
-            typename CharT,
-            std::size_t N,
-            typename = std::enable_if_t<
-                std::is_same<char, std::remove_const_t<CharT>>::value>>
-  static mgs::CodecOutput<T, encoder<char const*>> encode(CharT (&tab)[N])
+  template <typename T = default_decoded_output>
+  static mgs::CodecOutput<T, decoder<char const*>> decode(char const* s)
   {
-    return encode<T>(static_cast<char const*>(tab));
+    return decode<T>(s, s + std::strlen(s));
   }
 
   template <typename T = default_encoded_output>
-  static mgs::CodecOutput<T, encoder<char const*>> encode(char const* str)
+  static mgs::CodecOutput<T, encoder<char const*>> encode(char const* s)
   {
-    return encode<T>(str, str + std::strlen(str));
-  }
-
-  template <typename T = default_decoded_output,
-            typename CharT,
-            std::size_t N,
-            typename = std::enable_if_t<
-                std::is_same<char, std::remove_const_t<CharT>>::value>>
-  static mgs::CodecOutput<T, decoder<char const*>> decode(CharT (&tab)[N])
-  {
-    return decode<T>(static_cast<char const*>(tab));
-  }
-
-  template <typename T = default_decoded_output>
-  static mgs::CodecOutput<T, decoder<char const*>> decode(char const* str)
-  {
-    return decode<T>(str, str + std::strlen(str));
+    return encode<T>(s, s + std::strlen(s));
   }
 };
 }
