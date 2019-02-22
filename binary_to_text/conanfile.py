@@ -4,8 +4,8 @@ class ConanMgsBinaryToText(ConanFile):
     name = "mgs_binary_to_text"
     version = "0.1.0"
     generators = "cmake"
-    exports_sources = "include/*", "CMakeLists.txt"
-    settings = "os", "build_type", "arch", "compiler"
+    exports_sources = "include/*", "CMakeLists.txt", "test/*"
+    settings = "os", "arch", "build_type", "compiler", "cppstd"
 
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
@@ -22,17 +22,11 @@ class ConanMgsBinaryToText(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        build_tests = self.develop and self.should_build
-        if not build_tests:
-            cmake.definitions["BUILD_TESTING"] = "OFF"
-        if self.should_configure:
-            cmake.configure()
-        if build_tests:
-            cmake.build()
-        if self.develop and self.should_test:
-            cmake.test()
-        if self.should_install:
-            cmake.install()
+        cmake.definitions["BUILD_TESTING"] = "OFF"
+
+        cmake.configure()
+        cmake.build()
+        cmake.install()
 
     def package_id(self):
         self.info.header_only()

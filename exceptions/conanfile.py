@@ -6,13 +6,16 @@ class ConanMgsExceptions(ConanFile):
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
     settings = "os", "build_type", "arch", "compiler"
-    
+
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["BUILD_TESTING"] = "OFF"
+
         cmake.configure()
+        cmake.build()
         cmake.install()
 
     def package_id(self):

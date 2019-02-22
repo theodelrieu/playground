@@ -5,12 +5,13 @@ class ConanMgsRanges(ConanFile):
     version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt"
-    settings = "os", "build_type", "arch", "compiler"
+    settings = "os", "build_type", "arch", "compiler", "cppstd"
 
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
         if self.develop:
             self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+            self.build_requires("catch2/2.2.2@bincrafters/stable")
 
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)
@@ -18,16 +19,11 @@ class ConanMgsRanges(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        build_tests = self.develop and self.should_build
-        cmake.definitions["BUILD_TESTING"] = build_tests
-        if self.should_configure:
-            cmake.configure()
-        if build_tests:
-            cmake.build()
-        if self.develop and self.should_test:
-            cmake.test()
-        if self.should_install:
-            cmake.install()
+        cmake.definitions["BUILD_TESTING"] = "OFF"
+
+        cmake.configure()
+        cmake.build()
+        cmake.install()
 
     def package_id(self):
         self.info.header_only()
