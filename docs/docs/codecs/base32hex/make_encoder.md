@@ -11,16 +11,16 @@ permalink: /docs/codecs/base32hex/make_encoder
 
 ```cpp
 template <typename I, typename S>
-static encoder<I, S> make_encoder(I begin, S end);
+static base32hex::encoder<I, S> make_encoder(I begin, S end);
 ```
 
 Constructs an `Encoder` from an iterator range.
 
 Calling `make_encoder` is well-formed if:
 
-* `I` models [`InputIterator`]()
-* `S` models [`Sentinel<I>`]()
-* `encoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`]()
+* `S` models [`std::Sentinel<I>`]()
+* `base32hex::encoder<I, S>` models [`TransformedInputRange`]()
 
 ## Example
 

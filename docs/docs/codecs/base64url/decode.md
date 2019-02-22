@@ -56,9 +56,9 @@ using namespace mgs;
 int main() {
   std::string encoded("SGVsbG8sIFdvcmxkIQ==");
 
-  base64::decode(encoded.c_str());                // 1.
-  base64::decode(encoded);                        // 2.
-  base64::decode(std::move(encoded));             // 3.
-  base64::decode(encoded.begin(), encoded.end()); // 4.
+  base64url::decode(encoded.c_str());                // 1.
+  base64url::decode(encoded);                        // 2.
+  base64url::decode(std::move(encoded));             // 3.
+  base64url::decode(encoded.begin(), encoded.end()); // 4.
 }
 ```

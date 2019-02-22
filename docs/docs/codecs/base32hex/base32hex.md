@@ -12,7 +12,7 @@ permalink: /docs/codecs/base32hex
 Defined in header `<mgs/base32hex.hpp>`
 
 ```cpp
-class base32hex;
+using base32hex = codecs::basic_codec</* implementation-defined */>;
 ```
 
 ---
@@ -32,6 +32,13 @@ class base32hex;
 |--------------------------+------------------------------|
 | `default_encoded_output` | `std::string`                |
 | `default_decoded_output` | `std::vector<unsigned char>` |
+
+## Member alias templates
+
+| Template                                              | Definition                                     |
+|-------------------------------------------------------|------------------------------------------------|
+| `template <typename I, typename S = I> using encoder` | Return type of `base32hex::make_encoder(I, S)` |
+| `template <typename I, typename S = I> using decoder` | Return type of `base32hex::make_decoder(I, S)` |
 
 ## Static member functions
 
