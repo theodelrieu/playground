@@ -11,16 +11,16 @@ permalink: /docs/codecs/base64/make_encoder
 
 ```cpp
 template <typename I, typename S>
-static encoder<I, S> make_encoder(I begin, S end);
+static base64::encoder<I, S> make_encoder(I begin, S end);
 ```
 
-Constructs an `Encoder` from an iterator range.
+Constructs an `Encoder` from an iterator-sentinel pair.
 
 Calling `make_encoder` is well-formed if:
 
-* `I` models [`InputIterator`]()
-* `S` models [`Sentinel<I>`]()
-* `encoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`]()
+* `S` models [`std::Sentinel<I>`]()
+* `base64::encoder<I, S>` models [`TransformedInputRange`]()
 
 ## Example
 

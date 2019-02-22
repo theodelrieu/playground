@@ -12,7 +12,7 @@ permalink: /docs/codecs/base64
 Defined in header `<mgs/base64.hpp>`
 
 ```cpp
-class base64;
+using base64 = codecs::basic_codec</* implementation-defined */>;
 ```
 
 ---
@@ -32,6 +32,13 @@ class base64;
 |--------------------------+------------------------------|
 | `default_encoded_output` | `std::string`                |
 | `default_decoded_output` | `std::vector<unsigned char>` |
+
+## Member alias templates
+
+| Template                                              | Definition                                  |
+|-------------------------------------------------------|---------------------------------------------|
+| `template <typename I, typename S = I> using encoder` | Return type of `base64::make_encoder(I, S)` |
+| `template <typename I, typename S = I> using decoder` | Return type of `base64::make_decoder(I, S)` |
 
 ## Static member functions
 
