@@ -12,15 +12,15 @@ permalink: /docs/codecs/base64url
 Defined in header `<mgs/base64url.hpp>`
 
 ```cpp
-class base64url;
-class base64url_nopad;
+using base64url = codecs::basic_codec</* implementation-defined */>;
+using base64url_nopad = codecs::basic_codec</* implementation-defined */>;
 ```
 
 ---
 
 `mgs::base64url` is a codec implementing the base64url encoding scheme, as defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
 
-`mgs::base64url_nopad` only differs in padding policy, and thus share the same APIs and constraints.
+`mgs::base64url_nopad` only differs in padding policy, and thus shares the same APIs and constraints.
 
 ## Characteristics
 
@@ -35,6 +35,13 @@ class base64url_nopad;
 |--------------------------+------------------------------|
 | `default_encoded_output` | `std::string`                |
 | `default_decoded_output` | `std::vector<unsigned char>` |
+
+## Member alias templates
+
+| Template                                              | Definition                                     |
+|-------------------------------------------------------|------------------------------------------------|
+| `template <typename I, typename S = I> using encoder` | Return type of `base64url::make_encoder(I, S)` |
+| `template <typename I, typename S = I> using decoder` | Return type of `base64url::make_decoder(I, S)` |
 
 ## Static member functions
 

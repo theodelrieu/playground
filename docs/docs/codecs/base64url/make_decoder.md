@@ -11,16 +11,16 @@ permalink: /docs/codecs/base64url/make_decoder
 
 ```cpp
 template <typename I, typename S>
-static decoder<I, S> make_decoder(I begin, S end);
+static base64url::decoder<I, S> make_decoder(I begin, S end);
 ```
 
-Constructs an `Decoder` from an iterator range.
+Constructs a `Decoder` from an iterator range.
 
 Calling `make_decoder` is well-formed if:
 
-* `I` models [`InputIterator`]()
-* `S` models [`Sentinel<I>`]()
-* `decoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`]()
+* `S` models [`std::Sentinel<I>`]()
+* `base64url::decoder<I, S>` models [`TransformedInputRange`]()
 
 ## Example
 
