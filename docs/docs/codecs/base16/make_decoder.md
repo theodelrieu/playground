@@ -11,16 +11,16 @@ permalink: /docs/codecs/base16/make_decoder
 
 ```cpp
 template <typename I, typename S>
-static decoder<I, S> make_decoder(I begin, S end);
+static base16::decoder<I, S> make_decoder(I begin, S end);
 ```
 
-Constructs an `Decoder` from an iterator range.
+Constructs a `Decoder` from an iterator-sentinel pair.
 
 Calling `make_decoder` is well-formed if:
 
-* `I` models [`InputIterator`]()
-* `S` models [`Sentinel<I>`]()
-* `decoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`]()
+* `S` models [`std::Sentinel<I>`]()
+* `base16::decoder<I, S>` models [`TransformedInputRange`]()
 
 ## Example
 
@@ -30,7 +30,7 @@ Calling `make_decoder` is well-formed if:
 using namespace mgs;
 
 int main() {
-  std::string const hello("SGVsbG8sIFdvcmxkIQ==");
+  std::string const hello("666F6F626172");
 
   auto decoder = base16::make_decoder(hello.begin(), hello.end());
 }

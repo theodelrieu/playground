@@ -46,7 +46,6 @@ Decodes the given input.
 
     This overload only participates in overload resolution if `I` models [`std::InputIterator`](), `S` models [`std::Sentinel<I>`](), `T` models [`CodecOutput<base32::decoder<I, S>>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
 
-
 ## Exceptions
 
 All overloads may throw an exception derived from `exceptions::decode_error`.
