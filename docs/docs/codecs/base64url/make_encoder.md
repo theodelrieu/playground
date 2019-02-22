@@ -14,7 +14,7 @@ template <typename I, typename S>
 static base64url::encoder<I, S> make_encoder(I begin, S end);
 ```
 
-Constructs an `Encoder` from an iterator range.
+Constructs an `Encoder` from an iterator-sentinel pair.
 
 Calling `make_encoder` is well-formed if:
 

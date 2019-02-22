@@ -10,48 +10,46 @@ permalink: /docs/codecs/base32/decode
 # mgs::base32::decode
 
 ```cpp
-template <typename T, typename It>
-static T decode(It& it);                                          (1)
+template <typename T = base32::default_decoded_output>
+static T decode(char const* s);                         (1)
 
-template <typename It>
-static std::string decode(It& it);                                (2)
+template <typename T = base32::default_decoded_output,
+          typename It>
+static T decode(It& it);                                (2)
 
-template <typename T, typename I, typename S>
-static T decode(I begin, S end);                                  (3)
+template <typename T = base32::default_decoded_output,
+          typename It>
+static T decode(It const& it);                          (3)
 
-template <typename I, typename S>
-static std::string decode(I begin, S end);                        (4)
+template <typename T = base32::default_decoded_output,
+          typename I,
+          typename S>
+static T decode(I begin, S end);                        (4)
 
-template <typename T, typename CharT, typename Traits>
-static T decode(std::basic_istream<CharT, Traits>& is);           (5)
-
-template <typename CharT, typename Traits>
-static std::string decode(std::basic_istream<CharT, Traits>& is); (6)
 ```
 
 Decodes the given input.
 
-1. Decodes the contents of `it` and returns the result as a `T`.
+1. Decodes the content of the null-terminated character string pointed to by `s`.
 
-    This overload only participates in overload resolution if `It` models [`Range`](/docs/meta/concepts/range) and calling overload (3) with its iterators is well-formed.
-1. Has the same effect as calling `decode<std::string>(it)`.
+    The length of the string is determined by the first null character.
+    The behavior is undefined if `[s, s + std::strlen(s))` is not a valid range (for example, if `s` is a null pointer).
 
-1. Decodes the contents of the range `[begin, end)` and returns the result as a `T`.
+1. Decodes the content of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `I` models [`InputIterator`](), `S` models [`Sentinel<I>`](), `T` models [`CodecOutput<decltype(T::make_decoder(begin, end))>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
-1. Same as calling `decode<std::string>(begin, end)`.
-1. Decodes the contents of the input stream `is` and returns the result as a `T`.
+    This overload only participates in overload resolution if `It` models [`std::Range`]() and calling overload (3) with its iterators is well-formed.
+    If `It` is a `char[]`, it has the same effect as calling `decode<T>(static_cast<char const*>(it))`.
 
-    Has the same effect as calling `decode<T>(std::istreambuf_iterator<CharT, Traits>(is), std::istreambuf_iterator<CharT, Traits>())`.
-1. Has the same effect as calling `decode<std::string>(is)`.
+1. Same as (2), but allows const lvalues and rvalues to be passed.
+
+1. Decodes the content of the range `[begin, end)` and returns the result as a `T`.
+
+    This overload only participates in overload resolution if `I` models [`std::InputIterator`](), `S` models [`std::Sentinel<I>`](), `T` models [`CodecOutput<base32::decoder<I, S>>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
+
 
 ## Exceptions
 
 All overloads may throw an exception derived from `exceptions::decode_error`.
-
-## Notes
-
-Passing a `char[]` to overloads (1) and (2) will discard the last character if it is the null terminator (`'\0'`).
 
 ## Example
 
@@ -63,15 +61,11 @@ Passing a `char[]` to overloads (1) and (2) will discard the last character if i
 using namespace mgs;
 
 int main() {
-  std::string const encoded("SGVsbG8sIFdvcmxkIQ==");
-  std::stringstream ss(encoded);
-  std::stringstream ss2(encoded);
+  std::string const encoded("JBSWY3DPFQQFO33SNRSCC===");
 
-  base32::decode<std::vector<char>>(encoded);                         // 1.
-  base32::decode(encoded);                                            // 2.
-  base32::decode<std::vector<char>>(encoded.begin(), encoded.end());  // 3.
-  base32::decode(encoded.begin(), encoded.end());                     // 4.
-  base32::decode<std::vector<char>>(ss);                              // 5.
-  base32::decode(ss2);                                                // 6.
+  base32::decode(encoded.c_str());                // 1.
+  base32::decode(encoded);                        // 2.
+  base32::decode(std::move(encoded));             // 3.
+  base32::decode(encoded.begin(), encoded.end()); // 4.
 }
 ```

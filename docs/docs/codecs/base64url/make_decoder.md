@@ -14,7 +14,7 @@ template <typename I, typename S>
 static base64url::decoder<I, S> make_decoder(I begin, S end);
 ```
 
-Constructs a `Decoder` from an iterator range.
+Constructs a `Decoder` from an iterator-sentinel pair.
 
 Calling `make_decoder` is well-formed if:
 
