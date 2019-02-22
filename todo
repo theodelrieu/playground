@@ -1,6 +1,5 @@
 code
 
-* basic_codec use priority tags as private methods
 * mgs_detail regrouping everything that can be used by other packages + test_helpers
 
 doc
