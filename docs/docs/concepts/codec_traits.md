@@ -12,6 +12,8 @@ Defined in header `<mgs/concepts/codec_traits.hpp>`
 
 ```cpp
 template <typename T,
+          typename A1 = typename T::default_encoded_output,
+          typename A2 = typename T::default_decoded_output,
           typename I1 = /* see below */, typename I2 = /* see below */,
           typename S1 = /* see below */, typename S2 = /* see below */>
 concept CodecTraits =
@@ -22,8 +24,8 @@ concept CodecTraits =
   requires(I1 i1, S1 s1, I2 i2, S2 s2) {
     { T::make_encoder(i1, s1) } -> TransformedInputRange;
     { T::make_decoder(i2, s2) } -> TransformedInputRange;
-    CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i1, s1))>;
-    CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i2, s2))>;
+    CodecOutput<A1, decltype(T::make_encoder(i1, s1))>;
+    CodecOutput<A2, decltype(T::make_decoder(i2, s2))>;
   };
 ```
 
@@ -33,8 +35,8 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 ## Notation
 
-* `a1` - value of type `T::default_decoded_output&`
-* `a2` - value of type `T::default_encoded_output&`
+* `a1` - value of type `A1&`
+* `a2` - value of type `A2&`
 * `i1` - value of type `I1`
 * `s1` - value of type `S1`
 * `i2` - value of type `I2`
@@ -51,12 +53,12 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 ## Template arguments
 
-| Template argument | Definition                                                                                                           | Constraints              |
-|-------------------+----------------------------------------------------------------------------------------------------------------------+--------------------------|
-| `I1`              | Iterator type passed to `make_encoder`, defaulted to `decltype(begin(a1))`.                                          | [`std::InputIterator`]() |
-| `S1`              | Sentinel type passed to `make_encoder`, defaulted to `decltype(end(a1))`, falls back to `I1` if `end(a1)` is invalid | [`std::Sentinel<I1>`]()  |
-| `I2`              | Iterator type passed to `make_decoder`, defaulted to `decltype(begin(a2))`.                                          | [`std::InputIterator`]() |
-| `S2`              | Sentinel type passed to `make_decoder`, defaulted to `decltype(end(a2))`, falls back to `I2` if `end(a2)` is invalid | [`std::Sentinel<I2>`]()  |
+| Template argument | Definition                                                                  | Constraints              |
+|-------------------|-----------------------------------------------------------------------------|--------------------------|
+| `I1`              | Iterator type passed to `make_encoder`, defaulted to `decltype(begin(a1))`. | [`std::InputIterator`]() |
+| `S1`              | Sentinel type passed to `make_encoder`, defaulted to `I1`.                  | [`std::Sentinel<I1>`]()  |
+| `I2`              | Iterator type passed to `make_decoder`, defaulted to `decltype(begin(a2))`. | [`std::InputIterator`]() |
+| `S2`              | Sentinel type passed to `make_decoder`, defaulted to `I2`.                  | [`std::Sentinel<I2>`]()  |
 
 ## Valid expressions
 
@@ -79,20 +81,23 @@ namespace mgs {
 namespace concepts {
 
 template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */>
 struct is_codec_traits { /* ... */ };
 
 template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */>
-constexpr auto is_codec_traits_v = is_codec_traits<T, I1, I2, S1, S2>::value;
+constexpr auto is_codec_traits_v = is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value;
 }
 
 template <typename T,
+          typename A1 = /* ... */, typename A2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */,
-          typename = std::enable_if_t<concepts::is_codec_traits_v<T, I1, I2, S1, S2>>>
+          typename = std::enable_if_t<concepts::is_codec_traits_v<T, A1, A2, I1, I2, S1, S2>>>
 using CodecTraits = T;
 }
 ```

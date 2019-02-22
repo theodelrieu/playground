@@ -15,12 +15,14 @@
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/iterator_t.hpp>
 
 // clang-format off
 //
 // template <typename T,
-//           typename I1 = /* see below */, typename S1 = /* see below */,
-//           typename I2 = /* see below */, typename S2 = /* see below */>
+//           typename A1 = /* see below */, typename A2 = /* see below */,
+//           typename I1 = /* see below */, typename I2 = /* see below */,
+//           typename S1 = /* see below */, typename S2 = /* see below */>
 // concept CodecTraits =
 //   std::InputIterator<I1> &&
 //   std::Sentinel<S1, I1> &&
@@ -29,8 +31,8 @@
 //   requires(I1 i1, S1 s1, I2 i2, S2 s2) {
 //     { T::make_encoder(i1, s1) } -> TransformedInputRange;
 //     { T::make_decoder(i2, s2) } -> TransformedInputRange;
-//     CodecOutput<typename T::default_encoded_output, decltype(T::make_encoder(i1, s1))>;
-//     CodecOutput<typename T::default_decoded_output, decltype(T::make_decoder(i2, s2))>;
+//     CodecOutput<A1, decltype(T::make_encoder(i1, s1))>;
+//     CodecOutput<A2, decltype(T::make_decoder(i2, s2))>;
 //   };
 //
 // clang-format on
@@ -42,20 +44,12 @@ inline namespace v1
 namespace concepts
 {
 template <typename T,
-          typename I1 =
-              meta::detected_t<meta::result_of_begin,
-                               detail::default_encoded_output_lvalue_ref<T>>,
-          typename S1 =
-              meta::detected_or_t<I1,
-                                  meta::result_of_end,
-                                  detail::default_encoded_output_lvalue_ref<T>>,
-          typename I2 =
-              meta::detected_t<meta::result_of_begin,
-                               detail::default_decoded_output_lvalue_ref<T>>,
-          typename S2 =
-              meta::detected_or_t<I2,
-                                  meta::result_of_end,
-                                  detail::default_decoded_output_lvalue_ref<T>>>
+          typename A1 = meta::detected_t<detail::default_encoded_output, T>,
+          typename A2 = meta::detected_t<detail::default_decoded_output, T>,
+          typename I1 = meta::detected_t<meta::iterator_t, A1>,
+          typename I2 = meta::detected_t<meta::iterator_t, A2>,
+          typename S1 = I1,
+          typename S2 = I2>
 struct is_codec_traits
 {
 private:
@@ -70,28 +64,21 @@ private:
                        I2,
                        S2>;
 
-  using DefaultEncodedOutput =
-      meta::detected_t<detail::detected::types::default_encoded_output, T>;
-
-  using DefaultDecodedOutput =
-      meta::detected_t<detail::detected::types::default_decoded_output, T>;
-
   static constexpr auto const is_encoder =
       is_transformed_input_range<Encoder>::value;
   static constexpr auto const is_decoder =
       is_transformed_input_range<Decoder>::value;
 
   static constexpr auto const is_encoded_codec_output =
-      is_codec_output<DefaultEncodedOutput, Encoder>::value;
+      is_codec_output<A1, Encoder>::value;
   static constexpr auto const is_decoded_codec_output =
-      is_codec_output<DefaultDecodedOutput, Encoder>::value;
+      is_codec_output<A2, Encoder>::value;
 
 public:
-  using requirements =
-      std::tuple<meta::concepts::is_input_iterator<I1>,
-                 meta::concepts::is_sentinel<S1, I1>,
-                 meta::concepts::is_input_iterator<I2>,
-                 meta::concepts::is_sentinel<S2, I2>>;
+  using requirements = std::tuple<meta::concepts::is_input_iterator<I1>,
+                                  meta::concepts::is_sentinel<S1, I1>,
+                                  meta::concepts::is_input_iterator<I2>,
+                                  meta::concepts::is_sentinel<S2, I2>>;
 
   static constexpr auto const value =
       meta::concepts::is_input_iterator<I1>::value &&
@@ -114,25 +101,28 @@ public:
     return 1;
   }
 };
-}
 
 template <typename T,
-          typename I1 = meta::detected_t<
-              meta::result_of_begin,
-              concepts::detail::default_encoded_output_lvalue_ref<T>>,
-          typename S1 = meta::detected_or_t<
-              I1,
-              meta::result_of_end,
-              concepts::detail::default_encoded_output_lvalue_ref<T>>,
-          typename I2 = meta::detected_t<
-              meta::result_of_begin,
-              concepts::detail::default_decoded_output_lvalue_ref<T>>,
-          typename S2 = meta::detected_or_t<
-              I2,
-              meta::result_of_end,
-              concepts::detail::default_decoded_output_lvalue_ref<T>>,
-          typename = std::enable_if_t<
-              concepts::is_codec_traits<T, I1, S1, I2, S2>::value>>
+          typename A1 = meta::detected_t<detail::default_encoded_output, T>,
+          typename A2 = meta::detected_t<detail::default_decoded_output, T>,
+          typename I1 = meta::detected_t<meta::iterator_t, A1>,
+          typename I2 = meta::detected_t<meta::iterator_t, A2>,
+          typename S1 = I1,
+          typename S2 = I2>
+constexpr auto is_codec_traits_v =
+    is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value;
+}
+
+template <
+    typename T,
+    typename A1 = meta::detected_t<concepts::detail::default_encoded_output, T>,
+    typename A2 = meta::detected_t<concepts::detail::default_decoded_output, T>,
+    typename I1 = meta::detected_t<meta::iterator_t, A1>,
+    typename I2 = meta::detected_t<meta::iterator_t, A2>,
+    typename S1 = I1,
+    typename S2 = I2,
+    typename = std::enable_if_t<
+        concepts::is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
 using CodecTraits = T;
 }
 }

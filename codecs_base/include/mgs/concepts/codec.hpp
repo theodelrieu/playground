@@ -11,13 +11,14 @@
 #include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
 #include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
-#include <mgs/meta/concepts/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/iterator_t.hpp>
 
 // clang-format off
 //
@@ -59,20 +60,15 @@ inline namespace v1
 {
 namespace concepts
 {
-template <
-    typename T,
-    typename A1 = detail::default_decoded_output<T>,
-    typename A2 = detail::default_encoded_output<T>,
-    typename R1 = detail::default_encoded_output<T>,
-    typename R2 = detail::default_decoded_output<T>,
-    typename I1 = meta::detected_t<meta::result_of_begin,
-                                   std::add_lvalue_reference_t<A1>>,
-    typename I2 = meta::detected_t<meta::result_of_begin,
-                                   std::add_lvalue_reference_t<A2>>,
-    typename S1 = meta::
-        detected_or_t<I1, meta::result_of_end, std::add_lvalue_reference_t<A1>>,
-    typename S2 = meta::
-        detected_or_t<I2, meta::result_of_end, std::add_lvalue_reference_t<A2>>>
+template <typename T,
+          typename A1 = detail::default_decoded_output<T>,
+          typename A2 = detail::default_encoded_output<T>,
+          typename R1 = detail::default_encoded_output<T>,
+          typename R2 = detail::default_decoded_output<T>,
+          typename I1 = meta::detected_t<meta::iterator_t, A1>,
+          typename I2 = meta::detected_t<meta::iterator_t, A2>,
+          typename S1 = I1,
+          typename S2 = I2>
 struct is_codec
 {
 private:
@@ -247,24 +243,30 @@ public:
     return 1;
   }
 };
+
+template <typename T,
+          typename A1 = detail::default_decoded_output<T>,
+          typename A2 = detail::default_encoded_output<T>,
+          typename R1 = detail::default_encoded_output<T>,
+          typename R2 = detail::default_decoded_output<T>,
+          typename I1 = meta::detected_t<meta::iterator_t, A1>,
+          typename I2 = meta::detected_t<meta::iterator_t, A2>,
+          typename S1 = I1,
+          typename S2 = I2>
+constexpr auto is_codec_v = is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value;
 }
 
-template <
-    typename T,
-    typename A1 = concepts::detail::default_decoded_output<T>,
-    typename A2 = concepts::detail::default_encoded_output<T>,
-    typename R1 = concepts::detail::default_encoded_output<T>,
-    typename R2 = concepts::detail::default_decoded_output<T>,
-    typename I1 = meta::detected_t<meta::result_of_begin,
-                                   std::add_lvalue_reference_t<A1>>,
-    typename I2 = meta::detected_t<meta::result_of_begin,
-                                   std::add_lvalue_reference_t<A2>>,
-    typename S1 = meta::
-        detected_or_t<I1, meta::result_of_end, std::add_lvalue_reference_t<A1>>,
-    typename S2 = meta::
-        detected_or_t<I2, meta::result_of_end, std::add_lvalue_reference_t<A2>>,
-    typename = std::enable_if_t<
-        concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
+template <typename T,
+          typename A1 = concepts::detail::default_decoded_output<T>,
+          typename A2 = concepts::detail::default_encoded_output<T>,
+          typename R1 = concepts::detail::default_encoded_output<T>,
+          typename R2 = concepts::detail::default_decoded_output<T>,
+          typename I1 = meta::detected_t<meta::iterator_t, A1>,
+          typename I2 = meta::detected_t<meta::iterator_t, A2>,
+          typename S1 = I1,
+          typename S2 = I2,
+          typename = std::enable_if_t<
+              concepts::is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value>>
 using Codec = T;
 }
 }

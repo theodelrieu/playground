@@ -67,8 +67,7 @@ TEST_CASE("Codec", "[concepts]")
                                    std::string,
                                    std::string,
                                    std::istreambuf_iterator<char>,
-                                   std::vector<char>::iterator,
-                                   std::istreambuf_iterator<char>>::value,
+                                   char*>::value,
                 "");
   static_assert(
       !concepts::is_codec<no_encode_char_ptr_codec, char const(&)[1]>::value,

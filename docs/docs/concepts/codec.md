@@ -57,16 +57,16 @@ It is `mgs`' fundamental component.
 
 ## Template arguments
 
-| Template argument | Definition                                                                                                        | Constraints                                                                     |
-|-------------------+-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------|
-| `A1`              | Type passed to `encode`. Defaulted to `T::default_decoded_output`.                                                |                                                                                 |
-| `A2`              | Type passed to `decode`. Defaulted to `T::default_encoded_output`.                                                |                                                                                 |
-| `R1`              | `encode` return type. Defaulted to `T::default_encoded_output`.                                                   | [`CodecOutput<decltype(T::make_encoder(i1, s1))>`](/docs/concepts/codec_output) |
-| `R2`              | `decode` return type. Defaulted to `T::default_decoded_output`.                                                   | [`CodecOutput<decltype(T::make_decoder(i2, s2))>`](/docs/concepts/codec_output)                            |
-| `I1`              | Iterator type passed to `encode` and `make_encoder`, defaulted to `decltype(begin(a1))`.                                           | [`std::InputIterator`]()                                                        |
-| `S1`              | Sentinel type passed to `encode` and `make_encoder`, defaulted to `decltype(end(a1))`, falls back to `I1` if `end(a1)` is invalid. | [`std::Sentinel<I1>`]()                                                         |
-| `I2`              | Iterator type passed to `decode` and `make_decoder`, defaulted to `decltype(begin(a2))`.                                           | [`std::InputIterator`]()                                                        |
-| `S2`              | Sentinel type passed to `decode` and `make_decoder`, defaulted to `decltype(end(a2))`, falls back to `I2` if `end(a2)` is invalid. | [`std::Sentinel<I2>`]()                                                         |
+| Template argument | Definition                                                                               | Constraints                                                                     |
+|-------------------|------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| `A1`              | Type passed to `encode`. Defaulted to `T::default_decoded_output`.                       |                                                                                 |
+| `A2`              | Type passed to `decode`. Defaulted to `T::default_encoded_output`.                       |                                                                                 |
+| `R1`              | `encode` return type. Defaulted to `T::default_encoded_output`.                          | [`CodecOutput<decltype(T::make_encoder(i1, s1))>`](/docs/concepts/codec_output) |
+| `R2`              | `decode` return type. Defaulted to `T::default_decoded_output`.                          | [`CodecOutput<decltype(T::make_decoder(i2, s2))>`](/docs/concepts/codec_output) |
+| `I1`              | Iterator type passed to `encode` and `make_encoder`, defaulted to `decltype(begin(a1))`. | [`std::InputIterator`]()                                                        |
+| `S1`              | Sentinel type passed to `encode` and `make_encoder`, defaulted to `I1`.                  | [`std::Sentinel<I1>`]()                                                         |
+| `I2`              | Iterator type passed to `decode` and `make_decoder`, defaulted to `decltype(begin(a2))`. | [`std::InputIterator`]()                                                        |
+| `S2`              | Sentinel type passed to `decode` and `make_decoder`, defaulted to `I2`.                  | [`std::Sentinel<I2>`]()                                                         |
 
 ## Member types
 
@@ -142,18 +142,13 @@ using Codec = T;
 #include <mgs/base64.hpp>
 #include <mgs/concepts/codec.hpp>
 
-#include <sstream>
-
 using namespace mgs;
 
 int main() {
   static_assert(concepts::is_codec_v<base64>, "");
   static_assert(concepts::is_codec_v<base64, std::string, std::vector<unsigned char>>, "");
   static_assert(concepts::is_codec_v<base64,
-                                    std::string, std::stringstream,
+                                    std::string, std::string,
                                     char*, std::istreambuf_iterator<char>>, "");
-
-  // std::stringstream is not Range, defaulted Iterator type will be invalid
-  static_assert(!concepts::is_codec_v<base64, std::string, std::stringstream, char*>, "");
 }
 ```

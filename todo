@@ -7,10 +7,6 @@ doc
 
 * put back template aliases encoder, decoder
 * external links
-* use 0.1.0
-* remove streams
-* fix documentation about '\0', in every api
-* fix codec traits template args order
 * migrate to readthedocs
 
 tests

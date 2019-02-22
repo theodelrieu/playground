@@ -98,9 +98,9 @@ TEST_CASE("CodecTraits", "[concepts]")
 {
   static_assert(concepts::is_codec_traits<valid_traits>::value, "");
   static_assert(concepts::is_codec_traits<valid_traits,
+                                          std::string,
+                                          std::vector<unsigned char>,
                                           char*,
-                                          char*,
-                                          unsigned char*,
                                           unsigned char*>::value,
                 "");
 
