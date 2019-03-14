@@ -21,14 +21,14 @@ parent: Usage
 Here is the list of supported `encode`/`decode` return types:
 
 * `std::array<T, std::size_t>`
-* Sequence containers that are [`std::CopyConstructible`]() or [`std::MoveConstructible`]()
+* Sequence containers that are [`std::CopyConstructible`](https://en.cppreference.com/w/cpp/concepts/CopyConstructible) or [`std::MoveConstructible`](https://en.cppreference.com/w/cpp/concepts/MoveConstructible)
   * And either
-    * [`std::Constructible`]() from an [`std::Iterator`]() range
+    * [`std::Constructible`](https://en.cppreference.com/w/cpp/concepts/Constructible) from an [`std::Iterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Iterator) range
   * Or
-    * [`std::DefaultConstructible`]()
-    * [`Range`]()
-    * Have a [`std::RandomAccessIterator`]() associated iterator type
-    * Have a [`std::SizedSentinel`]() associated sentinel type
+    * [`std::DefaultConstructible`](https://en.cppreference.com/w/cpp/concepts/DefaultConstructible)
+    * [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range)
+    * Have a [`std::RandomAccessIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator) associated iterator type
+    * Have a [`std::SizedSentinel`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel) associated sentinel type
     * Have a `size_type` member type
     * Have a `resize(size_type)` member function
 
@@ -39,9 +39,9 @@ For `std::array`s, `mgs` will throw an exception if the transformed data does no
 
 ## Iterator related optimizations
 
-While codecs accepts every [`Range`]() (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`std::RandomAccessIterator`]()s.
+While codecs accepts every [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range) (assuming it fulfills the constraints properly), some of them will perform better when the underlying iterators are [`std::RandomAccessIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator)s.
 
-This is the case for [`base64`]()'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
+This is the case for [`base64`](/docs/codecs/base64)'s encoder and decoder. Both will define the `max_transformed_size` member function, which can be used to perform a single memory allocation:
 
 ```cpp
 #include <mgs/base64.hpp>
@@ -67,7 +67,7 @@ int main() {
 Note
 {: .label .label-blue }
 
-Codecs defining `max_transformed_size` also model the [`SizedTransformedInputRange`]() concept.
+Codecs defining `max_transformed_size` also model the [`SizedTransformedInputRange`](/docs/concepts/sized_transformed_input_range) concept.
 
 ## Emulated concepts
 
@@ -79,12 +79,12 @@ This subsection will explain how to use `mgs` emulated concepts, if you are look
 
 `mgs` exposes a type trait and a variable template for every concept.
 
-Here is how to constraint a function on [`Range`](/docs/meta/concepts/range):
+Here is how to constraint a function on [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range):
 
 ```cpp
 #include <mgs/meta/concepts/range.hpp>
 
-using namespace mgs;
+using namespace mgs::meta;
 
 template <typename T, typename = std::enable_if_t<concepts::is_range_v<T>>>
 void f(T const&)
@@ -99,7 +99,7 @@ void f(T const&)
 ```cpp
 #include <mgs/meta/concepts/range.hpp>
 
-using namespace mgs;
+using namespace mgs::meta;
 
 template <typename T, typename = Range<T>>
 void f(T const&) {}

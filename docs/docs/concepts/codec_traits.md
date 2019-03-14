@@ -48,24 +48,24 @@ They create `Encoder`s and `Decoder`s, and define default return types for `enco
 
 | Member type                 | Definition                         | Constraints                |
 |-----------------------------+------------------------------------+----------------------------|
-| `T::default_encoded_output` | Default return type of `T::encode` | [`CodecOutput<Encoder>`]() |
-| `T::default_decoded_output` | Default return type of `T::decode` | [`CodecOutput<Decoder>`]() |
+| `T::default_encoded_output` | Default return type of `T::encode` | [`CodecOutput<Encoder>`](/docs/concepts/codec_output) |
+| `T::default_decoded_output` | Default return type of `T::decode` | [`CodecOutput<Decoder>`](/docs/concepts/codec_output) |
 
 ## Template arguments
 
 | Template argument | Definition                                                                  | Constraints              |
 |-------------------|-----------------------------------------------------------------------------|--------------------------|
-| `I1`              | Iterator type passed to `make_encoder`, defaulted to `decltype(begin(a1))`. | [`std::InputIterator`]() |
-| `S1`              | Sentinel type passed to `make_encoder`, defaulted to `I1`.                  | [`std::Sentinel<I1>`]()  |
-| `I2`              | Iterator type passed to `make_decoder`, defaulted to `decltype(begin(a2))`. | [`std::InputIterator`]() |
-| `S2`              | Sentinel type passed to `make_decoder`, defaulted to `I2`.                  | [`std::Sentinel<I2>`]()  |
+| `I1`              | Iterator type passed to `make_encoder`, defaulted to `decltype(begin(a1))`. | [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator) |
+| `S1`              | Sentinel type passed to `make_encoder`, defaulted to `I1`.                  | [`std::Sentinel<I1>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel)  |
+| `I2`              | Iterator type passed to `make_decoder`, defaulted to `decltype(begin(a2))`. | [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator) |
+| `S2`              | Sentinel type passed to `make_decoder`, defaulted to `I2`.                  | [`std::Sentinel<I2>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel)  |
 
 ## Valid expressions
 
 | Expression                | Return type                |
 |---------------------------+----------------------------|
-| `T::make_encoder(i1, s1)` | [`TransformedInputRange`]() |
-| `T::make_decoder(i2, s2)` | [`TransformedInputRange`]() |
+| `T::make_encoder(i1, s1)` | [`TransformedInputRange`](/docs/concepts/transformed_input_range) |
+| `T::make_decoder(i2, s2)` | [`TransformedInputRange`](/docs/concepts/transformed_input_range) |
 
 ## Expression semantics
 

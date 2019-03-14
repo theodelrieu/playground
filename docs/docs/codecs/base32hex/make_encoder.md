@@ -18,9 +18,9 @@ Constructs an `Encoder` from an iterator range.
 
 Calling `make_encoder` is well-formed if:
 
-* `I` models [`std::InputIterator`]()
-* `S` models [`std::Sentinel<I>`]()
-* `base32hex::encoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator)
+* `S` models [`std::Sentinel<I>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel)
+* `base32hex::encoder<I, S>` models [`TransformedInputRange`](/docs/concepts/transformed_input_range)
 
 ## Example
 

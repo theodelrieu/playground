@@ -29,7 +29,7 @@ This will install the entire library, you can also install specific components, 
 
 ## Manual
 
-Each release can be downloaded [here]().
+Each release can be downloaded on [GitHub](https://github.com/theodelrieu/mgs/releases).
 
 # Integration
 

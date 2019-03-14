@@ -28,9 +28,9 @@ Each codec has two symmetrical APIs: `encode` and `decode`.
 
 Codecs share a common set of contraints on `encode`/`decode` input parameters. They can be one of the following:
 
-1. [`std::Range`]()
-1. [`std::Iterator`]() range (more precisely: an [`std::InputIterator`]() and a [`std::Sentinel`]())
-1. `char*`
+1. [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range)
+1. [`std::Iterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Iterator) range (more precisely: an [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator) and a [`std::Sentinel`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel))
+1. `char const*`
 
 ```cpp
 #include <mgs/base64.hpp>
@@ -53,7 +53,7 @@ int main() {
   encoded = base64::encode(decoded_list.begin(), decoded_list.end());
   decoded = base64::decode(encoded_list.begin(), encoded_list.end());
 
-  // 3. char*
+  // 3. char const*
   encoded = base64::encode("decoded text");
   decoded = base64::decode(encoded.c_str());
 }
@@ -62,14 +62,14 @@ int main() {
 Caveat
 {: .label .label-yellow }
 
-Passing a `char[]` to `encode/decode` will have the same effect than passing a `char*`. It will encode/decode upon the first encountered null terminator (`'\0'`).
+Passing a `char const[]` to `encode/decode` will have the same effect than passing a `char const*`. It will encode/decode upon the first encountered null terminator (`'\0'`).
 
-If you want to avoid this behavior, use the [`std::Iterator`]() range overloads(2) instead.
+If you want to avoid this behavior, use the [`std::Iterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Iterator) range overloads(2) instead.
 
 Note
 {: .label .label-blue }
 
-Codecs can have additional constraints, which are described in each codec's section (e.g. [`base64`]()).
+Codecs can have additional constraints, which are described in each codec's section (e.g. [`base64`](/docs/codecs/base64)).
 
 ### Return types
 
@@ -94,14 +94,14 @@ int main() {
 }
 ```
 
-Default types are listed in each codec's page (e.g. [`base64`]()).
+Default types are listed in each codec's page (e.g. [`base64`](/docs/codecs/base64)).
 
 Note
 {: .label .label-blue }
 
-You can find the list of supported return types [here]().
+You can find the list of supported return types [here](advanced#supported-return-types).
 
-If a type you wish to use is not supported by default, take a look [here]().
+If a type you wish to use is not supported by default, take a look [here](intermediate#adding-support-for-user-defined-types).
 
 ## Error handling
 
@@ -111,7 +111,7 @@ Every exception resides in the namespace `mgs::exceptions`.
 
 | class                  | derived from             | description                          |
 |------------------------+--------------------------+--------------------------------------|
-| `exception`            | [`std::runtime_error`]() | Base class for every `mgs` exception |
+| `exception`            | [`std::runtime_error`](https://en.cppreference.com/w/cpp/error/runtime_error) | Base class for every `mgs` exception |
 | `decode_error`         | `exception`              | Base class for decoding exceptions   |
 | `invalid_input_error`  | `decode_error`           | Thrown on invalid encoded input      |
 | `unexpected_eof_error` | `decode_error`           | Thrown when more input was expected  |

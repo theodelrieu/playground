@@ -14,29 +14,23 @@ Defined in header `<mgs/concepts/readable_transformed_input_range.hpp>`
 template <typename T, typename O>
 concept ReadableTransformedInputRange =
   TransformedInputRange<T> &&
-  std::OutputIterator<O, typename T::value_type> &&
+  std::OutputIterator<O, std::iter_value_t<T>> &&
   requires(T& v, O o, std::size_t n) {
     { v.read(o, n) } -> std::Same<std::size_t>;
   };
 ```
 
-The concept `ReadableTransformedInputRange<T, O>` refines [`TransformedInputRange`]() by adding support for block reads, which usually perform better than reading elements one by one.
+The concept `ReadableTransformedInputRange<T, O>` refines [`TransformedInputRange`](/docs/concepts/transformed_input_range) by adding support for block reads, which usually perform better than reading elements one by one.
 
 ## Refinements
 
-* [`TransformedInputRange`]()
-
-## Associated types
-
-| Member type     | Definition             |
-|-----------------+------------------------|
-| `T::value_type` | Transformed input type |
+* [`TransformedInputRange`](/docs/concepts/transformed_input_range)
 
 ## Template arguments
 
 | Template argument | Definition                   | Constraints                              |
 |-------------------+------------------------------+------------------------------------------|
-| `O`               | Iterator type used in `read` | [`std::OutputIterator<T::value_type>`]() |
+| `O`               | Iterator type used in `read` | [`std::OutputIterator<std::iter_value_t<T>>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/OutputIterator) |
 
 ## Notation
 

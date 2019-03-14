@@ -16,7 +16,7 @@ Defined in header `<mgs/concepts/codec_output.hpp>`
 template <typename T, typename Range>
 concept CodecOutput =
   TransformedInputRange<Range> &&
-  requires (V& range) {
+  requires (Range& range) {
     { codecs::output_traits<T>::create(range) } -> std::Same<T>;
   };
 ```
@@ -29,7 +29,7 @@ It relies on the customization point `mgs::codecs::output_traits<T>::create(Rang
 
 | Template argument | Definition                                                        | Constraints                |
 |-------------------+-------------------------------------------------------------------+----------------------------|
-| `Range`            | Range passed to the `output_traits<T>::create` customization point | [`TransformedInputRange`]() |
+| `Range`            | Range passed to the `output_traits<T>::create` customization point | [`TransformedInputRange`](/docs/concepts/transformed_input_range) |
 
 ## Notation
 

@@ -18,9 +18,9 @@ Constructs a `Decoder` from an iterator-sentinel pair.
 
 Calling `make_decoder` is well-formed if:
 
-* `I` models [`std::InputIterator`]()
-* `S` models [`std::Sentinel<I>`]()
-* `base64url::decoder<I, S>` models [`TransformedInputRange`]()
+* `I` models [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator)
+* `S` models [`std::Sentinel<I>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel)
+* `base64url::decoder<I, S>` models [`TransformedInputRange`](/docs/concepts/transformed_input_range)
 
 ## Example
 

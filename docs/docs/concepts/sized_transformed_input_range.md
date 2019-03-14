@@ -19,11 +19,11 @@ concept SizedTransformedInputRange =
   };
 ```
 
-The concept `SizedTransformedInputRange<T>` refines [`TransformedInputRange`]() by adding maximum transformed size calculation.
+The concept `SizedTransformedInputRange<T>` refines [`TransformedInputRange`](/docs/concepts/transformed_input_range) by adding maximum transformed size calculation.
 
 ## Refinements
 
-* [`TransformedInputRange`]()
+* [`TransformedInputRange`](/docs/concepts/transformed_input_range)
 
 ## Notation
 

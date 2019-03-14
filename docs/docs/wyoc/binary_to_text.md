@@ -73,4 +73,4 @@ int main() {
 
 Note
 {: .label .label-blue }
-`binary_to_text::basic_codec`s second template parameter is useful if you want to have different behaviors when encoding and decoding (e.g. [`base64url_nopad`]() has different padding policies).
+`binary_to_text::basic_codec`s second template parameter is useful if you want to have different behaviors when encoding and decoding (e.g. [`base64url_nopad`](/docs/codecs/base64url) has different padding policies).

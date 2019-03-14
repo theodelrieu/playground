@@ -37,14 +37,14 @@ Decodes the given input.
 
 1. Decodes the content of `it` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `It` models [`std::Range`]() and calling overload (3) with its iterators is well-formed.
+    This overload only participates in overload resolution if `It` models [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range) and calling overload (3) with its iterators is well-formed.
     If `It` is a `char[]`, it has the same effect as calling `decode<T>(static_cast<char const*>(it))`.
 
 1. Same as (2), but allows const lvalues and rvalues to be passed.
 
 1. Decodes the content of the range `[begin, end)` and returns the result as a `T`.
 
-    This overload only participates in overload resolution if `I` models [`std::InputIterator`](), `S` models [`std::Sentinel<I>`](), `T` models [`CodecOutput<base64::decoder<I, S>>`](/docs/concepts/codec_output) and `typename std::iterator_traits<I>::value_type` models [`Byte`](/docs/concepts/byte).
+    This overload only participates in overload resolution if `I` models [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator), `S` models [`std::Sentinel<I>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel), `T` models [`CodecOutput<base64::decoder<I, S>>`](/docs/concepts/codec_output) and [`iter_value_t<I>`](https://en.cppreference.com/w/cpp/iterator/iter_t) models [`Byte`](/docs/concepts/byte).
 
 ## Exceptions
 

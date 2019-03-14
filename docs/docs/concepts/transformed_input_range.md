@@ -14,7 +14,7 @@ Defined in header `<mgs/concepts/transformed_input_range.hpp>`
 template <typename T>
 concept TransformedInputRange =
   std::Semiregular<T> &&
-  Range<T> &&
+  std::Range<T> &&
   requires {
     std::InputIterator<typename T::underlying_iterator>;
     std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
@@ -28,15 +28,15 @@ Transformed input can be retrieved by iterating over the range.
 
 ## Model of
 
-* [`std::Semiregular`]()
-* [`Range`]()
+* [`std::Semiregular`](https://en.cppreference.com/w/cpp/experimental/ranges/concepts/Semiregular)
+* [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range)
 
 ## Associated types
 
 | Member type              | Definition                                  |
 |--------------------------+---------------------------------------------|
-| `T::underlying_iterator` | [`std::InputIterator`]()                    |
-| `T::underlying_sentinel` | [`std::Sentinel<T::underlying_iterator>`]() |
+| `T::underlying_iterator` | [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator)                    |
+| `T::underlying_sentinel` | [`std::Sentinel<T::underlying_iterator>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel) |
 
 ## Notation
 

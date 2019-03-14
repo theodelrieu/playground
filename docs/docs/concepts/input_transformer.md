@@ -17,7 +17,7 @@ concept InputTransformer =
   requires(T& v, T const& cv, typename T::buffer_type& b) {
     std::Iterator<typename T::underlying_iterator>;
     std::Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
-    Range<typename T::buffer_type>;
+    std::Range<typename T::buffer_type>;
     std::Semiregular<typename T::buffer_type>;
     std::Constructible<T, typename T::underlying_iterator, typename T::underlying_sentinel>;
 
@@ -35,15 +35,15 @@ It is responsible for the input transformation.
 
 ## Model of
 
-* [`std::Semiregular`]()
+* [`std::Semiregular`](https://en.cppreference.com/w/cpp/experimental/ranges/concepts/Semiregular)
 
 ## Associated types
 
 | Member type              | Definition                     | Constraints                                 |
 |--------------------------+--------------------------------+---------------------------------------------|
-| `T::buffer_type`         | Type storing transformed input | [`Range`](), [`std::Semiregular`]()      |
-| `T::underlying_iterator` | Input range iterator type      | [`std::InputIterator`]()                    |
-| `T::underlying_sentinel` | Input range sentinel type      | [`std::Sentinel<T::underlying_iterator>`]() |
+| `T::buffer_type`         | Type storing transformed input | [`std::Range`](https://en.cppreference.com/w/cpp/ranges/Range), [`std::Semiregular`](https://en.cppreference.com/w/cpp/experimental/ranges/concepts/Semiregular)      |
+| `T::underlying_iterator` | Input range iterator type      | [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator)                    |
+| `T::underlying_sentinel` | Input range sentinel type      | [`std::Sentinel<T::underlying_iterator>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/Sentinel) |
 
 ## Notation
 
@@ -60,8 +60,8 @@ In addition to the expressions defined by the modeled concepts, the following ex
 | Expression                   | Return type                                  |
 |------------------------------+----------------------------------------------|
 | `T(i, s)`                    | `T`                                          |
-| `using std::begin; begin(b)` | [`std::RandomAccessIterator`]()              |
-| `using std::end; end(b)`     | [`std::SizedSentinel<decltype(begin(b))>`]() |
+| `using std::begin; begin(b)` | [`std::RandomAccessIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/RandomAccessIterator)              |
+| `using std::end; end(b)`     | [`std::SizedSentinel<decltype(begin(b))>`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/SizedSentinel) |
 | `v(b)`                       | `void`                                       |
 | `cv.iterator()`              | `T::underlying_iterator`                     |
 | `cv.sentinel()`              | `T::underlying_sentinel`                     |

@@ -19,11 +19,11 @@ concept SizedInputTransformer =
   };
 ```
 
-The concept `SizedInputTransformer<T>` refines [`InputTransformer`]() by adding maximum transformed size calculation.
+The concept `SizedInputTransformer<T>` refines [`InputTransformer`](/docs/concepts/input_transformer) by adding maximum transformed size calculation.
 
 ## Refinements
 
-* [`InputTransformer`]()
+* [`InputTransformer`](/docs/concepts/input_transformer)
 
 ## Notation
 

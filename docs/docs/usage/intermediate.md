@@ -24,10 +24,10 @@ Every codec is built on top of an `Encoder` and a `Decoder`.
 
 Both are stateful objects designed for one-time use, be careful to not reuse them!
 
-They model the [`TransformedInputRange`]() concept and thus share a common API, allowing lazy encoding/decoding:
+They model the [`TransformedInputRange`](/docs/concepts/transformed_input_range) concept and thus share a common API, allowing lazy encoding/decoding:
 
-1. `begin`/`end` member functions, each returning an [`std::InputIterator`]().
-1. `read` member function, filling an [`std::OutputIterator`]() and returning the number of characters read.
+1. `begin`/`end` member functions, each returning a [`std::InputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/InputIterator).
+1. `read` member function, filling a [`std::OutputIterator`](https://en.cppreference.com/w/cpp/experimental/ranges/iterator/OutputIterator) and returning the number of characters read.
 
 To create them, use the codecs' `make_encoder`/`make_decoder` static member functions:
 

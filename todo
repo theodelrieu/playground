@@ -1,10 +1,12 @@
+workspaces + ci + new repo
+
 code
 
-* mgs_detail regrouping everything that can be used by other packages + test_helpers
+* use iter_t instead of iterator_traits
 
 doc
 
-* external links
+* update supported types list
 * migrate to readthedocs
 
 tests
