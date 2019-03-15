@@ -1,4 +1,3 @@
-set(CMAKE_CXX_COMPILER_WORKS 1)
 cmake_minimum_required(VERSION 3.3)
 project(mgs CXX)
 
@@ -17,4 +16,5 @@ if (BUILD_TESTING)
   enable_testing()
 endif()
 
-include(${CMAKE_CURRENT_BINARY_DIR}/conanws.cmake)
+include(${CMAKE_CURRENT_BINARY_DIR}/conanworkspace.cmake)
+conan_workspace_subdirectories()

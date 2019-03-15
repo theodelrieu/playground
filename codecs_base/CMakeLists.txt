@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.3)
 project(codecs_base VERSION 0.1.0 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
+conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
 add_library(codecs_base INTERFACE)
 target_include_directories(codecs_base INTERFACE

@@ -1,57 +1,29 @@
-mgs_meta:
-    folder: meta
-    includedirs: include
-
-mgs_concepts:
-  folder: concepts
-  includedirs: include
-
-mgs_exceptions:
-    folder: exceptions
-    includedirs: include
-
-mgs_cmake:
-    folder: cmake
-
-mgs_ranges:
-    folder: ranges
-    includedirs: include
-
-mgs_test_helpers:
-    folder: test_helpers
-    includedirs: include
-
-mgs_binary_to_text:
-    folder: binary_to_text
-    includedirs: include
-
-mgs_base64:
-    folder: base64
-    includedirs: include
-
-mgs_base64url:
-    folder: base64url
-    includedirs: include
-
-mgs_base32:
-    folder: base32
-    includedirs: include
-
-mgs_base32hex:
-    folder: base32hex
-    includedirs: include
-
-mgs_base16:
-    folder: base16
-    includedirs: include
-
-mgs_codecs_base:
-    folder: codecs_base
-    includedirs: include
-
-mgs_all:
-    folder: all
-
-root: mgs_all
-generator: cmake
-name: mgs
+editables:
+  mgs_base16/0.1.0@mgs/testing:
+    path: base16
+  mgs_base32/0.1.0@mgs/testing:
+    path: base32
+  mgs_base32hex/0.1.0@mgs/testing:
+    path: base32hex
+  mgs_base64/0.1.0@mgs/testing:
+    path: base64
+  mgs_base64url/0.1.0@mgs/testing:
+    path: base64url
+  mgs_binary_to_text/0.1.0@mgs/testing:
+    path: binary_to_text
+  mgs_codecs_base/0.1.0@mgs/testing:
+    path: codecs_base
+  mgs_exceptions/0.1.0@mgs/testing:
+    path: exceptions
+  mgs_meta/0.1.0@mgs/testing:
+    path: meta
+  mgs_ranges/0.1.0@mgs/testing:
+    path: ranges
+  mgs_test_helpers/0.1.0@mgs/testing:
+    path: test_helpers
+  mgs_concepts/0.1.0@mgs/testing:
+    path: concepts
+  mgs_cmake/0.1.0@mgs/testing:
+    path: cmake
+workspace_generator: cmake
+root: mgs_base16/0.1.0@mgs/testing, mgs_base32/0.1.0@mgs/testing, mgs_base32hex/0.1.0@mgs/testing, mgs_base64/0.1.0@mgs/testing, mgs_base64url/0.1.0@mgs/testing
