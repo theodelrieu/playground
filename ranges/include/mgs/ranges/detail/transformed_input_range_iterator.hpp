@@ -17,6 +17,9 @@ namespace detail
 template <typename TransformedInputRange>
 class transformed_input_range_iterator
 {
+private:
+  bool equals(transformed_input_range_iterator const&) const;
+
 public:
   using value_type = typename TransformedInputRange::value_type;
   using difference_type = std::streamoff;
