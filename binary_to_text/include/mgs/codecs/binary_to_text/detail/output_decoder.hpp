@@ -32,7 +32,9 @@ struct output_decoder
     for (auto i = 0; i < n; ++i)
     {
       out[i] = static_cast<unsigned char>(
-          (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
+          (decoded_bits >> static_cast<std::size_t>(
+                               BitshiftTraits::decoded_shift - (8 * i)) &
+           mask)
               .to_ulong());
     }
   }
@@ -47,7 +49,9 @@ struct output_decoder
     for (auto i = 0; i < BitshiftTraits::nb_decoded_bytes; ++i)
     {
       out[i] = static_cast<unsigned char>(
-          (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
+          (decoded_bits >> static_cast<std::size_t>(
+                               BitshiftTraits::decoded_shift - (8 * i)) &
+           mask)
               .to_ulong());
     }
   }

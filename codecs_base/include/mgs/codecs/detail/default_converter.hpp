@@ -45,7 +45,8 @@ RandomAccessContainer fill_random_access_container(T& range,
   RandomAccessContainer cont(max_size, 0);
 
   auto const total_read = range.read(begin(cont), max_size);
-  cont.resize(total_read);
+  cont.resize(
+      static_cast<typename RandomAccessContainer::size_type>(total_read));
   return cont;
 }
 
@@ -57,6 +58,7 @@ RandomAccessContainer fill_random_access_container(
     meta::priority_tag<0>)
 {
   using std::begin;
+  using size_type = typename RandomAccessContainer::size_type;
 
   constexpr auto block_size = 256;
 
@@ -68,9 +70,9 @@ RandomAccessContainer fill_random_access_container(
        nb_read = range.read(begin(cont) + total_read, block_size))
   {
     total_read += nb_read;
-    cont.resize(total_read + block_size);
+    cont.resize(static_cast<size_type>(total_read + block_size));
   }
-  cont.resize(total_read);
+  cont.resize(static_cast<size_type>(total_read));
   return cont;
 }
 

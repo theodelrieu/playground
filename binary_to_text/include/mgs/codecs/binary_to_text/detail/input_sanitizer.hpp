@@ -38,7 +38,7 @@ auto find_invalid_byte(Input const& input)
 
   while (current != end)
   {
-    if (EncodingTraits::index_of(*current) == -1)
+    if (EncodingTraits::index_of(static_cast<char>(*current)) == -1)
       break;
     ++current;
   }

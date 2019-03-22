@@ -23,8 +23,8 @@ auto decoded_to_bitset(RandomAccessIterator it, meta::ssize_t n)
 
   for (auto i = 0; i < n; ++i)
   {
-    decltype(input_bits) bits(it[i]);
-    input_bits |= (bits << (BitshiftTraits::nb_decoded_bits - 8 - (8 * i)));
+    decltype(input_bits) bits(static_cast<unsigned long long>(it[i]));
+    input_bits |= bits << static_cast<std::size_t>(BitshiftTraits::nb_decoded_bits - 8 - (8 * i));
   }
   return input_bits;
 }
@@ -37,10 +37,12 @@ auto indices_to_bitset(RandomAccessIterator it, meta::ssize_t n)
 
   for (auto i = 0; i < n; ++i)
   {
-    decltype(input_bits) bits(EncodingTraits::index_of(it[i]));
-    input_bits |= (bits << (BitshiftTraits::nb_decoded_bits -
-                            BitshiftTraits::nb_index_bits -
-                            (BitshiftTraits::nb_index_bits * i)));
+    decltype(input_bits) bits(static_cast<unsigned long long>(
+        EncodingTraits::index_of(static_cast<char>(it[i]))));
+    input_bits |=
+        bits << static_cast<std::size_t>(BitshiftTraits::nb_decoded_bits -
+                                         BitshiftTraits::nb_index_bits -
+                                         (BitshiftTraits::nb_index_bits * i));
   }
   return input_bits;
 }

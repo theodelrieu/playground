@@ -100,7 +100,7 @@ private:
     {
       if (current == end)
         break;
-      auto const byte = *current++;
+      auto const byte = static_cast<unsigned char>(*current++);
       ret[i] = byte;
     }
     ret.resize(i);

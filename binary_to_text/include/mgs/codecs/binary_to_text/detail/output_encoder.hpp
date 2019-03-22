@@ -34,8 +34,9 @@ struct output_encoder
     for (auto i = 0; i < n; ++i)
     {
       auto const index =
-          ((decoded_bits >> (BitshiftTraits::encoded_shift -
-                             (i * BitshiftTraits::nb_index_bits))) &
+          ((decoded_bits >>
+            static_cast<std::size_t>(BitshiftTraits::encoded_shift -
+                                     (i * BitshiftTraits::nb_index_bits))) &
            mask)
               .to_ulong();
       out[i] = EncodingTraits::alphabet[index];
@@ -53,8 +54,9 @@ struct output_encoder
     for (auto i = 0; i < BitshiftTraits::nb_encoded_bytes; ++i)
     {
       auto const index =
-          ((decoded_bits >> (BitshiftTraits::encoded_shift -
-                             (i * BitshiftTraits::nb_index_bits))) &
+          ((decoded_bits >>
+            static_cast<std::size_t>(BitshiftTraits::encoded_shift -
+                                     (i * BitshiftTraits::nb_index_bits))) &
            mask)
               .to_ulong();
       out[i] = EncodingTraits::alphabet[index];

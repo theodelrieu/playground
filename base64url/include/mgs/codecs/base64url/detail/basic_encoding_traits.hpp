@@ -48,7 +48,7 @@ struct basic_encoding_traits
   static constexpr auto const padding_character = '=';
   static constexpr auto const padding_policy = PaddingPolicy;
 
-  static constexpr auto index_of(char c)
+  static constexpr int index_of(char c)
   {
     return lookup_table[static_cast<unsigned char>(c)];
   }

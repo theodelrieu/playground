@@ -105,7 +105,7 @@ private:
     {
       if (current == end)
         break;
-      ret.push_back(*current++);
+      ret.push_back(static_cast<unsigned char>(*current++));
     }
     return ret;
   }

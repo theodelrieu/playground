@@ -18,7 +18,7 @@ namespace binary_to_text
 namespace detail
 {
 // a very minimalistic static_vector...
-template <typename T, meta::ssize_t N>
+template <typename T, std::size_t N>
 class static_vector
 {
   static_assert(std::is_integral<T>::value, "");
@@ -30,8 +30,8 @@ public:
 
   void push_back(T c)
   {
-    assert(_index + 1 <= N);
-    _array[_index++] = c;
+    assert(_index + 1 <= static_cast<meta::ssize_t>(N));
+    _array[static_cast<std::size_t>(_index++)] = c;
   }
 
   meta::ssize_t size() const
@@ -41,20 +41,20 @@ public:
 
   void resize(meta::ssize_t n)
   {
-    assert(n <= N);
+    assert(n >= 0 && n <= static_cast<meta::ssize_t>(N));
     _index = n;
   }
 
   T& operator[](meta::ssize_t n)
   {
-    assert(n <= _index);
-    return _array[n];
+    assert(n >= 0 && n <= _index);
+    return _array[static_cast<std::size_t>(n)];
   }
 
   T const& operator[](meta::ssize_t n) const
   {
     assert(n <= _index);
-    return _array[n];
+    return _array[static_cast<std::size_t>(n)];
   }
 
   T* begin()
