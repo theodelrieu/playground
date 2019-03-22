@@ -36,7 +36,7 @@ struct iter_traits_impl<T,
                             // SFINAE-correctness purposes
                             meta::iterator_traits<T>>::value>>
 {
-  // but expose the std one when SFINAE checks were passed
+  // but expose the std one when SFINAE checks pass
   using type = std::iterator_traits<T>;
 };
 }

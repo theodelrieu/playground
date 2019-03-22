@@ -7,8 +7,7 @@
 #include <mgs/codecs/binary_to_text/basic_decoder.hpp>
 #include <mgs/codecs/binary_to_text/basic_encoder.hpp>
 #include <mgs/concepts/byte.hpp>
-#include <mgs/meta/detected/types/value_type.hpp>
-#include <mgs/meta/iterator_traits.hpp>
+#include <mgs/meta/iter_value_t.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
 namespace mgs
@@ -27,8 +26,7 @@ struct basic_codec_traits
   template <
       typename Iterator,
       typename Sentinel,
-      typename = mgs::Byte<meta::detected_t<meta::detected::types::value_type,
-                                            meta::iterator_traits<Iterator>>>>
+      typename = mgs::Byte<meta::detected_t<meta::iter_value_t, Iterator>>>
   static auto make_encoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<
@@ -39,8 +37,7 @@ struct basic_codec_traits
   template <
       typename Iterator,
       typename Sentinel,
-      typename = mgs::Byte<meta::detected_t<meta::detected::types::value_type,
-                                            meta::iterator_traits<Iterator>>>>
+      typename = mgs::Byte<meta::detected_t<meta::iter_value_t, Iterator>>>
   static auto make_decoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<

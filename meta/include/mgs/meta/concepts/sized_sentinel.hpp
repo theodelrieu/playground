@@ -6,7 +6,7 @@
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/substraction.hpp>
-#include <mgs/meta/iterator_traits.hpp>
+#include <mgs/meta/iter_difference_t.hpp>
 
 // http://en.cppreference.com/w/cpp/experimental/ranges/SizedSentinel
 namespace mgs
@@ -25,10 +25,9 @@ private:
       std::add_lvalue_reference_t<std::add_const_t<T>>;
   using iterator_lvalue_const_ref =
       std::add_lvalue_reference_t<std::add_const_t<Iterator>>;
-  using traits = meta::iterator_traits<Iterator>;
 
   // no need to check nonesuch, is_sentinel will fail anyway.
-  using difference_type = detected_t<detected::types::difference_type, traits>;
+  using difference_type = detected_t<meta::iter_difference_t, Iterator>;
 
   static constexpr auto const has_it_sent_substraction =
       is_detected_exact<difference_type,
@@ -54,11 +53,11 @@ public:
     static_assert(value, "T is not a SizedSentinel<Iterator>");
     static_assert(has_it_sent_substraction,
                   "Invalid or missing operator: "
-                  "'std::iterator_traits<Iterator>::difference_type "
+                  "'std::iter_difference_t<Iterator> "
                   "operator-(Iterator const&, T const&)'");
     static_assert(has_sent_it_substraction,
                   "Invalid or missing operator: "
-                  "'std::iterator_traits<Iterator>::difference_type "
+                  "'std::iter_difference_t<Iterator> "
                   "operator-(T const&, Iterator const&)'");
     return 1;
   }

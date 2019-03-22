@@ -9,7 +9,6 @@
 #include <mgs/meta/concepts/readable.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iter_concept.hpp>
-#include <mgs/meta/iterator_traits.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/ranges/InputIterator
 

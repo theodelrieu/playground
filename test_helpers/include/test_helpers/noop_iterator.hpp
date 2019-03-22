@@ -7,7 +7,7 @@ struct noop_iterator
   using value_type = void;
   using pointer = void;
   using reference = void;
-  using difference_type = void;
+  using difference_type = std::ptrdiff_t;
   using iterator_category = std::output_iterator_tag;
 
   noop_iterator& operator++()

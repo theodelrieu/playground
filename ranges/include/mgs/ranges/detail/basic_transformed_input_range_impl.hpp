@@ -4,6 +4,7 @@
 #include <cassert>
 #include <limits>
 #include <tuple>
+#include <utility>
 
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
@@ -14,9 +15,8 @@ inline namespace v1
 namespace ranges
 {
 template <typename InputTransformer>
-basic_transformed_input_range<InputTransformer>::
-    basic_transformed_input_range(underlying_iterator begin,
-                                    underlying_sentinel end)
+basic_transformed_input_range<InputTransformer>::basic_transformed_input_range(
+    underlying_iterator begin, underlying_sentinel end)
   : InputTransformer(std::move(begin), std::move(end))
 {
   _transform_input();
@@ -32,7 +32,7 @@ auto basic_transformed_input_range<InputTransformer>::_get() const
 }
 
 template <typename InputTransformer>
-template <typename OutputIterator>
+template <typename OutputIterator, typename>
 std::size_t basic_transformed_input_range<InputTransformer>::read(
     OutputIterator out, std::size_t n)
 {
@@ -76,7 +76,8 @@ void basic_transformed_input_range<InputTransformer>::_transform_input()
 }
 
 template <typename InputTransformer>
-std::size_t basic_transformed_input_range<InputTransformer>::_buffer_size() const
+std::size_t basic_transformed_input_range<InputTransformer>::_buffer_size()
+    const
 {
   using std::begin;
   using std::end;
@@ -94,8 +95,7 @@ basic_transformed_input_range<InputTransformer>::max_transformed_size() const
 }
 
 template <typename InputTransformer>
-auto basic_transformed_input_range<InputTransformer>::begin() const
-    -> iterator
+auto basic_transformed_input_range<InputTransformer>::begin() const -> iterator
 {
   return iterator{*this};
 }

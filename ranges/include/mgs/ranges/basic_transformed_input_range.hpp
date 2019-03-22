@@ -4,13 +4,16 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/meta/call_std/begin.hpp>
+#include <mgs/concepts/input_transformer.hpp>
+#include <mgs/concepts/sized_input_transformer.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
-#include <mgs/concepts/input_transformer.hpp>
-#include <mgs/concepts/sized_input_transformer.hpp>
+#include <mgs/meta/iter_difference_t.hpp>
+#include <mgs/meta/iter_value_t.hpp>
+#include <mgs/meta/iterator_t.hpp>
 #include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 namespace mgs
@@ -30,20 +33,25 @@ public:
   using underlying_sentinel = typename InputTransformer::underlying_sentinel;
 
 private:
-  using buffer_t = typename InputTransformer::buffer_type;
-  using buffer_iterator = meta::result_of_begin<buffer_t>;
+  using buffer = typename InputTransformer::buffer_type;
+  using buffer_iterator = meta::iterator_t<buffer>;
 
-  friend detail::transformed_input_range_iterator<basic_transformed_input_range>;
+  friend detail::transformed_input_range_iterator<
+      basic_transformed_input_range>;
 
 public:
-  using iterator = detail::transformed_input_range_iterator<basic_transformed_input_range>;
-  using value_type = typename std::iterator_traits<buffer_iterator>::value_type;
+  using iterator =
+      detail::transformed_input_range_iterator<basic_transformed_input_range>;
+  using value_type = meta::iter_value_t<buffer_iterator>;
 
   basic_transformed_input_range() = default;
   basic_transformed_input_range(underlying_iterator begin,
                                 underlying_sentinel end);
 
-  template <typename OutputIterator>
+  template <typename OutputIterator,
+            typename = std::enable_if_t<
+                meta::concepts::is_output_iterator<OutputIterator,
+                                                   value_type>::value>>
   std::size_t read(OutputIterator out, std::size_t n);
 
   iterator begin() const;
@@ -55,8 +63,8 @@ public:
   std::size_t max_transformed_size() const;
 
 private:
-  buffer_t _buffer{};
-  typename std::iterator_traits<buffer_iterator>::difference_type _index{};
+  buffer _buffer{};
+  meta::iter_difference_t<buffer_iterator> _index{};
 
   value_type const& _get() const;
   void _seek_forward();

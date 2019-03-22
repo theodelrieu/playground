@@ -4,17 +4,16 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/strict_totally_ordered.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/strict_totally_ordered.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/addition.hpp>
 #include <mgs/meta/detected/operators/addition_assignment.hpp>
 #include <mgs/meta/detected/operators/array_subscript.hpp>
 #include <mgs/meta/detected/operators/substraction.hpp>
 #include <mgs/meta/detected/operators/substraction_assignment.hpp>
-#include <mgs/meta/detected/types/reference.hpp>
 #include <mgs/meta/iter_concept.hpp>
 #include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/iter_reference_t.hpp>
@@ -83,10 +82,10 @@ public:
 
   static auto constexpr value =
       is_bidirectional_iterator<T>::value &&
-      is_strict_totally_ordered<T>::value &&
-      is_sized_sentinel<T, T>::value && has_correct_category &&
-      has_addition_assignment && has_addition_t_dt && has_addition_dt_t &&
-      has_substraction && has_substraction_assignment && has_array_subscript;
+      is_strict_totally_ordered<T>::value && is_sized_sentinel<T, T>::value &&
+      has_correct_category && has_addition_assignment && has_addition_t_dt &&
+      has_addition_dt_t && has_substraction && has_substraction_assignment &&
+      has_array_subscript;
 
   static constexpr int trigger_static_asserts()
   {
@@ -96,24 +95,24 @@ public:
                   "std::random_access_iterator_tag");
     static_assert(has_addition_assignment,
                   "Invalid or missing operator: 'T& "
-                  "operator+=(std::iterator_traits<T>::difference_type)'");
+                  "operator+=(std::iter_difference_t<T>)'");
     static_assert(has_addition_t_dt,
                   "Invalid or missing operator: 'T operator+(T const&, "
-                  "std::iterator_traits<T>::difference_type)'");
+                  "std::iter_difference_t<T>)'");
     static_assert(has_addition_dt_t,
                   "Invalid or missing operator: 'T "
-                  "operator+(std::iterator_traits<T>::difference_type, T "
+                  "operator+(std::iter_difference_t<T>, T "
                   "const&)'");
     static_assert(has_substraction_assignment,
                   "Invalid or missing operator: 'T "
-                  "operator-=(std::iterator_traits<T>::difference_type)'");
+                  "operator-=(std::iter_difference_t<T>)'");
     static_assert(has_substraction,
                   "Invalid or missing operator: 'T operator-(T const&, "
-                  "std::iterator_traits<T>::difference_type)'");
+                  "std::iter_difference_t<T>)'");
     static_assert(has_array_subscript,
                   "Invalid or missing operator: "
-                  "'std::iterator_traits<T>::reference "
-                  "operator[](std::iterator_traits<T>::difference_type)'");
+                  "'std::iter_reference_t<T> "
+                  "operator[](std::iter_difference_t<T>)'");
     return 1;
   }
 };

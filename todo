@@ -2,8 +2,6 @@ workspaces + ci + new repo
 
 code
 
-* use iter_t instead of iterator_traits
-
 doc
 
 * update supported types list

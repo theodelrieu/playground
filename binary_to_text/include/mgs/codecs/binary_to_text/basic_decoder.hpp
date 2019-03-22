@@ -20,7 +20,7 @@
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
-#include <mgs/meta/static_asserts.hpp>
+#include <mgs/meta/iter_concept.hpp>
 
 namespace mgs
 {
@@ -34,13 +34,11 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_decoder
 {
 private:
-  static constexpr auto _ =
-      meta::trigger_static_asserts<
-          meta::concepts::is_input_iterator<Iterator>>() &&
-      meta::trigger_static_asserts<
-          meta::concepts::is_sentinel<Sentinel, Iterator>>() &&
-      meta::trigger_static_asserts<
-          concepts::is_encoding_traits<EncodingTraits>>();
+  static_assert(meta::concepts::is_input_iterator<Iterator>::value,
+                "Iterator must be an InputIterator");
+  static_assert(meta::concepts::is_sentinel<Sentinel, Iterator>::value,
+                "Sentinel must be a Sentinel<Iterator>");
+  static_assert(concepts::is_encoding_traits<EncodingTraits>::value, "Invalid encoding traits");
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
@@ -128,10 +126,8 @@ private:
 
   void read_input(buffer_type& output)
   {
-    auto const input = read_input_impl(
-        _current,
-        _end,
-        typename std::iterator_traits<Iterator>::iterator_category{});
+    auto const input =
+        read_input_impl(_current, _end, meta::iter_concept<Iterator>{});
 
     auto const nb_loop_iterations =
         std::ldiv(input.size(), BitshiftTraits::nb_encoded_bytes);
