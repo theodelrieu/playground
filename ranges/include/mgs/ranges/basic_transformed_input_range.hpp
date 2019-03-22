@@ -14,6 +14,7 @@
 #include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/ssize_t.hpp>
 #include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 namespace mgs
@@ -52,7 +53,7 @@ public:
             typename = std::enable_if_t<
                 meta::concepts::is_output_iterator<OutputIterator,
                                                    value_type>::value>>
-  std::size_t read(OutputIterator out, std::size_t n);
+  meta::ssize_t read(OutputIterator out, meta::ssize_t n);
 
   iterator begin() const;
   iterator end() const;
@@ -60,7 +61,7 @@ public:
   template <typename T = InputTransformer,
             typename = std::enable_if_t<
                 concepts::is_sized_input_transformer<T>::value>>
-  std::size_t max_transformed_size() const;
+  meta::ssize_t max_transformed_size() const;
 
 private:
   buffer _buffer{};
@@ -69,7 +70,7 @@ private:
   value_type const& _get() const;
   void _seek_forward();
   void _transform_input();
-  std::size_t _buffer_size() const;
+  meta::ssize_t _buffer_size() const;
 };
 }
 }

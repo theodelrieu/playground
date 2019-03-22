@@ -21,6 +21,7 @@
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/iter_concept.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -72,7 +73,7 @@ public:
             typename S = Sentinel,
             typename = std::enable_if_t<
                 meta::concepts::is_sized_sentinel<S, I>::value>>
-  std::size_t max_transformed_size() const
+  meta::ssize_t max_transformed_size() const
   {
     return detail::max_decoded_size<EncodingTraits>{}(_end - _current);
   }

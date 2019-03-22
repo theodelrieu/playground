@@ -6,11 +6,12 @@
 
 #include <mgs/concepts/detail/detected/member_functions/max_transformed_size.hpp>
 #include <mgs/concepts/input_transformer.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 // template <typename T>
 // concept SizedInputTransformer = InputTransformer<T> &&
 //   requires(T const& v) {
-//     { v.max_transformed_size() } -> std::Same<std::size_t>;
+//     { v.max_transformed_size() } -> meta::ssize_t;
 //   }
 
 namespace mgs
@@ -24,8 +25,8 @@ struct is_sized_input_transformer
 {
 private:
   static constexpr auto const has_max_transformed_size_method =
-      meta::is_detected_exact<
-          std::size_t,
+      meta::is_detected_convertible<
+          meta::ssize_t,
           detail::detected::member_functions::max_transformed_size,
           std::add_lvalue_reference_t<std::add_const_t<T>>>::value;
 
@@ -39,7 +40,7 @@ public:
   {
     static_assert(value, "T is not an SizedInputTransformer");
     static_assert(has_max_transformed_size_method,
-                  "Invalid or missing function: 'std::size_t "
+                  "Invalid or missing function: 'meta::ssize_t "
                   "T::max_transformed_size() const'");
     return 1;
   }

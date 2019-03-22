@@ -10,14 +10,15 @@
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 // clang-format off
 // template <typename T, typename O>
 // concept ReadableTransformedInputRange =
 //   TransformedInputRange<T> &&
-//   std::OutputIterator<O, std::ranges::iter_value_t<std::ranges::iterator_t<T>>> &&
-//   requires(T& v, O o, std::size_t n) {
-//     { v.read(o, n) } -> std::Same<std::size_t>;
+//   std::OutputIterator<O, std::ranges::range_value_t<T>> &&
+//   requires(T& v, O o, meta::ssize_t n) {
+//     { v.read(o, n) } -> meta::ssize_t;
 // };
 // clang-format on
 
@@ -34,13 +35,12 @@ private:
   using lvalue_ref = std::add_lvalue_reference_t<T>;
   using iterator = meta::detected_t<meta::iterator_t, T>;
 
-
   static auto constexpr const has_read_method =
-      meta::is_detected_exact<std::size_t,
-                              detail::detected::member_functions::read,
-                              lvalue_ref,
-                              O,
-                              std::size_t>::value;
+      meta::is_detected_convertible<meta::ssize_t,
+                                    detail::detected::member_functions::read,
+                                    lvalue_ref,
+                                    O,
+                                    meta::ssize_t>::value;
 
 public:
   using requirements = std::tuple<
@@ -58,8 +58,8 @@ public:
   {
     static_assert(value, "T is not a ReadableTransformedInputRange");
     static_assert(has_read_method,
-                  "Invalid or missing function: 'std::size_t "
-                  "T::read(O, std::size_t)'");
+                  "Invalid or missing function: 'meta::ssize_t "
+                  "T::read(O, meta::ssize_t)'");
     return -1;
   }
 };

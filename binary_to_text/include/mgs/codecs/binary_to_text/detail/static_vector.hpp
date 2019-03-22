@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <type_traits>
 
+#include <mgs/meta/ssize_t.hpp>
+
 namespace mgs
 {
 inline namespace v1
@@ -16,7 +18,7 @@ namespace binary_to_text
 namespace detail
 {
 // a very minimalistic static_vector...
-template <typename T, std::size_t N>
+template <typename T, meta::ssize_t N>
 class static_vector
 {
   static_assert(std::is_integral<T>::value, "");
@@ -32,24 +34,24 @@ public:
     _array[_index++] = c;
   }
 
-  std::size_t size() const
+  meta::ssize_t size() const
   {
     return _index;
   }
 
-  void resize(std::size_t n)
+  void resize(meta::ssize_t n)
   {
     assert(n <= N);
     _index = n;
   }
 
-  T& operator[](std::size_t n)
+  T& operator[](meta::ssize_t n)
   {
     assert(n <= _index);
     return _array[n];
   }
 
-  T const& operator[](std::size_t n) const
+  T const& operator[](meta::ssize_t n) const
   {
     assert(n <= _index);
     return _array[n];
@@ -87,7 +89,7 @@ public:
 
 private:
   std::array<T, N> _array;
-  std::size_t _index{0};
+  meta::ssize_t _index{0};
 };
 }
 }

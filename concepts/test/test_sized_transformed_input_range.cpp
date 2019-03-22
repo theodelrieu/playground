@@ -3,6 +3,7 @@
 #include <catch.hpp>
 
 #include <mgs/concepts/sized_transformed_input_range.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 using namespace mgs::concepts;
 
@@ -20,7 +21,7 @@ struct valid_range
   iterator begin();
   iterator end();
 
-  std::size_t max_transformed_size() const;
+  mgs::meta::ssize_t max_transformed_size() const;
 };
 
 struct no_max_transformed_size_range
@@ -48,7 +49,7 @@ struct non_const_range
   iterator begin();
   iterator end();
 
-  std::size_t max_transformed_size();
+  mgs::meta::ssize_t max_transformed_size();
 };
 
 struct invalid_return_type_range
@@ -63,7 +64,7 @@ struct invalid_return_type_range
   iterator begin();
   iterator end();
 
-  int max_transformed_size() const;
+  char* max_transformed_size() const;
 };
 }
 

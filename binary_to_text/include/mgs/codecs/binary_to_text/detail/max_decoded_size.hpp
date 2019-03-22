@@ -6,6 +6,7 @@
 #include <mgs/codecs/binary_to_text/detail/input_sanitizer.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -21,7 +22,7 @@ template <typename EncodingTraits,
           padding_policy = EncodingTraits::padding_policy>
 struct max_decoded_size
 {
-  constexpr std::size_t operator()(std::size_t encoded_size) const
+  constexpr meta::ssize_t operator()(meta::ssize_t encoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -38,7 +39,7 @@ struct max_decoded_size
 template <typename EncodingTraits>
 struct max_decoded_size<EncodingTraits, padding_policy::required>
 {
-  constexpr std::size_t operator()(std::size_t encoded_size) const
+  constexpr meta::ssize_t operator()(meta::ssize_t encoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 

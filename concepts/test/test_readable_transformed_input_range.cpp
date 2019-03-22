@@ -3,6 +3,7 @@
 #include <catch.hpp>
 
 #include <mgs/concepts/readable_transformed_input_range.hpp>
+#include <mgs/meta/ssize_t.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::concepts;
@@ -22,7 +23,7 @@ struct valid_range
   iterator end();
 
   template <typename O>
-  std::size_t read(O, std::size_t);
+  mgs::meta::ssize_t read(O, mgs::meta::ssize_t);
 };
 
 struct no_read_range
@@ -50,7 +51,7 @@ struct non_const_range
   iterator begin();
   iterator end();
 
-  std::size_t max_transformed_size();
+  mgs::meta::ssize_t max_transformed_size();
 };
 
 struct invalid_return_type_range

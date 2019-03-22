@@ -4,6 +4,7 @@
 
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -24,11 +25,11 @@ struct output_decoder
   static void decode(
       std::bitset<BitshiftTraits::nb_decoded_bits> const& decoded_bits,
       OutputIterator out,
-      std::size_t n)
+      meta::ssize_t n)
   {
     constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(255);
 
-    for (auto i = 0u; i < n; ++i)
+    for (auto i = 0; i < n; ++i)
     {
       out[i] = static_cast<unsigned char>(
           (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)
@@ -43,7 +44,7 @@ struct output_decoder
   {
     constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(255);
 
-    for (auto i = 0u; i < BitshiftTraits::nb_decoded_bytes; ++i)
+    for (auto i = 0; i < BitshiftTraits::nb_decoded_bytes; ++i)
     {
       out[i] = static_cast<unsigned char>(
           (decoded_bits >> (BitshiftTraits::decoded_shift - (8 * i)) & mask)

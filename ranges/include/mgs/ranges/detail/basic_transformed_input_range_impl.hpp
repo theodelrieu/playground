@@ -33,10 +33,10 @@ auto basic_transformed_input_range<InputTransformer>::_get() const
 
 template <typename InputTransformer>
 template <typename OutputIterator, typename>
-std::size_t basic_transformed_input_range<InputTransformer>::read(
-    OutputIterator out, std::size_t n)
+meta::ssize_t basic_transformed_input_range<InputTransformer>::read(
+    OutputIterator out, meta::ssize_t n)
 {
-  std::size_t nb_read{};
+  meta::ssize_t nb_read{};
 
   while (n > 0 && _buffer_size() != 0)
   {
@@ -76,7 +76,7 @@ void basic_transformed_input_range<InputTransformer>::_transform_input()
 }
 
 template <typename InputTransformer>
-std::size_t basic_transformed_input_range<InputTransformer>::_buffer_size()
+meta::ssize_t basic_transformed_input_range<InputTransformer>::_buffer_size()
     const
 {
   using std::begin;
@@ -87,7 +87,7 @@ std::size_t basic_transformed_input_range<InputTransformer>::_buffer_size()
 
 template <typename InputTransformer>
 template <typename T, typename SFINAE>
-std::size_t
+meta::ssize_t
 basic_transformed_input_range<InputTransformer>::max_transformed_size() const
 {
   return _buffer_size() - _index +

@@ -6,6 +6,7 @@
 #include <mgs/codecs/binary_to_text/detail/encoded_size.hpp>
 #include <mgs/codecs/binary_to_text/detail/max_decoded_size.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -29,12 +30,12 @@ public:
   using base::make_encoder;
   using base::make_decoder;
 
-  static constexpr std::size_t encoded_size(std::size_t decoded_size)
+  static constexpr meta::ssize_t encoded_size(meta::ssize_t decoded_size)
   {
     return detail::encoded_size<EncodingTraits>{}(decoded_size);
   }
 
-  static constexpr std::size_t max_decoded_size(std::size_t encoded_size)
+  static constexpr meta::ssize_t max_decoded_size(meta::ssize_t encoded_size)
   {
     return detail::max_decoded_size<DecodingTraits>{}(encoded_size);
   }

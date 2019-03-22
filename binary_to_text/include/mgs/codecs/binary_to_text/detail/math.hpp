@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <utility>
 
+#include <mgs/meta/ssize_t.hpp>
+
 namespace mgs
 {
 inline namespace v1
@@ -13,16 +15,16 @@ namespace binary_to_text
 {
 namespace detail
 {
-template <std::size_t A, std::size_t Multiple>
-constexpr std::size_t round_to_multiple_of()
+template <meta::ssize_t A, meta::ssize_t Multiple>
+constexpr meta::ssize_t round_to_multiple_of()
 {
   return ((A + (Multiple / 2)) / Multiple) * Multiple;
 }
 
-template <std::size_t N>
-constexpr std::size_t log2()
+template <meta::ssize_t N>
+constexpr meta::ssize_t log2()
 {
-  std::size_t ret = 0;
+  meta::ssize_t ret = 0;
   auto n = N;
 
   while (n >>= 1)
@@ -30,16 +32,16 @@ constexpr std::size_t log2()
   return ret;
 }
 
-template <std::size_t N>
-constexpr std::size_t is_power_of_2()
+template <meta::ssize_t N>
+constexpr meta::ssize_t is_power_of_2()
 {
   return N != 0 && ((N & (N - 1)) == 0);
 }
 
-template <std::size_t X, std::size_t N>
-constexpr std::size_t pow()
+template <meta::ssize_t X, meta::ssize_t N>
+constexpr meta::ssize_t pow()
 {
-  std::size_t ret = 1;
+  meta::ssize_t ret = 1;
   auto x = X;
   auto n = N;
 
@@ -53,8 +55,8 @@ constexpr std::size_t pow()
   return ret;
 }
 
-template <std::size_t A, std::size_t B>
-constexpr std::size_t gcd()
+template <meta::ssize_t A, meta::ssize_t B>
+constexpr meta::ssize_t gcd()
 {
   auto a = A;
   auto b = B;
@@ -68,8 +70,8 @@ constexpr std::size_t gcd()
   return a;
 }
 
-template <std::size_t AlphabetSize>
-constexpr std::pair<std::size_t, std::size_t> encoding_bytes()
+template <meta::ssize_t AlphabetSize>
+constexpr std::pair<meta::ssize_t, meta::ssize_t> encoding_bytes()
 {
   constexpr auto a = log2<AlphabetSize>();
   // log2(256) -- ASCII set
@@ -79,14 +81,14 @@ constexpr std::pair<std::size_t, std::size_t> encoding_bytes()
   return {a / divisor, b / divisor};
 }
 
-template <std::size_t AlphabetSize>
-constexpr std::size_t decoded_bytes()
+template <meta::ssize_t AlphabetSize>
+constexpr meta::ssize_t decoded_bytes()
 {
   return encoding_bytes<AlphabetSize>().first;
 }
 
-template <std::size_t AlphabetSize>
-constexpr std::size_t encoded_bytes()
+template <meta::ssize_t AlphabetSize>
+constexpr meta::ssize_t encoded_bytes()
 {
   return encoding_bytes<AlphabetSize>().second;
 }

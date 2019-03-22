@@ -22,6 +22,7 @@
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/iter_concept.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -79,7 +80,7 @@ public:
   template <typename I = Iterator,
             typename S = Sentinel,
             typename = meta::SizedSentinel<S, I>>
-  std::size_t max_transformed_size() const
+  meta::ssize_t max_transformed_size() const
   {
     return detail::encoded_size<EncodingTraits>{}(_end - _current);
   }
@@ -133,7 +134,7 @@ private:
         std::ldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
     output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes);
 
-    for (auto i = 0u; i < nb_loop_iterations.quot; ++i)
+    for (auto i = 0; i < nb_loop_iterations.quot; ++i)
     {
       auto const input_bits = detail::decoded_to_bitset<BitshiftTraits>(
           input.begin() + (i * BitshiftTraits::nb_decoded_bytes),

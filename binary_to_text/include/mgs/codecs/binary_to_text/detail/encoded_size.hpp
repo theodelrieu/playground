@@ -4,6 +4,7 @@
 
 #include <mgs/codecs/binary_to_text/detail/bitshift_traits.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -22,7 +23,7 @@ struct encoded_size;
 template <typename EncodingTraits>
 struct encoded_size<EncodingTraits, padding_policy::required>
 {
-  constexpr std::size_t operator()(std::size_t decoded_size) const
+  constexpr meta::ssize_t operator()(meta::ssize_t decoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -37,7 +38,7 @@ struct encoded_size<EncodingTraits, padding_policy::required>
 template <typename EncodingTraits>
 struct encoded_size<EncodingTraits, padding_policy::none>
 {
-  constexpr std::size_t operator()(std::size_t decoded_size) const
+  constexpr meta::ssize_t operator()(meta::ssize_t decoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 

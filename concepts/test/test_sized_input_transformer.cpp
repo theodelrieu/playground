@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include <mgs/concepts/sized_input_transformer.hpp>
+#include <mgs/meta/ssize_t.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
@@ -25,7 +26,7 @@ struct valid_transformer
   valid_transformer(char const* begin, char const* end);
 
   void operator()(buffer_type& out);
-  std::size_t max_transformed_size() const;
+  mgs::meta::ssize_t max_transformed_size() const;
 
   underlying_iterator const& get_iterator() const;
   underlying_sentinel const& get_sentinel() const;
@@ -56,7 +57,7 @@ struct invalid_return_type_transformer
   invalid_return_type_transformer(char const* begin, char const* end);
 
   void operator()(buffer_type& out);
-  int max_transformed_size() const;
+  char* max_transformed_size() const;
 
   underlying_iterator const& get_iterator() const;
   underlying_sentinel const& get_sentinel() const;
@@ -72,7 +73,7 @@ struct non_const_transformer
   non_const_transformer(char const* begin, char const* end);
 
   void operator()(buffer_type& out);
-  std::size_t max_transformed_size();
+  mgs::meta::ssize_t max_transformed_size();
 
   underlying_iterator const& get_iterator() const;
   underlying_sentinel const& get_sentinel() const;

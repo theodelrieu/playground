@@ -7,6 +7,7 @@
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
 {
@@ -57,7 +58,7 @@ void ensures_only_padding_characters(ForwardIterator invalid_byte_it,
 }
 
 template <typename BitshiftTraits>
-constexpr bool invalid_padding_character_pos(std::size_t nb_non_padded_bytes)
+constexpr bool invalid_padding_character_pos(meta::ssize_t nb_non_padded_bytes)
 {
   auto const rem = (nb_non_padded_bytes * BitshiftTraits::nb_index_bits) % 8;
   return rem >= BitshiftTraits::nb_index_bits;
@@ -94,7 +95,7 @@ class input_sanitizer<EncodingTraits, padding_policy::none>
 {
 public:
   template <typename Input>
-  static std::size_t sanitize(Input const& input, bool)
+  static meta::ssize_t sanitize(Input const& input, bool)
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -112,7 +113,7 @@ class input_sanitizer<EncodingTraits, padding_policy::optional>
 {
 public:
   template <typename Input>
-  static std::size_t sanitize(Input const& input, bool end_of_input)
+  static meta::ssize_t sanitize(Input const& input, bool end_of_input)
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -139,7 +140,7 @@ class input_sanitizer<EncodingTraits, padding_policy::required>
 
 public:
   template <typename Input>
-  static std::size_t sanitize(Input const& input, bool end_of_input)
+  static meta::ssize_t sanitize(Input const& input, bool end_of_input)
   {
     if (input.size() % BitshiftTraits::nb_encoded_bytes != 0)
       throw exceptions::unexpected_eof_error{"unexpected end of encoded input"};
