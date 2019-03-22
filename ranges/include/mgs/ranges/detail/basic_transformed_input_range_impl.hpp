@@ -90,8 +90,10 @@ template <typename T, typename SFINAE>
 meta::ssize_t
 basic_transformed_input_range<InputTransformer>::max_transformed_size() const
 {
-  return _buffer_size() - _index +
-         static_cast<InputTransformer const&>(*this).max_transformed_size();
+  auto const max_transformed_size = static_cast<InputTransformer const&>(*this).max_transformed_size();
+  if (max_transformed_size == -1)
+    return -1;
+  return _buffer_size() - _index + max_transformed_size;
 }
 
 template <typename InputTransformer>

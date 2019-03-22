@@ -161,8 +161,7 @@ TEST_CASE("base16", "[base16]")
         encoded.pop_back();
 
         auto dec = base16::make_decoder(encoded.begin(), encoded.end());
-        CHECK_THROWS_AS(dec.max_transformed_size(),
-                        mgs::exceptions::invalid_input_error);
+        CHECK(dec.max_transformed_size() == -1);
       }
     }
   }
@@ -185,11 +184,8 @@ TEST_CASE("base16", "[base16]")
     CHECK(base16::max_decoded_size(4) == 2);
     CHECK(base16::max_decoded_size(32) == 16);
 
-    CHECK_THROWS_AS(base16::max_decoded_size(1),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base16::max_decoded_size(3),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base16::max_decoded_size(33),
-                    exceptions::invalid_input_error);
+    CHECK(base16::max_decoded_size(1) == -1);
+    CHECK(base16::max_decoded_size(3) == -1);
+    CHECK(base16::max_decoded_size(33) == -1);
   }
 }

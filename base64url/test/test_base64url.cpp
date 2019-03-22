@@ -170,8 +170,7 @@ TEST_CASE("base64url", "[base64url]")
         encoded.pop_back();
 
         auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
-        CHECK_THROWS_AS(dec.max_transformed_size(),
-                        mgs::exceptions::invalid_input_error);
+        CHECK(dec.max_transformed_size() == -1);
       }
     }
   }
@@ -194,22 +193,14 @@ TEST_CASE("base64url", "[base64url]")
     CHECK(base64url::max_decoded_size(8) == 6);
     CHECK(base64url::max_decoded_size(32) == 24);
 
-    CHECK_THROWS_AS(base64url::max_decoded_size(1),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(2),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(3),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(5),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(6),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(7),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(33),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url::max_decoded_size(31),
-                    exceptions::invalid_input_error);
+    CHECK(base64url::max_decoded_size(1) == -1);
+    CHECK(base64url::max_decoded_size(2) == -1);
+    CHECK(base64url::max_decoded_size(3) == -1);
+    CHECK(base64url::max_decoded_size(5) == -1);
+    CHECK(base64url::max_decoded_size(6) == -1);
+    CHECK(base64url::max_decoded_size(7) == -1);
+    CHECK(base64url::max_decoded_size(33) == -1);
+    CHECK(base64url::max_decoded_size(31) == -1);
   }
 }
 
@@ -334,8 +325,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
         auto dec =
             base64url_nopad::make_decoder(encoded.begin(), encoded.end());
-        CHECK_THROWS_AS(dec.max_transformed_size(),
-                        mgs::exceptions::invalid_input_error);
+        CHECK(dec.max_transformed_size() == -1);
       }
     }
   }
@@ -363,11 +353,8 @@ TEST_CASE("base64url_nopad", "[base64url]")
     CHECK(base64url_nopad::max_decoded_size(22) == 16);
     CHECK(base64url_nopad::max_decoded_size(24) == 18);
 
-    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(1),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(5),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base64url_nopad::max_decoded_size(21),
-                    exceptions::invalid_input_error);
+    CHECK(base64url_nopad::max_decoded_size(1) == -1);
+    CHECK(base64url_nopad::max_decoded_size(5) == -1);
+    CHECK(base64url_nopad::max_decoded_size(21) == -1);
   }
 }

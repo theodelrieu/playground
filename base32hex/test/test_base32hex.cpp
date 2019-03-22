@@ -157,8 +157,7 @@ TEST_CASE("base32hex", "[base32hex]")
         encoded.pop_back();
 
         auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
-        CHECK_THROWS_AS(dec.max_transformed_size(),
-                        mgs::exceptions::invalid_input_error);
+        CHECK(dec.max_transformed_size() == -1);
       }
     }
   }
@@ -180,23 +179,14 @@ TEST_CASE("base32hex", "[base32hex]")
     CHECK(base32hex::max_decoded_size(8) == 5);
     CHECK(base32hex::max_decoded_size(32) == 20);
 
-    CHECK_THROWS_AS(base32hex::max_decoded_size(1),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(2),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(3),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(4),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(5),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(6),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(7),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(33),
-                    exceptions::invalid_input_error);
-    CHECK_THROWS_AS(base32hex::max_decoded_size(31),
-                    exceptions::invalid_input_error);
+    CHECK(base32hex::max_decoded_size(1) == -1);
+    CHECK(base32hex::max_decoded_size(2) == -1);
+    CHECK(base32hex::max_decoded_size(3) == -1);
+    CHECK(base32hex::max_decoded_size(4) == -1);
+    CHECK(base32hex::max_decoded_size(5) == -1);
+    CHECK(base32hex::max_decoded_size(6) == -1);
+    CHECK(base32hex::max_decoded_size(7) == -1);
+    CHECK(base32hex::max_decoded_size(33) == -1);
+    CHECK(base32hex::max_decoded_size(31) == -1);
   }
 }

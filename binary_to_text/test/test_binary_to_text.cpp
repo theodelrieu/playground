@@ -105,20 +105,13 @@ TEST_CASE("base2", "[binary_to_text]")
       CHECK(base2::max_decoded_size(8) == 1);
       CHECK(base2::max_decoded_size(64) == 8);
 
-      CHECK_THROWS_AS(base2::max_decoded_size(1),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(2),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(3),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(4),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(5),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(6),
-                      mgs::exceptions::invalid_input_error);
-      CHECK_THROWS_AS(base2::max_decoded_size(7),
-                      mgs::exceptions::invalid_input_error);
+      CHECK(base2::max_decoded_size(1) == -1);
+      CHECK(base2::max_decoded_size(2) == -1);
+      CHECK(base2::max_decoded_size(3) == -1);
+      CHECK(base2::max_decoded_size(4) == -1);
+      CHECK(base2::max_decoded_size(5) == -1);
+      CHECK(base2::max_decoded_size(6) == -1);
+      CHECK(base2::max_decoded_size(7) == -1);
     }
 
     SECTION("read")
