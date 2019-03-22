@@ -1,8 +1,10 @@
 #pragma once
 
 #include <type_traits>
+#include <utility>
 
 #include <mgs/meta/call_std/end.hpp>
+#include <mgs/meta/concepts/range.hpp>
 
 namespace mgs
 {
@@ -10,8 +12,8 @@ inline namespace v1
 {
 namespace meta
 {
-template <typename T>
-using sentinel_t = result_of_end<std::add_lvalue_reference_t<T>>;
+template <typename R, typename = std::enable_if_t<concepts::is_range<R>::value>>
+using sentinel_t = result_of_end<decltype(std::declval<R&>())>;
 }
 }
 }

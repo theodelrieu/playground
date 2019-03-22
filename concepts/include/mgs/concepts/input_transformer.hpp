@@ -7,14 +7,14 @@
 #include <mgs/concepts/detail/detected/types/buffer_type.hpp>
 #include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
 #include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
-#include <mgs/meta/concepts/range.hpp>
-#include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/sized_sentinel.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
+#include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/sentinel_t.hpp>
 
 // clang-format off
 //
@@ -50,8 +50,8 @@ private:
   using I = meta::detected_t<detail::detected::types::underlying_iterator, T>;
   using S = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
   using Buffer = meta::detected_t<detail::detected::types::buffer_type, T>;
-  using BufferI = meta::detected_t<meta::result_of_begin, Buffer const&>;
-  using BufferS = meta::detected_t<meta::result_of_end, Buffer const&>;
+  using BufferI = meta::detected_t<meta::iterator_t, Buffer const>;
+  using BufferS = meta::detected_t<meta::sentinel_t, Buffer const>;
 
   static constexpr auto const has_function_call_op =
       meta::is_detected_exact<void,
@@ -59,11 +59,11 @@ private:
                               t_ref,
                               Buffer&>::value;
 
-  static constexpr auto const has_iterator =
+  static constexpr auto const has_get_iterator =
       meta::is_detected_exact<I const&,
                               detail::detected::member_functions::get_iterator,
                               t_const_ref>::value;
-  static constexpr auto const has_sentinel =
+  static constexpr auto const has_get_sentinel =
       meta::is_detected_exact<S const&,
                               detail::detected::member_functions::get_sentinel,
                               t_const_ref>::value;
@@ -81,8 +81,8 @@ public:
                  meta::concepts::is_range<Buffer>>;
 
   static constexpr auto const value =
-      meta::concepts::is_semiregular<T>::value && has_iterator &&
-      has_sentinel && meta::concepts::is_iterator<I>::value &&
+      meta::concepts::is_semiregular<T>::value && has_get_iterator &&
+      has_get_sentinel && meta::concepts::is_iterator<I>::value &&
       meta::concepts::is_sentinel<S, I>::value &&
       meta::concepts::is_range<Buffer>::value &&
       meta::concepts::is_random_access_iterator<BufferI>::value &&
@@ -92,10 +92,10 @@ public:
   static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T is not an InputTransformer");
-    static_assert(has_iterator,
+    static_assert(has_get_iterator,
                   "Invalid or missing function: 'underlying_iterator "
                   "T::get_iterator() const'");
-    static_assert(has_sentinel,
+    static_assert(has_get_sentinel,
                   "Invalid or missing function: 'underlying_sentinel "
                   "T::get_sentinel() const'");
     static_assert(is_constructible_from_iterator_sentinel,

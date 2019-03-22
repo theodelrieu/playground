@@ -120,6 +120,7 @@ TEST_CASE("codecs_base", "[codecs_base]")
   {
     std::array<char, 4> const input{'t', 'e', 's', 't'};
 
+    noop_codec::decode<std::list<char>>(input);
     using Encoder = decltype(noop_codec::make_encoder(input.begin(), input.end()));
 
     static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");

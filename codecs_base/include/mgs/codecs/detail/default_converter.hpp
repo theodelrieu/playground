@@ -12,7 +12,6 @@
 #include <mgs/concepts/sized_transformed_input_range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
@@ -20,6 +19,7 @@
 #include <mgs/meta/detected/member_functions/resize.hpp>
 #include <mgs/meta/detected/types/key_type.hpp>
 #include <mgs/meta/detected/types/size_type.hpp>
+#include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
 
 namespace mgs
@@ -34,7 +34,7 @@ template <typename RandomAccessContainer,
           typename T,
           typename = mgs::ReadableTransformedInputRange<
               T,
-              meta::result_of_begin<RandomAccessContainer&>>,
+              meta::iterator_t<RandomAccessContainer>>,
           typename = mgs::SizedTransformedInputRange<T>>
 RandomAccessContainer fill_random_access_container(T& range,
                                                    meta::priority_tag<1>)
@@ -51,9 +51,9 @@ RandomAccessContainer fill_random_access_container(T& range,
 
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    mgs::ReadableTransformedInputRange<
-        T,
-        meta::result_of_begin<RandomAccessContainer&>>& range,
+    mgs::ReadableTransformedInputRange<T,
+                                       meta::iterator_t<RandomAccessContainer>>&
+        range,
     meta::priority_tag<0>)
 {
   using std::begin;
@@ -88,7 +88,7 @@ private:
             typename SizeType = typename R::size_type,
             typename = std::enable_if_t<
                 meta::concepts::is_random_access_iterator<
-                    meta::result_of_begin<R&>>::value &&
+                    meta::iterator_t<R>>::value &&
                 meta::concepts::is_constructible<R>::value &&
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
@@ -104,8 +104,7 @@ private:
   // - are copy or move constructible
   template <typename T,
             typename = mgs::TransformedInputRange<T>,
-            // FIXME require RangeStuff
-            typename Iterator = typename T::iterator,
+            typename Iterator = meta::iterator_t<T>,
             typename R = Output,
             typename = std::enable_if_t<
                 meta::concepts::is_copy_constructible<R>::value &&

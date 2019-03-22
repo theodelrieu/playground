@@ -52,18 +52,6 @@ struct non_range
   iterator begin();
 };
 
-struct no_iterator_range
-{
-  using underlying_iterator = char const*;
-  using underlying_sentinel = char const*;
-
-  no_iterator_range() = default;
-  no_iterator_range(underlying_iterator, underlying_sentinel);
-
-  char const* begin();
-  char const* end();
-};
-
 struct no_underlying_iterator_range
 {
   using iterator = char const*;
@@ -137,7 +125,6 @@ TEST_CASE("TransformedInputRange", "[concepts]")
 
   static_assert(!is_transformed_input_range<non_semiregular_range>::value, "");
   static_assert(!is_transformed_input_range<non_range>::value, "");
-  static_assert(!is_transformed_input_range<no_iterator_range>::value, "");
   static_assert(
       !is_transformed_input_range<no_underlying_iterator_range>::value, "");
   static_assert(

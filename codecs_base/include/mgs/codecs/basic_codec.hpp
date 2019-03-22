@@ -6,12 +6,13 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/concepts/codec_output.hpp>
 #include <mgs/concepts/codec_traits.hpp>
-#include <mgs/meta/concepts/range.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/meta/call_std/begin.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
+#include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/sentinel_t.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
@@ -65,10 +66,8 @@ public:
   template <typename T = default_encoded_output,
             typename U,
             typename Range = mgs::meta::Range<U>,
-            typename Iterator = meta::result_of_begin<Range const&>,
-            typename Sentinel = meta::result_of_end<Range const&>,
-            typename Encoder =
-                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>,
+            typename Encoder = mgs::TransformedInputRange<
+                encoder<meta::iterator_t<Range const>, meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
                 !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U const& it)
@@ -82,10 +81,8 @@ public:
   template <typename T = default_encoded_output,
             typename U,
             typename Range = mgs::meta::Range<U>,
-            typename Iterator = meta::result_of_begin<Range&>,
-            typename Sentinel = meta::result_of_end<Range&>,
-            typename Encoder =
-                mgs::TransformedInputRange<encoder<Iterator, Sentinel>>,
+            typename Encoder = mgs::TransformedInputRange<
+                encoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
                 !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U& it)
@@ -110,10 +107,8 @@ public:
   template <typename T = default_decoded_output,
             typename U,
             typename Range = mgs::meta::Range<U>,
-            typename Iterator = meta::result_of_begin<Range const&>,
-            typename Sentinel = meta::result_of_end<Range const&>,
-            typename Decoder =
-                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>,
+            typename Decoder = mgs::TransformedInputRange<
+                decoder<meta::iterator_t<Range const>, meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
                 !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U const& it)
@@ -127,10 +122,8 @@ public:
   template <typename T = default_decoded_output,
             typename U,
             typename Range = mgs::meta::Range<U>,
-            typename Iterator = meta::result_of_begin<Range&>,
-            typename Sentinel = meta::result_of_end<Range&>,
-            typename Decoder =
-                mgs::TransformedInputRange<decoder<Iterator, Sentinel>>,
+            typename Decoder = mgs::TransformedInputRange<
+                decoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
                 !meta::concepts::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U& it)

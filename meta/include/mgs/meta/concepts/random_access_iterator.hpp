@@ -70,7 +70,7 @@ private:
                         difference_type const>::value;
 
   static constexpr auto const has_array_subscript =
-      is_detected_exact<detected_t<iter_reference_t, T>,
+      is_detected_exact<detected_t<meta::iter_reference_t, T>,
                         detected::operators::array_subscript,
                         T const,
                         difference_type const>::value;

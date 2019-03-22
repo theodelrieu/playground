@@ -39,11 +39,11 @@ private:
   friend detail::transformed_input_range_iterator<
       basic_transformed_input_range>;
 
-public:
   using iterator =
       detail::transformed_input_range_iterator<basic_transformed_input_range>;
   using value_type = meta::iter_value_t<buffer_iterator>;
 
+public:
   basic_transformed_input_range() = default;
   basic_transformed_input_range(underlying_iterator begin,
                                 underlying_sentinel end);
