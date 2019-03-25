@@ -8,8 +8,7 @@
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/detected.hpp>
-#include <mgs/meta/iter_value_t.hpp>
-#include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/range_value_t.hpp>
 #include <mgs/meta/ssize_t.hpp>
 
 // clang-format off
@@ -33,7 +32,7 @@ struct is_readable_transformed_input_range
 {
 private:
   using lvalue_ref = std::add_lvalue_reference_t<T>;
-  using iterator = meta::detected_t<meta::iterator_t, T>;
+  using value_type = meta::detected_t<meta::range_value_t, T>;
 
   static auto constexpr const has_read_method =
       meta::is_detected_convertible<meta::ssize_t,
@@ -43,16 +42,13 @@ private:
                                     meta::ssize_t>::value;
 
 public:
-  using requirements = std::tuple<
-      meta::concepts::
-          is_output_iterator<O, meta::detected_t<meta::iter_value_t, iterator>>,
-      is_transformed_input_range<T>>;
+  using requirements =
+      std::tuple<meta::concepts::is_output_iterator<O, value_type>,
+                 is_transformed_input_range<T>>;
 
   static constexpr auto const value =
       is_transformed_input_range<T>::value && has_read_method &&
-      meta::concepts::is_output_iterator<
-          O,
-          meta::detected_t<meta::iter_value_t, iterator>>::value;
+      meta::concepts::is_output_iterator<O, value_type>::value;
 
   static constexpr int trigger_static_asserts()
   {

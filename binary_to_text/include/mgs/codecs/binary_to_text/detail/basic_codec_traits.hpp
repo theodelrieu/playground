@@ -23,10 +23,9 @@ namespace detail
 template <typename EncodingTraits, typename DecodingTraits>
 struct basic_codec_traits
 {
-  template <
-      typename Iterator,
-      typename Sentinel,
-      typename = mgs::Byte<meta::detected_t<meta::iter_value_t, Iterator>>>
+  template <typename Iterator,
+            typename Sentinel,
+            typename = mgs::Byte<meta::iter_value_t<Iterator>>>
   static auto make_encoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<
@@ -34,10 +33,9 @@ struct basic_codec_traits
                                                            std::move(end));
   }
 
-  template <
-      typename Iterator,
-      typename Sentinel,
-      typename = mgs::Byte<meta::detected_t<meta::iter_value_t, Iterator>>>
+  template <typename Iterator,
+            typename Sentinel,
+            typename = mgs::Byte<meta::iter_value_t<Iterator>>>
   static auto make_decoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<
