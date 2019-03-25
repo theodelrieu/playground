@@ -82,7 +82,7 @@ struct default_converter
 private:
   // Overload for containers which have the following properties:
   // - DefaultConstructible
-  // FIXME add copy / or move constructible
+  // - Copy or Move constructible
   // - T::resize(T::size_type)
   // - begin(T&) -> RandomAccessIterator
   template <typename T,
@@ -92,6 +92,10 @@ private:
                 meta::concepts::is_random_access_iterator<
                     meta::iterator_t<R>>::value &&
                 meta::concepts::is_constructible<R>::value &&
+                // Keep those in C++17 as well, fill_random_access_container
+                // relies on NRVO, not on Guaranteed Copy Elision.
+                (meta::concepts::is_copy_constructible<R>::value ||
+                 meta::concepts::is_move_constructible<R>::value) &&
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
@@ -103,18 +107,22 @@ private:
 
   // Default overload, non-associative containers which:
   // - can be constructed with an Iterator range
-  // - are copy or move constructible
-  template <typename T,
-            typename = mgs::TransformedInputRange<T>,
-            typename Iterator = meta::iterator_t<T>,
-            typename R = Output,
-            typename = std::enable_if_t<
-                meta::concepts::is_copy_constructible<R>::value &&
-                meta::concepts::is_constructible<R, Iterator, Iterator>::
-                    value &&
-                // Associative containers' iterator-range constructors are not
-                // SFINAE-friendly...
-                !meta::is_detected<meta::detected::types::key_type, R>::value>>
+  // - are copy or move constructible (pre C++17)
+  template <
+      typename T,
+      typename = mgs::TransformedInputRange<T>,
+      typename Iterator = meta::iterator_t<T>,
+      typename R = Output,
+      typename = std::enable_if_t<
+  // Guaranteed copy-elision
+#if __cplusplus < 201703L
+          (meta::concepts::is_move_constructible<R>::value ||
+           meta::concepts::is_copy_constructible<R>::value) &&
+#endif
+          meta::concepts::is_constructible<R, Iterator, Iterator>::value &&
+          // Associative containers' iterator-range constructors are not
+          // SFINAE-friendly...
+          !meta::is_detected<meta::detected::types::key_type, R>::value>>
   static R create_impl(T& range, meta::priority_tag<0>)
   {
     using std::begin;
