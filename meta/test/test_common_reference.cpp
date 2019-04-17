@@ -24,6 +24,11 @@ struct D : B
 
 TEST_CASE("CommonReference", "[meta][concepts][core]")
 {
+	static_assert(!std::is_reference<void>::value, "WTF");
+	static_assert(!mgs::meta::detail::common_reference_bullet_one<int, void>::value, "bullet one");
+	static_assert(!mgs::meta::detail::common_reference_bullet_three<int, void>::value, "bullet three");
+	static_assert(!mgs::meta::detail::common_reference_bullet_four<int, void>::value, "bullet four");
+
   static_assert(!is_detected<common_reference_t>::value, "");
   static_assert(!is_detected<common_reference_t, int, void const>::value, "");
   static_assert(!is_detected<common_reference_t, int, char(&)[]>::value, "");

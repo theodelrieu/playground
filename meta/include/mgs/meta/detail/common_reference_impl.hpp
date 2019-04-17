@@ -134,7 +134,7 @@ struct common_ref_impl<X&, Y&&> : common_ref_impl<Y&&, X&>
 };
 
 // common_reference bullets
-template <typename T1, typename T2, typename = void>
+template <typename T1, typename T2, bool B = false>
 struct common_reference_bullet_one_impl : std::false_type
 {
 };
@@ -143,23 +143,23 @@ template <typename T1, typename T2>
 struct common_reference_bullet_one_impl<
     T1,
     T2,
-    std::enable_if_t<std::is_reference<T1>::value &&
-                     std::is_reference<T2>::value &&
-                     meta::is_detected<common_ref, T1, T2>::value>>
+	true>
   : std::true_type
 {
   using type = common_ref<T1, T2>;
 };
 
 template <typename T1, typename T2>
-struct common_reference_bullet_one : common_reference_bullet_one_impl<T1, T2>
+struct common_reference_bullet_one : common_reference_bullet_one_impl<T1, T2, std::is_reference<T1>::value &&
+	std::is_reference<T2>::value &&
+	meta::is_detected<common_ref, T1, T2>::value>
 {
 };
 
 // skipping bullet two, since there is no customization point
 // basic_common_reference before C++20
 
-template <typename T1, typename T2, typename = void>
+template <typename T1, typename T2, bool B = false>
 struct common_reference_bullet_three_impl : std::false_type
 {
 };
