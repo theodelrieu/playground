@@ -26,8 +26,8 @@ struct is_range
 {
 private:
   using t_ref = std::add_lvalue_reference_t<T>;
-  using Iterator = meta::detected_t<meta::result_of_begin, t_ref>;
-  using Sentinel = meta::detected_t<meta::result_of_end, t_ref>;
+  using Iterator = meta::detected_t<meta::detail2::result_of_begin, t_ref>;
+  using Sentinel = meta::detected_t<meta::detail2::result_of_end, t_ref>;
 
   static constexpr auto const has_begin = !std::is_same<Iterator, meta::nonesuch>::value;
   static constexpr auto const has_end = !std::is_same<Sentinel, meta::nonesuch>::value;

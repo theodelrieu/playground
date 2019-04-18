@@ -31,7 +31,7 @@ struct is_swappable_impl<
     T,
     std::enable_if_t<is_complete_type<T>::value && !std::is_array<T>::value>>
   : std::integral_constant<bool,
-                           is_detected<result_of_swap, T&, T&>::value &&
+                           is_detected<detail2::result_of_swap, T&, T&>::value &&
                                (!would_call_std_swap<T&, T&>::value ||
                                 (std::is_move_assignable<T>::value &&
                                  std::is_move_constructible<T>::value))>

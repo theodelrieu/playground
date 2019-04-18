@@ -13,9 +13,6 @@
   using result_of_##std_name = decltype(std_name(std::declval<T>()...));      \
   }                                                                           \
                                                                               \
-  template <typename... T>                                                    \
-  using result_of_##std_name = detail2::result_of_##std_name<T...>;           \
-                                                                              \
   namespace detail3                                                           \
   {                                                                           \
   struct std_name##_tag                                                       \
@@ -24,6 +21,9 @@
                                                                               \
   template <typename... T>                                                    \
   std_name##_tag std_name(T&&...);                                            \
+                                                                              \
+  template <typename... T>                                                    \
+  using result_of_##std_name = decltype(std_name(std::declval<T>()...));           \
                                                                               \
   template <typename... T>                                                    \
   struct would_call_std_##std_name                                            \
