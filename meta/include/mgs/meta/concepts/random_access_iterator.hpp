@@ -51,11 +51,15 @@ private:
                         T const,
                         difference_type const>::value;
 
+  // for some reason, the following will return T const with MSVC
   static constexpr auto const has_addition_dt_t =
-      is_detected_exact<T,
-                        detected::operators::addition,
-                        difference_type const,
-                        T const>::value;
+	  is_detected_exact<T,
+	  detected::operators::addition,
+	  difference_type const,
+	  T const>::value ||
+	  is_detected_exact<T const,
+	  detected::operators::addition,
+	  difference_type const, T const>::value;
 
   static constexpr auto const has_substraction =
       is_detected_exact<T,
@@ -97,12 +101,12 @@ public:
                   "Invalid or missing operator: 'T& "
                   "operator+=(std::iter_difference_t<T>)'");
     static_assert(has_addition_t_dt,
-                  "Invalid or missing operator: 'T operator+(T const&, "
+                  "Invalid or missing operator: 'T operator+(T const, "
                   "std::iter_difference_t<T>)'");
     static_assert(has_addition_dt_t,
                   "Invalid or missing operator: 'T "
                   "operator+(std::iter_difference_t<T>, T "
-                  "const&)'");
+                  "const)'");
     static_assert(has_substraction_assignment,
                   "Invalid or missing operator: 'T "
                   "operator-=(std::iter_difference_t<T>)'");

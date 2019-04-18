@@ -159,7 +159,7 @@ struct common_reference_bullet_one : common_reference_bullet_one_impl<T1, T2, st
 // skipping bullet two, since there is no customization point
 // basic_common_reference before C++20
 
-template <typename T1, typename T2, bool B = false>
+template <typename T1, typename T2, typename = void>
 struct common_reference_bullet_three_impl : std::false_type
 {
 };

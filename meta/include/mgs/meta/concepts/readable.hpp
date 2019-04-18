@@ -9,7 +9,6 @@
 #include <mgs/meta/iter_reference_t.hpp>
 #include <mgs/meta/iter_rvalue_reference_t.hpp>
 #include <mgs/meta/iter_value_t.hpp>
-#include <mgs/meta/void_t.hpp>
 
 namespace mgs
 {
@@ -41,7 +40,8 @@ struct is_readable_impl : std::false_type
 template <typename T>
 struct is_readable_impl<
     T,
-    void_t<iter_value_t<T>, iter_reference_t<T>, iter_rvalue_reference_t<T>>>
+	// void_t does not work here for MSVC
+	std::enable_if_t<is_detected<iter_value_t, T>::value && is_detected<iter_reference_t, T>::value && is_detected<iter_rvalue_reference_t, T>::value>>
 {
   using requirements = std::tuple<
       has_common_reference<

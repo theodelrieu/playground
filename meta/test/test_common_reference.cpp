@@ -22,16 +22,8 @@ struct D : B
 };
 }
 
-template <typename>
-struct S;
-
 TEST_CASE("CommonReference", "[meta][concepts][core]")
 {
-	static_assert(!std::is_reference<void>::value, "WTF");
-	static_assert(!mgs::meta::detail::common_reference_bullet_one<int, void>::value, "bullet one");
-	static_assert(!mgs::meta::detail::common_reference_bullet_three<int, void>::value, "bullet three");
-	static_assert(!mgs::meta::detail::common_reference_bullet_four<int, void>::value, "bullet four");
-
   static_assert(!is_detected<common_reference_t>::value, "");
   static_assert(!is_detected<common_reference_t, int, char(&)[]>::value, "");
   static_assert(
@@ -98,6 +90,13 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
   static_assert(has_common_reference<int&, short>::value, "");
 
   // tricky volatile reference case
+  // common reference with both volatile are too hard on MSVC
+#ifndef _MSC_VER
+  static_assert(
+      has_common_reference<int volatile&&, int volatile&>::value, "");
+  static_assert(
+      std::is_same<common_reference_t<int volatile&&, int volatile&>, int volatile const&>::value, "");
+#endif
   static_assert(
       std::is_same<common_reference_t<int&&, int volatile&>, int>::value, "");
   static_assert(has_common_reference<int&&, int volatile&>::value, "");

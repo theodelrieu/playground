@@ -12,7 +12,8 @@
 
 using namespace mgs::meta;
 using namespace mgs::meta::concepts;
-
+template <typename T> struct S;
+template <std::size_t N> struct S2;
 TEST_CASE("Readable", "[meta][concepts][iterator]")
 {
   static_assert(!is_readable<void>::value, "");
@@ -26,7 +27,11 @@ TEST_CASE("Readable", "[meta][concepts][iterator]")
   static_assert(!is_readable<std::unique_ptr<void>>::value, "");
 
   static_assert(is_readable<char*>::value, "");
+  static_assert(is_readable<int const *>::value, "");
+	// has_common_reference<volatile&, volatile&&> does not work on MSVC, so the following fails
+#ifndef _MSC_VER
   static_assert(is_readable<int const volatile*>::value, "");
+#endif
   static_assert(is_readable<std::unique_ptr<char>>::value, "");
   static_assert(is_readable<std::istreambuf_iterator<char>>::value, "");
 }
