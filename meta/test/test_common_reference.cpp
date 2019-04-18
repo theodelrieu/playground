@@ -22,6 +22,9 @@ struct D : B
 };
 }
 
+template <typename>
+struct S;
+
 TEST_CASE("CommonReference", "[meta][concepts][core]")
 {
 	static_assert(!std::is_reference<void>::value, "WTF");
@@ -30,7 +33,6 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
 	static_assert(!mgs::meta::detail::common_reference_bullet_four<int, void>::value, "bullet four");
 
   static_assert(!is_detected<common_reference_t>::value, "");
-  static_assert(!is_detected<common_reference_t, int, void const>::value, "");
   static_assert(!is_detected<common_reference_t, int, char(&)[]>::value, "");
   static_assert(
       !is_detected<common_reference_t, int, struct incomplete*>::value, "");
@@ -113,7 +115,11 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
                    int const volatile&>(),
       "");
 
-  // Array types?? Yup!
+  // Array types?? Yup! Except for MSVC which has issues with COND_RES implementation
+#ifndef _MSC_VER
+  static_assert(!is_detected<common_reference_t, int, void const>::value, "");
+  static_assert(!is_detected<common_reference_t, void, int const>::value, "");
+  static_assert(std::is_same<common_reference_t<void const, void volatile>, void>::value, "");
   static_assert(std::is_same<common_reference_t<int(&)[10], int(&&)[10]>,
                              int const(&)[10]>::value,
                 "");
@@ -128,4 +134,5 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
       std::is_same<common_reference_t<int(&)[10], int(&)[11]>, int*>::value,
       "");
   static_assert(has_common_reference<int(&)[10], int(&)[11]>::value, "");
+#endif
 }

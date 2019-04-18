@@ -28,19 +28,19 @@ struct copycv_impl
 template <typename From, typename To>
 struct copycv_impl<From const, To>
 {
-  using type = typename copycv_impl<From, To const>::type;
+  using type = To const;
 };
 
 template <typename From, typename To>
 struct copycv_impl<From volatile, To>
 {
-  using type = typename copycv_impl<From, To volatile>::type;
+  using type = To volatile;
 };
 
 template <typename From, typename To>
 struct copycv_impl<From const volatile, To>
 {
-  using type = typename copycv_impl<From, To const volatile>::type;
+	using type = To const volatile;
 };
 
 template <typename From, typename To>
