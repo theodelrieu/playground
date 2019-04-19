@@ -66,8 +66,8 @@ TEST_CASE("base64url", "[base64url]")
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
-    std::ifstream random_data(testFilePaths[0]);
-    std::ifstream b64_random_data(testFilePaths[1]);
+    std::ifstream random_data(testFilePaths[0], std::ios::binary | std::ios::in);
+    std::ifstream b64_random_data(testFilePaths[1], std::ios::binary | std::ios::in);
 
     using iterator = std::istreambuf_iterator<char>;
 

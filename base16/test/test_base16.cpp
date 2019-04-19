@@ -64,23 +64,13 @@ TEST_CASE("base16", "[base16]")
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
-    std::ifstream random_data(testFilePaths[0]);
-    std::ifstream b16_random_data(testFilePaths[1]);
+    std::ifstream random_data(testFilePaths[0], std::ios::binary | std::ios::in);
+    std::ifstream b16_random_data(testFilePaths[1], std::ios::binary | std::ios::in);
 
     using iterator = std::istreambuf_iterator<char>;
 
     auto encoder = base16::make_encoder(iterator(random_data), iterator());
-    std::string s(encoder.begin(), encoder.end());
-    std::string s2(iterator(b16_random_data), iterator{});
-    {
-    std::fstream first(R"(C:\Users\Theo\first.b64)", std::ios::out | std::ios::trunc);
-    first.write(s.data(), s.size());
-    }
-    {
-    std::fstream second(R"(C:\Users\Theo\second.b64)", std::ios::out | std::ios::trunc);
-    second.write(s2.data(), s2.size());
-    }
-    //CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b16_random_data), iterator()));
+    CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b16_random_data), iterator()));
 
     random_data.seekg(0);
     b16_random_data.seekg(0);
