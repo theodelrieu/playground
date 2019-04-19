@@ -21,6 +21,17 @@ inline namespace v1
 {
 namespace codecs
 {
+namespace detail
+{
+template <typename CodecTraits, typename T, typename U>
+using encoder = decltype(CodecTraits::make_encoder(std::declval<T>(),
+                                                   std::declval<U>()));
+
+template <typename CodecTraits, typename T, typename U>
+using decoder = decltype(CodecTraits::make_decoder(std::declval<T>(),
+                                                   std::declval<U>()));
+}
+
 template <typename CodecTraits>
 class basic_codec
 {
@@ -28,12 +39,10 @@ class basic_codec
 
 public:
   template <typename Iterator, typename Sentinel = Iterator>
-  using encoder = decltype(CodecTraits::make_encoder(std::declval<Iterator>(),
-                                                     std::declval<Sentinel>()));
+  using encoder = meta::detected_t<detail::encoder, CodecTraits, Iterator, Sentinel>;
 
   template <typename Iterator, typename Sentinel = Iterator>
-  using decoder = decltype(CodecTraits::make_decoder(std::declval<Iterator>(),
-                                                     std::declval<Sentinel>()));
+  using decoder = meta::detected_t<detail::decoder, CodecTraits, Iterator, Sentinel>;
 
   using default_encoded_output = typename CodecTraits::default_encoded_output;
   using default_decoded_output = typename CodecTraits::default_decoded_output;

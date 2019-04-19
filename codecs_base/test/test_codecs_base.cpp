@@ -88,6 +88,8 @@ using noop_codec = mgs::codecs::basic_codec<noop_codec_traits>;
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace codecs
 {
 template <>
@@ -109,6 +111,7 @@ struct output_traits<std::vector<T>>
     return {range.begin(), range.end()};
   }
 };
+}
 }
 }
 

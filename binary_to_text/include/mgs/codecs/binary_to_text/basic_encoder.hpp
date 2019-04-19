@@ -114,7 +114,7 @@ private:
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
     auto const dist =
-        std::min(static_cast<long int>(nb_bytes_to_read), end - current);
+        std::min<meta::iter_difference_t<I>>(nb_bytes_to_read, end - current);
 
     detail::span<I> s{current, current + dist};
     current += dist;
@@ -131,7 +131,7 @@ private:
         detail::pow<2, BitshiftTraits::nb_index_bits>() - 1);
 
     auto const nb_loop_iterations =
-        std::ldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
+        std::lldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
     output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes);
 
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)

@@ -114,7 +114,7 @@ private:
   auto read_input_impl(I& current, S end, std::random_access_iterator_tag)
   {
     auto const dist =
-        std::min(static_cast<long int>(nb_bytes_to_read), end - current);
+        std::min<meta::iter_difference_t<I>>(nb_bytes_to_read, end - current);
 
     auto const input_end = current + dist;
     auto const sanitized_size =
@@ -131,7 +131,7 @@ private:
         read_input_impl(_current, _end, meta::iter_concept<Iterator>{});
 
     auto const nb_loop_iterations =
-        std::ldiv(input.size(), BitshiftTraits::nb_encoded_bytes);
+        std::lldiv(input.size(), BitshiftTraits::nb_encoded_bytes);
 
     output.resize(nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes);
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)

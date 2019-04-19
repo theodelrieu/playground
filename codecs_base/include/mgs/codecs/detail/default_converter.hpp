@@ -64,7 +64,7 @@ RandomAccessContainer fill_random_access_container(
 
   RandomAccessContainer cont(block_size, 0);
 
-  auto total_read = 0;
+  meta::ssize_t total_read = 0;
   for (auto nb_read = range.read(begin(cont) + total_read, block_size);
        nb_read != 0;
        nb_read = range.read(begin(cont) + total_read, block_size))

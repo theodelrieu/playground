@@ -50,7 +50,7 @@ struct no_encode_char_ptr_codec : mgs::codecs::basic_codec<noop_codec_traits>
   using mgs::codecs::basic_codec<noop_codec_traits>::basic_codec;
 
   using mgs::codecs::basic_codec<noop_codec_traits>::encode;
-  static auto encode(char const*, char const*) = delete;
+  static mgs::codecs::basic_codec<noop_codec_traits>::default_encoded_output encode(char const*, char const*) = delete;
 };
 }
 

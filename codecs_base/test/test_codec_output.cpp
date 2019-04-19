@@ -42,6 +42,8 @@ struct valid
 
 namespace mgs
 {
+inline namespace v1
+{
 namespace codecs
 {
 template <>
@@ -50,6 +52,7 @@ struct output_traits<valid>
   template <typename U>
   static valid create(U);
 };
+}
 }
 }
 

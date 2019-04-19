@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mgs/meta/ssize_t.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 
 namespace mgs
@@ -17,7 +18,7 @@ template <typename EncodingTraits,
 struct padding_writer
 {
   template <typename OutputIterator>
-  static void write(OutputIterator, int)
+  static void write(OutputIterator, meta::ssize_t)
   {
   }
 };
@@ -26,7 +27,7 @@ template <typename EncodingTraits>
 struct padding_writer<EncodingTraits, padding_policy::required>
 {
   template <typename OutputIterator>
-  static void write(OutputIterator out, int n)
+  static void write(OutputIterator out, meta::ssize_t n)
   {
     while (n-- > 0)
       *out++ = EncodingTraits::padding_character;
