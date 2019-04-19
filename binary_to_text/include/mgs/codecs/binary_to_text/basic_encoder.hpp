@@ -51,7 +51,7 @@ private:
   static_assert(BitshiftTraits::nb_encoded_bytes < 256,
                 "nb_encoded_bytes must be lower than 256");
 
-  static constexpr auto nb_bytes_to_read =
+  static constexpr std::size_t nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_decoded_bytes;
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_decoded_bytes == 0, "");
@@ -101,7 +101,7 @@ private:
   {
     detail::static_vector<unsigned char, nb_bytes_to_read> ret;
     auto i = 0;
-    for (; i < nb_bytes_to_read; ++i)
+    for (; i < meta::ssize_t{nb_bytes_to_read}; ++i)
     {
       if (current == end)
         break;
@@ -169,6 +169,10 @@ private:
   Iterator _current{};
   Sentinel _end{};
 };
+
+template <typename Iterator, typename Sentinel, typename EncodingTraits>
+constexpr std::size_t
+    basic_encoder<Iterator, Sentinel, EncodingTraits>::nb_bytes_to_read;
 }
 }
 }

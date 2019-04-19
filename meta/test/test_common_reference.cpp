@@ -13,6 +13,8 @@ using namespace mgs::meta::concepts;
 // Use a part of the range-v3 test suite for this specific trait:
 namespace
 {
+  template <typename T>
+    struct S;
 struct B
 {
 };
@@ -94,8 +96,9 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
 #ifndef _MSC_VER
   static_assert(
       has_common_reference<int volatile&&, int volatile&>::value, "");
+
   static_assert(
-      std::is_same<common_reference_t<int volatile&&, int volatile&>, int volatile const&>::value, "");
+      std::is_same<common_reference_t<int volatile&&, int volatile&>, int>::value, "");
 #endif
   static_assert(
       std::is_same<common_reference_t<int&&, int volatile&>, int>::value, "");

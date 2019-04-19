@@ -43,7 +43,7 @@ private:
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 
-  static constexpr auto nb_bytes_to_read =
+  static constexpr std::size_t nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_encoded_bytes;
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_encoded_bytes == 0,
@@ -96,7 +96,7 @@ private:
     ret.resize(nb_bytes_to_read);
 
     auto i = 0;
-    for (; i < nb_bytes_to_read; ++i)
+    for (; i < meta::ssize_t{nb_bytes_to_read}; ++i)
     {
       if (current == end)
         break;
@@ -167,6 +167,10 @@ private:
   friend bool operator==(basic_decoder<T, U, V> const&,
                          basic_decoder<T, U, V> const&);
 };
+
+template <typename Iterator, typename Sentinel, typename EncodingTraits>
+constexpr std::size_t
+    basic_decoder<Iterator, Sentinel, EncodingTraits>::nb_bytes_to_read;
 
 template <typename T, typename U, typename V>
 bool operator==(basic_decoder<T, U, V> const& lhs,

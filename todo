@@ -2,6 +2,9 @@ ci + new repo
 
 code
 
+* adapt to C++20 modules design
+* move range concepts to ranges
+
 doc
 
 * migrate to readthedocs
