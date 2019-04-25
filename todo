@@ -2,6 +2,8 @@ ci + new repo
 
 code
 
+* put a mgs::detail namespace? like boost::detail
+* flatten namespaces a bit? especially detected stuff
 * adapt to C++20 modules design
 * move range concepts to ranges
 * where to put inline namespace v1? Around baseXX/basic_codec?
