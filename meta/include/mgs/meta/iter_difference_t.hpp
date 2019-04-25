@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -33,6 +31,5 @@ struct iter_difference<
 
 template <typename T>
 using iter_difference_t = typename detail::iter_difference<T>::difference_type;
-}
 }
 }

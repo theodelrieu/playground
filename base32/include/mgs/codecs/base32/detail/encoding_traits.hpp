@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace base32
@@ -64,7 +62,6 @@ constexpr typename encoding_traits<T>::lookup_table_t
 
 template <typename T>
 constexpr char const encoding_traits<T>::padding_character;
-}
 }
 }
 }

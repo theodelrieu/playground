@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -54,7 +52,6 @@ struct encoded_size<EncodingTraits, padding_policy::none>
 // optional does not make sense when encoding.
 template <typename EncodingTraits>
 struct encoded_size<EncodingTraits, padding_policy::optional>;
-}
 }
 }
 }

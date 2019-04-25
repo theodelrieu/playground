@@ -15,8 +15,6 @@
 // }
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -79,6 +77,5 @@ constexpr auto is_range_v = is_range<T>::value;
 
 template <typename T, typename = std::enable_if_t<concepts::is_range<T>::value>>
 using Range = T;
-}
 }
 }

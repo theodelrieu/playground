@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detected
@@ -16,6 +14,5 @@ template <typename T>
 using pre_increment = decltype(++std::declval<T>());
 }
 };
-}
 }
 }

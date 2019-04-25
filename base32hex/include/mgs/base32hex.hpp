@@ -9,9 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 using base32hex = codecs::binary_to_text::basic_codec<
     codecs::base32hex::detail::encoding_traits<>>;
-}
 }

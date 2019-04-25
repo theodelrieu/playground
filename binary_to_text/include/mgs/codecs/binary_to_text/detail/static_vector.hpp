@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -91,7 +89,6 @@ private:
   std::array<T, N> _array;
   meta::ssize_t _index{0};
 };
-}
 }
 }
 }

@@ -17,8 +17,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace detail
@@ -155,6 +153,5 @@ public:
     return encode<T>(s, s + std::strlen(s));
   }
 };
-}
 }
 }

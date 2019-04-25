@@ -7,12 +7,9 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 template <typename R>
 using range_value_t = iter_rvalue_reference_t<iterator_t<R>>;
-}
 }
 }

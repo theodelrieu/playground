@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 template <typename T, typename>
@@ -23,6 +21,5 @@ struct output_traits
     return detail::default_converter<U>::create(range);
   }
 };
-}
 }
 }

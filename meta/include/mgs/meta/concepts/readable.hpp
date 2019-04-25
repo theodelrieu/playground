@@ -12,8 +12,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -86,6 +84,5 @@ constexpr auto is_readable_v = is_readable<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_readable<T>::value>>
 using Readable = T;
-}
 }
 }

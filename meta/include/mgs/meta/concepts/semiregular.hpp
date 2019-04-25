@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -87,6 +85,5 @@ constexpr auto is_semiregular_v = is_semiregular<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_semiregular<T>::value>>
 using Semiregular = T;
-}
 }
 }

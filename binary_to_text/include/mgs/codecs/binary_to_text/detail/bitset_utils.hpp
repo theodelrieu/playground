@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -45,7 +43,6 @@ auto indices_to_bitset(RandomAccessIterator it, meta::ssize_t n)
                                          (BitshiftTraits::nb_index_bits * i));
   }
   return input_bits;
-}
 }
 }
 }

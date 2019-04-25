@@ -12,12 +12,7 @@
 #include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/void_t.hpp>
 
-// Adopt proposed change from P1207r1, wait for next WG21 meeting
-// http://open-std.org/JTC1/SC22/WG21/docs/papers/2019/p1207r1.html#weaklyincrementable
-
 namespace mgs
-{
-inline namespace v1
 {
 namespace meta
 {
@@ -106,6 +101,5 @@ template <typename T,
           typename =
               std::enable_if_t<concepts::is_weakly_incrementable<T>::value>>
 using WeaklyIncrementable = T;
-}
 }
 }

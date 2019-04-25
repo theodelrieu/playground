@@ -24,8 +24,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace detail
@@ -156,7 +154,6 @@ struct default_converter<std::array<C, N>>
     return ret;
   }
 };
-}
 }
 }
 }

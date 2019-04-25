@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -18,7 +16,6 @@ namespace static_member_functions
 {
 template <typename T, typename... Args>
 using index_of = decltype(T::index_of(std::declval<Args>()...));
-}
 }
 }
 }

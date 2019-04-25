@@ -12,8 +12,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -46,7 +44,6 @@ struct basic_codec_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::vector<unsigned char>;
 };
-}
 }
 }
 }

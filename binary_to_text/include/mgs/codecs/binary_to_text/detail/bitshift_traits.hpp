@@ -6,8 +6,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -27,7 +25,6 @@ struct bitshift_traits
   static constexpr auto nb_max_padding_bytes =
       nb_encoded_bytes - ((8 / nb_index_bits) + ((8 % nb_index_bits) > 0));
 };
-}
 }
 }
 }

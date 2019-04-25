@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace base64url
@@ -64,7 +62,6 @@ constexpr char const basic_encoding_traits<PaddingPolicy>::padding_character;
 template <binary_to_text::padding_policy PaddingPolicy>
 constexpr typename basic_encoding_traits<PaddingPolicy>::lookup_table_t
     basic_encoding_traits<PaddingPolicy>::lookup_table;
-}
 }
 }
 }

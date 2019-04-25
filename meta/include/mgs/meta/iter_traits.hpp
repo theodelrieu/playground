@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -44,6 +42,5 @@ struct iter_traits_impl<T,
 // Helper defined in the standard to implement ITER_CONCEPT
 template <typename T>
 using iter_traits = typename detail::iter_traits_impl<T>::type;
-}
 }
 }

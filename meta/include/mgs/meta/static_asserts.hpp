@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -125,7 +123,6 @@ constexpr int trigger_static_asserts()
   return detail::trigger_static_asserts<
       typename detail::collect_failed_requirements<Requirements...>::type>::
       trigger();
-}
 }
 }
 }

@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -60,5 +58,3 @@ struct output_decoder
 }
 }
 }
-}
-

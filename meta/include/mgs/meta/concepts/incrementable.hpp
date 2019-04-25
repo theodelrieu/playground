@@ -13,8 +13,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -49,6 +47,5 @@ constexpr auto is_incrementable_v = is_incrementable<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_incrementable<T>::value>>
 using Incrementable = T;
-}
 }
 }

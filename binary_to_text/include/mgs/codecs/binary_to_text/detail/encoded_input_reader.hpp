@@ -5,8 +5,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -39,7 +37,6 @@ struct encoded_input_reader<EncodingTraits, padding_policy::optional>
     return *current++;
   }
 };
-}
 }
 }
 }

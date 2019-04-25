@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detected
@@ -46,6 +44,5 @@ using dereference = typename detail::
     dereference<T, std::remove_cv_t<std::remove_reference_t<T>>>::type;
 }
 };
-}
 }
 }

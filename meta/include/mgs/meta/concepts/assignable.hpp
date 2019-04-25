@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -67,6 +65,5 @@ template <typename LHS,
           typename RHS,
           typename = std::enable_if_t<concepts::is_assignable<LHS, RHS>::value>>
 using Assignable = LHS;
-}
 }
 }

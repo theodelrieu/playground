@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace base64
@@ -65,7 +63,6 @@ constexpr char const encoding_traits<Dummy>::padding_character;
 template <typename Dummy>
 constexpr typename encoding_traits<Dummy>::lookup_table_t
     encoding_traits<Dummy>::lookup_table;
-}
 }
 }
 }

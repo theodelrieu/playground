@@ -11,8 +11,6 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/WeaklyEqualityComparableWith
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -83,6 +81,5 @@ template <typename T,
           typename = std::enable_if_t<
               concepts::is_weakly_equality_comparable_with<T, U>::value>>
 using WeaklyEqualityComparableWith = T;
-}
 }
 }

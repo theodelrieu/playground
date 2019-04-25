@@ -6,8 +6,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace exceptions
 {
 class decode_error : public exception
@@ -15,6 +13,5 @@ class decode_error : public exception
 public:
   using exception::exception;
 };
-}
 }
 }

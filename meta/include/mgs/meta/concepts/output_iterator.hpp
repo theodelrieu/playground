@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -52,6 +50,5 @@ template <typename I,
           typename =
               std::enable_if_t<concepts::is_output_iterator<I, T>::value>>
 using OutputIterator = I;
-}
 }
 }

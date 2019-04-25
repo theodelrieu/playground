@@ -11,8 +11,6 @@
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -63,6 +61,5 @@ constexpr auto is_swappable_v = is_swappable<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_swappable<T>::value>>
 using Swappable = T;
-}
 }
 }

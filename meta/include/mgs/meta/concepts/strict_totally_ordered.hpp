@@ -13,8 +13,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -84,6 +82,5 @@ template <typename T,
           typename =
               std::enable_if_t<concepts::is_strict_totally_ordered<T>::value>>
 using StrictTotallyOrdered = T;
-}
 }
 }

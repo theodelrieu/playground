@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 template <std::size_t N>
@@ -17,6 +15,5 @@ template <>
 struct priority_tag<0>
 {
 };
-}
 }
 }

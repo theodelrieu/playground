@@ -49,7 +49,7 @@ TEST_CASE("base16", "[base16]")
 
   SECTION("Common tests")
   {
-    for (auto i = 0; i < encoded.size(); ++i)
+    for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base16>(decoded[i], encoded[i]);
       test_helpers::test_std_containers<base16>(decoded[i], encoded[i]);

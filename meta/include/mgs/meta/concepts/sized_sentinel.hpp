@@ -11,8 +11,6 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/SizedSentinel
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -72,6 +70,5 @@ template <typename T,
           typename =
               std::enable_if_t<concepts::is_sized_sentinel<T, Iterator>::value>>
 using SizedSentinel = T;
-}
 }
 }

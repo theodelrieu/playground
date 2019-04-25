@@ -11,8 +11,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -44,6 +42,5 @@ template <typename T,
           typename Iterator,
           typename = std::enable_if_t<concepts::is_sentinel<T, Iterator>::value>>
 using Sentinel = T;
-}
 }
 }

@@ -25,8 +25,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -186,7 +184,6 @@ bool operator!=(basic_decoder<T, U, V> const& lhs,
                 basic_decoder<T, U, V> const& rhs)
 {
   return !(lhs == rhs);
-}
 }
 }
 }

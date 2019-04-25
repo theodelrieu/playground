@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -57,7 +55,6 @@ struct is_constructible : detail::is_constructible_impl<T, std::tuple<Args...>>
 
 template <typename T, typename... Args>
 constexpr auto is_constructible_v = is_constructible<T, Args...>::value;
-}
 }
 }
 }

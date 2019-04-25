@@ -17,8 +17,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 template <typename T>
@@ -49,5 +47,4 @@ constexpr auto is_byte_v = is_byte<T>::value;
 
 template <typename T, typename = std::enable_if_t<concepts::is_byte<T>::value>>
 using Byte = T;
-}
 }

@@ -16,8 +16,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -60,6 +58,5 @@ struct iter_concept_impl<
 
 template <typename T>
 using iter_concept = typename detail::iter_concept_impl<iter_traits<T>>::type;
-}
 }
 }

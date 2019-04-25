@@ -26,8 +26,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -173,7 +171,6 @@ private:
 template <typename Iterator, typename Sentinel, typename EncodingTraits>
 constexpr std::size_t
     basic_encoder<Iterator, Sentinel, EncodingTraits>::nb_bytes_to_read;
-}
 }
 }
 }

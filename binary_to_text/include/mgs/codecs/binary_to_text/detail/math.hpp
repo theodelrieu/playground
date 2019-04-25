@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -91,7 +89,6 @@ template <meta::ssize_t AlphabetSize>
 constexpr meta::ssize_t encoded_bytes()
 {
   return encoding_bytes<AlphabetSize>().second;
-}
 }
 }
 }

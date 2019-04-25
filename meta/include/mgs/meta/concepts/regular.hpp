@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -36,6 +34,5 @@ constexpr auto is_regular_v = is_regular<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_regular<T>::value>>
 using Regular = T;
-}
 }
 }

@@ -14,8 +14,6 @@
 // http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -130,6 +128,5 @@ template <typename T,
           typename = std::enable_if_t<
               concepts::is_strict_totally_ordered_with<T, U>::value>>
 using StrictTotallyOrderedWith = T;
-}
 }
 }

@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace base16
@@ -72,7 +70,6 @@ constexpr typename encoding_traits<T>::alphabet_t encoding_traits<T>::alphabet;
 template <typename T>
 constexpr typename encoding_traits<T>::lookup_table_t
     encoding_traits<T>::lookup_table;
-}
 }
 }
 }

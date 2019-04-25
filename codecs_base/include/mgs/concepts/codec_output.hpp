@@ -14,8 +14,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 template <typename T, typename>
@@ -59,5 +57,4 @@ template <typename T,
           typename = std::enable_if_t<
               concepts::is_codec_output<T, TransformedInputRange>::value>>
 using CodecOutput = T;
-}
 }

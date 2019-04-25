@@ -12,8 +12,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -58,6 +56,5 @@ template <typename Derived,
           typename =
               std::enable_if_t<concepts::is_derived_from<Derived, Base>::value>>
 using DerivedFrom = Derived;
-}
 }
 }

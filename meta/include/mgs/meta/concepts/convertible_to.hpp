@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -104,6 +102,5 @@ template <typename From,
           typename =
               std::enable_if_t<concepts::is_convertible_to<From, To>::value>>
 using ConvertibleTo = From;
-}
 }
 }

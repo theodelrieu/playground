@@ -7,8 +7,6 @@
 // http://en.cppreference.com/w/cpp/experimental/is_detected
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 struct nonesuch
@@ -54,6 +52,5 @@ using is_detected_exact = std::is_same<Expected, detected_t<Op, Args...>>;
 template <class To, template <class...> class Op, class... Args>
 using is_detected_convertible =
     std::is_convertible<detected_t<Op, Args...>, To>;
-}
 }
 }

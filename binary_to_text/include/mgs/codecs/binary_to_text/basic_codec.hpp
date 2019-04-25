@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -40,7 +38,6 @@ public:
     return detail::max_decoded_size<DecodingTraits>{}(encoded_size);
   }
 };
-}
 }
 }
 }

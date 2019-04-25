@@ -42,7 +42,7 @@ TEST_CASE("base64", "[base64]")
 
   SECTION("Common tests")
   {
-    for (auto i = 0; i < encoded.size(); ++i)
+    for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base64>(decoded[i], encoded[i]);
       test_helpers::test_std_containers<base64>(decoded[i], encoded[i]);

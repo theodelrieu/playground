@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detected
@@ -24,10 +22,7 @@ struct substraction_impl
 };
 
 template <typename T, typename U>
-struct substraction_impl<
-    T,
-    U,
-    void_t<decltype(std::declval<T>() - std::declval<U>())>>
+struct substraction_impl<T, U, void_t<decltype(std::declval<T>() - std::declval<U>())>>
 {
   using type = decltype(std::declval<T>() - std::declval<U>());
 };
@@ -51,6 +46,5 @@ using substraction = typename detail::substraction<
     std::remove_cv_t<std::remove_reference_t<U>>>::type;
 }
 };
-}
 }
 }

@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 namespace detail
@@ -29,7 +27,6 @@ using default_encoded_output_lvalue_ref =
 template <typename T>
 using default_decoded_output_lvalue_ref =
     std::add_lvalue_reference_t<default_decoded_output<T>>;
-}
 }
 }
 }

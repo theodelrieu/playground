@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 namespace detail
@@ -21,5 +19,3 @@ using read = decltype(std::declval<T>().read(std::declval<Args>()...));
 }
 }
 }
-}
-

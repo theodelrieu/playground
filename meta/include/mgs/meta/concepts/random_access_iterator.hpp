@@ -22,8 +22,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -130,6 +128,5 @@ template <typename T,
           typename =
               std::enable_if_t<concepts::is_random_access_iterator<T>::value>>
 using RandomAccessIterator = T;
-}
 }
 }

@@ -36,8 +36,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 template <typename T>
@@ -114,5 +112,4 @@ constexpr auto is_input_transformer_v = is_input_transformer<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_input_transformer<T>::value>>
 using InputTransformer = T;
-}
 }

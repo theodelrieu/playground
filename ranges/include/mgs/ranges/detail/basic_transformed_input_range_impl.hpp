@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace ranges
 {
 template <typename InputTransformer>
@@ -106,7 +104,6 @@ template <typename InputTransformer>
 auto basic_transformed_input_range<InputTransformer>::end() const -> iterator
 {
   return iterator{{}};
-}
 }
 }
 }

@@ -2,8 +2,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 namespace detail
@@ -14,7 +12,6 @@ namespace types
 {
 template <typename T>
 using buffer_type = typename T::buffer_type;
-}
 }
 }
 }

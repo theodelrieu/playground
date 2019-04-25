@@ -14,8 +14,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -51,6 +49,5 @@ constexpr auto is_input_iterator_v = is_input_iterator<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_input_iterator<T>::value>>
 using InputIterator = T;
-}
 }
 }

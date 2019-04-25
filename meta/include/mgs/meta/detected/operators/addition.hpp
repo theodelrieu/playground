@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detected
@@ -16,6 +14,5 @@ template <typename T, typename U>
 using addition = decltype(std::declval<T>() + std::declval<U>());
 }
 };
-}
 }
 }

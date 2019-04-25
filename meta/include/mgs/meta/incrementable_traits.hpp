@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -62,6 +60,5 @@ template <typename T>
 struct incrementable_traits : detail::incrementable_traits_impl<T>
 {
 };
-}
 }
 }

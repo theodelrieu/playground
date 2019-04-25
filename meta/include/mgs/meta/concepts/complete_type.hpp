@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -48,6 +46,5 @@ constexpr auto is_complete_type_v = is_complete_type<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_complete_type<T>::value>>
 using CompleteType = T;
-}
 }
 }

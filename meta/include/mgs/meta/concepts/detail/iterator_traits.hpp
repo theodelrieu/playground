@@ -15,8 +15,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -132,7 +130,6 @@ struct is_iterator_traits : detail::is_iterator_traits_impl<T>
 
 template <typename T>
 constexpr auto is_iterator_traits_v = is_iterator_traits<T>::value;
-}
 }
 }
 }

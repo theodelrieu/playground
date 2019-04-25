@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -276,7 +274,6 @@ struct common_reference<T1, T2, Rest...>
   : common_reference<typename common_reference<T1, T2>::type, Rest...>
 {
 };
-}
 }
 }
 }

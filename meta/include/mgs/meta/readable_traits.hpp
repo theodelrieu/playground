@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -67,6 +65,5 @@ template <typename T>
 struct readable_traits : detail::readable_traits_impl<T>
 {
 };
-}
 }
 }

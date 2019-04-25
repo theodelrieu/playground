@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -32,6 +30,5 @@ struct iter_value<
 
 template <typename T>
 using iter_value_t = typename detail::iter_value<T>::value_type;
-}
 }
 }

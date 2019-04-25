@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 namespace detail
@@ -19,7 +17,6 @@ using encode = decltype(T::encode(std::declval<Args>()...));
 
 template <typename T, typename Ret, typename... Args>
 using encode_tpl = decltype(T::template encode<Ret>(std::declval<Args>()...));
-}
 }
 }
 }

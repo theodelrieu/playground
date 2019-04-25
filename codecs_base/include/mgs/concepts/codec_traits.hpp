@@ -39,8 +39,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 template <typename T,
@@ -124,5 +122,4 @@ template <
     typename = std::enable_if_t<
         concepts::is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
 using CodecTraits = T;
-}
 }

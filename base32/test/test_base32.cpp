@@ -41,7 +41,7 @@ TEST_CASE("base32", "[base32]")
 
   SECTION("Common tests")
   {
-    for (auto i = 0; i < encoded.size(); ++i)
+    for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base32>(decoded[i], encoded[i]);
       test_helpers::test_std_containers<base32>(decoded[i], encoded[i]);

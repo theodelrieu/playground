@@ -19,8 +19,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace ranges
 {
 template <typename InputTransformer>
@@ -72,7 +70,6 @@ private:
   void _transform_input();
   meta::ssize_t _buffer_size() const;
 };
-}
 }
 }
 

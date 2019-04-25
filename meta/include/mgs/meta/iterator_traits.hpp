@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -37,6 +35,5 @@ template <typename T>
 struct iterator_traits : detail::iterator_traits<T>
 {
 };
-}
 }
 }

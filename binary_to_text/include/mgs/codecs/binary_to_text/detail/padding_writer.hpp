@@ -5,8 +5,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -33,7 +31,6 @@ struct padding_writer<EncodingTraits, padding_policy::required>
       *out++ = EncodingTraits::padding_character;
   }
 };
-}
 }
 }
 }

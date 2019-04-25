@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detail
@@ -22,6 +20,5 @@ auto iter_move(T&& t)
 
 template <typename T>
 using iter_rvalue_reference_t = decltype(detail::iter_move(std::declval<T&>()));
-}
 }
 }

@@ -23,8 +23,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace concepts
 {
 template <typename T, typename O>
@@ -70,5 +68,4 @@ template <typename T,
           typename = std::enable_if_t<
               concepts::is_readable_transformed_input_range<T, O>::value>>
 using ReadableTransformedInputRange = T;
-}
 }

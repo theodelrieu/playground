@@ -10,8 +10,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -44,6 +42,5 @@ constexpr auto is_copyable_v = is_copyable<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_copyable<T>::value>>
 using Copyable = T;
-}
 }
 }

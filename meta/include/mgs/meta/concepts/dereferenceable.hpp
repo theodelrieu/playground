@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -63,6 +61,5 @@ constexpr auto is_dereferenceable_v = is_dereferenceable<T>::value;
 template <typename T,
           typename = std::enable_if_t<concepts::is_dereferenceable<T>::value>>
 using Dereferenceable = T;
-}
 }
 }

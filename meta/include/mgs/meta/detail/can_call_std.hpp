@@ -23,7 +23,7 @@
   std_name##_tag std_name(T&&...);                                            \
                                                                               \
   template <typename... T>                                                    \
-  using result_of_##std_name = decltype(std_name(std::declval<T>()...));           \
+  using result_of_##std_name = decltype(std_name(std::declval<T>()...));      \
                                                                               \
   template <typename... T>                                                    \
   struct would_call_std_##std_name                                            \

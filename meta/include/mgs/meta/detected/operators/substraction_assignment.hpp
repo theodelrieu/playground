@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace detected
@@ -51,6 +49,5 @@ using substraction_assignment = typename detail::substraction_assignment<
     std::remove_cv_t<std::remove_reference_t<U>>>::type;
 }
 };
-}
 }
 }

@@ -52,7 +52,7 @@ TEST_CASE("base64url", "[base64url]")
 
   SECTION("Common tests")
   {
-    for (auto i = 0; i < encoded.size(); ++i)
+    for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base64url>(decoded[i], encoded[i]);
       test_helpers::test_std_containers<base64url>(decoded[i], encoded[i]);
@@ -213,7 +213,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
   SECTION("Common tests")
   {
-    for (auto i = 0; i < encoded_unpadded.size(); ++i)
+    for (auto i = 0u; i < encoded_unpadded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base64url_nopad>(decoded[i], encoded_unpadded[i]);
       test_helpers::test_std_containers<base64url_nopad>(decoded[i], encoded_unpadded[i]);

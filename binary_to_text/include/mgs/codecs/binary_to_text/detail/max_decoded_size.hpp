@@ -9,8 +9,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -48,7 +46,6 @@ struct max_decoded_size<EncodingTraits, padding_policy::required>
            BitshiftTraits::nb_decoded_bytes;
   }
 };
-}
 }
 }
 }

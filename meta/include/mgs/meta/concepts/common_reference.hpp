@@ -13,8 +13,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace meta
 {
 namespace concepts
@@ -79,6 +77,5 @@ template <typename T,
           typename =
               std::enable_if_t<concepts::has_common_reference<T, U>::value>>
 using CommonReference = T;
-}
 }
 }

@@ -25,8 +25,6 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 namespace codecs
 {
 namespace binary_to_text
@@ -97,7 +95,6 @@ public:
 
 template <typename T, typename = std::enable_if_t<is_encoding_traits<T>::value>>
 using EncodingTraits = T;
-}
 }
 }
 }
