@@ -10,9 +10,9 @@
 #include <utility>
 
 #include <mgs/codecs/basic_codec.hpp>
+#include <mgs/codecs/concepts/codec.hpp>
+#include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/concepts/codec.hpp>
-#include <mgs/concepts/codec_output.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
@@ -112,7 +112,7 @@ struct output_traits<std::vector<T>>
 }
 }
 
-static_assert(concepts::is_codec<noop_codec>::value, "");
+static_assert(is_codec<noop_codec>::value, "");
 
 TEST_CASE("codecs_base", "[codecs_base]")
 {
@@ -123,8 +123,8 @@ TEST_CASE("codecs_base", "[codecs_base]")
     noop_codec::decode<std::list<char>>(input);
     using Encoder = decltype(noop_codec::make_encoder(input.begin(), input.end()));
 
-    static_assert(!concepts::is_codec_output<invalid_type, Encoder>::value, "");
-    static_assert(concepts::is_codec_output<valid_type, Encoder>::value, "");
+    static_assert(!is_codec_output<invalid_type, Encoder>::value, "");
+    static_assert(is_codec_output<valid_type, Encoder>::value, "");
 
     SECTION("C arrays")
     {

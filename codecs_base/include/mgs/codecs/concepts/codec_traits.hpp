@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/codec_output.hpp>
+#include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/concepts/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/concepts/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/detected/types/default_decoded_output.hpp>
@@ -36,8 +36,6 @@
 // clang-format on
 
 namespace mgs
-{
-namespace concepts
 {
 template <
     typename T,
@@ -72,16 +70,16 @@ private:
       is_codec_output<A2, Encoder>::value;
 
 public:
-  using requirements = std::tuple<meta::concepts::is_input_iterator<I1>,
-                                  meta::concepts::is_sentinel<S1, I1>,
-                                  meta::concepts::is_input_iterator<I2>,
-                                  meta::concepts::is_sentinel<S2, I2>>;
+  using requirements = std::tuple<meta::is_input_iterator<I1>,
+                                  meta::is_sentinel<S1, I1>,
+                                  meta::is_input_iterator<I2>,
+                                  meta::is_sentinel<S2, I2>>;
 
   static constexpr auto const value =
-      meta::concepts::is_input_iterator<I1>::value &&
-      meta::concepts::is_sentinel<S1, I1>::value && is_encoder &&
-      meta::concepts::is_input_iterator<I2>::value &&
-      meta::concepts::is_sentinel<S2, I2>::value && is_decoder &&
+      meta::is_input_iterator<I1>::value &&
+      meta::is_sentinel<S1, I1>::value && is_encoder &&
+      meta::is_input_iterator<I2>::value &&
+      meta::is_sentinel<S2, I2>::value && is_decoder &&
       is_encoded_codec_output && is_decoded_codec_output;
 
   static constexpr int trigger_static_asserts()
@@ -109,19 +107,18 @@ template <
     typename S2 = I2>
 constexpr auto is_codec_traits_v =
     is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value;
-}
 
 template <
     typename T,
     typename A1 =
-        meta::detected_t<concepts::detected::types::default_encoded_output, T>,
+        meta::detected_t<detected::types::default_encoded_output, T>,
     typename A2 =
-        meta::detected_t<concepts::detected::types::default_decoded_output, T>,
+        meta::detected_t<detected::types::default_decoded_output, T>,
     typename I1 = meta::detected_t<meta::iterator_t, A1>,
     typename I2 = meta::detected_t<meta::iterator_t, A2>,
     typename S1 = I1,
     typename S2 = I2,
     typename = std::enable_if_t<
-        concepts::is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
+        is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
 using CodecTraits = T;
 }

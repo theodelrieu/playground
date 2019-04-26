@@ -13,8 +13,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T, typename Iterator>
 struct is_sentinel
   : std::integral_constant<
@@ -36,11 +34,10 @@ struct is_sentinel
 
 template <typename T, typename Iterator>
 constexpr auto is_sentinel_v = is_sentinel<T, Iterator>::value;
-}
 
 template <typename T,
           typename Iterator,
-          typename = std::enable_if_t<concepts::is_sentinel<T, Iterator>::value>>
+          typename = std::enable_if_t<is_sentinel<T, Iterator>::value>>
 using Sentinel = T;
 }
 }

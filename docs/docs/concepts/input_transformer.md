@@ -88,7 +88,7 @@ constexpr auto is_input_transformer_v = is_input_transformer<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_input_transformer_v<T>>>
+          typename = std::enable_if_t<is_input_transformer_v<T>>>
 using InputTransformer = T;
 }
 }
@@ -129,5 +129,5 @@ private:
   underlying_sentinel _end{};
 };
 
-static_assert(concepts::is_input_transformer_v<noop_transformer>, "");
+static_assert(is_input_transformer_v<noop_transformer>, "");
 ```

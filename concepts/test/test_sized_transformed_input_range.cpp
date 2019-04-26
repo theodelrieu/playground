@@ -5,7 +5,7 @@
 #include <mgs/concepts/sized_transformed_input_range.hpp>
 #include <mgs/meta/ssize_t.hpp>
 
-using namespace mgs::concepts;
+using namespace mgs;
 
 namespace
 {
@@ -21,7 +21,7 @@ struct valid_range
   iterator begin();
   iterator end();
 
-  mgs::meta::ssize_t max_transformed_size() const;
+  meta::ssize_t max_transformed_size() const;
 };
 
 struct no_max_transformed_size_range

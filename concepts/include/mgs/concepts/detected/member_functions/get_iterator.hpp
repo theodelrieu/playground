@@ -4,15 +4,13 @@
 
 namespace mgs
 {
-namespace concepts
-{
 namespace detected
 {
 namespace member_functions
 {
 template <typename T, typename... Args>
-using get_iterator = decltype(std::declval<T>().get_iterator(std::declval<Args>()...));
-}
+using get_iterator =
+    decltype(std::declval<T>().get_iterator(std::declval<Args>()...));
 }
 }
 }

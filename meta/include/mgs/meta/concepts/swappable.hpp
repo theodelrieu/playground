@@ -21,10 +21,9 @@ struct is_swappable_impl : std::false_type
 };
 
 template <typename T>
-struct is_swappable_impl<
-    T,
-    std::enable_if_t<meta::concepts::is_complete_type<T>::value &&
-                     !std::is_array<T>::value>>
+struct is_swappable_impl<T,
+                         std::enable_if_t<meta::is_complete_type<T>::value &&
+                                          !std::is_array<T>::value>>
   : std::integral_constant<
         bool,
         meta::is_detected<detail::result_of_swap, T&, T&>::value &&
@@ -42,8 +41,6 @@ struct is_swappable_impl<T[N]> : is_swappable_impl<T>
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 {
@@ -58,10 +55,8 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 
 template <typename T>
 constexpr auto is_swappable_v = is_swappable<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_swappable<T>::value>>
+template <typename T, typename = std::enable_if_t<is_swappable<T>::value>>
 using Swappable = T;
 }
 }

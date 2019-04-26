@@ -71,7 +71,7 @@ constexpr auto is_transformed_input_range_v = is_transformed_input_range<T>::val
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_transformed_input_range_v<T>>>
+          typename = std::enable_if_t<is_transformed_input_range_v<T>>>
 using TransformedInputRange = T;
 }
 ```
@@ -91,7 +91,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_transformed_input_range_v<decltype(encoder)>, "");
+  static_assert(is_transformed_input_range_v<decltype(encoder)>, "");
 
   for (auto c : encoder) {
     std::cout << c;

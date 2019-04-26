@@ -8,7 +8,6 @@
 #include <mgs/meta/detected.hpp>
 
 using namespace mgs::meta;
-using namespace mgs::meta::concepts;
 
 // Use a part of the range-v3 test suite for this specific trait:
 namespace

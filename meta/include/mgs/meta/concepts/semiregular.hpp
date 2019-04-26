@@ -20,9 +20,8 @@ struct is_semiregular_impl : std::false_type
 };
 
 template <typename T>
-struct is_semiregular_impl<
-    T,
-    std::enable_if_t<meta::concepts::is_complete_type<T>::value>>
+struct is_semiregular_impl<T,
+                           std::enable_if_t<meta::is_complete_type<T>::value>>
   : std::integral_constant<bool,
                            std::is_default_constructible<T>::value &&
                                std::is_copy_constructible<T>::value &&
@@ -30,7 +29,7 @@ struct is_semiregular_impl<
                                std::is_copy_assignable<T>::value &&
                                std::is_move_assignable<T>::value &&
                                std::is_destructible<T>::value &&
-                               meta::concepts::is_swappable<T>::value>
+                               meta::is_swappable<T>::value>
 {
 private:
   static constexpr auto const is_default_constructible =
@@ -66,8 +65,6 @@ public:
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_semiregular : detail::is_semiregular_impl<T>
 {
@@ -82,10 +79,8 @@ struct is_semiregular : detail::is_semiregular_impl<T>
 
 template <typename T>
 constexpr auto is_semiregular_v = is_semiregular<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_semiregular<T>::value>>
+template <typename T, typename = std::enable_if_t<is_semiregular<T>::value>>
 using Semiregular = T;
 }
 }

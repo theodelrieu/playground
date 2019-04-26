@@ -66,7 +66,7 @@ constexpr auto is_readable_transformed_input_range_v = is_readable_transformed_i
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_readable_transformed_input_range_v<T>>>
+          typename = std::enable_if_t<is_readable_transformed_input_range_v<T>>>
 using ReadableTransformedInputRange = T;
 }
 ```
@@ -86,7 +86,7 @@ int main() {
 
   auto encoder = base64::make_encoder(s.begin(), s.end());
 
-  static_assert(concepts::is_readable_transformed_input_range_v<decltype(encoder)>, "");
+  static_assert(is_readable_transformed_input_range_v<decltype(encoder)>, "");
 
   auto const nb_read = encoder.read(std::ostreambuf_iterator<char>(std::cout), std::size_t(-1));
   std::cout << "Read " << nb_read << " characters" << std::endl;

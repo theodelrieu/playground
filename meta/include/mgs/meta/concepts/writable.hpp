@@ -58,8 +58,6 @@ using writable_requirements = decltype(
 
 namespace meta
 {
-namespace concepts
-{
 template <typename Out, typename T>
 struct is_writable
 {
@@ -80,11 +78,10 @@ struct is_writable
 
 template <typename Out, typename T>
 constexpr auto is_writable_v = is_writable<Out, T>::value;
-}
 
 template <typename Out,
           typename T,
-          typename = std::enable_if_t<concepts::is_writable<Out, T>::value>>
+          typename = std::enable_if_t<is_writable<Out, T>::value>>
 using Writable = Out;
 }
 }

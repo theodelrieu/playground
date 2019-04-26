@@ -11,8 +11,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_copy_constructible
 {
@@ -47,11 +45,9 @@ public:
 
 template <typename T>
 constexpr auto is_copy_constructible_v = is_copy_constructible<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_copy_constructible<T>::value>>
+          typename = std::enable_if_t<is_copy_constructible<T>::value>>
 using CopyConstructible = T;
 }
 }

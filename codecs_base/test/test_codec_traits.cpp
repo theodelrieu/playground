@@ -6,8 +6,8 @@
 
 #include <catch.hpp>
 
+#include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/concepts/codec_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
@@ -96,19 +96,19 @@ struct invalid_return_traits
 
 TEST_CASE("CodecTraits", "[concepts]")
 {
-  static_assert(concepts::is_codec_traits<valid_traits>::value, "");
-  static_assert(concepts::is_codec_traits<valid_traits,
+  static_assert(is_codec_traits<valid_traits>::value, "");
+  static_assert(is_codec_traits<valid_traits,
                                           std::string,
                                           std::vector<unsigned char>,
                                           char*,
                                           unsigned char*>::value,
                 "");
 
-  static_assert(!concepts::is_codec_traits<no_encoded_output_traits>::value,
+  static_assert(!is_codec_traits<no_encoded_output_traits>::value,
                 "");
-  static_assert(!concepts::is_codec_traits<no_decoded_output_traits>::value,
+  static_assert(!is_codec_traits<no_decoded_output_traits>::value,
                 "");
-  static_assert(!concepts::is_codec_traits<no_make_encoder_traits>::value, "");
-  static_assert(!concepts::is_codec_traits<no_make_decoder_traits>::value, "");
-  static_assert(!concepts::is_codec_traits<invalid_return_traits>::value, "");
+  static_assert(!is_codec_traits<no_make_encoder_traits>::value, "");
+  static_assert(!is_codec_traits<no_make_decoder_traits>::value, "");
+  static_assert(!is_codec_traits<invalid_return_traits>::value, "");
 }

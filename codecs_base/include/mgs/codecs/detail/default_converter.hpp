@@ -85,13 +85,13 @@ private:
             typename R = Output,
             typename SizeType = typename R::size_type,
             typename = std::enable_if_t<
-                meta::concepts::is_random_access_iterator<
+                meta::is_random_access_iterator<
                     meta::iterator_t<R>>::value &&
-                meta::concepts::is_constructible<R>::value &&
+                meta::is_constructible<R>::value &&
                 // Keep those in C++17 as well, fill_random_access_container
                 // relies on NRVO, not on Guaranteed Copy Elision.
-                (meta::concepts::is_copy_constructible<R>::value ||
-                 meta::concepts::is_move_constructible<R>::value) &&
+                (meta::is_copy_constructible<R>::value ||
+                 meta::is_move_constructible<R>::value) &&
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
@@ -112,10 +112,10 @@ private:
       typename = std::enable_if_t<
   // Guaranteed copy-elision
 #if __cplusplus < 201703L
-          (meta::concepts::is_move_constructible<R>::value ||
-           meta::concepts::is_copy_constructible<R>::value) &&
+          (meta::is_move_constructible<R>::value ||
+           meta::is_copy_constructible<R>::value) &&
 #endif
-          meta::concepts::is_constructible<R, Iterator, Iterator>::value &&
+          meta::is_constructible<R, Iterator, Iterator>::value &&
           // Associative containers' iterator-range constructors are not
           // SFINAE-friendly...
           !meta::is_detected<meta::detected::types::key_type, R>::value>>

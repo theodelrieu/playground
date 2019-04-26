@@ -14,33 +14,32 @@
 
 using namespace std::string_literals;
 using namespace mgs;
-namespace concepts = mgs::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::encoder<char*>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::decoder<char*>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::decoder<std::list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::decoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base64url::decoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -106,11 +105,11 @@ TEST_CASE("base64url", "[base64url]")
   {
     SECTION("encoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base64url::encoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base64url::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -133,11 +132,11 @@ TEST_CASE("base64url", "[base64url]")
 
     SECTION("decoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base64url::decoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base64url::decoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -254,11 +253,11 @@ TEST_CASE("base64url_nopad", "[base64url]")
   {
     SECTION("encoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base64url_nopad::encoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base64url_nopad::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -283,11 +282,11 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
     SECTION("decoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base64url_nopad::decoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base64url_nopad::decoder<std::list<char>::const_iterator>>::value,
           "");
 

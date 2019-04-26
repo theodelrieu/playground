@@ -20,8 +20,6 @@ template <typename T, typename>
 struct output_traits;
 }
 
-namespace concepts
-{
 template <typename T, typename TransformedInputRange>
 struct is_codec_output
 {
@@ -50,11 +48,10 @@ public:
     return 1;
   }
 };
-}
 
 template <typename T,
           typename TransformedInputRange,
           typename = std::enable_if_t<
-              concepts::is_codec_output<T, TransformedInputRange>::value>>
+              is_codec_output<T, TransformedInputRange>::value>>
 using CodecOutput = T;
 }

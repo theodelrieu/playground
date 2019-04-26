@@ -24,8 +24,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_random_access_iterator
 {
@@ -122,11 +120,9 @@ public:
 template <typename T>
 constexpr auto is_random_access_iterator_v =
     is_random_access_iterator<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_random_access_iterator<T>::value>>
+          typename = std::enable_if_t<is_random_access_iterator<T>::value>>
 using RandomAccessIterator = T;
 }
 }

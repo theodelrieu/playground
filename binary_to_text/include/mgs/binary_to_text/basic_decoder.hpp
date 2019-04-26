@@ -31,11 +31,11 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_decoder
 {
 private:
-  static_assert(meta::concepts::is_input_iterator<Iterator>::value,
+  static_assert(meta::is_input_iterator<Iterator>::value,
                 "Iterator must be an InputIterator");
-  static_assert(meta::concepts::is_sentinel<Sentinel, Iterator>::value,
+  static_assert(meta::is_sentinel<Sentinel, Iterator>::value,
                 "Sentinel must be a Sentinel<Iterator>");
-  static_assert(concepts::is_encoding_traits<EncodingTraits>::value,
+  static_assert(is_encoding_traits<EncodingTraits>::value,
                 "Invalid encoding traits");
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
@@ -69,7 +69,7 @@ public:
   template <typename I = Iterator,
             typename S = Sentinel,
             typename = std::enable_if_t<
-                meta::concepts::is_sized_sentinel<S, I>::value>>
+                meta::is_sized_sentinel<S, I>::value>>
   meta::ssize_t max_transformed_size() const
   {
     return detail::max_decoded_size<EncodingTraits>{}(_end - _current);

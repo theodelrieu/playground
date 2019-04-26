@@ -18,8 +18,7 @@
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs::meta::concepts;
-using namespace mgs::concepts;
+using namespace mgs;
 
 namespace
 {
@@ -231,15 +230,16 @@ TEST_CASE("InputTransformer", "[concepts]")
 
   test_helpers::generate_failed_requirements_tests<
       is_input_transformer<non_default_constructible_transformer>,
-      std::tuple<is_semiregular<non_default_constructible_transformer>>>();
+      std::tuple<
+          meta::is_semiregular<non_default_constructible_transformer>>>();
 
   test_helpers::generate_failed_requirements_tests<
       is_input_transformer<invalid_underlying_sentinel_transformer>,
       std::tuple<
-          is_sentinel<
+          meta::is_sentinel<
               invalid_underlying_sentinel_transformer::underlying_sentinel,
               invalid_underlying_sentinel_transformer::underlying_iterator>,
-          is_weakly_equality_comparable_with<
+          meta::is_weakly_equality_comparable_with<
               invalid_underlying_sentinel_transformer::underlying_sentinel,
               invalid_underlying_sentinel_transformer::underlying_iterator>>>();
 }

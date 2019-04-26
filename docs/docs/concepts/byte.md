@@ -37,7 +37,7 @@ constexpr auto is_byte_v = is_byte<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_byte_v<T>>>
+          typename = std::enable_if_t<is_byte_v<T>>>
 using Byte = T;
 }
 ```
@@ -52,10 +52,10 @@ using Byte = T;
 
 using namespace mgs;
 
-static_assert(concepts::is_byte_v<std::byte>, "");
-static_assert(concepts::is_byte_v<unsigned char>, "");
-static_assert(concepts::is_byte_v<char>, "");
+static_assert(is_byte_v<std::byte>, "");
+static_assert(is_byte_v<unsigned char>, "");
+static_assert(is_byte_v<char>, "");
 
-static_assert(!concepts::is_byte_v<int>, "");
-static_assert(!concepts::is_byte_v<bool>, "");
+static_assert(!is_byte_v<int>, "");
+static_assert(!is_byte_v<bool>, "");
 ```

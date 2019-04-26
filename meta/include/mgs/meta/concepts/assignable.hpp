@@ -23,8 +23,6 @@ using assignable_requirement =
 
 namespace meta
 {
-namespace concepts
-{
 template <typename LHS, typename RHS>
 struct is_assignable
 {
@@ -59,11 +57,10 @@ public:
 
 template <typename LHS, typename RHS>
 constexpr auto is_assignable_v = is_assignable<LHS, RHS>::value;
-}
 
 template <typename LHS,
           typename RHS,
-          typename = std::enable_if_t<concepts::is_assignable<LHS, RHS>::value>>
+          typename = std::enable_if_t<is_assignable<LHS, RHS>::value>>
 using Assignable = LHS;
 }
 }

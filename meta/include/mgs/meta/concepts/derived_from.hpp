@@ -24,7 +24,7 @@ template <typename Derived, typename Base>
 struct is_derived_from_impl<
     Derived,
     Base,
-    std::enable_if_t<meta::concepts::is_complete_type<Derived>::value>>
+    std::enable_if_t<meta::is_complete_type<Derived>::value>>
 {
   static constexpr auto const value =
       std::is_base_of<Base, Derived>::value &&
@@ -33,8 +33,6 @@ struct is_derived_from_impl<
 }
 
 namespace meta
-{
-namespace concepts
 {
 template <typename Derived, typename Base>
 struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
@@ -50,12 +48,10 @@ struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
 
 template <typename Derived, typename Base>
 constexpr auto is_derived_from_v = is_derived_from<Derived, Base>::value;
-}
 
 template <typename Derived,
           typename Base,
-          typename =
-              std::enable_if_t<concepts::is_derived_from<Derived, Base>::value>>
+          typename = std::enable_if_t<is_derived_from<Derived, Base>::value>>
 using DerivedFrom = Derived;
 }
 }

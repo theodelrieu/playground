@@ -16,8 +16,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_iterator
 {
@@ -36,10 +34,8 @@ struct is_iterator
 
 template <typename T>
 constexpr auto is_iterator_v = is_iterator<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_iterator<T>::value>>
+template <typename T, typename = std::enable_if_t<is_iterator<T>::value>>
 using Iterator = T;
 }
 }

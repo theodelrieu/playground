@@ -17,8 +17,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_range
 {
@@ -40,7 +38,7 @@ public:
   // do not trigger loads of static asserts when no function begin/end is found...
   using requirements = decltype(std::tuple_cat(
       std::conditional_t<has_begin,
-                         std::tuple<meta::concepts::is_iterator<Iterator>>,
+                         std::tuple<meta::is_iterator<Iterator>>,
                          std::tuple<>>{},
       std::conditional_t<has_begin && has_end,
                          std::tuple<is_sentinel<Sentinel, Iterator>>,
@@ -71,9 +69,8 @@ public:
 
 template <typename T>
 constexpr auto is_range_v = is_range<T>::value;
-}
 
-template <typename T, typename = std::enable_if_t<concepts::is_range<T>::value>>
+template <typename T, typename = std::enable_if_t<is_range_v<T>>>
 using Range = T;
 }
 }

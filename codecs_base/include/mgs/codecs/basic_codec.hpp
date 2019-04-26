@@ -3,9 +3,9 @@
 #include <cstring>
 #include <utility>
 
+#include <mgs/codecs/concepts/codec_output.hpp>
+#include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/concepts/codec_output.hpp>
-#include <mgs/concepts/codec_traits.hpp>
 #include <mgs/concepts/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/concepts/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
@@ -39,7 +39,7 @@ inline namespace v1
 template <typename CodecTraits>
 class basic_codec
 {
-  static_assert(concepts::is_codec_traits<CodecTraits>::value, "");
+  static_assert(is_codec_traits<CodecTraits>::value, "");
 
 public:
   template <typename Iterator, typename Sentinel = Iterator>
@@ -82,7 +82,7 @@ public:
             typename Encoder = mgs::TransformedInputRange<
                 encoder<meta::iterator_t<Range const>, meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
-                !meta::concepts::is_convertible_to<U, char const*>::value>>
+                !meta::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U const& it)
   {
     using std::begin;
@@ -97,7 +97,7 @@ public:
             typename Encoder = mgs::TransformedInputRange<
                 encoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
-                !meta::concepts::is_convertible_to<U, char const*>::value>>
+                !meta::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Encoder> encode(U& it)
   {
     using std::begin;
@@ -123,7 +123,7 @@ public:
             typename Decoder = mgs::TransformedInputRange<
                 decoder<meta::iterator_t<Range const>, meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
-                !meta::concepts::is_convertible_to<U, char const*>::value>>
+                !meta::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U const& it)
   {
     using std::begin;
@@ -138,7 +138,7 @@ public:
             typename Decoder = mgs::TransformedInputRange<
                 decoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
-                !meta::concepts::is_convertible_to<U, char const*>::value>>
+                !meta::is_convertible_to<U, char const*>::value>>
   static mgs::CodecOutput<T, Decoder> decode(U& it)
   {
     using std::begin;

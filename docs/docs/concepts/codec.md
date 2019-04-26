@@ -131,7 +131,7 @@ template <typename T,
           typename R1 = /* ... */, typename R2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */,
-          typename = std::enable_if_t<concepts::is_codec_v<T, A1, A2, R1, R2, I1, I2, S1, S2>>>
+          typename = std::enable_if_t<is_codec_v<T, A1, A2, R1, R2, I1, I2, S1, S2>>>
 using Codec = T;
 }
 ```
@@ -145,9 +145,9 @@ using Codec = T;
 using namespace mgs;
 
 int main() {
-  static_assert(concepts::is_codec_v<base64>, "");
-  static_assert(concepts::is_codec_v<base64, std::string, std::vector<unsigned char>>, "");
-  static_assert(concepts::is_codec_v<base64,
+  static_assert(is_codec_v<base64>, "");
+  static_assert(is_codec_v<base64, std::string, std::vector<unsigned char>>, "");
+  static_assert(is_codec_v<base64,
                                     std::string, std::string,
                                     char*, std::istreambuf_iterator<char>>, "");
 }

@@ -18,8 +18,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_forward_iterator
 {
@@ -49,10 +47,9 @@ public:
 
 template <typename T>
 constexpr auto is_forward_iterator_v = is_forward_iterator<T>::value;
-}
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_forward_iterator<T>::value>>
+          typename = std::enable_if_t<is_forward_iterator<T>::value>>
 using ForwardIterator = T;
 }
 }

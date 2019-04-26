@@ -13,7 +13,6 @@
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-using namespace mgs::meta::concepts;
 
 namespace
 {

@@ -16,8 +16,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T, typename U>
 struct is_strict_totally_ordered_with
 {
@@ -121,12 +119,11 @@ public:
 template <typename T, typename U>
 constexpr auto is_strict_totally_ordered_with_v =
     is_strict_totally_ordered_with<T, U>::value;
-}
 
 template <typename T,
           typename U,
-          typename = std::enable_if_t<
-              concepts::is_strict_totally_ordered_with<T, U>::value>>
+          typename =
+              std::enable_if_t<is_strict_totally_ordered_with<T, U>::value>>
 using StrictTotallyOrderedWith = T;
 }
 }

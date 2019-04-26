@@ -97,7 +97,7 @@ template <typename T,
           typename A1 = /* ... */, typename A2 = /* ... */,
           typename I1 = /* ... */, typename I2 = /* ... */,
           typename S1 = /* ... */, typename S2 = /* ... */,
-          typename = std::enable_if_t<concepts::is_codec_traits_v<T, A1, A2, I1, I2, S1, S2>>>
+          typename = std::enable_if_t<is_codec_traits_v<T, A1, A2, I1, I2, S1, S2>>>
 using CodecTraits = T;
 }
 ```

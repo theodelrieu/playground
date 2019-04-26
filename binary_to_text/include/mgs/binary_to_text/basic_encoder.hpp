@@ -32,11 +32,11 @@ template <typename Iterator, typename Sentinel, typename EncodingTraits>
 class basic_encoder
 {
 private:
-  static_assert(meta::concepts::is_input_iterator<Iterator>::value,
+  static_assert(meta::is_input_iterator<Iterator>::value,
                 "Iterator must be an InputIterator");
-  static_assert(meta::concepts::is_sentinel<Sentinel, Iterator>::value,
+  static_assert(meta::is_sentinel<Sentinel, Iterator>::value,
                 "Sentinel must be an Sentinel<Iterator>");
-  static_assert(concepts::is_encoding_traits<EncodingTraits>::value,
+  static_assert(is_encoding_traits<EncodingTraits>::value,
                 "Invalid encoding traits");
 
   static_assert(EncodingTraits::padding_policy != padding_policy::optional,

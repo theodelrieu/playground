@@ -11,8 +11,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_move_constructible
 {
@@ -31,11 +29,9 @@ struct is_move_constructible
 
 template <typename T>
 constexpr auto is_move_constructible_v = is_move_constructible<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_move_constructible<T>::value>>
+          typename = std::enable_if_t<is_move_constructible<T>::value>>
 using MoveConstructible = T;
 }
 }

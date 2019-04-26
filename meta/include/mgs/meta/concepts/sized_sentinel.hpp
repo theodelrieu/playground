@@ -13,8 +13,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T, typename Iterator>
 struct is_sized_sentinel
 {
@@ -63,12 +61,10 @@ public:
 
 template <typename T, typename Iterator>
 constexpr auto is_sized_sentinel_v = is_sized_sentinel<T, Iterator>::value;
-}
 
 template <typename T,
           typename Iterator,
-          typename =
-              std::enable_if_t<concepts::is_sized_sentinel<T, Iterator>::value>>
+          typename = std::enable_if_t<is_sized_sentinel<T, Iterator>::value>>
 using SizedSentinel = T;
 }
 }

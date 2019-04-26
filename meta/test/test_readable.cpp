@@ -11,7 +11,6 @@
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-using namespace mgs::meta::concepts;
 template <typename T> struct S;
 template <std::size_t N> struct S2;
 TEST_CASE("Readable", "[meta][concepts][iterator]")

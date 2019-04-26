@@ -26,8 +26,6 @@ struct is_complete_type_impl<T, meta::void_t<decltype(sizeof(T))>>
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_complete_type : detail::is_complete_type_impl<T>
 {
@@ -42,10 +40,8 @@ struct is_complete_type : detail::is_complete_type_impl<T>
 
 template <typename T>
 constexpr auto is_complete_type_v = is_complete_type<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_complete_type<T>::value>>
+template <typename T, typename = std::enable_if_t<is_complete_type<T>::value>>
 using CompleteType = T;
 }
 }

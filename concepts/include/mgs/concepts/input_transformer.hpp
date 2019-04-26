@@ -36,8 +36,6 @@
 
 namespace mgs
 {
-namespace concepts
-{
 template <typename T>
 struct is_input_transformer
 {
@@ -67,24 +65,24 @@ private:
                               t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      meta::concepts::is_constructible<T, I, S>::value;
+      meta::is_constructible<T, I, S>::value;
 
 public:
   using requirements =
-      std::tuple<meta::concepts::is_semiregular<T>,
-                 meta::concepts::is_input_iterator<I>,
-                 meta::concepts::is_sentinel<S, I>,
-                 meta::concepts::is_random_access_iterator<BufferI>,
-                 meta::concepts::is_sized_sentinel<BufferS, BufferI>,
-                 meta::concepts::is_range<Buffer>>;
+      std::tuple<meta::is_semiregular<T>,
+                 meta::is_input_iterator<I>,
+                 meta::is_sentinel<S, I>,
+                 meta::is_random_access_iterator<BufferI>,
+                 meta::is_sized_sentinel<BufferS, BufferI>,
+                 meta::is_range<Buffer>>;
 
   static constexpr auto const value =
-      meta::concepts::is_semiregular<T>::value && has_get_iterator &&
-      has_get_sentinel && meta::concepts::is_iterator<I>::value &&
-      meta::concepts::is_sentinel<S, I>::value &&
-      meta::concepts::is_range<Buffer>::value &&
-      meta::concepts::is_random_access_iterator<BufferI>::value &&
-      meta::concepts::is_sized_sentinel<BufferS, BufferI>::value &&
+      meta::is_semiregular<T>::value && has_get_iterator &&
+      has_get_sentinel && meta::is_iterator<I>::value &&
+      meta::is_sentinel<S, I>::value &&
+      meta::is_range<Buffer>::value &&
+      meta::is_random_access_iterator<BufferI>::value &&
+      meta::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
 
   static constexpr int trigger_static_asserts()
@@ -107,9 +105,8 @@ public:
 
 template <typename T>
 constexpr auto is_input_transformer_v = is_input_transformer<T>::value;
-}
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_input_transformer<T>::value>>
+          typename = std::enable_if_t<is_input_transformer<T>::value>>
 using InputTransformer = T;
 }

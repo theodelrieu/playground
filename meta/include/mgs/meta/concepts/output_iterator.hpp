@@ -23,8 +23,6 @@ using output_iterator_requirement = decltype(
 
 namespace meta
 {
-namespace concepts
-{
 template <typename I, typename T>
 struct is_output_iterator
 {
@@ -43,12 +41,10 @@ struct is_output_iterator
 
 template <typename I, typename T>
 constexpr auto is_output_iterator_v = is_output_iterator<I, T>::value;
-}
 
 template <typename I,
           typename T,
-          typename =
-              std::enable_if_t<concepts::is_output_iterator<I, T>::value>>
+          typename = std::enable_if_t<is_output_iterator<I, T>::value>>
 using OutputIterator = I;
 }
 }

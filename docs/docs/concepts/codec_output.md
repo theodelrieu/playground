@@ -61,7 +61,7 @@ constexpr auto is_codec_output_v = is_codec_output<T, Range>::value;
 }
 
 template <typename T, typename Range,
-          typename = std::enable_if_t<concepts::is_codec_output_v<T, Range>>>
+          typename = std::enable_if_t<is_codec_output_v<T, Range>>>
 using CodecOutput = T;
 }
 ```
@@ -95,9 +95,9 @@ using namespace mgs;
 int main() {
   using encoder = base64::encoder<char const*>;
   
-  static_assert(concepts::is_codec_output_v<std::string, encoder>, "");
-  static_assert(concepts::is_codec_output_v<QLinkedList<char>, encoder>, "");
+  static_assert(is_codec_output_v<std::string, encoder>, "");
+  static_assert(is_codec_output_v<QLinkedList<char>, encoder>, "");
 
-  static_assert(!concepts::is_codec_output_v<QList<char>, encoder>, "");
+  static_assert(!is_codec_output_v<QList<char>, encoder>, "");
 }
 ```

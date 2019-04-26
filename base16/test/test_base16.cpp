@@ -15,20 +15,19 @@
 
 using namespace std::string_literals;
 using namespace mgs;
-namespace concepts = mgs::concepts;
 
 extern std::vector<std::string> testFilePaths;
 
 static_assert(
-    concepts::is_transformed_input_range<base16::encoder<char*>>::value,
+    is_transformed_input_range<base16::encoder<char*>>::value,
     "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base16::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base16::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(concepts::is_transformed_input_range<
+static_assert(is_transformed_input_range<
                   base16::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -102,11 +101,11 @@ TEST_CASE("base16", "[base16]")
   {
     SECTION("encoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base16::encoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base16::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -129,11 +128,11 @@ TEST_CASE("base16", "[base16]")
 
     SECTION("decoder")
     {
-      static_assert(concepts::is_sized_transformed_input_range<
+      static_assert(is_sized_transformed_input_range<
                         base16::decoder<char const*>>::value,
                     "");
       static_assert(
-          !concepts::is_sized_transformed_input_range<
+          !is_sized_transformed_input_range<
               base16::decoder<std::list<char>::const_iterator>>::value,
           "");
 

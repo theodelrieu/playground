@@ -15,7 +15,6 @@
 #include <mgs/meta/concepts/strict_totally_ordered.hpp>
 
 using namespace mgs::meta;
-using namespace mgs::meta::concepts;
 
 namespace
 {

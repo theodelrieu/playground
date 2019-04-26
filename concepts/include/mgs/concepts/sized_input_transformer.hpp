@@ -16,8 +16,6 @@
 
 namespace mgs
 {
-namespace concepts
-{
 template <typename T>
 struct is_sized_input_transformer
 {
@@ -47,10 +45,9 @@ public:
 template <typename T>
 constexpr auto is_sized_input_transformer_v =
     is_sized_input_transformer<T>::value;
-}
 
 template <typename T,
           typename =
-              std::enable_if_t<concepts::is_sized_input_transformer<T>::value>>
+              std::enable_if_t<is_sized_input_transformer<T>::value>>
 using SizedInputTransformer = T;
 }

@@ -87,7 +87,7 @@ constexpr auto is_foo_v = is_foo<T, U>::value;
 }
 
 template <typename T, typename U,
-          typename = std::enable_if_t<concepts::is_foo_v<T, U>>>
+          typename = std::enable_if_t<is_foo_v<T, U>>>
 using Foo = T;
 }
 ```

@@ -6,8 +6,8 @@
 
 #include <catch.hpp>
 
+#include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/concepts/codec_output.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
@@ -56,24 +56,24 @@ struct output_traits<valid>
 TEST_CASE("CodecOutput", "[concepts]")
 {
   static_assert(
-      concepts::is_codec_output<std::string, noop_range<char const*>>::value,
+      is_codec_output<std::string, noop_range<char const*>>::value,
       "");
   static_assert(
-      concepts::is_codec_output<valid, noop_range<char const*>>::value, "");
+      is_codec_output<valid, noop_range<char const*>>::value, "");
 
   static_assert(
-      !concepts::is_codec_output<invalid, noop_range<char const*>>::value, "");
+      !is_codec_output<invalid, noop_range<char const*>>::value, "");
 
   static_assert(
-      !concepts::is_codec_output<void, noop_range<char const*>>::value,
+      !is_codec_output<void, noop_range<char const*>>::value,
       "");
   static_assert(
-      !concepts::is_codec_output<void*, noop_range<char const*>>::value,
+      !is_codec_output<void*, noop_range<char const*>>::value,
       "");
   static_assert(
-      !concepts::is_codec_output<struct incomplete, noop_range<char const*>>::value,
+      !is_codec_output<struct incomplete, noop_range<char const*>>::value,
       "");
   static_assert(
-      !concepts::is_codec_output<struct incomplete*, noop_range<char const*>>::value,
+      !is_codec_output<struct incomplete*, noop_range<char const*>>::value,
       "");
 }

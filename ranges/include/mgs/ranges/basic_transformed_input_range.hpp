@@ -24,7 +24,7 @@ namespace ranges
 template <typename InputTransformer>
 class basic_transformed_input_range : private InputTransformer
 {
-  static_assert(concepts::is_input_transformer<InputTransformer>::value,
+  static_assert(is_input_transformer<InputTransformer>::value,
                 "Template parameter must be an InputTransformer");
 
 public:
@@ -49,7 +49,7 @@ public:
 
   template <typename OutputIterator,
             typename = std::enable_if_t<
-                meta::concepts::is_output_iterator<OutputIterator,
+                meta::is_output_iterator<OutputIterator,
                                                    value_type>::value>>
   meta::ssize_t read(OutputIterator out, meta::ssize_t n);
 
@@ -58,7 +58,7 @@ public:
 
   template <typename T = InputTransformer,
             typename = std::enable_if_t<
-                concepts::is_sized_input_transformer<T>::value>>
+                is_sized_input_transformer<T>::value>>
   meta::ssize_t max_transformed_size() const;
 
 private:

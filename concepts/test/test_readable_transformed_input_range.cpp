@@ -6,7 +6,7 @@
 #include <mgs/meta/ssize_t.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-using namespace mgs::concepts;
+using namespace mgs;
 
 namespace
 {

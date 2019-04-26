@@ -41,17 +41,17 @@ private:
 public:
   static constexpr auto const value =
       std::is_same<CommonRefTU, CommonRefUT>::value &&
-      meta::concepts::is_convertible_to<T, CommonRefTU>::value &&
-      meta::concepts::is_convertible_to<U, CommonRefTU>::value;
+      meta::is_convertible_to<T, CommonRefTU>::value &&
+      meta::is_convertible_to<U, CommonRefTU>::value;
 
   static constexpr int trigger_static_asserts()
   {
     static_assert(std::is_same<CommonRefTU, CommonRefUT>::value,
                   "common_reference_t<T, U> must be the same then "
                   "common_reference_t<U, T>");
-    static_assert(meta::concepts::is_convertible_to<T, CommonRefTU>::value,
+    static_assert(meta::is_convertible_to<T, CommonRefTU>::value,
                   "T must be convertible to common_reference_t<T, U>");
-    static_assert(meta::concepts::is_convertible_to<U, CommonRefTU>::value,
+    static_assert(meta::is_convertible_to<U, CommonRefTU>::value,
                   "U must be convertible to common_reference_t<T, U>");
     return 1;
   }
@@ -59,8 +59,6 @@ public:
 }
 
 namespace meta
-{
-namespace concepts
 {
 template <typename T, typename U>
 struct has_common_reference : detail::has_common_reference_impl<T, U>
@@ -70,12 +68,10 @@ struct has_common_reference : detail::has_common_reference_impl<T, U>
 
 template <typename T, typename U>
 constexpr auto has_common_reference_v = has_common_reference<T, U>::value;
-}
 
 template <typename T,
           typename U,
-          typename =
-              std::enable_if_t<concepts::has_common_reference<T, U>::value>>
+          typename = std::enable_if_t<has_common_reference<T, U>::value>>
 using CommonReference = T;
 }
 }

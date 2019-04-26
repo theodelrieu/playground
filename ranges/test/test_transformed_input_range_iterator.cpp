@@ -41,9 +41,9 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::concepts::is_iterator<decltype(current)>::value,
+  static_assert(meta::is_iterator<decltype(current)>::value,
                 "");
-  static_assert(meta::concepts::is_sentinel<decltype(end),
+  static_assert(meta::is_sentinel<decltype(end),
                                                       decltype(current)>::value,
                 "");
   using encoder_tag = meta::detected::types::iterator_category<
@@ -53,7 +53,7 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
   static_assert(std::is_same<underlying_tag, encoder_tag>::value, "");
 
   static_assert(
-      meta::concepts::is_input_iterator<decltype(current)>::value,
+      meta::is_input_iterator<decltype(current)>::value,
       "");
   CHECK(*current == *current);
   CHECK(*current == 'a');

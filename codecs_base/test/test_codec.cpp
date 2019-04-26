@@ -7,8 +7,8 @@
 #include <catch.hpp>
 
 #include <mgs/codecs/basic_codec.hpp>
+#include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/concepts/codec.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/basic_transformed_input_range.hpp>
 
@@ -56,12 +56,12 @@ struct no_encode_char_ptr_codec : mgs::codecs::basic_codec<noop_codec_traits>
 
 TEST_CASE("Codec", "[concepts]")
 {
-  static_assert(concepts::is_codec<noop_codec>::value, "");
-  static_assert(concepts::is_codec<no_encode_char_ptr_codec>::value, "");
-  static_assert(concepts::is_codec<no_encode_char_ptr_codec,
+  static_assert(is_codec<noop_codec>::value, "");
+  static_assert(is_codec<no_encode_char_ptr_codec>::value, "");
+  static_assert(is_codec<no_encode_char_ptr_codec,
                                    unsigned char const(&)[1]>::value,
                 "");
-  static_assert(concepts::is_codec<noop_codec,
+  static_assert(is_codec<noop_codec,
                                    std::string,
                                    std::vector<char>,
                                    std::string,
@@ -70,8 +70,8 @@ TEST_CASE("Codec", "[concepts]")
                                    char*>::value,
                 "");
   static_assert(
-      !concepts::is_codec<no_encode_char_ptr_codec, char const(&)[1]>::value,
+      !is_codec<no_encode_char_ptr_codec, char const(&)[1]>::value,
       "");
 
-  static_assert(concepts::is_codec<noop_codec>::value, "");
+  static_assert(is_codec<noop_codec>::value, "");
 }

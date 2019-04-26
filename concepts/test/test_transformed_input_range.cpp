@@ -10,8 +10,7 @@
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs::meta::concepts;
-using namespace mgs::concepts;
+using namespace mgs;
 
 namespace
 {
@@ -139,5 +138,5 @@ TEST_CASE("TransformedInputRange", "[concepts]")
 
   test_helpers::generate_failed_requirements_tests<
       is_transformed_input_range<non_semiregular_range>,
-      std::tuple<is_semiregular<non_semiregular_range>>>();
+      std::tuple<meta::is_semiregular<non_semiregular_range>>>();
 }

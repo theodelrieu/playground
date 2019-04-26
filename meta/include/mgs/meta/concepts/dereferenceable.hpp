@@ -41,8 +41,6 @@ struct is_dereferenceable_impl<
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_dereferenceable: detail::is_dereferenceable_impl<T>
 {
@@ -57,10 +55,8 @@ struct is_dereferenceable: detail::is_dereferenceable_impl<T>
 
 template <typename T>
 constexpr auto is_dereferenceable_v = is_dereferenceable<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_dereferenceable<T>::value>>
+template <typename T, typename = std::enable_if_t<is_dereferenceable<T>::value>>
 using Dereferenceable = T;
 }
 }

@@ -12,7 +12,7 @@
 
 #include <test_helpers/requirements.hpp>
 
-using namespace mgs::concepts;
+using namespace mgs;
 
 namespace
 {

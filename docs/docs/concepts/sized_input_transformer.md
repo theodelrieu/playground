@@ -57,7 +57,7 @@ constexpr auto is_sized_input_transformer_v = is_sized_input_transformer<T>::val
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_sized_input_transformer_v<T>>>
+          typename = std::enable_if_t<is_sized_input_transformer_v<T>>>
 using SizedInputTransformer = T;
 }
 }
@@ -79,5 +79,5 @@ public:
   }
 };
 
-static_assert(concepts::is_sized_input_transformer_v<noop_transformer>, "");
+static_assert(is_sized_input_transformer_v<noop_transformer>, "");
 ```

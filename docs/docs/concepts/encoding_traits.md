@@ -75,7 +75,7 @@ constexpr auto is_encoding_traits_v = is_encoding_traits<T>::value;
 }
 
 template <typename T,
-          typename = std::enable_if_t<concepts::is_encoding_traits_v<T>>>
+          typename = std::enable_if_t<is_encoding_traits_v<T>>>
 using EncodingTraits = T;
 }
 }
@@ -104,7 +104,7 @@ struct binary_traits {
 };
 
 int main() {
-  static_assert(binary_to_text::concepts::is_encoding_traits_v<binary_traits>, "");
+  static_assert(binary_to_text::is_encoding_traits_v<binary_traits>, "");
 
   using binary_codec = binary_to_text::basic_codec<binary_traits>;
   // encodes to 01100001

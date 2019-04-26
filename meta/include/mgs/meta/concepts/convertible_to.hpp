@@ -15,7 +15,7 @@ template <typename T>
 struct is_valid_is_convertible_to_type
 {
   static constexpr auto const value =
-      meta::concepts::is_complete_type<T>::value ||
+      meta::is_complete_type<T>::value ||
       // int (&) [] is an incomplete type, and a reference type, so
       // std::is_array returns false without std::remove_reference_t
       std::is_array<std::remove_reference_t<T>>::value ||
@@ -78,8 +78,6 @@ public:
 
 namespace meta
 {
-namespace concepts
-{
 template <typename From, typename To>
 struct is_convertible_to : detail::is_convertible_to_impl<From, To>
 {
@@ -95,12 +93,10 @@ struct is_convertible_to : detail::is_convertible_to_impl<From, To>
 
 template <typename From, typename To>
 constexpr auto is_convertible_to_v = is_convertible_to<From, To>::value;
-}
 
 template <typename From,
           typename To,
-          typename =
-              std::enable_if_t<concepts::is_convertible_to<From, To>::value>>
+          typename = std::enable_if_t<is_convertible_to<From, To>::value>>
 using ConvertibleTo = From;
 }
 }

@@ -41,26 +41,26 @@ struct is_readable_impl<
         meta::is_detected<meta::iter_rvalue_reference_t, T>::value>>
 {
   using requirements = std::tuple<
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
           std::add_lvalue_reference_t<meta::iter_value_t<T>>>,
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
           std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>>,
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>,
           std::add_lvalue_reference_t<
               std::add_const_t<meta::iter_value_t<T>>>>>;
 
   static constexpr auto const value =
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
           std::add_lvalue_reference_t<meta::iter_value_t<T>>>::value &&
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
           std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>>::
           value &&
-      meta::concepts::has_common_reference<
+      meta::has_common_reference<
           std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>,
           std::add_lvalue_reference_t<
               std::add_const_t<meta::iter_value_t<T>>>>::value;
@@ -75,8 +75,6 @@ struct is_readable_impl<
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_readable : detail::is_readable_impl<T>
 {
@@ -84,10 +82,8 @@ struct is_readable : detail::is_readable_impl<T>
 
 template <typename T>
 constexpr auto is_readable_v = is_readable<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_readable<T>::value>>
+template <typename T, typename = std::enable_if_t<is_readable<T>::value>>
 using Readable = T;
 }
 }

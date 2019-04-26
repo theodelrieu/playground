@@ -23,8 +23,6 @@
 
 namespace mgs
 {
-namespace concepts
-{
 template <typename T, typename O>
 struct is_readable_transformed_input_range
 {
@@ -41,12 +39,12 @@ private:
 
 public:
   using requirements =
-      std::tuple<meta::concepts::is_output_iterator<O, value_type>,
+      std::tuple<meta::is_output_iterator<O, value_type>,
                  is_transformed_input_range<T>>;
 
   static constexpr auto const value =
       is_transformed_input_range<T>::value && has_read_method &&
-      meta::concepts::is_output_iterator<O, value_type>::value;
+      meta::is_output_iterator<O, value_type>::value;
 
   static constexpr int trigger_static_asserts()
   {
@@ -61,11 +59,10 @@ public:
 template <typename T, typename O>
 constexpr auto is_readable_transformed_input_range_v =
     is_readable_transformed_input_range<T, O>::value;
-}
 
 template <typename T,
           typename O,
           typename = std::enable_if_t<
-              concepts::is_readable_transformed_input_range<T, O>::value>>
+              is_readable_transformed_input_range<T, O>::value>>
 using ReadableTransformedInputRange = T;
 }

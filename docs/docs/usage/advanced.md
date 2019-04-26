@@ -83,7 +83,7 @@ Here is how to constraint a function on [`std::Range`](https://en.cppreference.c
 
 using namespace mgs::meta;
 
-template <typename T, typename = std::enable_if_t<concepts::is_range_v<T>>>
+template <typename T, typename = std::enable_if_t<is_range_v<T>>>
 void f(T const&)
 {
 }

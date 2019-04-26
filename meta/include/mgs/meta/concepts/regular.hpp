@@ -10,8 +10,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_regular
 {
@@ -29,10 +27,8 @@ struct is_regular
 
 template <typename T>
 constexpr auto is_regular_v = is_regular<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_regular<T>::value>>
+template <typename T, typename = std::enable_if_t<is_regular<T>::value>>
 using Regular = T;
 }
 }

@@ -10,8 +10,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 {
@@ -26,11 +24,9 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 
 template <typename T>
 constexpr auto is_equality_comparable_v = is_equality_comparable<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_equality_comparable<T>::value>>
+          typename = std::enable_if_t<is_equality_comparable<T>::value>>
 using EqualityComparable = T;
 }
 }

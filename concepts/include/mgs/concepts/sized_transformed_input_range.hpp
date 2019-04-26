@@ -21,8 +21,6 @@
 
 namespace mgs
 {
-namespace concepts
-{
 template <typename T>
 struct is_sized_transformed_input_range
 {
@@ -54,10 +52,9 @@ public:
 template <typename T>
 constexpr auto is_sized_transformed_input_range_v =
     is_sized_transformed_input_range<T>::value;
-}
 
 template <typename T,
           typename = std::enable_if_t<
-              concepts::is_sized_transformed_input_range<T>::value>>
+              is_sized_transformed_input_range<T>::value>>
 using SizedTransformedInputRange = T;
 }

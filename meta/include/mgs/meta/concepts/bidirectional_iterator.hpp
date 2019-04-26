@@ -15,8 +15,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_bidirectional_iterator
 {
@@ -57,11 +55,9 @@ struct is_bidirectional_iterator
 template <typename T>
 constexpr auto is_bidirectional_iterator_v =
     is_bidirectional_iterator<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_bidirectional_iterator<T>::value>>
+          typename = std::enable_if_t<is_bidirectional_iterator<T>::value>>
 using BidirectionalIterator = T;
 }
 }

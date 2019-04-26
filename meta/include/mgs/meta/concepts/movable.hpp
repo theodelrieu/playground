@@ -12,8 +12,6 @@ namespace mgs
 {
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_movable
 {
@@ -37,10 +35,8 @@ struct is_movable
 
 template <typename T>
 constexpr auto is_movable_v = is_movable<T>::value;
-}
 
-template <typename T,
-          typename = std::enable_if_t<concepts::is_movable<T>::value>>
+template <typename T, typename = std::enable_if_t<is_movable<T>::value>>
 using Movable = T;
 }
 }

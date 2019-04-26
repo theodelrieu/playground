@@ -52,8 +52,6 @@ struct is_insert_iterator<
 
 namespace meta
 {
-namespace concepts
-{
 template <typename T>
 struct is_weakly_incrementable
 {
@@ -96,11 +94,9 @@ public:
 
 template <typename T>
 constexpr auto is_weakly_incrementable_v = is_weakly_incrementable<T>::value;
-}
 
 template <typename T,
-          typename =
-              std::enable_if_t<concepts::is_weakly_incrementable<T>::value>>
+          typename = std::enable_if_t<is_weakly_incrementable<T>::value>>
 using WeaklyIncrementable = T;
 }
 }

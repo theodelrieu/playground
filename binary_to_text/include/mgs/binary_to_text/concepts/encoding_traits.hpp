@@ -27,8 +27,6 @@ namespace mgs
 {
 namespace binary_to_text
 {
-namespace concepts
-{
 template <typename T, typename = void>
 struct is_encoding_traits : std::false_type
 {
@@ -95,6 +93,5 @@ public:
 
 template <typename T, typename = std::enable_if_t<is_encoding_traits<T>::value>>
 using EncodingTraits = T;
-}
 }
 }

@@ -6,7 +6,6 @@
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-using namespace mgs::meta::concepts;
 
 TEST_CASE("CompleteType", "[meta][concepts][core]")
 {

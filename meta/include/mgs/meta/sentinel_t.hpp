@@ -10,7 +10,7 @@ namespace mgs
 {
 namespace meta
 {
-template <typename R, typename = std::enable_if_t<concepts::is_range<R>::value>>
+template <typename R, typename = std::enable_if_t<is_range<R>::value>>
 using sentinel_t = detail::result_of_end<decltype(std::declval<R&>())>;
 }
 }
