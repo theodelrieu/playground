@@ -5,7 +5,7 @@
 // source: https://stackoverflow.com/a/26745591
 
 #define CAN_CALL_STD_FUNC_IMPL(std_name)                                      \
-  namespace detail2                                                           \
+  namespace detail                                                           \
   {                                                                           \
   using std::std_name;                                                        \
                                                                               \
@@ -13,7 +13,7 @@
   using result_of_##std_name = decltype(std_name(std::declval<T>()...));      \
   }                                                                           \
                                                                               \
-  namespace detail3                                                           \
+  namespace detail2                                                           \
   {                                                                           \
   struct std_name##_tag                                                       \
   {                                                                           \
@@ -34,6 +34,6 @@
   }                                                                           \
                                                                               \
   template <typename... T>                                                    \
-  struct would_call_std_##std_name : detail3::would_call_std_##std_name<T...> \
+  struct would_call_std_##std_name : detail2::would_call_std_##std_name<T...> \
   {                                                                           \
   }

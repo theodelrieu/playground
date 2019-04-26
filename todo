@@ -6,6 +6,7 @@ code
 * flatten namespaces a bit? especially detected stuff
 * adapt to C++20 modules design
 * move range concepts to ranges
+* fix Writable on windows
 
 doc
 

@@ -24,8 +24,8 @@ struct is_range
 {
 private:
   using t_ref = std::add_lvalue_reference_t<T>;
-  using Iterator = meta::detected_t<meta::detail2::result_of_begin, t_ref>;
-  using Sentinel = meta::detected_t<meta::detail2::result_of_end, t_ref>;
+  using Iterator = meta::detected_t<meta::detail::result_of_begin, t_ref>;
+  using Sentinel = meta::detected_t<meta::detail::result_of_end, t_ref>;
 
   static constexpr auto const has_begin = !std::is_same<Iterator, meta::nonesuch>::value;
   static constexpr auto const has_end = !std::is_same<Sentinel, meta::nonesuch>::value;
@@ -39,10 +39,9 @@ public:
 
   // do not trigger loads of static asserts when no function begin/end is found...
   using requirements = decltype(std::tuple_cat(
-      std::conditional_t<
-          has_begin,
-          std::tuple<meta::concepts::is_iterator<Iterator>>,
-          std::tuple<>>{},
+      std::conditional_t<has_begin,
+                         std::tuple<meta::concepts::is_iterator<Iterator>>,
+                         std::tuple<>>{},
       std::conditional_t<has_begin && has_end,
                          std::tuple<is_sentinel<Sentinel, Iterator>>,
                          std::tuple<>>{}));
@@ -53,9 +52,8 @@ public:
     static_assert(
         has_begin,
         "There is not an available 'begin' member/free function for T");
-    static_assert(
-        has_end,
-        "There is not an available 'end' member/free function for T");
+    static_assert(has_end,
+                  "There is not an available 'end' member/free function for T");
 
     // only trigger if there is a begin function
     static_assert(!has_begin || is_iterator_begin,
