@@ -9,6 +9,8 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 using base64url = codecs::binary_to_text::basic_codec<
     codecs::base64url::detail::basic_encoding_traits<
         codecs::binary_to_text::padding_policy::required>>;
@@ -18,4 +20,5 @@ using base64url_nopad = codecs::binary_to_text::basic_codec<
         codecs::binary_to_text::padding_policy::none>,
     codecs::base64url::detail::basic_encoding_traits<
         codecs::binary_to_text::padding_policy::optional>>;
+}
 }

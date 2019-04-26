@@ -6,6 +6,8 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/concepts/codec_output.hpp>
 #include <mgs/concepts/codec_traits.hpp>
+#include <mgs/concepts/detail/detected/static_member_functions/make_decoder.hpp>
+#include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
@@ -19,6 +21,8 @@ namespace mgs
 {
 namespace codecs
 {
+  // FIXME put detected::make_encoder in codecs_base/detail
+  // put Codec concepts in codecs_base/concepts
 namespace detail
 {
 template <typename CodecTraits, typename T, typename U>
@@ -30,6 +34,8 @@ using decoder = decltype(CodecTraits::make_decoder(std::declval<T>(),
                                                    std::declval<U>()));
 }
 
+inline namespace v1
+{
 template <typename CodecTraits>
 class basic_codec
 {
@@ -153,5 +159,6 @@ public:
     return encode<T>(s, s + std::strlen(s));
   }
 };
+}
 }
 }

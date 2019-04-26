@@ -14,6 +14,8 @@ namespace codecs
 {
 namespace binary_to_text
 {
+inline namespace v1
+{
 template <typename EncodingTraits, typename DecodingTraits = EncodingTraits>
 class basic_codec
   : public codecs::basic_codec<
@@ -38,6 +40,7 @@ public:
     return detail::max_decoded_size<DecodingTraits>{}(encoded_size);
   }
 };
+}
 }
 }
 }

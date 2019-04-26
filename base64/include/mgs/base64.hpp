@@ -9,6 +9,9 @@
 
 namespace mgs
 {
+inline namespace v1
+{
 using base64 = codecs::binary_to_text::basic_codec<
     codecs::base64::detail::encoding_traits<>>;
+}
 }
