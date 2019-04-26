@@ -8,10 +8,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename decodingTraits>
@@ -54,7 +50,5 @@ struct output_decoder
     }
   }
 };
-}
-}
 }
 }

@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/detail/detected/member_functions/read.hpp>
+#include <mgs/concepts/detected/member_functions/read.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/detected.hpp>
@@ -34,7 +34,7 @@ private:
 
   static auto constexpr const has_read_method =
       meta::is_detected_convertible<meta::ssize_t,
-                                    detail::detected::member_functions::read,
+                                    detected::member_functions::read,
                                     lvalue_ref,
                                     O,
                                     meta::ssize_t>::value;

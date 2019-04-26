@@ -8,14 +8,10 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace base16
-{
 namespace detail
 {
 template <typename Dummy = void>
-struct encoding_traits
+struct base16_encoding_traits
 {
   using lookup_table_t = int const[256];
 
@@ -61,16 +57,15 @@ struct encoding_traits
   }
 
   static constexpr auto const padding_policy =
-      binary_to_text::padding_policy::none;
+      codecs::binary_to_text::padding_policy::none;
 };
 
 template <typename T>
-constexpr typename encoding_traits<T>::alphabet_t encoding_traits<T>::alphabet;
+constexpr typename base16_encoding_traits<T>::alphabet_t
+    base16_encoding_traits<T>::alphabet;
 
 template <typename T>
-constexpr typename encoding_traits<T>::lookup_table_t
-    encoding_traits<T>::lookup_table;
-}
-}
+constexpr typename base16_encoding_traits<T>::lookup_table_t
+    base16_encoding_traits<T>::lookup_table;
 }
 }

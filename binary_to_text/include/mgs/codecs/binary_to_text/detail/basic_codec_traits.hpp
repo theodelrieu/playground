@@ -12,10 +12,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename EncodingTraits, typename DecodingTraits>
@@ -27,8 +23,9 @@ struct basic_codec_traits
   static auto make_encoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<
-        basic_encoder<Iterator, Sentinel, EncodingTraits>>(std::move(begin),
-                                                           std::move(end));
+        codecs::binary_to_text::
+            basic_encoder<Iterator, Sentinel, EncodingTraits>>(std::move(begin),
+                                                               std::move(end));
   }
 
   template <typename Iterator,
@@ -37,14 +34,13 @@ struct basic_codec_traits
   static auto make_decoder(Iterator begin, Sentinel end)
   {
     return ranges::basic_transformed_input_range<
-        basic_decoder<Iterator, Sentinel, DecodingTraits>>(std::move(begin),
-                                                           std::move(end));
+        codecs::binary_to_text::
+            basic_decoder<Iterator, Sentinel, DecodingTraits>>(std::move(begin),
+                                                               std::move(end));
   }
 
   using default_encoded_output = std::string;
   using default_decoded_output = std::vector<unsigned char>;
 };
-}
-}
 }
 }

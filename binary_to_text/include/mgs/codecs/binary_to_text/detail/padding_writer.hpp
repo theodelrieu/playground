@@ -5,14 +5,11 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename EncodingTraits,
-          padding_policy Policy = EncodingTraits::padding_policy>
+          codecs::binary_to_text::padding_policy Policy =
+              EncodingTraits::padding_policy>
 struct padding_writer
 {
   template <typename OutputIterator>
@@ -22,7 +19,8 @@ struct padding_writer
 };
 
 template <typename EncodingTraits>
-struct padding_writer<EncodingTraits, padding_policy::required>
+struct padding_writer<EncodingTraits,
+                      codecs::binary_to_text::padding_policy::required>
 {
   template <typename OutputIterator>
   static void write(OutputIterator out, meta::ssize_t n)
@@ -31,7 +29,5 @@ struct padding_writer<EncodingTraits, padding_policy::required>
       *out++ = EncodingTraits::padding_character;
   }
 };
-}
-}
 }
 }

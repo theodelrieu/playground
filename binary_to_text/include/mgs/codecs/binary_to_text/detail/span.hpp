@@ -6,10 +6,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename T, typename U = T>
@@ -59,7 +55,5 @@ private:
   T _begin;
   U _end;
 };
-}
-}
 }
 }

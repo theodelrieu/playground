@@ -24,8 +24,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
 namespace detail
 {
 template <typename RandomAccessContainer,
@@ -154,6 +152,5 @@ struct default_converter<std::array<C, N>>
     return ret;
   }
 };
-}
 }
 }

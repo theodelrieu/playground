@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-#include <mgs/codecs/binary_to_text/basic_codec.hpp>
 #include <mgs/codecs/base64/detail/encoding_traits.hpp>
+#include <mgs/codecs/binary_to_text/basic_codec.hpp>
 
 namespace mgs
 {
 inline namespace v1
 {
-using base64 = codecs::binary_to_text::basic_codec<
-    codecs::base64::detail::encoding_traits<>>;
+using base64 =
+    codecs::binary_to_text::basic_codec<detail::base64_encoding_traits<>>;
 }
 }

@@ -4,11 +4,11 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/codecs/binary_to_text/detail/detected/static_data_members/alphabet.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_character.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_data_members/padding_policy.hpp>
-#include <mgs/codecs/binary_to_text/detail/detected/static_member_functions/index_of.hpp>
 #include <mgs/codecs/binary_to_text/detail/math.hpp>
+#include <mgs/codecs/binary_to_text/detected/static_data_members/alphabet.hpp>
+#include <mgs/codecs/binary_to_text/detected/static_data_members/padding_character.hpp>
+#include <mgs/codecs/binary_to_text/detected/static_data_members/padding_policy.hpp>
+#include <mgs/codecs/binary_to_text/detected/static_member_functions/index_of.hpp>
 #include <mgs/codecs/binary_to_text/padding_policy.hpp>
 #include <mgs/meta/detected.hpp>
 
@@ -41,14 +41,14 @@ struct is_encoding_traits<
     T,
     std::enable_if_t<meta::is_detected_convertible<
                          padding_policy,
-                         detail::detected::static_data_members::padding_policy,
+                         detected::static_data_members::padding_policy,
                          T>::value &&
                      std::is_array<meta::detected_t<
-                         detail::detected::static_data_members::alphabet,
+                         detected::static_data_members::alphabet,
                          T>>::value>>
 {
 private:
-  using alphabet_t = detail::detected::static_data_members::alphabet<T>;
+  using alphabet_t = detected::static_data_members::alphabet<T>;
 
   static constexpr auto const is_alphabet = 
       std::is_array<alphabet_t>::value &&
@@ -60,14 +60,14 @@ private:
   static constexpr auto const is_valid_padding_character =
       meta::is_detected_convertible<
           char,
-          detail::detected::static_data_members::padding_character,
+          detected::static_data_members::padding_character,
           T>::value;
 
-  static constexpr auto const has_index_of = meta::is_detected_exact<
-      int,
-      detail::detected::static_member_functions::index_of,
-      T,
-      char>::value;
+  static constexpr auto const has_index_of =
+      meta::is_detected_exact<int,
+                              detected::static_member_functions::index_of,
+                              T,
+                              char>::value;
 
 public:
   using requirements = std::tuple<>;

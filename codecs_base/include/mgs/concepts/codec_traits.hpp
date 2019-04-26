@@ -4,11 +4,10 @@
 #include <type_traits>
 
 #include <mgs/concepts/codec_output.hpp>
-#include <mgs/concepts/detail/default_output_types.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/make_decoder.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
-#include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
-#include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
+#include <mgs/concepts/detected/static_member_functions/make_decoder.hpp>
+#include <mgs/concepts/detected/static_member_functions/make_encoder.hpp>
+#include <mgs/concepts/detected/types/default_decoded_output.hpp>
+#include <mgs/concepts/detected/types/default_encoded_output.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
@@ -40,23 +39,24 @@ namespace mgs
 {
 namespace concepts
 {
-template <typename T,
-          typename A1 = meta::detected_t<detail::default_encoded_output, T>,
-          typename A2 = meta::detected_t<detail::default_decoded_output, T>,
-          typename I1 = meta::detected_t<meta::iterator_t, A1>,
-          typename I2 = meta::detected_t<meta::iterator_t, A2>,
-          typename S1 = I1,
-          typename S2 = I2>
+template <
+    typename T,
+    typename A1 = meta::detected_t<detected::types::default_encoded_output, T>,
+    typename A2 = meta::detected_t<detected::types::default_decoded_output, T>,
+    typename I1 = meta::detected_t<meta::iterator_t, A1>,
+    typename I2 = meta::detected_t<meta::iterator_t, A2>,
+    typename S1 = I1,
+    typename S2 = I2>
 struct is_codec_traits
 {
 private:
   using Encoder =
-      meta::detected_t<detail::detected::static_member_functions::make_encoder,
+      meta::detected_t<detected::static_member_functions::make_encoder,
                        T,
                        I1,
                        S1>;
   using Decoder =
-      meta::detected_t<detail::detected::static_member_functions::make_decoder,
+      meta::detected_t<detected::static_member_functions::make_decoder,
                        T,
                        I2,
                        S2>;
@@ -99,21 +99,24 @@ public:
   }
 };
 
-template <typename T,
-          typename A1 = meta::detected_t<detail::default_encoded_output, T>,
-          typename A2 = meta::detected_t<detail::default_decoded_output, T>,
-          typename I1 = meta::detected_t<meta::iterator_t, A1>,
-          typename I2 = meta::detected_t<meta::iterator_t, A2>,
-          typename S1 = I1,
-          typename S2 = I2>
+template <
+    typename T,
+    typename A1 = meta::detected_t<detected::types::default_encoded_output, T>,
+    typename A2 = meta::detected_t<detected::types::default_decoded_output, T>,
+    typename I1 = meta::detected_t<meta::iterator_t, A1>,
+    typename I2 = meta::detected_t<meta::iterator_t, A2>,
+    typename S1 = I1,
+    typename S2 = I2>
 constexpr auto is_codec_traits_v =
     is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value;
 }
 
 template <
     typename T,
-    typename A1 = meta::detected_t<concepts::detail::default_encoded_output, T>,
-    typename A2 = meta::detected_t<concepts::detail::default_decoded_output, T>,
+    typename A1 =
+        meta::detected_t<concepts::detected::types::default_encoded_output, T>,
+    typename A2 =
+        meta::detected_t<concepts::detected::types::default_decoded_output, T>,
     typename I1 = meta::detected_t<meta::iterator_t, A1>,
     typename I2 = meta::detected_t<meta::iterator_t, A2>,
     typename S1 = I1,

@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/detected/member_functions/max_transformed_size.hpp>
 #include <mgs/concepts/input_transformer.hpp>
 #include <mgs/meta/ssize_t.hpp>
 
@@ -25,7 +25,7 @@ private:
   static constexpr auto const has_max_transformed_size_method =
       meta::is_detected_convertible<
           meta::ssize_t,
-          detail::detected::member_functions::max_transformed_size,
+          detected::member_functions::max_transformed_size,
           std::add_lvalue_reference_t<std::add_const_t<T>>>::value;
 
 public:

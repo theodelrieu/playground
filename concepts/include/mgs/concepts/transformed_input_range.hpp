@@ -4,8 +4,8 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
+#include <mgs/concepts/detected/types/underlying_iterator.hpp>
+#include <mgs/concepts/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
@@ -40,9 +40,9 @@ private:
   using iterator = meta::detected_t<meta::iterator_t, T>;
 
   using underlying_iterator =
-      meta::detected_t<detail::detected::types::underlying_iterator, T>;
+      meta::detected_t<detected::types::underlying_iterator, T>;
   using underlying_sentinel =
-      meta::detected_t<detail::detected::types::underlying_sentinel, T>;
+      meta::detected_t<detected::types::underlying_sentinel, T>;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
       meta::concepts::

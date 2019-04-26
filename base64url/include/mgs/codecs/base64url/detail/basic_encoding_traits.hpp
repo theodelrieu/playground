@@ -7,14 +7,10 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace base64url
-{
 namespace detail
 {
-template <binary_to_text::padding_policy PaddingPolicy>
-struct basic_encoding_traits
+template <codecs::binary_to_text::padding_policy PaddingPolicy>
+struct basic_base64url_encoding_traits
 {
   using alphabet_t = char const[64];
   using lookup_table_t = int const[256];
@@ -52,17 +48,17 @@ struct basic_encoding_traits
   }
 };
 
-template <binary_to_text::padding_policy PaddingPolicy>
-constexpr typename basic_encoding_traits<PaddingPolicy>::alphabet_t
-    basic_encoding_traits<PaddingPolicy>::alphabet;
+template <codecs::binary_to_text::padding_policy PaddingPolicy>
+constexpr typename basic_base64url_encoding_traits<PaddingPolicy>::alphabet_t
+    basic_base64url_encoding_traits<PaddingPolicy>::alphabet;
 
-template <binary_to_text::padding_policy PaddingPolicy>
-constexpr char const basic_encoding_traits<PaddingPolicy>::padding_character;
+template <codecs::binary_to_text::padding_policy PaddingPolicy>
+constexpr char const
+    basic_base64url_encoding_traits<PaddingPolicy>::padding_character;
 
-template <binary_to_text::padding_policy PaddingPolicy>
-constexpr typename basic_encoding_traits<PaddingPolicy>::lookup_table_t
-    basic_encoding_traits<PaddingPolicy>::lookup_table;
-}
-}
+template <codecs::binary_to_text::padding_policy PaddingPolicy>
+constexpr
+    typename basic_base64url_encoding_traits<PaddingPolicy>::lookup_table_t
+        basic_base64url_encoding_traits<PaddingPolicy>::lookup_table;
 }
 }

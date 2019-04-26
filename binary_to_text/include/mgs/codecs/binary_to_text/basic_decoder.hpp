@@ -37,7 +37,8 @@ private:
                 "Iterator must be an InputIterator");
   static_assert(meta::concepts::is_sentinel<Sentinel, Iterator>::value,
                 "Sentinel must be a Sentinel<Iterator>");
-  static_assert(concepts::is_encoding_traits<EncodingTraits>::value, "Invalid encoding traits");
+  static_assert(concepts::is_encoding_traits<EncodingTraits>::value,
+                "Invalid encoding traits");
 
   using BitshiftTraits = detail::bitshift_traits<EncodingTraits>;
 

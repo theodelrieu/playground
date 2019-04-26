@@ -5,14 +5,11 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename EncodingTraits,
-          padding_policy = EncodingTraits::padding_policy>
+          codecs::binary_to_text::padding_policy =
+              EncodingTraits::padding_policy>
 struct encoded_input_reader
 {
   template <typename Iterator, typename Sentinel>
@@ -27,7 +24,8 @@ struct encoded_input_reader
 };
 
 template <typename EncodingTraits>
-struct encoded_input_reader<EncodingTraits, padding_policy::optional>
+struct encoded_input_reader<EncodingTraits,
+                            codecs::binary_to_text::padding_policy::optional>
 {
   template <typename Iterator, typename Sentinel>
   static char read(Iterator& current, Sentinel const sent)
@@ -37,7 +35,5 @@ struct encoded_input_reader<EncodingTraits, padding_policy::optional>
     return *current++;
   }
 };
-}
-}
 }
 }

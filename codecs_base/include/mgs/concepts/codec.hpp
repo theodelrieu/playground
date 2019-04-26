@@ -4,13 +4,12 @@
 #include <type_traits>
 
 #include <mgs/concepts/codec_output.hpp>
-#include <mgs/concepts/detail/default_output_types.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/decode.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/encode.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/make_decoder.hpp>
-#include <mgs/concepts/detail/detected/static_member_functions/make_encoder.hpp>
-#include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
-#include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
+#include <mgs/concepts/detected/static_member_functions/decode.hpp>
+#include <mgs/concepts/detected/static_member_functions/encode.hpp>
+#include <mgs/concepts/detected/static_member_functions/make_decoder.hpp>
+#include <mgs/concepts/detected/static_member_functions/make_encoder.hpp>
+#include <mgs/concepts/detected/types/default_decoded_output.hpp>
+#include <mgs/concepts/detected/types/default_encoded_output.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
@@ -57,10 +56,10 @@ namespace mgs
 namespace concepts
 {
 template <typename T,
-          typename A1 = detail::default_decoded_output<T>,
-          typename A2 = detail::default_encoded_output<T>,
-          typename R1 = detail::default_encoded_output<T>,
-          typename R2 = detail::default_decoded_output<T>,
+          typename A1 = detected::types::default_decoded_output<T>,
+          typename A2 = detected::types::default_encoded_output<T>,
+          typename R1 = detected::types::default_encoded_output<T>,
+          typename R2 = detected::types::default_decoded_output<T>,
           typename I1 = meta::detected_t<meta::iterator_t, A1>,
           typename I2 = meta::detected_t<meta::iterator_t, A2>,
           typename S1 = I1,
@@ -68,60 +67,60 @@ template <typename T,
 struct is_codec
 {
 private:
-  using DefaultEncodedOutput = detail::default_encoded_output<T>;
-  using DefaultDecodedOutput = detail::default_decoded_output<T>;
+  using DefaultEncodedOutput = detected::types::default_encoded_output<T>;
+  using DefaultDecodedOutput = detected::types::default_decoded_output<T>;
   using EncodeInput = std::add_lvalue_reference_t<A1>;
   using DecodeInput = std::add_lvalue_reference_t<A2>;
 
   using Encoder =
-      meta::detected_t<detail::detected::static_member_functions::make_encoder,
+      meta::detected_t<detected::static_member_functions::make_encoder,
                        T,
                        I1,
                        S1>;
 
   using Decoder =
-      meta::detected_t<detail::detected::static_member_functions::make_decoder,
+      meta::detected_t<detected::static_member_functions::make_decoder,
                        T,
                        I2,
                        S2>;
 
   using EncodeDefaultResult =
-      meta::detected_t<detail::detected::static_member_functions::encode,
+      meta::detected_t<detected::static_member_functions::encode,
                        T,
                        EncodeInput>;
 
   using EncodeIteratorsDefaultResult = meta::
-      detected_t<detail::detected::static_member_functions::encode, T, I1, S1>;
+      detected_t<detected::static_member_functions::encode, T, I1, S1>;
 
   using EncodeTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::encode_tpl,
+      meta::detected_t<detected::static_member_functions::encode_tpl,
                        T,
                        R1,
                        EncodeInput>;
 
   using EncodeIteratorsTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::encode_tpl,
+      meta::detected_t<detected::static_member_functions::encode_tpl,
                        T,
                        R1,
                        I1,
                        S1>;
 
   using DecodeDefaultResult =
-      meta::detected_t<detail::detected::static_member_functions::decode,
+      meta::detected_t<detected::static_member_functions::decode,
                        T,
                        DecodeInput>;
 
   using DecodeIteratorsDefaultResult = meta::
-      detected_t<detail::detected::static_member_functions::decode, T, I2, S2>;
+      detected_t<detected::static_member_functions::decode, T, I2, S2>;
 
   using DecodeTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::decode_tpl,
+      meta::detected_t<detected::static_member_functions::decode_tpl,
                        T,
                        R2,
                        DecodeInput>;
 
   using DecodeIteratorsTemplateResult =
-      meta::detected_t<detail::detected::static_member_functions::decode_tpl,
+      meta::detected_t<detected::static_member_functions::decode_tpl,
                        T,
                        R2,
                        I2,
@@ -241,10 +240,10 @@ public:
 };
 
 template <typename T,
-          typename A1 = detail::default_decoded_output<T>,
-          typename A2 = detail::default_encoded_output<T>,
-          typename R1 = detail::default_encoded_output<T>,
-          typename R2 = detail::default_decoded_output<T>,
+          typename A1 = detected::types::default_decoded_output<T>,
+          typename A2 = detected::types::default_encoded_output<T>,
+          typename R1 = detected::types::default_encoded_output<T>,
+          typename R2 = detected::types::default_decoded_output<T>,
           typename I1 = meta::detected_t<meta::iterator_t, A1>,
           typename I2 = meta::detected_t<meta::iterator_t, A2>,
           typename S1 = I1,
@@ -253,10 +252,10 @@ constexpr auto is_codec_v = is_codec<T, A1, A2, R1, R2, I1, I2, S1, S2>::value;
 }
 
 template <typename T,
-          typename A1 = concepts::detail::default_decoded_output<T>,
-          typename A2 = concepts::detail::default_encoded_output<T>,
-          typename R1 = concepts::detail::default_encoded_output<T>,
-          typename R2 = concepts::detail::default_decoded_output<T>,
+          typename A1 = concepts::detected::types::default_decoded_output<T>,
+          typename A2 = concepts::detected::types::default_encoded_output<T>,
+          typename R1 = concepts::detected::types::default_encoded_output<T>,
+          typename R2 = concepts::detected::types::default_decoded_output<T>,
           typename I1 = meta::detected_t<meta::iterator_t, A1>,
           typename I2 = meta::detected_t<meta::iterator_t, A2>,
           typename S1 = I1,

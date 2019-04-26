@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/detail/detected/static_member_functions/create.hpp>
+#include <mgs/concepts/detected/static_member_functions/create.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/detected.hpp>
 
@@ -28,7 +28,7 @@ struct is_codec_output
 private:
   static constexpr auto const has_create_method = meta::is_detected_exact<
       T,
-      detail::detected::static_member_functions::create,
+      detected::static_member_functions::create,
       meta::detected_t<codecs::output_traits, T>,
       std::add_lvalue_reference_t<TransformedInputRange>>::value;
 

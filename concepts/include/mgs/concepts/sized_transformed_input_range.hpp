@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <tuple>
 
-#include <mgs/concepts/detail/detected/member_functions/max_transformed_size.hpp>
+#include <mgs/concepts/detected/member_functions/max_transformed_size.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
@@ -32,7 +32,7 @@ private:
   static constexpr auto const has_max_transformed_size =
       meta::is_detected_convertible<
           meta::ssize_t,
-          detail::detected::member_functions::max_transformed_size,
+          detected::member_functions::max_transformed_size,
           lvalue_const_ref>::value;
 
 public:

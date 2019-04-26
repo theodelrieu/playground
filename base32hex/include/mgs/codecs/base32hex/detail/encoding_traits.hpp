@@ -7,14 +7,10 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace base32hex
-{
 namespace detail
 {
 template <typename Dummy = void>
-struct encoding_traits
+struct base32hex_encoding_traits
 {
   using lookup_table_t = int const[256];
 
@@ -44,7 +40,7 @@ struct encoding_traits
 
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
-      binary_to_text::padding_policy::required;
+      codecs::binary_to_text::padding_policy::required;
 
   static int index_of(char c)
   {
@@ -53,15 +49,14 @@ struct encoding_traits
 };
 
 template <typename T>
-constexpr typename encoding_traits<T>::alphabet_t encoding_traits<T>::alphabet;
+constexpr typename base32hex_encoding_traits<T>::alphabet_t
+    base32hex_encoding_traits<T>::alphabet;
 
 template <typename T>
-constexpr typename encoding_traits<T>::lookup_table_t
-    encoding_traits<T>::lookup_table;
+constexpr typename base32hex_encoding_traits<T>::lookup_table_t
+    base32hex_encoding_traits<T>::lookup_table;
 
 template <typename T>
-constexpr char const encoding_traits<T>::padding_character;
-}
-}
+constexpr char const base32hex_encoding_traits<T>::padding_character;
 }
 }

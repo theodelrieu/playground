@@ -7,14 +7,10 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace base64
-{
 namespace detail
 {
 template <typename = void>
-struct encoding_traits
+struct base64_encoding_traits
 {
   using alphabet_t = char const[64];
   using lookup_table_t = int const[256];
@@ -45,7 +41,7 @@ struct encoding_traits
 
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
-      binary_to_text::padding_policy::required;
+      codecs::binary_to_text::padding_policy::required;
 
   static constexpr auto index_of(char c)
   {
@@ -54,16 +50,14 @@ struct encoding_traits
 };
 
 template <typename Dummy>
-constexpr typename encoding_traits<Dummy>::alphabet_t
-    encoding_traits<Dummy>::alphabet;
+constexpr typename base64_encoding_traits<Dummy>::alphabet_t
+    base64_encoding_traits<Dummy>::alphabet;
 
 template <typename Dummy>
-constexpr char const encoding_traits<Dummy>::padding_character;
+constexpr char const base64_encoding_traits<Dummy>::padding_character;
 
 template <typename Dummy>
-constexpr typename encoding_traits<Dummy>::lookup_table_t
-    encoding_traits<Dummy>::lookup_table;
-}
-}
+constexpr typename base64_encoding_traits<Dummy>::lookup_table_t
+    base64_encoding_traits<Dummy>::lookup_table;
 }
 }

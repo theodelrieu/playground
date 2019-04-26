@@ -6,15 +6,12 @@ namespace mgs
 {
 namespace concepts
 {
-namespace detail
-{
 namespace detected
 {
-namespace static_member_functions
+namespace member_functions
 {
 template <typename T, typename... Args>
-using create = decltype(T::create(std::declval<Args>()...));
-}
+using read = decltype(std::declval<T>().read(std::declval<Args>()...));
 }
 }
 }

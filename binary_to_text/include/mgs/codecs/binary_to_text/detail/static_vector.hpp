@@ -9,10 +9,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 // a very minimalistic static_vector...
@@ -89,7 +85,5 @@ private:
   std::array<T, N> _array;
   meta::ssize_t _index{0};
 };
-}
-}
 }
 }

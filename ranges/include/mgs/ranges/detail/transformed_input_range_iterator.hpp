@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-namespace ranges
-{
 namespace detail
 {
 template <typename TransformedInputRange>
@@ -53,7 +51,6 @@ bool operator!=(
     transformed_input_range_iterator<TransformedInputRange> const&,
     transformed_input_range_iterator<
         TransformedInputRange> const&) noexcept;
-}
 }
 }
 

@@ -8,18 +8,16 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename EncodingTraits,
-          padding_policy = EncodingTraits::padding_policy>
+          codecs::binary_to_text::padding_policy =
+              EncodingTraits::padding_policy>
 struct encoded_size;
 
 template <typename EncodingTraits>
-struct encoded_size<EncodingTraits, padding_policy::required>
+struct encoded_size<EncodingTraits,
+                    codecs::binary_to_text::padding_policy::required>
 {
   constexpr meta::ssize_t operator()(meta::ssize_t decoded_size) const
   {
@@ -34,7 +32,8 @@ struct encoded_size<EncodingTraits, padding_policy::required>
 };
 
 template <typename EncodingTraits>
-struct encoded_size<EncodingTraits, padding_policy::none>
+struct encoded_size<EncodingTraits,
+                    codecs::binary_to_text::padding_policy::none>
 {
   constexpr meta::ssize_t operator()(meta::ssize_t decoded_size) const
   {
@@ -51,8 +50,7 @@ struct encoded_size<EncodingTraits, padding_policy::none>
 
 // optional does not make sense when encoding.
 template <typename EncodingTraits>
-struct encoded_size<EncodingTraits, padding_policy::optional>;
-}
-}
+struct encoded_size<EncodingTraits,
+                    codecs::binary_to_text::padding_policy::optional>;
 }
 }

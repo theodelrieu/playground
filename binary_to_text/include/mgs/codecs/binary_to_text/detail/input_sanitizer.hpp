@@ -11,10 +11,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename ForwardIterator>
@@ -85,11 +81,13 @@ void sanitize_invalid_input(Input const& input,
 }
 
 template <typename EncodingTraits,
-          padding_policy = EncodingTraits::padding_policy>
+          codecs::binary_to_text::padding_policy =
+              EncodingTraits::padding_policy>
 class input_sanitizer;
 
 template <typename EncodingTraits>
-class input_sanitizer<EncodingTraits, padding_policy::none>
+class input_sanitizer<EncodingTraits,
+                      codecs::binary_to_text::padding_policy::none>
 {
 public:
   template <typename Input>
@@ -107,7 +105,8 @@ public:
 };
 
 template <typename EncodingTraits>
-class input_sanitizer<EncodingTraits, padding_policy::optional>
+class input_sanitizer<EncodingTraits,
+                      codecs::binary_to_text::padding_policy::optional>
 {
 public:
   template <typename Input>
@@ -132,7 +131,8 @@ public:
 };
 
 template <typename EncodingTraits>
-class input_sanitizer<EncodingTraits, padding_policy::required>
+class input_sanitizer<EncodingTraits,
+                      codecs::binary_to_text::padding_policy::required>
 {
   using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -154,7 +154,5 @@ public:
     return input.size();
   }
 };
-}
-}
 }
 }

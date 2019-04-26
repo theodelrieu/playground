@@ -2,11 +2,11 @@
 
 #include <tuple>
 
-#include <mgs/concepts/detail/detected/member_functions/get_iterator.hpp>
-#include <mgs/concepts/detail/detected/member_functions/get_sentinel.hpp>
-#include <mgs/concepts/detail/detected/types/buffer_type.hpp>
-#include <mgs/concepts/detail/detected/types/underlying_iterator.hpp>
-#include <mgs/concepts/detail/detected/types/underlying_sentinel.hpp>
+#include <mgs/concepts/detected/member_functions/get_iterator.hpp>
+#include <mgs/concepts/detected/member_functions/get_sentinel.hpp>
+#include <mgs/concepts/detected/types/buffer_type.hpp>
+#include <mgs/concepts/detected/types/underlying_iterator.hpp>
+#include <mgs/concepts/detected/types/underlying_sentinel.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
@@ -45,9 +45,9 @@ private:
   using t_ref = std::add_lvalue_reference_t<T>;
   using t_const_ref = std::add_lvalue_reference_t<std::add_const_t<T>>;
 
-  using I = meta::detected_t<detail::detected::types::underlying_iterator, T>;
-  using S = meta::detected_t<detail::detected::types::underlying_sentinel, T>;
-  using Buffer = meta::detected_t<detail::detected::types::buffer_type, T>;
+  using I = meta::detected_t<detected::types::underlying_iterator, T>;
+  using S = meta::detected_t<detected::types::underlying_sentinel, T>;
+  using Buffer = meta::detected_t<detected::types::buffer_type, T>;
   using BufferI = meta::detected_t<meta::iterator_t, Buffer const>;
   using BufferS = meta::detected_t<meta::sentinel_t, Buffer const>;
 
@@ -59,11 +59,11 @@ private:
 
   static constexpr auto const has_get_iterator =
       meta::is_detected_exact<I const&,
-                              detail::detected::member_functions::get_iterator,
+                              detected::member_functions::get_iterator,
                               t_const_ref>::value;
   static constexpr auto const has_get_sentinel =
       meta::is_detected_exact<S const&,
-                              detail::detected::member_functions::get_sentinel,
+                              detected::member_functions::get_sentinel,
                               t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =

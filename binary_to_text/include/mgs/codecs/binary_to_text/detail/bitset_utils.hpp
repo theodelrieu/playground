@@ -8,10 +8,6 @@
 
 namespace mgs
 {
-namespace codecs
-{
-namespace binary_to_text
-{
 namespace detail
 {
 template <typename BitshiftTraits, typename RandomAccessIterator>
@@ -43,8 +39,6 @@ auto indices_to_bitset(RandomAccessIterator it, meta::ssize_t n)
                                          (BitshiftTraits::nb_index_bits * i));
   }
   return input_bits;
-}
-}
 }
 }
 }
