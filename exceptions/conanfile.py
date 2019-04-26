@@ -10,6 +10,9 @@ class ConanMgsExceptions(ConanFile):
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
 
+    def requirements(self):
+        self.requires("mgs_config/%s@mgs/testing" % self.version)
+
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTING"] = "OFF"

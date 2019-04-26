@@ -1,6 +1,6 @@
 from conans import ConanFile, CMake
 
-class ConanMgsBase64(ConanFile):
+class ConanMgsBase64Url(ConanFile):
     name = "mgs_base64url"
     version = "0.1.0"
     generators = "cmake"
@@ -18,6 +18,7 @@ class ConanMgsBase64(ConanFile):
         self.requires("mgs_binary_to_text/%s@mgs/testing" % self.version)
         self.requires("mgs_codecs/%s@mgs/testing" % self.version)
         self.requires("mgs_ranges/%s@mgs/testing" % self.version)
+        self.requires("mgs_config/%s@mgs/testing" % self.version)
 
     def build(self):
         cmake = CMake(self)

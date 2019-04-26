@@ -4,8 +4,9 @@
 #include <tuple>
 #include <type_traits>
 
-// TODO define macros in config.hpp
-#if __cplusplus >= 201703L
+#include <mgs/config.hpp>
+
+#if MGS_HAS_CPP17
 #include <cstddef> 
 #endif
 
@@ -25,7 +26,7 @@ struct is_byte
   using requirements = std::tuple<>;
 
   static constexpr auto const value =
-#if __cplusplus >= 201703L
+#if MGS_HAS_CPP17
       std::is_same<std::byte, T>::value ||
 #endif
       (std::is_integral<T>::value &&

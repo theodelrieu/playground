@@ -11,7 +11,7 @@ target_include_directories(ranges INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(ranges INTERFACE CONAN_PKG::mgs_meta )
+target_link_libraries(ranges INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_config)
 
 include(MgsExportAndInstallTarget)
 mgs_export_and_install_target(ranges)

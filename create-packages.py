@@ -5,10 +5,10 @@ from conans.client.command import main as main_conan
 
 PACKAGES = [
     "cmake",
+    "config",
     "test_helpers",
     "meta",
     "exceptions",
-    "concepts",
     "ranges",
     "codecs",
     "binary_to_text",

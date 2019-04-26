@@ -13,6 +13,8 @@ target_include_directories(meta INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
+target_link_libraries(meta INTERFACE CONAN_PKG::mgs_config)
+
 mgs_export_and_install_target(meta)
 
 include(CTest)

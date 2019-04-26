@@ -11,7 +11,7 @@ target_include_directories(binary_to_text INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(binary_to_text INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_codecs )
+target_link_libraries(binary_to_text INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_codecs CONAN_PKG::mgs_config)
 
 include(CTest)
 

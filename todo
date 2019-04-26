@@ -2,7 +2,6 @@ ci + new repo
 
 code
 
-* define MGS_HAS_CPP17 in config.hpp
 * fix Writable on windows
 
 doc

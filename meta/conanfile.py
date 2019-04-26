@@ -13,6 +13,9 @@ class ConanMgsMeta(ConanFile):
             self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
             self.build_requires("catch2/2.2.2@bincrafters/stable")
 
+    def requirements(self):
+        self.requires("mgs_config/%s@mgs/testing" % self.version)
+
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTING"] = "OFF"

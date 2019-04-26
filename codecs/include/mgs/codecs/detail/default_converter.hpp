@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+#include <mgs/config.hpp>
+
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
@@ -109,7 +111,7 @@ private:
             typename R = Output,
             typename = std::enable_if_t<
   // Guaranteed copy-elision
-#if __cplusplus < 201703L
+#if MGS_HAS_CPP17
                 (meta::is_move_constructible<R>::value ||
                  meta::is_copy_constructible<R>::value) &&
 #endif

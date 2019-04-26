@@ -9,6 +9,7 @@ class ConanMgsTestHelpers(ConanFile):
 
     def requirements(self):
         self.requires("catch2/2.2.2@bincrafters/stable")
+        self.requires("mgs_config/%s@mgs/testing" % self.version)
 
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
