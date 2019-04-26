@@ -12,9 +12,9 @@
 
 #include <catch.hpp>
 
-#include <mgs/codecs/binary_to_text/basic_codec.hpp>
-#include <mgs/codecs/binary_to_text/basic_decoder.hpp>
-#include <mgs/codecs/binary_to_text/basic_encoder.hpp>
+#include <mgs/binary_to_text/basic_codec.hpp>
+#include <mgs/binary_to_text/basic_decoder.hpp>
+#include <mgs/binary_to_text/basic_encoder.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
