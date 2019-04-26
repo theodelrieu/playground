@@ -3,8 +3,8 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/range.hpp>
+#include <mgs/meta/detail/call_std/end.hpp>
 
 namespace mgs
 {

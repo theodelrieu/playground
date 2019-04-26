@@ -5,8 +5,8 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/meta/call_std/swap.hpp>
 #include <mgs/meta/concepts/complete_type.hpp>
+#include <mgs/meta/detail/call_std/swap.hpp>
 
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs

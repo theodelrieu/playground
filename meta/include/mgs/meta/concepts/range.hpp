@@ -2,10 +2,10 @@
 
 #include <type_traits>
 
-#include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/detail/call_std/begin.hpp>
+#include <mgs/meta/detail/call_std/end.hpp>
 #include <mgs/meta/detected.hpp>
 
 // template <typename T>

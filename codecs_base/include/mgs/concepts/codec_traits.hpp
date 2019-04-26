@@ -10,12 +10,11 @@
 #include <mgs/concepts/detail/detected/types/default_decoded_output.hpp>
 #include <mgs/concepts/detail/detected/types/default_encoded_output.hpp>
 #include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/meta/call_std/begin.hpp>
-#include <mgs/meta/call_std/end.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
+#include <mgs/meta/sentinel_t.hpp>
 
 // clang-format off
 //
