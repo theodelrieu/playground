@@ -9,17 +9,14 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename T>
 struct is_valid_is_constructible_type
 {
   static constexpr auto const value =
-      (std::is_object<T>::value && is_complete_type<T>::value) ||
+      (std::is_object<T>::value &&
+       meta::concepts::is_complete_type<T>::value) ||
       std::is_array<T>::value || std::is_reference<T>::value ||
       std::is_void<T>::value;
 };
@@ -41,6 +38,10 @@ struct is_constructible_impl<
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename T, typename... Args>
 struct is_constructible : detail::is_constructible_impl<T, std::tuple<Args...>>
 {

@@ -13,6 +13,6 @@ namespace operators
 template <typename T>
 using post_decrement = decltype(std::declval<T>()--);
 }
-};
+}
 }
 }

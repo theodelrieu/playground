@@ -12,10 +12,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename T, typename = void>
@@ -25,11 +21,11 @@ struct is_readable_impl : std::false_type
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_detected<iter_value_t, T>::value,
+    static_assert(meta::is_detected<meta::iter_value_t, T>::value,
                   "iter_value_t<T> is ill-formed");
-    static_assert(is_detected<iter_reference_t, T>::value,
+    static_assert(meta::is_detected<meta::iter_reference_t, T>::value,
                   "iter_reference_t<T> is ill-formed");
-    static_assert(is_detected<iter_rvalue_reference_t, T>::value,
+    static_assert(meta::is_detected<meta::iter_rvalue_reference_t, T>::value,
                   "iter_rvalue_reference_t<T> is ill-formed");
     return 1;
   }
@@ -38,31 +34,36 @@ struct is_readable_impl : std::false_type
 template <typename T>
 struct is_readable_impl<
     T,
-	// void_t does not work here for MSVC
-	std::enable_if_t<is_detected<iter_value_t, T>::value && is_detected<iter_reference_t, T>::value && is_detected<iter_rvalue_reference_t, T>::value>>
+    // void_t does not work here for MSVC
+    std::enable_if_t<
+        meta::is_detected<meta::iter_value_t, T>::value &&
+        meta::is_detected<meta::iter_reference_t, T>::value &&
+        meta::is_detected<meta::iter_rvalue_reference_t, T>::value>>
 {
   using requirements = std::tuple<
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_reference_t<T>>,
-          std::add_lvalue_reference_t<iter_value_t<T>>>,
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_reference_t<T>>,
-          std::add_rvalue_reference_t<iter_rvalue_reference_t<T>>>,
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_rvalue_reference_t<T>>,
-          std::add_lvalue_reference_t<std::add_const_t<iter_value_t<T>>>>>;
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
+          std::add_lvalue_reference_t<meta::iter_value_t<T>>>,
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
+          std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>>,
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>,
+          std::add_lvalue_reference_t<
+              std::add_const_t<meta::iter_value_t<T>>>>>;
 
   static constexpr auto const value =
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_reference_t<T>>,
-          std::add_lvalue_reference_t<iter_value_t<T>>>::value &&
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_reference_t<T>>,
-          std::add_rvalue_reference_t<iter_rvalue_reference_t<T>>>::value &&
-      has_common_reference<
-          std::add_rvalue_reference_t<iter_rvalue_reference_t<T>>,
-          std::add_lvalue_reference_t<std::add_const_t<iter_value_t<T>>>>::
-          value;
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
+          std::add_lvalue_reference_t<meta::iter_value_t<T>>>::value &&
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_reference_t<T>>,
+          std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>>::
+          value &&
+      meta::concepts::has_common_reference<
+          std::add_rvalue_reference_t<meta::iter_rvalue_reference_t<T>>,
+          std::add_lvalue_reference_t<
+              std::add_const_t<meta::iter_value_t<T>>>>::value;
 
   static constexpr int trigger_static_asserts()
   {
@@ -72,6 +73,10 @@ struct is_readable_impl<
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename T>
 struct is_readable : detail::is_readable_impl<T>
 {

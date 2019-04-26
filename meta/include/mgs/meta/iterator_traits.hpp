@@ -3,11 +3,7 @@
 #include <iterator>
 #include <type_traits>
 
-#include <mgs/meta/void_t.hpp>
-
 namespace mgs
-{
-namespace meta
 {
 namespace detail
 {
@@ -31,6 +27,8 @@ struct iterator_traits<T*, std::enable_if_t<std::is_object<T>::value>>
 };
 }
 
+namespace meta
+{
 template <typename T>
 struct iterator_traits : detail::iterator_traits<T>
 {

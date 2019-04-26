@@ -10,10 +10,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename I, typename T>
@@ -25,6 +21,10 @@ using output_iterator_requirement = decltype(
     _output_iterator_requirement(std::declval<I>(), std::declval<T>()));
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename I, typename T>
 struct is_output_iterator
 {

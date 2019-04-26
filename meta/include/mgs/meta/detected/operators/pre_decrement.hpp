@@ -13,6 +13,6 @@ namespace operators
 template <typename T>
 using pre_decrement = decltype(--std::declval<T>());
 }
-};
+}
 }
 }

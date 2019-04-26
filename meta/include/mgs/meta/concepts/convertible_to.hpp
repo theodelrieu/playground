@@ -9,17 +9,13 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename T>
 struct is_valid_is_convertible_to_type
 {
   static constexpr auto const value =
-      is_complete_type<T>::value ||
+      meta::concepts::is_complete_type<T>::value ||
       // int (&) [] is an incomplete type, and a reference type, so
       // std::is_array returns false without std::remove_reference_t
       std::is_array<std::remove_reference_t<T>>::value ||
@@ -80,6 +76,10 @@ public:
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename From, typename To>
 struct is_convertible_to : detail::is_convertible_to_impl<From, To>
 {

@@ -13,6 +13,6 @@ namespace operators
 template <typename T, typename... Args>
 using function_call = decltype(std::declval<T>()(std::declval<Args>()...));
 }
-};
+}
 }
 }

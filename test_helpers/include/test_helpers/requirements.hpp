@@ -12,8 +12,7 @@ template <typename Requirement,
 void generate_failed_requirements_tests()
 {
   using failed_requirements =
-      typename mgs::meta::detail::collect_failed_requirements<
-          Requirement>::type;
+      typename mgs::detail::collect_failed_requirements<Requirement>::type;
 
   using combined = decltype(
       std::tuple_cat(std::tuple<Requirement>{}, ExpectedFailedRequirements{}));

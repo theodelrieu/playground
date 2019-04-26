@@ -10,10 +10,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename LHS, typename RHS>
@@ -25,6 +21,10 @@ using assignable_requirement =
     decltype(_assignable_requirement(std::declval<LHS>(), std::declval<RHS>()));
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename LHS, typename RHS>
 struct is_assignable
 {

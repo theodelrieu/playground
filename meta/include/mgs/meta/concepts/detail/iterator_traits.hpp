@@ -15,10 +15,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename T>
@@ -32,19 +28,20 @@ struct is_iterator_traits_primary_template<meta::iterator_traits<T>>
   using traits = meta::iterator_traits<T>;
 
   static constexpr auto const has_value_type =
-      is_detected<detected::types::value_type, traits>::value;
+      meta::is_detected<meta::detected::types::value_type, traits>::value;
 
   static constexpr auto const has_difference_type =
-      is_detected<detected::types::difference_type, traits>::value;
+      meta::is_detected<meta::detected::types::difference_type, traits>::value;
 
   static constexpr auto const has_pointer =
-      is_detected<detected::types::pointer, traits>::value;
+      meta::is_detected<meta::detected::types::pointer, traits>::value;
 
   static constexpr auto const has_iterator_category =
-      is_detected<detected::types::iterator_category, traits>::value;
+      meta::is_detected<meta::detected::types::iterator_category,
+                        traits>::value;
 
   static constexpr auto const has_reference =
-      is_detected<detected::types::reference, traits>::value;
+      meta::is_detected<meta::detected::types::reference, traits>::value;
 
   static constexpr auto const value = !has_pointer && !has_reference &&
                                       !has_value_type && !has_difference_type &&
@@ -73,19 +70,20 @@ private:
   using traits = meta::iterator_traits<T>;
 
   static constexpr auto const has_value_type =
-      is_detected<detected::types::value_type, traits>::value;
+      meta::is_detected<meta::detected::types::value_type, traits>::value;
 
   static constexpr auto const has_difference_type =
-      is_detected<detected::types::difference_type, traits>::value;
+      meta::is_detected<meta::detected::types::difference_type, traits>::value;
 
   static constexpr auto const has_pointer =
-      is_detected<detected::types::pointer, traits>::value;
+      meta::is_detected<meta::detected::types::pointer, traits>::value;
 
   static constexpr auto const has_iterator_category =
-      is_detected<detected::types::iterator_category, traits>::value;
+      meta::is_detected<meta::detected::types::iterator_category,
+                        traits>::value;
 
   static constexpr auto const has_reference =
-      is_detected<detected::types::reference, traits>::value;
+      meta::is_detected<meta::detected::types::reference, traits>::value;
 
 public:
   static constexpr auto value = has_value_type && has_difference_type &&
@@ -117,20 +115,18 @@ struct is_iterator_traits_impl<std::iterator_traits<T>>
 };
 
 template <typename T>
-struct is_iterator_traits : detail::is_iterator_traits_impl<T>
+struct is_iterator_traits : is_iterator_traits_impl<T>
 {
   using requirements = std::tuple<>;
 
   static constexpr int trigger_static_asserts()
   {
     static_assert(is_iterator_traits::value, "T is not a valid IteratorTraits");
-    return detail::is_iterator_traits_impl<T>::trigger_static_asserts();
+    return is_iterator_traits_impl<T>::trigger_static_asserts();
   }
 };
 
 template <typename T>
 constexpr auto is_iterator_traits_v = is_iterator_traits<T>::value;
-}
-}
 }
 }

@@ -14,10 +14,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 // Before C++20, those three iterators define difference_type as void
@@ -32,7 +28,7 @@ struct is_insert_iterator<
     std::back_insert_iterator<T>,
     // instantiate the iterator to ensure T is not some
     // weird type (e.g. void)
-    void_t<typename std::back_insert_iterator<T>::container_type>>
+    meta::void_t<typename std::back_insert_iterator<T>::container_type>>
   : std::true_type
 {
 };
@@ -40,7 +36,7 @@ struct is_insert_iterator<
 template <typename T>
 struct is_insert_iterator<
     std::front_insert_iterator<T>,
-    void_t<typename std::front_insert_iterator<T>::container_type>>
+    meta::void_t<typename std::front_insert_iterator<T>::container_type>>
   : std::true_type
 {
 };
@@ -48,11 +44,16 @@ struct is_insert_iterator<
 template <typename T>
 struct is_insert_iterator<
     std::insert_iterator<T>,
-    void_t<typename std::insert_iterator<T>::container_type>> : std::true_type
+    meta::void_t<typename std::insert_iterator<T>::container_type>>
+  : std::true_type
 {
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename T>
 struct is_weakly_incrementable
 {

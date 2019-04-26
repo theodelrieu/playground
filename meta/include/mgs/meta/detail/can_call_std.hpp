@@ -5,7 +5,7 @@
 // source: https://stackoverflow.com/a/26745591
 
 #define CAN_CALL_STD_FUNC_IMPL(std_name)                                      \
-  namespace detail                                                           \
+  namespace detail                                                            \
   {                                                                           \
   using std::std_name;                                                        \
                                                                               \
@@ -28,7 +28,7 @@
   template <typename... T>                                                    \
   struct would_call_std_##std_name                                            \
   {                                                                           \
-    static constexpr auto const value =                                       \
+    static constexpr auto const value = ::mgs::meta::                         \
         is_detected_exact<std_name##_tag, result_of_##std_name, T...>::value; \
   };                                                                          \
   }                                                                           \

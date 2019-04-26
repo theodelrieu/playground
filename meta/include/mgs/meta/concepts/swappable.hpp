@@ -11,10 +11,6 @@
 // concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 // This mess is required since std::swap only got SFINAE-correctness in C++17
@@ -27,10 +23,11 @@ struct is_swappable_impl : std::false_type
 template <typename T>
 struct is_swappable_impl<
     T,
-    std::enable_if_t<is_complete_type<T>::value && !std::is_array<T>::value>>
+    std::enable_if_t<meta::concepts::is_complete_type<T>::value &&
+                     !std::is_array<T>::value>>
   : std::integral_constant<
         bool,
-        is_detected<meta::detail::result_of_swap, T&, T&>::value &&
+        meta::is_detected<detail::result_of_swap, T&, T&>::value &&
             (!would_call_std_swap<T&, T&>::value ||
              (std::is_move_assignable<T>::value &&
               std::is_move_constructible<T>::value))>
@@ -43,6 +40,10 @@ struct is_swappable_impl<T[N]> : is_swappable_impl<T>
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename T>
 struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 {

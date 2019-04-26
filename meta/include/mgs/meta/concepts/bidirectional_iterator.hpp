@@ -25,14 +25,14 @@ struct is_bidirectional_iterator
 
   static constexpr auto const has_correct_category =
       is_derived_from<detected_t<meta::iter_concept, T>,
-                            std::bidirectional_iterator_tag>::value;
+                      std::bidirectional_iterator_tag>::value;
 
   static constexpr auto const has_pre_decrement =
       is_detected_exact<lvalue_ref,
                         detected::operators::pre_decrement,
                         lvalue_ref>::value;
 
-  static constexpr auto const has_post_decrement = 
+  static constexpr auto const has_post_decrement =
       is_detected_exact<T, detected::operators::post_decrement, lvalue_ref>::
           value;
 

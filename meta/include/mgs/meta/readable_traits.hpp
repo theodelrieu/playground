@@ -8,8 +8,6 @@
 
 namespace mgs
 {
-namespace meta
-{
 namespace detail
 {
 template <typename T, typename = void>
@@ -47,20 +45,24 @@ struct readable_traits_impl<T const> : readable_traits_impl<T>
 template <typename T>
 struct readable_traits_impl<
     T,
-    std::enable_if_t<is_detected<detected::types::value_type, T>::value>>
-  : cond_value_type<detected_t<detected::types::value_type, T>>
+    std::enable_if_t<
+        meta::is_detected<meta::detected::types::value_type, T>::value>>
+  : cond_value_type<meta::detected_t<meta::detected::types::value_type, T>>
 {
 };
 
 template <typename T>
 struct readable_traits_impl<
     T,
-    std::enable_if_t<is_detected<detected::types::element_type, T>::value>>
-  : cond_value_type<detected_t<detected::types::element_type, T>>
+    std::enable_if_t<
+        meta::is_detected<meta::detected::types::element_type, T>::value>>
+  : cond_value_type<meta::detected_t<meta::detected::types::element_type, T>>
 {
 };
 }
 
+namespace meta
+{
 template <typename T>
 struct readable_traits : detail::readable_traits_impl<T>
 {

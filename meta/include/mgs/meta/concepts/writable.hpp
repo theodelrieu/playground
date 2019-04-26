@@ -8,10 +8,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 // Too hard to implement with detected, use expression SFINAE instead
@@ -45,11 +41,11 @@ auto writable_second_requirement(Out&& o, T&& t)
 // references, the check fails.
 template <typename Out, typename T>
 auto writable_third_requirement(Out&& o, T&& t) -> decltype(
-    const_cast<iter_reference_t<Out> const&&>(*o) = std::forward<T>(t));
+    const_cast<meta::iter_reference_t<Out> const&&>(*o) = std::forward<T>(t));
 
 template <typename Out, typename T>
 auto writable_fourth_requirement(Out&& o, T&& t)
-    -> decltype(const_cast<iter_reference_t<Out> const&&>(
+    -> decltype(const_cast<meta::iter_reference_t<Out> const&&>(
                     *std::forward<Out>(o)) = std::forward<T>(t));
 
 template <typename Out, typename T>
@@ -60,6 +56,10 @@ using writable_requirements = decltype(
     writable_fourth_requirement(std::declval<Out>(), std::declval<T>()));
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename Out, typename T>
 struct is_writable
 {

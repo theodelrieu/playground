@@ -4,8 +4,6 @@
 
 namespace mgs
 {
-namespace meta
-{
 namespace detail
 {
 template <typename T, typename SubRequirements, typename = void>
@@ -117,6 +115,8 @@ struct trigger_static_asserts<std::tuple<>>
 };
 }
 
+namespace meta
+{
 template <typename ...Requirements>
 constexpr int trigger_static_asserts()
 {

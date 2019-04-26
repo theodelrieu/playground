@@ -16,8 +16,6 @@
 
 namespace mgs
 {
-namespace meta
-{
 namespace detail
 {
 template <typename T, typename = void>
@@ -26,36 +24,40 @@ struct iter_concept_impl
 };
 
 template <typename T>
-struct iter_concept_impl<T, void_t<detected::types::iterator_concept<T>>>
+struct iter_concept_impl<
+    T,
+    meta::void_t<meta::detected::types::iterator_concept<T>>>
 {
-  using type = detected::types::iterator_concept<T>;
+  using type = meta::detected::types::iterator_concept<T>;
 };
 
 template <typename T>
 struct iter_concept_impl<
     T,
     std::enable_if_t<
-        !is_detected<detected::types::iterator_concept, T>::value &&
-        is_detected<detected::types::iterator_category, T>::value>>
+        !meta::is_detected<meta::detected::types::iterator_concept, T>::value &&
+        meta::is_detected<meta::detected::types::iterator_category, T>::value>>
 {
-  using type = detected::types::iterator_category<T>;
+  using type = meta::detected::types::iterator_category<T>;
 };
 
 template <typename T>
 struct iter_concept_impl<
     T,
     std::enable_if_t<
-        !is_detected<detected::types::iterator_concept, T>::value &&
-        !is_detected<detected::types::iterator_category, T>::value &&
+        !meta::is_detected<meta::detected::types::iterator_concept, T>::value &&
+        !meta::is_detected<meta::detected::types::iterator_category,
+                           T>::value &&
         // iterator_traits' primary template does not define any alias.
         // Therefore we must check that none is defined here.
-        concepts::detail::is_iterator_traits_primary_template<
-            meta::iterator_traits<T>>::value>>
+        is_iterator_traits_primary_template<meta::iterator_traits<T>>::value>>
 {
   using type = std::random_access_iterator_tag;
 };
 }
 
+namespace meta
+{
 template <typename T>
 using iter_concept = typename detail::iter_concept_impl<iter_traits<T>>::type;
 }

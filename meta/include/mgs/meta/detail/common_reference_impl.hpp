@@ -7,8 +7,6 @@
 
 namespace mgs
 {
-namespace meta
-{
 namespace detail
 {
 // helpers to implement common_reference without going mad
@@ -57,7 +55,8 @@ struct common_ref_bullet_one_impl<T, true>
 
 template <typename X, typename Y>
 struct common_ref_bullet_one
-  : common_ref_bullet_one_impl<detected_t<cond_res, copycv<X, Y>&, copycv<Y, X>&>>
+  : common_ref_bullet_one_impl<
+        meta::detected_t<cond_res, copycv<X, Y>&, copycv<Y, X>&>>
 {
 };
 
@@ -122,7 +121,7 @@ using common_ref = typename common_ref_impl<A, B>::type;
 
 template <typename X, typename Y>
 struct common_ref_impl<X&&, Y&>
-  : common_ref_bullet_three<X&&, detected_t<common_ref, X const&, Y&>>
+  : common_ref_bullet_three<X&&, meta::detected_t<common_ref, X const&, Y&>>
 {
 };
 
@@ -274,6 +273,5 @@ struct common_reference<T1, T2, Rest...>
   : common_reference<typename common_reference<T1, T2>::type, Rest...>
 {
 };
-}
 }
 }

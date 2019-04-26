@@ -10,10 +10,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace concepts
-{
 namespace detail
 {
 template <typename T, typename = void>
@@ -22,11 +18,16 @@ struct is_complete_type_impl : std::false_type
 };
 
 template <typename T>
-struct is_complete_type_impl<T, void_t<decltype(sizeof(T))>> : std::true_type
+struct is_complete_type_impl<T, meta::void_t<decltype(sizeof(T))>>
+  : std::true_type
 {
 };
 }
 
+namespace meta
+{
+namespace concepts
+{
 template <typename T>
 struct is_complete_type : detail::is_complete_type_impl<T>
 {

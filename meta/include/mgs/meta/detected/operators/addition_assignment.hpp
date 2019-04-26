@@ -13,6 +13,6 @@ namespace operators
 template <typename T, typename U>
 using addition_assignment = decltype(std::declval<T>() += std::declval<U>());
 }
-};
+}
 }
 }

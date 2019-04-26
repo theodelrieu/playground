@@ -6,8 +6,5 @@
 
 namespace mgs
 {
-namespace meta
-{
 CAN_CALL_STD_FUNC_IMPL(begin);
-}
 }

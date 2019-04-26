@@ -7,12 +7,6 @@
 
 namespace mgs
 {
-namespace meta
-{
-namespace detected
-{
-namespace operators
-{
 namespace detail
 {
 // Workaround a GCC bug with operator-=(void*, void*) in unevaluated context
@@ -25,7 +19,7 @@ template <typename T, typename U>
 struct substraction_assignment_impl<
     T,
     U,
-    void_t<decltype(std::declval<T>() -= std::declval<U>())>>
+    meta::void_t<decltype(std::declval<T>() -= std::declval<U>())>>
 {
   using type = decltype(std::declval<T>() -= std::declval<U>());
 };
@@ -41,6 +35,12 @@ struct substraction_assignment<T, U, void*, void*>
 };
 }
 
+namespace meta
+{
+namespace detected
+{
+namespace operators
+{
 template <typename T, typename U>
 using substraction_assignment = typename detail::substraction_assignment<
     T,
@@ -48,6 +48,6 @@ using substraction_assignment = typename detail::substraction_assignment<
     std::remove_cv_t<std::remove_reference_t<T>>,
     std::remove_cv_t<std::remove_reference_t<U>>>::type;
 }
-};
+}
 }
 }
