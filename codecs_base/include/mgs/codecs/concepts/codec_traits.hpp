@@ -4,16 +4,16 @@
 #include <type_traits>
 
 #include <mgs/codecs/concepts/codec_output.hpp>
-#include <mgs/concepts/detected/static_member_functions/make_decoder.hpp>
-#include <mgs/concepts/detected/static_member_functions/make_encoder.hpp>
-#include <mgs/concepts/detected/types/default_decoded_output.hpp>
-#include <mgs/concepts/detected/types/default_encoded_output.hpp>
-#include <mgs/concepts/transformed_input_range.hpp>
+#include <mgs/codecs/detected/static_member_functions/make_decoder.hpp>
+#include <mgs/codecs/detected/static_member_functions/make_encoder.hpp>
+#include <mgs/codecs/detected/types/default_decoded_output.hpp>
+#include <mgs/codecs/detected/types/default_encoded_output.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 // clang-format off
 //
@@ -36,6 +36,8 @@
 // clang-format on
 
 namespace mgs
+{
+namespace codecs
 {
 template <
     typename T,
@@ -60,9 +62,9 @@ private:
                        S2>;
 
   static constexpr auto const is_encoder =
-      is_transformed_input_range<Encoder>::value;
+      ranges::is_transformed_input_range<Encoder>::value;
   static constexpr auto const is_decoder =
-      is_transformed_input_range<Decoder>::value;
+      ranges::is_transformed_input_range<Decoder>::value;
 
   static constexpr auto const is_encoded_codec_output =
       is_codec_output<A1, Encoder>::value;
@@ -121,4 +123,5 @@ template <
     typename = std::enable_if_t<
         is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
 using CodecTraits = T;
+}
 }

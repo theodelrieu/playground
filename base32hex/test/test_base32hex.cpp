@@ -4,10 +4,10 @@
 
 #include <catch.hpp>
 
-#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/base32hex.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
 #include <test_helpers/noop_iterator.hpp>
@@ -17,16 +17,15 @@ using namespace mgs;
 
 extern std::vector<std::string> testFilePaths;
 
-static_assert(is_transformed_input_range<
-                  base32hex::encoder<char*>>::value,
-              "");
-static_assert(is_transformed_input_range<
+static_assert(
+    ranges::is_transformed_input_range<base32hex::encoder<char*>>::value, "");
+static_assert(ranges::is_transformed_input_range<
                   base32hex::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(is_transformed_input_range<
+static_assert(ranges::is_transformed_input_range<
                   base32hex::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(is_transformed_input_range<
+static_assert(ranges::is_transformed_input_range<
                   base32hex::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -53,19 +52,24 @@ TEST_CASE("base32hex", "[base32hex]")
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
-    std::ifstream random_data(testFilePaths[0], std::ios::binary | std::ios::in);
-    std::ifstream b32hex_random_data(testFilePaths[1], std::ios::binary | std::ios::in);
+    std::ifstream random_data(testFilePaths[0],
+                              std::ios::binary | std::ios::in);
+    std::ifstream b32hex_random_data(testFilePaths[1],
+                                     std::ios::binary | std::ios::in);
 
     using iterator = std::istreambuf_iterator<char>;
 
     auto encoder = base32hex::make_encoder(iterator(random_data), iterator());
-    test_helpers::check_equal(
-        encoder.begin(), encoder.end(), iterator(b32hex_random_data), iterator());
+    test_helpers::check_equal(encoder.begin(),
+                              encoder.end(),
+                              iterator(b32hex_random_data),
+                              iterator());
 
     random_data.seekg(0);
     b32hex_random_data.seekg(0);
 
-    auto decoder = base32hex::make_decoder(iterator(b32hex_random_data), iterator());
+    auto decoder =
+        base32hex::make_decoder(iterator(b32hex_random_data), iterator());
     test_helpers::check_equal(
         decoder.begin(), decoder.end(), iterator{random_data}, iterator());
   }
@@ -97,11 +101,11 @@ TEST_CASE("base32hex", "[base32hex]")
   {
     SECTION("encoder")
     {
-      static_assert(is_sized_transformed_input_range<
+      static_assert(ranges::is_sized_transformed_input_range<
                         base32hex::encoder<char const*>>::value,
                     "");
       static_assert(
-          !is_sized_transformed_input_range<
+          !ranges::is_sized_transformed_input_range<
               base32hex::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -124,11 +128,11 @@ TEST_CASE("base32hex", "[base32hex]")
 
     SECTION("decoder")
     {
-      static_assert(is_sized_transformed_input_range<
+      static_assert(ranges::is_sized_transformed_input_range<
                         base32hex::decoder<char const*>>::value,
                     "");
       static_assert(
-          !is_sized_transformed_input_range<
+          !ranges::is_sized_transformed_input_range<
               base32hex::decoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -144,7 +148,8 @@ TEST_CASE("base32hex", "[base32hex]")
 
       SECTION("Huge string")
       {
-        auto const encoded = base32hex::encode<std::string>(std::string(10000, 0));
+        auto const encoded =
+            base32hex::encode<std::string>(std::string(10000, 0));
 
         auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 10000);

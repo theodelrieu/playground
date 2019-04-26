@@ -6,11 +6,11 @@
 
 #include <catch.hpp>
 
-#include <mgs/concepts/transformed_input_range.hpp>
-#include <mgs/concepts/sized_transformed_input_range.hpp>
 #include <mgs/base64.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
+#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
 #include <test_helpers/noop_iterator.hpp>
@@ -20,16 +20,15 @@ using namespace mgs;
 
 extern std::vector<std::string> testFilePaths;
 
-static_assert(
-    is_transformed_input_range<base64::encoder<char*>>::value,
-    "");
-static_assert(is_transformed_input_range<
+static_assert(ranges::is_transformed_input_range<base64::encoder<char*>>::value,
+              "");
+static_assert(ranges::is_transformed_input_range<
                   base64::encoder<std::list<char>::iterator>>::value,
               "");
-static_assert(is_transformed_input_range<
+static_assert(ranges::is_transformed_input_range<
                   base64::encoder<std::forward_list<char>::iterator>>::value,
               "");
-static_assert(is_transformed_input_range<
+static_assert(ranges::is_transformed_input_range<
                   base64::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
@@ -55,8 +54,10 @@ TEST_CASE("base64", "[base64]")
   SECTION("stream")
   {
     REQUIRE(testFilePaths.size() == 2);
-    std::ifstream random_data(testFilePaths[0], std::ios::binary | std::ios::in);
-    std::ifstream b64_random_data(testFilePaths[1], std::ios::binary | std::ios::in);
+    std::ifstream random_data(testFilePaths[0],
+                              std::ios::binary | std::ios::in);
+    std::ifstream b64_random_data(testFilePaths[1],
+                                  std::ios::binary | std::ios::in);
 
     using iterator = std::istreambuf_iterator<char>;
 
@@ -95,11 +96,11 @@ TEST_CASE("base64", "[base64]")
   {
     SECTION("encoder")
     {
-      static_assert(is_sized_transformed_input_range<
+      static_assert(ranges::is_sized_transformed_input_range<
                         base64::encoder<char const*>>::value,
                     "");
       static_assert(
-          !is_sized_transformed_input_range<
+          !ranges::is_sized_transformed_input_range<
               base64::encoder<std::list<char>::const_iterator>>::value,
           "");
 
@@ -122,18 +123,18 @@ TEST_CASE("base64", "[base64]")
 
     SECTION("decoder")
     {
-      static_assert(is_sized_transformed_input_range<
+      static_assert(ranges::is_sized_transformed_input_range<
                         base64::decoder<char const*>>::value,
                     "");
       static_assert(
-          !is_sized_transformed_input_range<
+          !ranges::is_sized_transformed_input_range<
               base64::decoder<std::list<char>::const_iterator>>::value,
           "");
 
       SECTION("Small string")
       {
         auto const encoded = "WVdKalpHVT0="s;
-        
+
         auto dec = base64::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_transformed_size() == 8);
         dec.read(test_helpers::noop_iterator{}, 5);

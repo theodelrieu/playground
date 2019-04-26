@@ -21,8 +21,6 @@ editables:
     path: ranges
   mgs_test_helpers/0.1.0@mgs/testing:
     path: test_helpers
-  mgs_concepts/0.1.0@mgs/testing:
-    path: concepts
   mgs_cmake/0.1.0@mgs/testing:
     path: cmake
 workspace_generator: cmake

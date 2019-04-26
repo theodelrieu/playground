@@ -15,7 +15,6 @@ class ConanMgsRanges(ConanFile):
 
     def requirements(self):
         self.requires("mgs_meta/%s@mgs/testing" % self.version)
-        self.requires("mgs_concepts/%s@mgs/testing" % self.version)
 
     def build(self):
         cmake = CMake(self)

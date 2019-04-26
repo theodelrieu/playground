@@ -8,9 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include <mgs/concepts/readable_transformed_input_range.hpp>
-#include <mgs/concepts/sized_transformed_input_range.hpp>
-#include <mgs/concepts/transformed_input_range.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
@@ -21,6 +18,9 @@
 #include <mgs/meta/detected/types/size_type.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
+#include <mgs/ranges/concepts/readable_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 namespace mgs
 {
@@ -28,10 +28,10 @@ namespace detail
 {
 template <typename RandomAccessContainer,
           typename T,
-          typename = mgs::ReadableTransformedInputRange<
+          typename = mgs::ranges::ReadableTransformedInputRange<
               T,
               meta::iterator_t<RandomAccessContainer>>,
-          typename = mgs::SizedTransformedInputRange<T>>
+          typename = mgs::ranges::SizedTransformedInputRange<T>>
 RandomAccessContainer fill_random_access_container(T& range,
                                                    meta::priority_tag<1>)
 {
@@ -48,9 +48,9 @@ RandomAccessContainer fill_random_access_container(T& range,
 
 template <typename RandomAccessContainer, typename T>
 RandomAccessContainer fill_random_access_container(
-    mgs::ReadableTransformedInputRange<T,
-                                       meta::iterator_t<RandomAccessContainer>>&
-        range,
+    mgs::ranges::ReadableTransformedInputRange<
+        T,
+        meta::iterator_t<RandomAccessContainer>>& range,
     meta::priority_tag<0>)
 {
   using std::begin;
@@ -85,8 +85,7 @@ private:
             typename R = Output,
             typename SizeType = typename R::size_type,
             typename = std::enable_if_t<
-                meta::is_random_access_iterator<
-                    meta::iterator_t<R>>::value &&
+                meta::is_random_access_iterator<meta::iterator_t<R>>::value &&
                 meta::is_constructible<R>::value &&
                 // Keep those in C++17 as well, fill_random_access_container
                 // relies on NRVO, not on Guaranteed Copy Elision.
@@ -95,7 +94,7 @@ private:
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
-  static R create_impl(mgs::TransformedInputRange<T>& range,
+  static R create_impl(mgs::ranges::TransformedInputRange<T>& range,
                        meta::priority_tag<1>)
   {
     return fill_random_access_container<R>(range, meta::priority_tag<1>{});
@@ -104,21 +103,20 @@ private:
   // Default overload, non-associative containers which:
   // - can be constructed with an Iterator range
   // - are copy or move constructible (pre C++17)
-  template <
-      typename T,
-      typename = mgs::TransformedInputRange<T>,
-      typename Iterator = meta::iterator_t<T>,
-      typename R = Output,
-      typename = std::enable_if_t<
+  template <typename T,
+            typename = mgs::ranges::TransformedInputRange<T>,
+            typename Iterator = meta::iterator_t<T>,
+            typename R = Output,
+            typename = std::enable_if_t<
   // Guaranteed copy-elision
 #if __cplusplus < 201703L
-          (meta::is_move_constructible<R>::value ||
-           meta::is_copy_constructible<R>::value) &&
+                (meta::is_move_constructible<R>::value ||
+                 meta::is_copy_constructible<R>::value) &&
 #endif
-          meta::is_constructible<R, Iterator, Iterator>::value &&
-          // Associative containers' iterator-range constructors are not
-          // SFINAE-friendly...
-          !meta::is_detected<meta::detected::types::key_type, R>::value>>
+                meta::is_constructible<R, Iterator, Iterator>::value &&
+                // Associative containers' iterator-range constructors are not
+                // SFINAE-friendly...
+                !meta::is_detected<meta::detected::types::key_type, R>::value>>
   static R create_impl(T& range, meta::priority_tag<0>)
   {
     using std::begin;
@@ -128,7 +126,7 @@ private:
 
 public:
   template <typename T>
-  static auto create(mgs::TransformedInputRange<T>& range)
+  static auto create(mgs::ranges::TransformedInputRange<T>& range)
       -> decltype(create_impl(range, meta::priority_tag<1>{}))
   {
     return create_impl(range, meta::priority_tag<1>{});
@@ -140,7 +138,7 @@ struct default_converter<std::array<C, N>>
 {
   template <typename T>
   static std::array<C, N> create(
-      mgs::ReadableTransformedInputRange<T, C*>& range)
+      mgs::ranges::ReadableTransformedInputRange<T, C*>& range)
   {
     std::array<C, N> ret;
 

@@ -4,8 +4,6 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include <mgs/concepts/input_transformer.hpp>
-#include <mgs/concepts/sized_input_transformer.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
@@ -15,6 +13,8 @@
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/ssize_t.hpp>
+#include <mgs/ranges/concepts/input_transformer.hpp>
+#include <mgs/ranges/concepts/sized_input_transformer.hpp>
 #include <mgs/ranges/detail/transformed_input_range_iterator.hpp>
 
 namespace mgs

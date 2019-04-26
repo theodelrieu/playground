@@ -14,6 +14,7 @@
 #include <test_helpers/noop_transformer.hpp>
 
 using namespace mgs;
+using namespace mgs::codecs;
 
 namespace
 {

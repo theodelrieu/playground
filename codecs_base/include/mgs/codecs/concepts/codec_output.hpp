@@ -3,9 +3,9 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/concepts/detected/static_member_functions/create.hpp>
-#include <mgs/concepts/transformed_input_range.hpp>
+#include <mgs/codecs/detected/static_member_functions/create.hpp>
 #include <mgs/meta/detected.hpp>
+#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 // template <typename T, TransformedInputRange I>
 // concept CodecOutput = requires (I& range) {
@@ -18,7 +18,6 @@ namespace codecs
 {
 template <typename T, typename>
 struct output_traits;
-}
 
 template <typename T, typename TransformedInputRange>
 struct is_codec_output
@@ -32,10 +31,10 @@ private:
 
 public:
   using requirements =
-      std::tuple<is_transformed_input_range<TransformedInputRange>>;
+      std::tuple<ranges::is_transformed_input_range<TransformedInputRange>>;
 
   static constexpr auto const value =
-      is_transformed_input_range<TransformedInputRange>::value &&
+      ranges::is_transformed_input_range<TransformedInputRange>::value &&
       has_create_method;
 
   static constexpr int trigger_static_asserts()
@@ -54,4 +53,5 @@ template <typename T,
           typename = std::enable_if_t<
               is_codec_output<T, TransformedInputRange>::value>>
 using CodecOutput = T;
+}
 }
