@@ -10,7 +10,7 @@ PACKAGES = [
     "exceptions",
     "concepts",
     "ranges",
-    "codecs_base",
+    "codecs",
     "binary_to_text",
     "base16",
     "base32",

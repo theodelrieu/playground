@@ -21,8 +21,8 @@ namespace mgs
 {
 namespace detail
 {
-// FIXME put detected::make_encoder in codecs_base/detail
-// put Codec concepts in codecs_base/concepts
+// FIXME put detected::make_encoder in codecs/detail
+// put Codec concepts in codecs/concepts
 template <typename CodecTraits, typename T, typename U>
 using encoder = decltype(CodecTraits::make_encoder(std::declval<T>(),
                                                    std::declval<U>()));

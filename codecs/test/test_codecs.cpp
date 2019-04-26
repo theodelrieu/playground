@@ -115,7 +115,7 @@ struct output_traits<std::vector<T>>
 
 static_assert(is_codec<noop_codec>::value, "");
 
-TEST_CASE("codecs_base", "[codecs_base]")
+TEST_CASE("codecs", "[codecs]")
 {
   SECTION("codec output")
   {

@@ -6,7 +6,7 @@ set(_supported_components
   base64
   base64url
   binary_to_text
-  codecs_base
+  codecs
   concepts
   exceptions
   meta

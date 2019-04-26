@@ -10,7 +10,7 @@ target_include_directories(base64 INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(base64 INTERFACE CONAN_PKG::mgs_binary_to_text CONAN_PKG::mgs_ranges CONAN_PKG::mgs_codecs_base)
+target_link_libraries(base64 INTERFACE CONAN_PKG::mgs_binary_to_text CONAN_PKG::mgs_ranges CONAN_PKG::mgs_codecs)
 
 include(CTest)
 

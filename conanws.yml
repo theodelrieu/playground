@@ -11,8 +11,8 @@ editables:
     path: base64url
   mgs_binary_to_text/0.1.0@mgs/testing:
     path: binary_to_text
-  mgs_codecs_base/0.1.0@mgs/testing:
-    path: codecs_base
+  mgs_codecs/0.1.0@mgs/testing:
+    path: codecs
   mgs_exceptions/0.1.0@mgs/testing:
     path: exceptions
   mgs_meta/0.1.0@mgs/testing:

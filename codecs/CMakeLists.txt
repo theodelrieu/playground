@@ -1,17 +1,17 @@
 set(CMAKE_CXX_COMPILER_WORKS 1)
 cmake_minimum_required(VERSION 3.3)
-project(codecs_base VERSION 0.1.0 LANGUAGES CXX)
+project(codecs VERSION 0.1.0 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
-add_library(codecs_base INTERFACE)
-target_include_directories(codecs_base INTERFACE
+add_library(codecs INTERFACE)
+target_include_directories(codecs INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(codecs_base INTERFACE CONAN_PKG::mgs_ranges CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta )
+target_link_libraries(codecs INTERFACE CONAN_PKG::mgs_ranges CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta )
 
 include(CTest)
 
@@ -22,4 +22,4 @@ endif()
 
 include(MgsExportAndInstallTarget)
 
-mgs_export_and_install_target(codecs_base)
+mgs_export_and_install_target(codecs)
