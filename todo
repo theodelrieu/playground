@@ -2,9 +2,7 @@ ci + new repo
 
 code
 
-* adapt to C++20 modules design
 * define MGS_HAS_CPP17 in config.hpp
-* move range concepts to ranges
 * fix Writable on windows
 
 doc
