@@ -10,7 +10,6 @@ namespace mgs
 {
 namespace detail
 {
-// Too hard to implement with detected, use expression SFINAE instead
 template <typename Out, typename T>
 auto writable_first_requirement(Out&& o, T&& t)
     -> decltype(*o = std::forward<T>(t));
@@ -39,13 +38,16 @@ auto writable_second_requirement(Out&& o, T&& t)
 //
 // Since there is no overload of std::string::operator= for const rvalue
 // references, the check fails.
+
+// const_cast should be used here. But MSVC has issues with it and substitution failures occur everytime.
+// Since we do not cast away const-ness, it's fine to static_cast.
 template <typename Out, typename T>
 auto writable_third_requirement(Out&& o, T&& t) -> decltype(
-    const_cast<meta::iter_reference_t<Out> const&&>(*o) = std::forward<T>(t));
+    static_cast<meta::iter_reference_t<Out> const&&>(*o) = std::forward<T>(t));
 
 template <typename Out, typename T>
 auto writable_fourth_requirement(Out&& o, T&& t)
-    -> decltype(const_cast<meta::iter_reference_t<Out> const&&>(
+    -> decltype(static_cast<meta::iter_reference_t<Out> const&&>(
                     *std::forward<Out>(o)) = std::forward<T>(t));
 
 template <typename Out, typename T>

@@ -2,8 +2,6 @@ ci + new repo
 
 code
 
-* fix Writable on windows
-
 doc
 
 * migrate to readthedocs
