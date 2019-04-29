@@ -568,12 +568,8 @@ bool operator>(valid_random_access_iterator, valid_random_access_iterator);
 bool operator>=(valid_random_access_iterator, valid_random_access_iterator);
 }
 
-template <typename> struct S;
-template <std::size_t> struct S2;
-
 TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
 {
-
   static_assert(is_random_access_iterator<valid_random_access_iterator>::value,
                 "");
 
