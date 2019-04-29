@@ -1,0 +1,2 @@
+include(clang)
+compiler.version=8
