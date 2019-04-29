@@ -14,10 +14,10 @@ matrix:
             - g++-8
             - ninja-build
             - python3
-            - python3-pip
-            - python3-setuptools
+            - python3-venv
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - CONAN_PROFILE=gcc8
+        - COMPILER=g++-8
 
     - os: linux
       compiler: clang
@@ -28,18 +28,17 @@ matrix:
           packages:
             - ninja-build
             - python3
-            - python3-pip
-            - python3-setuptools
+            - python3-venv
       env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
+        - CONAN_PROFILE=clang7
+        - COMPILER=clang++
 
 before_install:
-  - eval "${MATRIX_EVAL}"
+  - export CXX=${COMPILER}
+  - python3 ci/install-dmenv.py
 
 install:
-  - pip3 install --upgrade pip
-  - pip3 install conan==1.14.3 --user
-  - pip3 install path-py --user
+  - ./dmenv install
 
 script:
-  - python3 ci/run-ci.py build-and-test
+  - ./dmenv run -- python ci/run-ci.py build-and-test --profile ${CONAN_PROFILE}

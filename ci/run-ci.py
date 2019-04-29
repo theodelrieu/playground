@@ -3,29 +3,40 @@ import os
 import subprocess
 import sys
 
+
+from conans.client.command import main as main_conan
 from path import Path
 
 
-def run_cmd(*args):
-    subprocess.run([*args], check=True)
-
-
-def install_conan_workspace():
-    cwd = Path.getcwd()
-    run_cmd("conan", "workspace", "install", cwd.parent / "conanws.yml")
-
-
 def run_cmake(*args):
-    run_cmd("cmake", *args)
+    subprocess.run(["cmake", *args], check=True)
 
 
-def build_and_test():
+def run_conan(*args):
+    try:
+        main_conan(args)
+    except SystemExit as e:
+        if e.code != 0:
+            sys.exit(e)
+
+
+def install_conan_workspace(profile):
+    root_path = Path.getcwd().parent
+    profiles_path = root_path / "ci" / "conan-profiles"
+    run_conan("workspace", "install",
+              root_path / "conanws.yml",
+              "--profile", profiles_path / profile,
+              "--build", "missing"
+              )
+
+
+def build_and_test(profile):
     root_path = Path(__file__).abspath().parent.parent
     build_path = root_path / "build"
     build_path.makedirs_p()
 
     with build_path:
-        install_conan_workspace()
+        install_conan_workspace(profile)
         run_cmake("-GNinja", "..")
         run_cmake("--build", ".")
         run_cmake("--build", ".", "--target", "test")
@@ -35,11 +46,12 @@ def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(title="subcommands", dest="command")
 
-    subparsers.add_parser("build-and-test")
+    build_and_test_parser = subparsers.add_parser("build-and-test")
+    build_and_test_parser.add_argument("--profile", required=True)
     args = parser.parse_args()
 
     if args.command == "build-and-test":
-        build_and_test()
+        build_and_test(Path(args.profile))
     else:
         parser.print_help()
         sys.exit(1)
