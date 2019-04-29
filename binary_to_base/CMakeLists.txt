@@ -1,16 +1,17 @@
 set(CMAKE_CXX_COMPILER_WORKS 1)
 cmake_minimum_required(VERSION 3.3)
-project(base32hex VERSION 0.1.0 LANGUAGES CXX)
+project(binary_to_base VERSION 0.1.0 LANGUAGES CXX)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
-add_library(base32hex INTERFACE)
-target_include_directories(base32hex INTERFACE
+add_library(binary_to_base INTERFACE)
+target_include_directories(binary_to_base INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(base32hex INTERFACE CONAN_PKG::mgs_binary_to_base CONAN_PKG::mgs_codecs CONAN_PKG::mgs_ranges CONAN_PKG::mgs_config)
+
+target_link_libraries(binary_to_base INTERFACE CONAN_PKG::mgs_meta CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_codecs CONAN_PKG::mgs_config)
 
 include(CTest)
 
@@ -21,4 +22,4 @@ endif()
 
 include(MgsExportAndInstallTarget)
 
-mgs_export_and_install_target(base32hex)
+mgs_export_and_install_target(binary_to_base)

@@ -5,7 +5,7 @@ set(_supported_components
   base32hex
   base64
   base64url
-  binary_to_text
+  binary_to_base
   codecs
   exceptions
   meta
