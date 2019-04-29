@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include <mgs/codecs/detected/static_member_functions/create.hpp>
+#include <mgs/codecs/output_traits_fwd.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/ranges/concepts/transformed_input_range.hpp>
 
@@ -16,9 +17,6 @@ namespace mgs
 {
 namespace codecs
 {
-template <typename T, typename>
-struct output_traits;
-
 template <typename T, typename TransformedInputRange>
 struct is_codec_output
 {
