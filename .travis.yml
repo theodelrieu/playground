@@ -17,6 +17,7 @@ matrix:
       env:
         - CONAN_PROFILE=gcc5
         - COMPILER=g++-5
+        - CPPSTD=14
 
     - os: linux
       compiler: gcc
@@ -32,6 +33,7 @@ matrix:
       env:
         - CONAN_PROFILE=gcc6
         - COMPILER=g++-6
+        - CPPSTD=14
 
     - os: linux
       compiler: gcc
@@ -47,6 +49,7 @@ matrix:
       env:
         - CONAN_PROFILE=gcc7
         - COMPILER=g++-7
+        - CPPSTD=14
 
     - os: linux
       compiler: gcc
@@ -62,6 +65,7 @@ matrix:
       env:
         - CONAN_PROFILE=gcc8
         - COMPILER=g++-8
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -78,6 +82,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang3.5
         - COMPILER=clang++-3.5
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -94,6 +99,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang3.6
         - COMPILER=clang++-3.6
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -110,6 +116,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang3.7
         - COMPILER=clang++-3.7
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -126,6 +133,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang3.8
         - COMPILER=clang++-3.8
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -142,6 +150,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang3.9
         - COMPILER=clang++-3.9
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -158,6 +167,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang4
         - COMPILER=clang++-4.0
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -174,6 +184,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang5
         - COMPILER=clang++-5.0
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -190,6 +201,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang6
         - COMPILER=clang++-6.0
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -204,6 +216,7 @@ matrix:
       env:
         - CONAN_PROFILE=clang7
         - COMPILER=clang++
+        - CPPSTD=14
 
     - os: linux
       compiler: clang
@@ -220,6 +233,24 @@ matrix:
       env:
         - CONAN_PROFILE=clang8
         - COMPILER=clang++-8
+        - CPPSTD=14
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-8
+          packages:
+            - clang-8
+            - python3
+            - python3-venv
+            - ninja-build
+      env:
+        - CONAN_PROFILE=clang8
+        - COMPILER=clang++-8
+        - CPPSTD=17
 
 before_install:
   - export CXX=${COMPILER}
@@ -229,4 +260,4 @@ install:
   - ./dmenv install
 
 script:
-  - ./dmenv run -- python ci/run-ci.py build-and-test --profile ${CONAN_PROFILE}
+  - ./dmenv run -- python ci/run-ci.py build-and-test --profile ${CONAN_PROFILE} --cppstd ${CPPSTD}
