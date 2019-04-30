@@ -1,7 +1,7 @@
 #include <iterator>
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/iterator_traits.hpp>

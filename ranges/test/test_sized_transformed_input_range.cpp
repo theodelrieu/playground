@@ -1,6 +1,6 @@
 #include <iterator>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/ssize_t.hpp>
 #include <mgs/ranges/concepts/sized_transformed_input_range.hpp>

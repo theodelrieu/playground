@@ -183,7 +183,10 @@ struct common_reference_bullet_four_impl : std::false_type
 };
 
 template <typename T1, typename T2>
-struct common_reference_bullet_four_impl<T1, T2, std::common_type_t<T1, T2>>
+struct common_reference_bullet_four_impl<
+    T1,
+    T2,
+    std::enable_if_t<meta::is_detected<std::common_type_t, T1, T2>::value>>
   : std::true_type
 {
   using type = std::common_type_t<T1, T2>;

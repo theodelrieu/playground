@@ -11,7 +11,7 @@ class ConanMgsBase64Url(ConanFile):
         self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
         if self.develop:
             self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
-            self.build_requires("catch2/2.2.2@bincrafters/stable")
+            self.build_requires("Catch2/2.7.2@catchorg/stable")
             self.build_requires("mgs_meta/%s@mgs/testing" % self.version)
 
     def requirements(self):

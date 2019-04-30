@@ -1,7 +1,7 @@
 #include <iterator>
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/common_reference.hpp>
 #include <mgs/meta/concepts/common_reference.hpp>
@@ -26,7 +26,6 @@ struct D : B
 TEST_CASE("CommonReference", "[meta][concepts][core]")
 {
   static_assert(!is_detected<common_reference_t>::value, "");
-  static_assert(!is_detected<common_reference_t, int, char(&)[]>::value, "");
   static_assert(
       !is_detected<common_reference_t, int, struct incomplete*>::value, "");
 
@@ -118,6 +117,7 @@ TEST_CASE("CommonReference", "[meta][concepts][core]")
 
   // Array types?? Yup! Except for MSVC which has issues with COND_RES implementation
 #ifndef _MSC_VER
+  static_assert(!is_detected<common_reference_t, int, char(&)[]>::value, "");
   static_assert(!is_detected<common_reference_t, int, void const>::value, "");
   static_assert(!is_detected<common_reference_t, void, int const>::value, "");
   static_assert(std::is_same<common_reference_t<void const, void volatile>, void>::value, "");

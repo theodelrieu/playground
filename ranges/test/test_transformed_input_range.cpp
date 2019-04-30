@@ -1,6 +1,6 @@
 #include <iterator>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>

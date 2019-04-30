@@ -23,7 +23,11 @@ def main():
     dmenv_download_url = "%s/releases/download/v%s/%s" % (DMENV_URL, DMENV_VERSION, dmenv_filename)
     response = urllib.request.urlopen(dmenv_download_url)
     data = response.read()
-    with open("dmenv", "wb") as f:
+    if dmenv_filename == "dmenv-windows.exe":
+        filename = "dmenv.exe"
+    else:
+        filename = "dmenv"
+    with open(filename, "wb") as f:
         f.write(data)
     if sys.platform != "win32":
         os.chmod("dmenv", stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)

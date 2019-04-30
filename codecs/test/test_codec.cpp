@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>

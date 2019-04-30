@@ -8,7 +8,7 @@ class ConanMgsTestHelpers(ConanFile):
     settings = "os", "arch", "build_type", "compiler", "cppstd"
 
     def requirements(self):
-        self.requires("catch2/2.2.2@bincrafters/stable")
+        self.requires("Catch2/2.7.2@catchorg/stable")
         self.requires("mgs_config/%s@mgs/testing" % self.version)
 
     def build_requirements(self):

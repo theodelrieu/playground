@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/ssize_t.hpp>
 #include <mgs/meta/static_asserts.hpp>

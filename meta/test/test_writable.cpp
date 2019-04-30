@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/writable.hpp>
 #include <mgs/meta/static_asserts.hpp>

@@ -2,7 +2,7 @@
 #include <iterator>
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
 #include <mgs/meta/concepts/incrementable.hpp>
