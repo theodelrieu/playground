@@ -228,19 +228,4 @@ TEST_CASE("InputTransformer", "[concepts]")
 
   static_assert(!is_input_transformer<invalid_buffer_type_transformer>::value,
                 "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_input_transformer<non_default_constructible_transformer>,
-      std::tuple<
-          meta::is_semiregular<non_default_constructible_transformer>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_input_transformer<invalid_underlying_sentinel_transformer>,
-      std::tuple<
-          meta::is_sentinel<
-              invalid_underlying_sentinel_transformer::underlying_sentinel,
-              invalid_underlying_sentinel_transformer::underlying_iterator>,
-          meta::is_weakly_equality_comparable_with<
-              invalid_underlying_sentinel_transformer::underlying_sentinel,
-              invalid_underlying_sentinel_transformer::underlying_iterator>>>();
 }

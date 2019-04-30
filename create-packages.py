@@ -11,7 +11,7 @@ PACKAGES = [
     "exceptions",
     "ranges",
     "codecs",
-    "binary_to_text",
+    "binary_to_base",
     "base16",
     "base32",
     "base32hex",

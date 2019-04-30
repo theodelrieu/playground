@@ -1,0 +1,3 @@
+include(gcc)
+[settings]
+compiler.version=5

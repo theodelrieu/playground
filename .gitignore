@@ -3,4 +3,7 @@ build/
 conan_ycm_flags.json
 conaninfo.txt
 conanbuildinfo.*
-build-*/
+build*/
+
+*.egg-info/
+.venv/

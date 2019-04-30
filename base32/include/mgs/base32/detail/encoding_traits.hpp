@@ -4,7 +4,7 @@
 #include <iterator>
 #include <cstddef>
 
-#include <mgs/binary_to_text/padding_policy.hpp>
+#include <mgs/binary_to_base/padding_policy.hpp>
 
 namespace mgs
 {
@@ -41,7 +41,7 @@ struct base32_encoding_traits
 
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
-      binary_to_text::padding_policy::required;
+      binary_to_base::padding_policy::required;
 
   static int index_of(char c)
   {

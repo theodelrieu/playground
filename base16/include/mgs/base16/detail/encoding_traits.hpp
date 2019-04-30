@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <iterator>
 
-#include <mgs/binary_to_text/padding_policy.hpp>
+#include <mgs/binary_to_base/padding_policy.hpp>
 
 namespace mgs
 {
@@ -57,7 +57,7 @@ struct base16_encoding_traits
   }
 
   static constexpr auto const padding_policy =
-      binary_to_text::padding_policy::none;
+      binary_to_base::padding_policy::none;
 };
 
 template <typename T>
