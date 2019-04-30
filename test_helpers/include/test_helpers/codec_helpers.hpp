@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 namespace test_helpers
 {

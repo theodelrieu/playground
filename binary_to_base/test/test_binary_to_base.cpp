@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/binary_to_base/basic_codec.hpp>
 #include <mgs/binary_to_base/basic_decoder.hpp>

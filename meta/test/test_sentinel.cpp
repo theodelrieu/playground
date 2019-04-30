@@ -1,7 +1,7 @@
 #include <iterator>
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/concepts/dereferenceable.hpp>

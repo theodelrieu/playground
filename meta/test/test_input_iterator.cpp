@@ -3,7 +3,7 @@
 #include <string>
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/common_reference.hpp>
 #include <mgs/meta/concepts/dereferenceable.hpp>

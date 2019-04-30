@@ -6,7 +6,7 @@ include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
 add_library(catch_main OBJECT src/catch_main.cpp)
-get_target_property(CATCH2_INC_DIR CONAN_PKG::catch2 INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(CATCH2_INC_DIR CONAN_PKG::Catch2 INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(catch_main PRIVATE ${CATCH2_INC_DIR})
 
 add_library(mgs_test_helpers INTERFACE)

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/base32.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>

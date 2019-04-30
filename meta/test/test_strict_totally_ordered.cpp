@@ -1,6 +1,6 @@
 #include <tuple>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/equality_comparable.hpp>
 #include <mgs/meta/concepts/strict_totally_ordered.hpp>

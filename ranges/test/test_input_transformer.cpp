@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>

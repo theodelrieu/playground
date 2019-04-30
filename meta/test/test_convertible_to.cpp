@@ -1,4 +1,4 @@
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/convertible_to.hpp>
 #include <mgs/meta/static_asserts.hpp>

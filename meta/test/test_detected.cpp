@@ -2,7 +2,7 @@
 #include <map>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <mgs/meta/detected.hpp>
 
