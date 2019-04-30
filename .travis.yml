@@ -68,6 +68,22 @@ matrix:
         - CPPSTD=14
 
     - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - python3
+            - python3-venv
+            - ninja-build
+      env:
+        - CONAN_PROFILE=gcc8
+        - COMPILER=g++-8
+        - CPPSTD=17
+
+    - os: linux
       compiler: clang
       addons:
         apt:
@@ -234,23 +250,6 @@ matrix:
         - CONAN_PROFILE=clang8
         - COMPILER=clang++-8
         - CPPSTD=14
-
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
-          packages:
-            - clang-8
-            - python3
-            - python3-venv
-            - ninja-build
-      env:
-        - CONAN_PROFILE=clang8
-        - COMPILER=clang++-8
-        - CPPSTD=17
 
 before_install:
   - export CXX=${COMPILER}
