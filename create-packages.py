@@ -31,6 +31,7 @@ def run_conan(*args):
 def main():
     for pkg in PACKAGES:
         run_conan("create", pkg, "mgs/testing", "--build", "mgs_%s" % pkg, "-s", "cppstd=14")
+    run_conan("create", "all", "mgs/testing", "--build", "mgs", "-s", "cppstd=14")
 
 
 if __name__ == "__main__":

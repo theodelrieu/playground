@@ -25,6 +25,8 @@ editables:
     path: cmake
   mgs_config/0.1.0@mgs/testing:
     path: config
+  mgs/0.1.0@mgs/testing:
+    path: all
 workspace_generator: cmake
 layout: mgs_layout
-root: mgs_base16/0.1.0@mgs/testing, mgs_base32/0.1.0@mgs/testing, mgs_base32hex/0.1.0@mgs/testing, mgs_base64/0.1.0@mgs/testing, mgs_base64url/0.1.0@mgs/testing
+root: mgs/0.1.0@mgs/testing
