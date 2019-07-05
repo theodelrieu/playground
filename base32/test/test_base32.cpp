@@ -137,7 +137,7 @@ TEST_CASE("base32", "[base32]")
         auto const encoded = "MFRGGZA="s;
 
         auto dec = base32::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 4);
+        CHECK(dec.max_transformed_size() == 5);
         dec.read(test_helpers::noop_iterator{}, 2);
         CHECK(dec.max_transformed_size() == 2);
       }

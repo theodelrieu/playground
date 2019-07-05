@@ -141,7 +141,7 @@ TEST_CASE("base32hex", "[base32hex]")
         auto const encoded = "C5H66P0="s;
 
         auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 4);
+        CHECK(dec.max_transformed_size() == 5);
         dec.read(test_helpers::noop_iterator{}, 2);
         CHECK(dec.max_transformed_size() == 2);
       }

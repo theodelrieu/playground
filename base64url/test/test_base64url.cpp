@@ -147,7 +147,7 @@ TEST_CASE("base64url", "[base64url]")
         auto const encoded = "WVdKalpHVT0="s;
 
         auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 8);
+        CHECK(dec.max_transformed_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }
@@ -305,7 +305,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
         auto dec =
             base64url_nopad::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 8);
+        CHECK(dec.max_transformed_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }

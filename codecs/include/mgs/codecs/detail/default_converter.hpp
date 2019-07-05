@@ -40,6 +40,8 @@ RandomAccessContainer fill_random_access_container(T& range,
   using std::begin;
 
   auto const max_size = range.max_transformed_size();
+  if (max_size == -1) 
+    throw exceptions::unexpected_eof_error("invalid input size");
   RandomAccessContainer cont(max_size, 0);
 
   auto const total_read = range.read(begin(cont), max_size);

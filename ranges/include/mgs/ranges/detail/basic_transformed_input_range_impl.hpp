@@ -13,14 +13,6 @@ namespace mgs
 namespace ranges
 {
 template <typename InputTransformer>
-basic_transformed_input_range<InputTransformer>::basic_transformed_input_range(
-    underlying_iterator begin, underlying_sentinel end)
-  : InputTransformer(std::move(begin), std::move(end))
-{
-  _transform_input();
-}
-
-template <typename InputTransformer>
 auto basic_transformed_input_range<InputTransformer>::_get() const
     -> value_type const&
 {
@@ -36,6 +28,8 @@ meta::ssize_t basic_transformed_input_range<InputTransformer>::read(
 {
   meta::ssize_t nb_read{};
 
+  if (_index == -1)
+    _transform_input();
   while (n > 0 && _buffer_size() != 0)
   {
     using std::begin;
@@ -89,8 +83,8 @@ meta::ssize_t
 basic_transformed_input_range<InputTransformer>::max_transformed_size() const
 {
   auto const max_transformed_size = static_cast<InputTransformer const&>(*this).max_transformed_size();
-  if (max_transformed_size == -1)
-    return -1;
+  if (max_transformed_size == -1 || _index == -1)
+    return max_transformed_size;
   return _buffer_size() - _index + max_transformed_size;
 }
 

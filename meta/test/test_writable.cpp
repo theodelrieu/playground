@@ -57,8 +57,8 @@ struct It2
   using iterator_category = std::input_iterator_tag;
 
   reference operator*();
-  It& operator++();
-  It operator++(int);
+  It2& operator++();
+  It2 operator++(int);
 };
 }
 

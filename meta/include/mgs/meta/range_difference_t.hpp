@@ -10,6 +10,6 @@ namespace mgs
 namespace meta
 {
 template <typename R>
-using range_value_t = iter_difference_t<iterator_t<R>>;
+using range_difference_t = iter_difference_t<iterator_t<R>>;
 }
 }

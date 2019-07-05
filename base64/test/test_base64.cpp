@@ -136,7 +136,7 @@ TEST_CASE("base64", "[base64]")
         auto const encoded = "WVdKalpHVT0="s;
 
         auto dec = base64::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 8);
+        CHECK(dec.max_transformed_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_transformed_size() == 3);
       }

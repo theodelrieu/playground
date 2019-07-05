@@ -22,7 +22,7 @@ namespace mgs
 namespace ranges
 {
 template <typename InputTransformer>
-class basic_transformed_input_range : private InputTransformer
+class basic_transformed_input_range : public InputTransformer
 {
   static_assert(is_input_transformer<InputTransformer>::value,
                 "Template parameter must be an InputTransformer");
@@ -38,19 +38,17 @@ private:
   friend detail::transformed_input_range_iterator<
       basic_transformed_input_range>;
 
+private:
   using iterator =
       detail::transformed_input_range_iterator<basic_transformed_input_range>;
   using value_type = meta::iter_value_t<buffer_iterator>;
 
 public:
-  basic_transformed_input_range() = default;
-  basic_transformed_input_range(underlying_iterator begin,
-                                underlying_sentinel end);
+  using InputTransformer::InputTransformer;
 
   template <typename OutputIterator,
             typename = std::enable_if_t<
-                meta::is_output_iterator<OutputIterator,
-                                                   value_type>::value>>
+                meta::is_output_iterator<OutputIterator, value_type>::value>>
   meta::ssize_t read(OutputIterator out, meta::ssize_t n);
 
   iterator begin() const;
@@ -63,7 +61,7 @@ public:
 
 private:
   buffer _buffer{};
-  meta::iter_difference_t<buffer_iterator> _index{};
+  meta::iter_difference_t<buffer_iterator> _index{-1};
 
   value_type const& _get() const;
   void _seek_forward();

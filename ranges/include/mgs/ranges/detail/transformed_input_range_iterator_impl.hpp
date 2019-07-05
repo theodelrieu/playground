@@ -11,6 +11,8 @@ transformed_input_range_iterator<TransformedInputRange>::
     transformed_input_range_iterator(TransformedInputRange const& e)
   : _range(e)
 {
+  if (_range._index == -1)
+    _range._transform_input();
 }
 
 template <typename TransformedInputRange>
@@ -18,6 +20,8 @@ transformed_input_range_iterator<TransformedInputRange>::
     transformed_input_range_iterator(TransformedInputRange&& e)
   : _range(std::move(e))
 {
+  if (_range._index == -1)
+    _range._transform_input();
 }
 
 template <typename TransformedInputRange>
