@@ -1,7 +1,6 @@
 #pragma once
 
-// This concept does not exist in C++20/Ranges, but I believe its place would be
-// in core.
+// This concept does not exist in C++20.
 
 #include <tuple>
 #include <type_traits>
@@ -42,6 +41,6 @@ template <typename T>
 constexpr auto is_complete_type_v = is_complete_type<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_complete_type<T>::value>>
-using CompleteType = T;
+using complete_type = T;
 }
 }
