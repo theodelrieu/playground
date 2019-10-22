@@ -40,14 +40,14 @@ struct is_bidirectional_iterator
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a BidirectionalIterator");
+    static_assert(value, "T is not a bidirectional_iterator");
     static_assert(has_correct_category,
-                  "Iterator category tag must derive from "
+                  "iterator category tag must derive from "
                   "std::bidirectional_iterator_tag");
     static_assert(has_pre_decrement,
-                  "Invalid or missing operator: 'T& operator--()'");
+                  "invalid or missing operator: 'T& operator--()'");
     static_assert(has_post_decrement,
-                  "Invalid or missing operator: 'T operator--(int)'");
+                  "invalid or missing operator: 'T operator--(int)'");
     return 1;
   }
 };
@@ -58,6 +58,6 @@ constexpr auto is_bidirectional_iterator_v =
 
 template <typename T,
           typename = std::enable_if_t<is_bidirectional_iterator<T>::value>>
-using BidirectionalIterator = T;
+using bidirectional_iterator = T;
 }
 }
