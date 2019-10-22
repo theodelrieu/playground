@@ -4,7 +4,7 @@
 #include <type_traits>
 
 #include <mgs/meta/detected.hpp>
-#include <mgs/meta/concepts/common_reference.hpp>
+#include <mgs/meta/concepts/common_reference_with.hpp>
 
 // https://en.cppreference.com/w/cpp/concepts/assignable_from
 
@@ -39,11 +39,12 @@ private:
 
 public:
   using requirements = std::tuple<
-      has_common_reference<lhs_lvalue_const_ref, rhs_lvalue_const_ref>>;
+      has_common_reference_with<lhs_lvalue_const_ref, rhs_lvalue_const_ref>>;
 
   static constexpr auto const value =
       does_return_same_type &&
-      has_common_reference<lhs_lvalue_const_ref, rhs_lvalue_const_ref>::value &&
+      has_common_reference_with<lhs_lvalue_const_ref,
+                                rhs_lvalue_const_ref>::value &&
       std::is_lvalue_reference<LHS>::value;
 
   static constexpr int trigger_static_asserts()

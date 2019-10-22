@@ -5,7 +5,7 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/concepts/common_reference.hpp>
+#include <mgs/meta/concepts/common_reference_with.hpp>
 #include <mgs/meta/concepts/dereferenceable.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
@@ -78,8 +78,8 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
   test_helpers::generate_failed_requirements_tests<
       is_input_iterator<invalid_reference_iterator>,
       std::tuple<is_readable<invalid_reference_iterator>,
-                 has_common_reference<std::string&&, int&>,
-                 has_common_reference<std::string&&, int const&>>>();
+                 has_common_reference_with<std::string&&, int&>,
+                 has_common_reference_with<std::string&&, int const&>>>();
 
   test_helpers::generate_failed_requirements_tests<
       is_input_iterator<void*>,
