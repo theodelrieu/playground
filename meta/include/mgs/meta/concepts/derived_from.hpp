@@ -8,7 +8,7 @@
 #include <mgs/meta/concepts/complete_type.hpp>
 #include <mgs/meta/concepts/regular.hpp>
 
-// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/DerivedFrom
+// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/derived_from
 
 namespace mgs
 {
@@ -52,6 +52,6 @@ constexpr auto is_derived_from_v = is_derived_from<Derived, Base>::value;
 template <typename Derived,
           typename Base,
           typename = std::enable_if_t<is_derived_from<Derived, Base>::value>>
-using DerivedFrom = Derived;
+using derived_from = Derived;
 }
 }
