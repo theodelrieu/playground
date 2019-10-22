@@ -31,7 +31,7 @@ create_meta_tests(
   input_iterator
   iter_concept
   iter_traits
-  iterator
+  input_or_output_iterator
   iterator_traits
   output_iterator
   random_access_iterator

@@ -72,8 +72,9 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       is_input_iterator<int>,
-      std::
-          tuple<is_iterator<int>, is_dereferenceable<int>, is_readable<int>>>();
+      std::tuple<is_input_or_output_iterator<int>,
+                 is_dereferenceable<int>,
+                 is_readable<int>>>();
 
   test_helpers::generate_failed_requirements_tests<
       is_input_iterator<invalid_reference_iterator>,
@@ -83,7 +84,7 @@ TEST_CASE("InputIterator", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       is_input_iterator<void*>,
-      std::tuple<is_iterator<void*>,
+      std::tuple<is_input_or_output_iterator<void*>,
                  is_dereferenceable<void*>,
                  is_weakly_incrementable<void*>,
                  is_readable<void*>>>();

@@ -3,6 +3,7 @@
 #include <tuple>
 
 #include <mgs/meta/concepts/constructible_from.hpp>
+#include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
@@ -15,24 +16,6 @@
 #include <mgs/ranges/detected/types/buffer_type.hpp>
 #include <mgs/ranges/detected/types/underlying_iterator.hpp>
 #include <mgs/ranges/detected/types/underlying_sentinel.hpp>
-
-// clang-format off
-//
-// template <typename T>
-// concept InputTransformer = std::Semiregular<T> &&
-// requires(T& v, T const& cv, typename T::buffer_type& b) {
-//   InputIterator<typename T::underlying_iterator>;
-//   Sentinel<typename T::underlying_sentinel, typename T::underlying_iterator>;
-//   Range<typename T::buffer_type>;
-//   Constructible<typename T::underlying_iterator, typename T::underlying_sentinel>;
-//   { begin(b) } -> std::RandomAccessIterator;
-//   { end(b) } -> std::SizedSentinel<decltype(begin(b))>;
-//   { v(b) } -> void;
-//   { cv.get_iterator() } -> std::Same<typename T::underlying_iterator const&>;
-//   { cv.get_sentinel() } -> std::Same<typename T::underlying_sentinel const&>;
-// };
-//
-// clang-format on
 
 namespace mgs
 {
@@ -79,10 +62,9 @@ public:
                  meta::is_range<Buffer>>;
 
   static constexpr auto const value =
-      meta::is_semiregular<T>::value && has_get_iterator &&
-      has_get_sentinel && meta::is_iterator<I>::value &&
-      meta::is_sentinel<S, I>::value &&
-      meta::is_range<Buffer>::value &&
+      meta::is_semiregular<T>::value && has_get_iterator && has_get_sentinel &&
+      meta::is_input_or_output_iterator<I>::value &&
+      meta::is_sentinel<S, I>::value && meta::is_range<Buffer>::value &&
       meta::is_random_access_iterator<BufferI>::value &&
       meta::is_sized_sentinel<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;

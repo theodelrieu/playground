@@ -8,7 +8,6 @@
 #include <mgs/meta/concepts/common_range.hpp>
 #include <mgs/meta/concepts/forward_range.hpp>
 #include <mgs/meta/concepts/input_range.hpp>
-#include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>

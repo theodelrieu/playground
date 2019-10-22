@@ -3,11 +3,11 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/concepts/dereferenceable.hpp>
-#include <mgs/meta/concepts/iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
+#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
@@ -70,7 +70,7 @@ TEST_CASE("Sentinel", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       is_sentinel<pointer_sentinel, void*>,
-      std::tuple<is_iterator<void*>,
+      std::tuple<is_input_or_output_iterator<void*>,
                  is_dereferenceable<void*>,
                  is_weakly_incrementable<void*>>>();
 

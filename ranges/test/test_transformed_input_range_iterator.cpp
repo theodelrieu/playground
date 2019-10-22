@@ -5,11 +5,11 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
+#include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/forward_iterator.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
-#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
@@ -41,7 +41,7 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
   auto current = encoder.begin();
   auto end = encoder.end();
 
-  static_assert(meta::is_iterator<decltype(current)>::value,
+  static_assert(meta::is_input_or_output_iterator<decltype(current)>::value,
                 "");
   static_assert(meta::is_sentinel<decltype(end),
                                                       decltype(current)>::value,

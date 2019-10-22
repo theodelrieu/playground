@@ -77,7 +77,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::meta::Range<U>,
+            typename Range = mgs::meta::range<U>,
             typename Encoder = mgs::ranges::TransformedInputRange<
                 encoder<meta::iterator_t<Range const>,
                         meta::sentinel_t<Range const>>>,
@@ -93,7 +93,7 @@ public:
 
   template <typename T = default_encoded_output,
             typename U,
-            typename Range = mgs::meta::Range<U>,
+            typename Range = mgs::meta::range<U>,
             typename Encoder = mgs::ranges::TransformedInputRange<
                 encoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
@@ -119,7 +119,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::meta::Range<U>,
+            typename Range = mgs::meta::range<U>,
             typename Decoder = mgs::ranges::TransformedInputRange<
                 decoder<meta::iterator_t<Range const>,
                         meta::sentinel_t<Range const>>>,
@@ -135,7 +135,7 @@ public:
 
   template <typename T = default_decoded_output,
             typename U,
-            typename Range = mgs::meta::Range<U>,
+            typename Range = mgs::meta::range<U>,
             typename Decoder = mgs::ranges::TransformedInputRange<
                 decoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<

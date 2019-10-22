@@ -6,10 +6,9 @@
 
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
 
-#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
 #include <mgs/meta/concepts/sized_sentinel.hpp>
-#include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>

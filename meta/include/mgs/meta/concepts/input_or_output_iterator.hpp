@@ -10,14 +10,12 @@
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/dereference.hpp>
 
-// https://en.cppreference.com/w/cpp/experimental/ranges/Iterator
-
 namespace mgs
 {
 namespace meta
 {
 template <typename T>
-struct is_iterator
+struct is_input_or_output_iterator
 {
   using requirements =
       std::tuple<is_dereferenceable<T>, is_weakly_incrementable<T>>;
@@ -27,15 +25,17 @@ struct is_iterator
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not an Iterator");
+    static_assert(value, "T is not an input_or_output_iterator");
     return 1;
   }
 };
 
 template <typename T>
-constexpr auto is_iterator_v = is_iterator<T>::value;
+constexpr auto is_input_or_output_iterator_v =
+    is_input_or_output_iterator<T>::value;
 
-template <typename T, typename = std::enable_if_t<is_iterator<T>::value>>
-using Iterator = T;
+template <typename T,
+          typename = std::enable_if_t<is_input_or_output_iterator<T>::value>>
+using input_or_output_iterator = T;
 }
 }

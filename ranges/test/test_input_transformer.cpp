@@ -6,7 +6,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>

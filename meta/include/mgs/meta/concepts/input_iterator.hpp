@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/iterator.hpp>
+#include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/readable.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iter_concept.hpp>
@@ -25,17 +25,19 @@ private:
                       std::input_iterator_tag>::value;
 
 public:
-  using requirements = std::tuple<is_iterator<T>, is_readable<T>>;
+  using requirements =
+      std::tuple<is_input_or_output_iterator<T>, is_readable<T>>;
 
-  static constexpr auto const value =
-      has_correct_category && is_iterator<T>::value && is_readable<T>::value;
+  static constexpr auto const value = has_correct_category &&
+                                      is_input_or_output_iterator<T>::value &&
+                                      is_readable<T>::value;
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not an InputIterator");
+    static_assert(value, "T is not an input_iterator");
     static_assert(
         has_correct_category,
-        "Iterator category tag must derive from std::input_iterator_tag");
+        "iterator category tag must derive from std::input_iterator_tag");
     return 1;
   }
 };
