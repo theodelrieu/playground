@@ -2,3 +2,5 @@ doc
 code:
 
 remove tags from tests
+
+no capital letter in static asserts

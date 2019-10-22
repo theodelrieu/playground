@@ -123,6 +123,6 @@ constexpr auto is_random_access_iterator_v =
 
 template <typename T,
           typename = std::enable_if_t<is_random_access_iterator<T>::value>>
-using RandomAccessIterator = T;
+using random_access_iterator = T;
 }
 }
