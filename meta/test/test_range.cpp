@@ -1,4 +1,6 @@
+#include <forward_list>
 #include <iterator>
+#include <list>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -7,6 +9,7 @@
 
 #include <mgs/meta/concepts/common_range.hpp>
 #include <mgs/meta/concepts/forward_range.hpp>
+#include <mgs/meta/concepts/bidirectional_range.hpp>
 #include <mgs/meta/concepts/input_range.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
@@ -103,8 +106,11 @@ TEST_CASE("range")
   static_assert(is_input_range<std::string>::value, "");
   static_assert(is_input_range<valid_input_range>::value, "");
   static_assert(is_forward_range<std::string>::value, "");
+  static_assert(is_bidirectional_range<std::string>::value, "");
+  static_assert(is_bidirectional_range<std::list<char>>::value, "");
 
   static_assert(!is_forward_range<valid_input_range>::value, "");
+  static_assert(!is_bidirectional_range<std::forward_list<char>>::value, "");
   static_assert(!is_input_range<valid_output_common_range>::value, "");
   static_assert(!is_common_range<sentinel_range>::value, "");
   static_assert(!is_range<char*>::value, "");

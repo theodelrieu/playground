@@ -7,11 +7,6 @@
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 
-// template <typename T>
-// concept input_range =
-//   meta::range<T> &&
-//   meta::input_iterator<meta::iterator_t<T>>;
-
 namespace mgs
 {
 namespace meta
