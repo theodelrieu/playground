@@ -6,7 +6,8 @@
 #include <mgs/meta/concepts/equality_comparable.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 
-// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/EqualityComparable
+// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/equality_comparable
+
 namespace mgs
 {
 namespace meta
@@ -37,6 +38,6 @@ constexpr auto is_equality_comparable_with_v =
 template <typename T,
           typename U,
           typename = std::enable_if_t<is_equality_comparable_with<T, U>::value>>
-using EqualityComparableWith = T;
+using equality_comparable_with = T;
 }
 }
