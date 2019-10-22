@@ -46,7 +46,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a Range");
+    static_assert(value, "T is not a range");
     static_assert(
         has_begin,
         "There is not an available 'begin' member/free function for T");

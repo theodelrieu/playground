@@ -10,7 +10,6 @@
 // concept common_range =
 //   meta::range<T> &&
 //   meta::same_as<meta::iterator_t<T>, meta::sentinel_t<T>>;
-// }
 
 namespace mgs
 {
@@ -41,7 +40,7 @@ public:
 template <typename T>
 constexpr auto is_common_range_v = is_common_range<T>::value;
 
-template <typename T, typename = std::enable_if_t<is_range_v<T>>>
+template <typename T, typename = std::enable_if_t<is_common_range_v<T>>>
 using common_range = T;
 }
 }

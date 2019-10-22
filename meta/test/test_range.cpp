@@ -6,6 +6,8 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/common_range.hpp>
+#include <mgs/meta/concepts/forward_range.hpp>
+#include <mgs/meta/concepts/input_range.hpp>
 #include <mgs/meta/concepts/iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel.hpp>
@@ -40,6 +42,38 @@ struct valid_common_range
 char* begin(valid_common_range&);
 char* end(valid_common_range&);
 
+struct valid_input_range
+{
+};
+
+std::istreambuf_iterator<char> begin(valid_input_range&);
+std::istreambuf_iterator<char> end(valid_input_range&);
+
+struct valid_output_common_range
+{
+};
+
+struct valid_output_iterator
+{
+  using difference_type = std::ptrdiff_t;
+
+  valid_output_iterator& operator++();
+  valid_output_iterator& operator++(int);
+  valid_output_iterator& operator*();
+
+  template <typename T>
+  valid_output_iterator& operator=(T&&);
+};
+
+bool operator==(valid_output_iterator, valid_output_iterator);
+bool operator!=(valid_output_iterator, valid_output_iterator);
+
+valid_output_iterator begin(valid_output_common_range&);
+valid_output_iterator end(valid_output_common_range&);
+
+char* begin(valid_common_range&);
+char* end(valid_common_range&);
+
 struct sentinel
 {
 };
@@ -57,7 +91,7 @@ char* begin(sentinel_range&);
 sentinel end(sentinel_range&);
 }
 
-TEST_CASE("Range", "[concepts]")
+TEST_CASE("range")
 {
   static_assert(is_range<char[1]>::value, "");
   static_assert(is_range<char const[1]>::value, "");
@@ -66,12 +100,22 @@ TEST_CASE("Range", "[concepts]")
   static_assert(is_range<valid_common_range>::value, "");
   static_assert(is_range<sentinel_range>::value, "");
   static_assert(is_common_range<valid_common_range>::value, "");
+  static_assert(is_common_range<valid_output_common_range>::value, "");
+  static_assert(is_input_range<std::string>::value, "");
+  static_assert(is_input_range<valid_input_range>::value, "");
+  static_assert(is_forward_range<std::string>::value, "");
 
+  static_assert(!is_forward_range<valid_input_range>::value, "");
+  static_assert(!is_input_range<valid_output_common_range>::value, "");
   static_assert(!is_common_range<sentinel_range>::value, "");
   static_assert(!is_range<char*>::value, "");
   static_assert(!is_range<non_range>::value, "");
   static_assert(!is_range<invalid_range>::value, "");
 
+  static_assert(!is_forward_range<struct incomplete>::value, "");
+  static_assert(!is_forward_range<void>::value, "");
+  static_assert(!is_input_range<struct incomplete>::value, "");
+  static_assert(!is_input_range<void>::value, "");
   static_assert(!is_range<struct incomplete>::value, "");
   static_assert(!is_range<void>::value, "");
 
