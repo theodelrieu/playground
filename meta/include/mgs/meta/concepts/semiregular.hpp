@@ -81,6 +81,6 @@ template <typename T>
 constexpr auto is_semiregular_v = is_semiregular<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_semiregular<T>::value>>
-using Semiregular = T;
+using semiregular = T;
 }
 }

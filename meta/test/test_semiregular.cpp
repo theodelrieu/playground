@@ -90,7 +90,7 @@ struct correct
 };
 }
 
-TEST_CASE("Semiregular", "[meta][concepts][object]")
+TEST_CASE("semiregular")
 {
   static_assert(is_semiregular<int>::value, "");
   static_assert(is_semiregular<correct>::value, "");
