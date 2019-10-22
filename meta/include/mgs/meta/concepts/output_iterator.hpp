@@ -46,6 +46,6 @@ constexpr auto is_output_iterator_v = is_output_iterator<I, T>::value;
 template <typename I,
           typename T,
           typename = std::enable_if_t<is_output_iterator<I, T>::value>>
-using OutputIterator = I;
+using output_iterator = I;
 }
 }

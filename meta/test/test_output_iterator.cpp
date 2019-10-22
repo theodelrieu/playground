@@ -14,16 +14,16 @@ using namespace mgs::meta;
 
 namespace
 {
-struct output_iterator
+struct valid_output_iterator
 {
   using difference_type = std::ptrdiff_t;
 
-  output_iterator& operator++();
-  output_iterator& operator++(int);
-  output_iterator& operator*();
+  valid_output_iterator& operator++();
+  valid_output_iterator& operator++(int);
+  valid_output_iterator& operator*();
 
   template <typename T>
-  output_iterator& operator=(T&&);
+  valid_output_iterator& operator=(T&&);
 };
 
 struct non_assignable_iterator
@@ -36,10 +36,10 @@ struct non_assignable_iterator
 };
 }
 
-TEST_CASE("OutputIterator", "[meta][concepts][iterator]")
+TEST_CASE("output_iterator")
 {
   static_assert(is_output_iterator<char*, char>::value, "");
-  static_assert(is_output_iterator<output_iterator, int>::value, "");
+  static_assert(is_output_iterator<valid_output_iterator, int>::value, "");
 
   static_assert(!is_output_iterator<non_assignable_iterator, int>::value, "");
   static_assert(!is_output_iterator<void, int>::value, "");
