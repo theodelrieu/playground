@@ -38,6 +38,6 @@ template <typename T>
 constexpr auto is_copyable_v = is_copyable<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_copyable<T>::value>>
-using Copyable = T;
+using copyable = T;
 }
 }
