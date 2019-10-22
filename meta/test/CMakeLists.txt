@@ -20,7 +20,7 @@ create_meta_tests(
   common_reference
   complete_type
   convertible_to
-  constructible_from
+  constructible
   dereferenceable
   derived_from
   detected

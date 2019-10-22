@@ -5,9 +5,10 @@
 #include <mgs/meta/concepts/assignable_from.hpp>
 #include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
-#include <mgs/meta/concepts/move_constructible.hpp>
 #include <mgs/meta/concepts/copyable.hpp>
+#include <mgs/meta/concepts/default_constructible.hpp>
 #include <mgs/meta/concepts/movable.hpp>
+#include <mgs/meta/concepts/move_constructible.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
@@ -21,6 +22,13 @@ struct non_move_constructible
   non_move_constructible(int);
   non_move_constructible(non_move_constructible const&) = default;
   non_move_constructible(non_move_constructible&&) = delete;
+};
+
+struct valid_default_constructible
+{
+  valid_default_constructible() = default;
+  valid_default_constructible(valid_default_constructible const&) = delete;
+  valid_default_constructible(valid_default_constructible&&) = delete;
 };
 
 struct non_copy_constructible
@@ -70,6 +78,16 @@ TEST_CASE("assignable_from")
   static_assert(!is_assignable_from<int, int>::value, "");
   static_assert(!is_assignable_from<int&&, int>::value, "");
   static_assert(!is_assignable_from<int const&, int>::value, "");
+}
+
+TEST_CASE("default_constructible")
+{
+  static_assert(is_default_constructible<int>::value, "");
+  static_assert(is_default_constructible<valid_default_constructible>::value, "");
+
+  static_assert(!is_default_constructible<struct incomplete>::value, "");
+  static_assert(!is_default_constructible<non_move_constructible>::value, "");
+  static_assert(!is_default_constructible<non_copy_constructible>::value, "");
 }
 
 TEST_CASE("MoveConstructible", "[meta][concepts][core]")
