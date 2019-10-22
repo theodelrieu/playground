@@ -18,8 +18,8 @@
 #include <mgs/binary_to_base/detail/static_vector.hpp>
 #include <mgs/binary_to_base/padding_policy.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/iter_concept.hpp>
 #include <mgs/meta/ssize_t.hpp>
 
@@ -33,7 +33,7 @@ class basic_decoder
 private:
   static_assert(meta::is_input_iterator<Iterator>::value,
                 "Iterator must be an InputIterator");
-  static_assert(meta::is_sentinel<Sentinel, Iterator>::value,
+  static_assert(meta::is_sentinel_for<Sentinel, Iterator>::value,
                 "Sentinel must be a Sentinel<Iterator>");
   static_assert(is_encoding_traits<EncodingTraits>::value,
                 "Invalid encoding traits");
@@ -69,7 +69,7 @@ public:
   template <typename I = Iterator,
             typename S = Sentinel,
             typename = std::enable_if_t<
-                meta::is_sized_sentinel<S, I>::value>>
+                meta::is_sized_sentinel_for<S, I>::value>>
   meta::ssize_t max_transformed_size() const
   {
     return detail::max_decoded_size<EncodingTraits>{}(_end - _current);

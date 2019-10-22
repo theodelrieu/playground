@@ -10,7 +10,7 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>

@@ -6,7 +6,7 @@
 
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/concepts/strict_totally_ordered.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/addition.hpp>
@@ -78,11 +78,11 @@ private:
 public:
   using requirements = std::tuple<is_bidirectional_iterator<T>,
                                   is_strict_totally_ordered<T>,
-                                  is_sized_sentinel<T, T>>;
+                                  is_sized_sentinel_for<T, T>>;
 
   static auto constexpr value =
       is_bidirectional_iterator<T>::value &&
-      is_strict_totally_ordered<T>::value && is_sized_sentinel<T, T>::value &&
+      is_strict_totally_ordered<T>::value && is_sized_sentinel_for<T, T>::value &&
       has_correct_category && has_addition_assignment && has_addition_t_dt &&
       has_addition_dt_t && has_substraction && has_substraction_assignment &&
       has_array_subscript;

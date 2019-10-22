@@ -11,7 +11,7 @@
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
 
 #include <mgs/ranges/basic_transformed_input_range.hpp>
@@ -43,7 +43,7 @@ TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_
 
   static_assert(meta::is_input_or_output_iterator<decltype(current)>::value,
                 "");
-  static_assert(meta::is_sentinel<decltype(end),
+  static_assert(meta::is_sentinel_for<decltype(end),
                                                       decltype(current)>::value,
                 "");
   using encoder_tag = meta::detected::types::iterator_category<

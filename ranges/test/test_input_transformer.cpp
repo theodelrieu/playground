@@ -8,8 +8,8 @@
 
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/concepts/strict_totally_ordered.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>

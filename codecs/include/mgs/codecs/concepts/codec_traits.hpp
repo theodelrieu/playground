@@ -9,7 +9,7 @@
 #include <mgs/codecs/detected/types/default_decoded_output.hpp>
 #include <mgs/codecs/detected/types/default_encoded_output.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
@@ -73,15 +73,15 @@ private:
 
 public:
   using requirements = std::tuple<meta::is_input_iterator<I1>,
-                                  meta::is_sentinel<S1, I1>,
+                                  meta::is_sentinel_for<S1, I1>,
                                   meta::is_input_iterator<I2>,
-                                  meta::is_sentinel<S2, I2>>;
+                                  meta::is_sentinel_for<S2, I2>>;
 
   static constexpr auto const value =
       meta::is_input_iterator<I1>::value &&
-      meta::is_sentinel<S1, I1>::value && is_encoder &&
+      meta::is_sentinel_for<S1, I1>::value && is_encoder &&
       meta::is_input_iterator<I2>::value &&
-      meta::is_sentinel<S2, I2>::value && is_decoder &&
+      meta::is_sentinel_for<S2, I2>::value && is_decoder &&
       is_encoded_codec_output && is_decoded_codec_output;
 
   static constexpr int trigger_static_asserts()

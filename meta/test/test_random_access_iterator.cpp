@@ -615,6 +615,6 @@ TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
 
   test_helpers::generate_failed_requirements_tests<
       is_random_access_iterator<invalid_free_substraction_iterator>,
-      std::tuple<is_sized_sentinel<invalid_free_substraction_iterator,
+      std::tuple<is_sized_sentinel_for<invalid_free_substraction_iterator,
                                    invalid_free_substraction_iterator>>>();
 }

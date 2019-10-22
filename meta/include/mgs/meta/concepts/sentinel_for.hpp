@@ -7,14 +7,12 @@
 #include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 
-// http://en.cppreference.com/w/cpp/experimental/ranges/Sentinel
-
 namespace mgs
 {
 namespace meta
 {
 template <typename T, typename Iterator>
-struct is_sentinel
+struct is_sentinel_for
   : std::integral_constant<
         bool,
         is_semiregular<T>::value &&
@@ -28,17 +26,17 @@ struct is_sentinel
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_sentinel::value, "T is not a Sentinel<Iterator>");
+    static_assert(is_sentinel_for::value, "T is not a sentinel_for<Iterator>");
     return 1;
   }
 };
 
 template <typename T, typename Iterator>
-constexpr auto is_sentinel_v = is_sentinel<T, Iterator>::value;
+constexpr auto is_sentinel_for_v = is_sentinel_for<T, Iterator>::value;
 
 template <typename T,
           typename Iterator,
-          typename = std::enable_if_t<is_sentinel<T, Iterator>::value>>
-using Sentinel = T;
+          typename = std::enable_if_t<is_sentinel_for<T, Iterator>::value>>
+using sentinel_for = T;
 }
 }

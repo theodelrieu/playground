@@ -8,7 +8,7 @@
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/iterator.hpp>
 #include <mgs/meta/iterator_t.hpp>
@@ -56,7 +56,7 @@ public:
       meta::is_semiregular<T>::value &&
       meta::is_range<T>::value &&
       meta::is_input_iterator<underlying_iterator>::value &&
-      meta::is_sentinel<underlying_sentinel,
+      meta::is_sentinel_for<underlying_sentinel,
                                   underlying_iterator>::value;
 
   static constexpr int trigger_static_asserts()
@@ -68,7 +68,7 @@ public:
         meta::is_input_iterator<underlying_iterator>::value,
         "T::underlying_iterator must be an InputIterator");
     static_assert(
-        meta::is_sentinel<underlying_sentinel,
+        meta::is_sentinel_for<underlying_sentinel,
                                               underlying_iterator>::value,
         "T::underlying_sentinel must be a Sentinel<T::underlying_iterator>");
     return 1;

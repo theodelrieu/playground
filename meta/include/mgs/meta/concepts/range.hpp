@@ -3,7 +3,7 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/input_or_output_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detail/call_std/begin.hpp>
 #include <mgs/meta/detail/call_std/end.hpp>
 #include <mgs/meta/detected.hpp>
@@ -26,7 +26,7 @@ private:
   static constexpr auto const is_iterator_begin =
       is_input_or_output_iterator<Iterator>::value;
   static constexpr auto const is_sentinel_end =
-      is_sentinel<Sentinel, Iterator>::value;
+      is_sentinel_for<Sentinel, Iterator>::value;
 
 public:
   static constexpr bool value = is_iterator_begin && is_sentinel_end;
@@ -38,7 +38,7 @@ public:
           std::tuple<meta::is_input_or_output_iterator<Iterator>>,
           std::tuple<>>{},
       std::conditional_t<has_begin && has_end,
-                         std::tuple<is_sentinel<Sentinel, Iterator>>,
+                         std::tuple<is_sentinel_for<Sentinel, Iterator>>,
                          std::tuple<>>{}));
 
   static constexpr int trigger_static_asserts()

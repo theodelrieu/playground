@@ -7,7 +7,7 @@
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/concepts/incrementable.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/iterator_category.hpp>
 #include <mgs/meta/iter_concept.hpp>
@@ -26,11 +26,11 @@ private:
 
 public:
   using requirements =
-      std::tuple<is_input_iterator<T>, is_incrementable<T>, is_sentinel<T, T>>;
+      std::tuple<is_input_iterator<T>, is_incrementable<T>, is_sentinel_for<T, T>>;
 
   static constexpr auto const value =
       is_input_iterator<T>::value && has_correct_category &&
-      is_sentinel<T, T>::value && is_incrementable<T>::value;
+      is_sentinel_for<T, T>::value && is_incrementable<T>::value;
 
   static constexpr int trigger_static_asserts()
   {

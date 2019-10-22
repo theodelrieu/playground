@@ -7,8 +7,8 @@
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
 
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
 #include <test_helpers/requirements.hpp>
@@ -65,28 +65,28 @@ template <typename T>
 void operator-(T*, invalid_difference_type_sized_sentinel);
 }
 
-TEST_CASE("SizedSentinel", "[meta][concepts][iterator]")
+TEST_CASE("sized_sentinel_for")
 {
-  static_assert(is_sized_sentinel<char*, char*>::value, "");
-  static_assert(is_sized_sentinel<valid_sized_sentinel, char*>::value, "");
+  static_assert(is_sized_sentinel_for<char*, char*>::value, "");
+  static_assert(is_sized_sentinel_for<valid_sized_sentinel, char*>::value, "");
 
-  static_assert(!is_sized_sentinel<pointer_sentinel, void*>::value, "");
+  static_assert(!is_sized_sentinel_for<pointer_sentinel, void*>::value, "");
   static_assert(
-      !is_sized_sentinel<invalid_difference_type_sized_sentinel, void*>::value,
+      !is_sized_sentinel_for<invalid_difference_type_sized_sentinel, void*>::value,
       "");
-  static_assert(!is_sized_sentinel<non_semiregular, char*>::value, "");
+  static_assert(!is_sized_sentinel_for<non_semiregular, char*>::value, "");
 
-  static_assert(!is_sized_sentinel<void, void>::value, "");
-  static_assert(!is_sized_sentinel<struct incomplete, incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel<pointer_sentinel, char*>>();
+  static_assert(!is_sized_sentinel_for<void, void>::value, "");
+  static_assert(!is_sized_sentinel_for<struct incomplete, incomplete>::value, "");
 
   test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel<invalid_difference_type_sized_sentinel, char*>>();
+      is_sized_sentinel_for<pointer_sentinel, char*>>();
 
   test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel<non_semiregular, char*>,
-      std::tuple<is_sentinel<non_semiregular, char*>,
+      is_sized_sentinel_for<invalid_difference_type_sized_sentinel, char*>>();
+
+  test_helpers::generate_failed_requirements_tests<
+      is_sized_sentinel_for<non_semiregular, char*>,
+      std::tuple<is_sentinel_for<non_semiregular, char*>,
                  is_semiregular<non_semiregular>>>();
 }

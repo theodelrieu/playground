@@ -13,7 +13,7 @@
 #include <mgs/meta/concepts/input_range.hpp>
 #include <mgs/meta/concepts/random_access_range.hpp>
 #include <mgs/meta/concepts/range.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
@@ -132,6 +132,6 @@ TEST_CASE("range")
   test_helpers::generate_failed_requirements_tests<
       is_range<invalid_range>,
       std::tuple<
-          is_sentinel<invalid_sentinel, char*>,
+          is_sentinel_for<invalid_sentinel, char*>,
           is_weakly_equality_comparable_with<invalid_sentinel, char*>>>();
 }

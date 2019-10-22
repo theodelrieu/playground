@@ -6,8 +6,8 @@
 
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/detected/types/value_type.hpp>
 #include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/iter_value_t.hpp>

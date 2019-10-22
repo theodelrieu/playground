@@ -7,7 +7,7 @@
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/concepts/sized_sentinel.hpp>
+#include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/detected/operators/function_call.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
@@ -56,17 +56,17 @@ public:
   using requirements =
       std::tuple<meta::is_semiregular<T>,
                  meta::is_input_iterator<I>,
-                 meta::is_sentinel<S, I>,
+                 meta::is_sentinel_for<S, I>,
                  meta::is_random_access_iterator<BufferI>,
-                 meta::is_sized_sentinel<BufferS, BufferI>,
+                 meta::is_sized_sentinel_for<BufferS, BufferI>,
                  meta::is_range<Buffer>>;
 
   static constexpr auto const value =
       meta::is_semiregular<T>::value && has_get_iterator && has_get_sentinel &&
       meta::is_input_or_output_iterator<I>::value &&
-      meta::is_sentinel<S, I>::value && meta::is_range<Buffer>::value &&
+      meta::is_sentinel_for<S, I>::value && meta::is_range<Buffer>::value &&
       meta::is_random_access_iterator<BufferI>::value &&
-      meta::is_sized_sentinel<BufferS, BufferI>::value &&
+      meta::is_sized_sentinel_for<BufferS, BufferI>::value &&
       is_constructible_from_iterator_sentinel && has_function_call_op;
 
   static constexpr int trigger_static_asserts()

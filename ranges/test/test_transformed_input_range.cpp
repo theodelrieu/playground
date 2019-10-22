@@ -4,7 +4,7 @@
 
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/static_asserts.hpp>
 #include <mgs/ranges/concepts/transformed_input_range.hpp>
 

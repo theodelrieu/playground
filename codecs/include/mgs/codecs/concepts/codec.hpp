@@ -12,7 +12,7 @@
 #include <mgs/codecs/detected/types/default_encoded_output.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
-#include <mgs/meta/concepts/sentinel.hpp>
+#include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/ranges/concepts/transformed_input_range.hpp>
@@ -179,15 +179,15 @@ private:
 public:
   using requirements =
       std::tuple<meta::is_input_iterator<I1>,
-                 meta::is_sentinel<S1, I1>,
+                 meta::is_sentinel_for<S1, I1>,
                  meta::is_input_iterator<I2>,
-                 meta::is_sentinel<S2, I2>>;
+                 meta::is_sentinel_for<S2, I2>>;
 
   static constexpr auto const value =
       meta::is_input_iterator<I1>::value &&
-      meta::is_sentinel<S1, I1>::value &&
+      meta::is_sentinel_for<S1, I1>::value &&
       meta::is_input_iterator<I2>::value &&
-      meta::is_sentinel<S2, I2>::value &&
+      meta::is_sentinel_for<S2, I2>::value &&
       has_make_encoder && has_make_decoder && has_default_encoded_output &&
       has_default_decoded_output && has_template_encoded_output &&
       has_template_decoded_output && has_encode_iterators_default_result &&
