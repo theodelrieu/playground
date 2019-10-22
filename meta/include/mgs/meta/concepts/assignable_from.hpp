@@ -6,29 +6,30 @@
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/concepts/common_reference.hpp>
 
-// https://en.cppreference.com/w/cpp/concepts/Assignable
+// https://en.cppreference.com/w/cpp/concepts/assignable_from
 
 namespace mgs
 {
 namespace detail
 {
 template <typename LHS, typename RHS>
-auto _assignable_requirement(LHS lhs, RHS&& rhs)
+auto _assignable_from_requirement(LHS lhs, RHS&& rhs)
     -> decltype(lhs = std::forward<RHS>(rhs));
 
 template <typename LHS, typename RHS>
-using assignable_requirement =
-    decltype(_assignable_requirement(std::declval<LHS>(), std::declval<RHS>()));
+using assignable_from_requirement = decltype(
+    _assignable_from_requirement(std::declval<LHS>(), std::declval<RHS>()));
 }
 
 namespace meta
 {
 template <typename LHS, typename RHS>
-struct is_assignable
+struct is_assignable_from
 {
 private:
   static constexpr auto const does_return_same_type =
-      is_detected_exact<LHS, detail::assignable_requirement, LHS, RHS>::value;
+      is_detected_exact<LHS, detail::assignable_from_requirement, LHS, RHS>::
+          value;
 
   using lhs_lvalue_const_ref = std::add_lvalue_reference_t<
       std::add_const_t<std::remove_reference_t<LHS>>>;
@@ -56,11 +57,11 @@ public:
 };
 
 template <typename LHS, typename RHS>
-constexpr auto is_assignable_v = is_assignable<LHS, RHS>::value;
+constexpr auto is_assignable_from_v = std::is_assignable<LHS, RHS>::value;
 
 template <typename LHS,
           typename RHS,
-          typename = std::enable_if_t<is_assignable<LHS, RHS>::value>>
-using Assignable = LHS;
+          typename = std::enable_if_t<std::is_assignable<LHS, RHS>::value>>
+using assignable_from = LHS;
 }
 }

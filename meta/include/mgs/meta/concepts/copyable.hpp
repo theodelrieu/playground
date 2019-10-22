@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/assignable.hpp>
+#include <mgs/meta/concepts/assignable_from.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
 #include <mgs/meta/concepts/movable.hpp>
 
@@ -16,14 +16,15 @@ template <typename T>
 struct is_copyable
 {
   using requirements = std::tuple<
-      is_assignable<std::add_lvalue_reference_t<T>,
-                    std::add_lvalue_reference_t<std::add_const_t<T>>>,
+      is_assignable_from<std::add_lvalue_reference_t<T>,
+                         std::add_lvalue_reference_t<std::add_const_t<T>>>,
       is_movable<T>,
       is_copy_constructible<T>>;
 
   static constexpr auto const value =
-      is_assignable<std::add_lvalue_reference_t<T>,
-                    std::add_lvalue_reference_t<std::add_const_t<T>>>::value &&
+      is_assignable_from<
+          std::add_lvalue_reference_t<T>,
+          std::add_lvalue_reference_t<std::add_const_t<T>>>::value &&
       is_movable<T>::value && is_copy_constructible<T>::value;
 
   static constexpr int trigger_static_asserts()

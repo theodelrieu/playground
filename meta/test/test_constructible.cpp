@@ -2,7 +2,7 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/concepts/assignable.hpp>
+#include <mgs/meta/concepts/assignable_from.hpp>
 #include <mgs/meta/concepts/constructible.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
 #include <mgs/meta/concepts/move_constructible.hpp>
@@ -55,20 +55,20 @@ TEST_CASE("Constructible", "[meta][concepts][core]")
   static_assert(!is_constructible<void>::value, "");
 }
 
-TEST_CASE("Assignable", "[meta][concepts][core]")
+TEST_CASE("assignable_from", "[meta][concepts][core]")
 {
-  static_assert(is_assignable<int&, int>::value, "");
+  static_assert(is_assignable_from<int&, int>::value, "");
 
-  static_assert(!is_assignable<void, void>::value, "");
-  static_assert(!is_assignable<struct incomplete&, struct incomplete>::value,
-                "");
+  static_assert(!is_assignable_from<void, void>::value, "");
+  static_assert(
+      !is_assignable_from<struct incomplete&, struct incomplete>::value, "");
 
-  static_assert(!is_assignable<invalid_assignment_return&,
-                               invalid_assignment_return>::value,
+  static_assert(!is_assignable_from<invalid_assignment_return&,
+                                    invalid_assignment_return>::value,
                 "");
-  static_assert(!is_assignable<int, int>::value, "");
-  static_assert(!is_assignable<int&&, int>::value, "");
-  static_assert(!is_assignable<int const&, int>::value, "");
+  static_assert(!is_assignable_from<int, int>::value, "");
+  static_assert(!is_assignable_from<int&&, int>::value, "");
+  static_assert(!is_assignable_from<int const&, int>::value, "");
 }
 
 TEST_CASE("MoveConstructible", "[meta][concepts][core]")

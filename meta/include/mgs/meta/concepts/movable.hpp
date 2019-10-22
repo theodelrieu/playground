@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/assignable.hpp>
+#include <mgs/meta/concepts/assignable_from.hpp>
 #include <mgs/meta/concepts/move_constructible.hpp>
 #include <mgs/meta/concepts/swappable.hpp>
 
@@ -16,13 +16,13 @@ template <typename T>
 struct is_movable
 {
   using requirements =
-      std::tuple<is_assignable<std::add_lvalue_reference_t<T>, T>,
+      std::tuple<is_assignable_from<std::add_lvalue_reference_t<T>, T>,
                  is_move_constructible<T>,
                  is_swappable<T>>;
 
   static constexpr auto const value =
       std::is_object<T>::value &&
-      is_assignable<std::add_lvalue_reference_t<T>, T>::value &&
+      is_assignable_from<std::add_lvalue_reference_t<T>, T>::value &&
       is_move_constructible<T>::value && is_swappable<T>::value;
 
   static constexpr int trigger_static_asserts()
