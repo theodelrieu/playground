@@ -48,6 +48,6 @@ constexpr auto is_copy_constructible_v = is_copy_constructible<T>::value;
 
 template <typename T,
           typename = std::enable_if_t<is_copy_constructible<T>::value>>
-using CopyConstructible = T;
+using copy_constructible = T;
 }
 }
