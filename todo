@@ -1,11 +1,4 @@
 doc
-
-* migrate to readthedocs
-
 code:
 
-rethink why iterator(), sentinel() is needed on InputTransformers
-get_iterator -> iterator
-Put back operator== on InputTransformer?
-
-equaliycomparewith use commonref
+remove tags from tests
