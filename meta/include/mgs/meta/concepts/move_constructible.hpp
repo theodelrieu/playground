@@ -32,6 +32,6 @@ constexpr auto is_move_constructible_v = is_move_constructible<T>::value;
 
 template <typename T,
           typename = std::enable_if_t<is_move_constructible<T>::value>>
-using MoveConstructible = T;
+using move_constructible = T;
 }
 }
