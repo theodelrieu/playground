@@ -20,7 +20,7 @@ struct is_regular
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not Regular");
+    static_assert(value, "T is not regular");
     return 1;
   }
 };
@@ -29,6 +29,6 @@ template <typename T>
 constexpr auto is_regular_v = is_regular<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_regular<T>::value>>
-using Regular = T;
+using regular = T;
 }
 }
