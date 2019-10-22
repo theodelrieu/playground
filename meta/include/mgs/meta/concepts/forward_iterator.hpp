@@ -12,8 +12,6 @@
 #include <mgs/meta/detected/types/iterator_category.hpp>
 #include <mgs/meta/iter_concept.hpp>
 
-// https://en.cppreference.com/w/cpp/experimental/ranges/ForwardIterator
-
 namespace mgs
 {
 namespace meta
@@ -50,6 +48,6 @@ constexpr auto is_forward_iterator_v = is_forward_iterator<T>::value;
 
 template <typename T,
           typename = std::enable_if_t<is_forward_iterator<T>::value>>
-using ForwardIterator = T;
+using forward_iterator = T;
 }
 }
