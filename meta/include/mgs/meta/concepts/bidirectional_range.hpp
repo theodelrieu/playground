@@ -19,10 +19,10 @@ private:
 
 public:
   using requirements =
-      std::tuple<is_input_range<T>, is_bidirectional_iterator<Iterator>>;
+      std::tuple<is_forward_range<T>, is_bidirectional_iterator<Iterator>>;
 
   static constexpr bool value =
-      is_input_range<T>::value && is_bidirectional_iterator<Iterator>::value;
+      is_forward_range<T>::value && is_bidirectional_iterator<Iterator>::value;
 
   static constexpr int trigger_static_asserts()
   {
