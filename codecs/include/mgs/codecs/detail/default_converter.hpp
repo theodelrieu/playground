@@ -11,7 +11,7 @@
 #include <mgs/config.hpp>
 
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/detected.hpp>
@@ -90,7 +90,7 @@ private:
             typename SizeType = typename R::size_type,
             typename = std::enable_if_t<
                 meta::is_random_access_iterator<meta::iterator_t<R>>::value &&
-                meta::is_constructible<R>::value &&
+                meta::is_constructible_from<R>::value &&
                 // Keep those in C++17 as well, fill_random_access_container
                 // relies on NRVO, not on Guaranteed Copy Elision.
                 (meta::is_copy_constructible<R>::value ||
@@ -117,7 +117,7 @@ private:
                 (meta::is_move_constructible<R>::value ||
                  meta::is_copy_constructible<R>::value) &&
 #endif
-                meta::is_constructible<R, Iterator, Iterator>::value &&
+                meta::is_constructible_from<R, Iterator, Iterator>::value &&
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>

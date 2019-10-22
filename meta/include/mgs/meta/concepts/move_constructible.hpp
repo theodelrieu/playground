@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
 #include <mgs/meta/detected.hpp>
 
@@ -15,10 +15,10 @@ template <typename T>
 struct is_move_constructible
 {
   using requirements =
-      std::tuple<is_constructible<T, T>, is_convertible_to<T, T>>;
+      std::tuple<is_constructible_from<T, T>, is_convertible_to<T, T>>;
 
   static constexpr auto const value =
-      is_constructible<T, T>::value && is_convertible_to<T, T>::value;
+      is_constructible_from<T, T>::value && is_convertible_to<T, T>::value;
 
   static constexpr int trigger_static_asserts()
   {

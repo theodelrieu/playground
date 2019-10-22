@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
@@ -67,7 +67,7 @@ private:
                               t_const_ref>::value;
 
   static auto constexpr const is_constructible_from_iterator_sentinel =
-      meta::is_constructible<T, I, S>::value;
+      meta::is_constructible_from<T, I, S>::value;
 
 public:
   using requirements =

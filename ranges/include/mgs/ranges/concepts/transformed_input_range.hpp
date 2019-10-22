@@ -4,7 +4,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
@@ -44,9 +44,8 @@ private:
   using underlying_sentinel =
       meta::detected_t<detected::types::underlying_sentinel, T>;
 
-  static auto constexpr const is_constructible_from_iterator_sentinel =
-      meta::
-          is_constructible<T, underlying_iterator, underlying_sentinel>::value;
+  static auto constexpr const is_constructible_from_iterator_sentinel = meta::
+      is_constructible_from<T, underlying_iterator, underlying_sentinel>::value;
 
 public:
   using requirements = std::tuple<meta::is_semiregular<T>,

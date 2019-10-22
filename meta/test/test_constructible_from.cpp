@@ -3,7 +3,7 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/assignable_from.hpp>
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/copy_constructible.hpp>
 #include <mgs/meta/concepts/move_constructible.hpp>
 #include <mgs/meta/concepts/copyable.hpp>
@@ -34,28 +34,29 @@ struct invalid_assignment_return
 };
 }
 
-TEST_CASE("Constructible", "[meta][concepts][core]")
+TEST_CASE("constructible_from")
 {
-  static_assert(is_constructible<int>::value, "");
-  static_assert(is_constructible<struct incomplete*>::value, "");
-  static_assert(is_constructible<struct incomplete&, struct incomplete&>::value,
-                "");
-  static_assert(is_constructible<non_move_constructible, float>::value, "");
+  static_assert(is_constructible_from<int>::value, "");
+  static_assert(is_constructible_from<struct incomplete*>::value, "");
   static_assert(
-      is_constructible<non_move_constructible, non_move_constructible&>::value,
-      "");
-
-  static_assert(!is_constructible<non_move_constructible&,
-                                  non_move_constructible&&>::value,
+      is_constructible_from<struct incomplete&, struct incomplete&>::value, "");
+  static_assert(is_constructible_from<non_move_constructible, float>::value,
                 "");
-  static_assert(!is_constructible<non_move_constructible>::value, "");
-  static_assert(!is_constructible<struct incomplete>::value, "");
-  static_assert(!is_constructible<struct incomplete, int>::value, "");
-  static_assert(!is_constructible<void, int>::value, "");
-  static_assert(!is_constructible<void>::value, "");
+  static_assert(is_constructible_from<non_move_constructible,
+                                      non_move_constructible&>::value,
+                "");
+
+  static_assert(!is_constructible_from<non_move_constructible&,
+                                       non_move_constructible&&>::value,
+                "");
+  static_assert(!is_constructible_from<non_move_constructible>::value, "");
+  static_assert(!is_constructible_from<struct incomplete>::value, "");
+  static_assert(!is_constructible_from<struct incomplete, int>::value, "");
+  static_assert(!is_constructible_from<void, int>::value, "");
+  static_assert(!is_constructible_from<void>::value, "");
 }
 
-TEST_CASE("assignable_from", "[meta][concepts][core]")
+TEST_CASE("assignable_from")
 {
   static_assert(is_assignable_from<int&, int>::value, "");
 

@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <mgs/meta/concepts/constructible.hpp>
+#include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
 #include <mgs/meta/concepts/move_constructible.hpp>
 
@@ -20,20 +20,20 @@ private:
 
 public:
   using requirements = std::tuple<is_move_constructible<T>,
-                                  is_constructible<T, lvalue_ref>,
+                                  is_constructible_from<T, lvalue_ref>,
                                   is_convertible_to<lvalue_ref, T>,
-                                  is_constructible<T, const_lvalue_ref>,
+                                  is_constructible_from<T, const_lvalue_ref>,
                                   is_convertible_to<const_lvalue_ref, T>,
-                                  is_constructible<T, std::add_const_t<T>>,
+                                  is_constructible_from<T, std::add_const_t<T>>,
                                   is_convertible_to<std::add_const_t<T>, T>>;
 
   static constexpr auto const value =
       is_move_constructible<T>::value &&
-      is_constructible<T, lvalue_ref>::value &&
+      is_constructible_from<T, lvalue_ref>::value &&
       is_convertible_to<lvalue_ref, T>::value &&
-      is_constructible<T, const_lvalue_ref>::value &&
+      is_constructible_from<T, const_lvalue_ref>::value &&
       is_convertible_to<const_lvalue_ref, T>::value &&
-      is_constructible<T, std::add_const_t<T>>::value &&
+      is_constructible_from<T, std::add_const_t<T>>::value &&
       is_convertible_to<std::add_const_t<T>, T>::value;
 
   static constexpr int trigger_static_asserts()

@@ -21,12 +21,12 @@ struct is_valid_is_constructible_type
 };
 
 template <typename T, typename TupleArgs, typename = void>
-struct is_constructible_impl : std::false_type
+struct is_constructible_from_impl : std::false_type
 {
 };
 
 template <typename T, typename... Args>
-struct is_constructible_impl<
+struct is_constructible_from_impl<
     T,
     std::tuple<Args...>,
     meta::void_t<
@@ -40,18 +40,20 @@ struct is_constructible_impl<
 namespace meta
 {
 template <typename T, typename... Args>
-struct is_constructible : detail::is_constructible_impl<T, std::tuple<Args...>>
+struct is_constructible_from
+  : detail::is_constructible_from_impl<T, std::tuple<Args...>>
 {
   using requirements = std::tuple<>;
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_constructible::value, "T is not constructible from Args...");
+    static_assert(is_constructible_from::value,
+                  "T is not constructible from Args...");
     return 1;
   }
 };
 
 template <typename T, typename... Args>
-constexpr auto is_constructible_v = is_constructible<T, Args...>::value;
+constexpr auto is_constructible_from_v = is_constructible_from<T, Args...>::value;
 }
 }
