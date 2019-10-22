@@ -12,7 +12,6 @@ namespace detail
 template <typename = void>
 struct base64_encoding_traits
 {
-  using alphabet_t = char const[64];
   using lookup_table_t = int const[256];
 
   static constexpr lookup_table_t lookup_table = {
@@ -32,7 +31,7 @@ struct base64_encoding_traits
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1};
 
-  static constexpr alphabet_t alphabet = {
+  static constexpr char const alphabet[64] = {
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -50,8 +49,7 @@ struct base64_encoding_traits
 };
 
 template <typename Dummy>
-constexpr typename base64_encoding_traits<Dummy>::alphabet_t
-    base64_encoding_traits<Dummy>::alphabet;
+constexpr char const base64_encoding_traits<Dummy>::alphabet[64];
 
 template <typename Dummy>
 constexpr char const base64_encoding_traits<Dummy>::padding_character;

@@ -8,16 +8,16 @@ class ConanMgsCodecsBase(ConanFile):
     settings = "os", "arch", "build_type", "compiler", "cppstd"
 
     def build_requirements(self):
-        self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
+        self.build_requires("mgs_cmake/%s" % self.version)
         if self.develop:
-            self.build_requires("mgs_test_helpers/%s@mgs/testing" % self.version)
+            self.build_requires("mgs_test_helpers/%s" % self.version)
             self.build_requires("Catch2/2.7.2@catchorg/stable")
 
     def requirements(self):
-        self.requires("mgs_meta/%s@mgs/testing" % self.version)
-        self.requires("mgs_exceptions/%s@mgs/testing" % self.version)
-        self.requires("mgs_ranges/%s@mgs/testing" % self.version)
-        self.requires("mgs_config/%s@mgs/testing" % self.version)
+        self.requires("mgs_meta/%s" % self.version)
+        self.requires("mgs_exceptions/%s" % self.version)
+        self.requires("mgs_ranges/%s" % self.version)
+        self.requires("mgs_config/%s" % self.version)
 
     def build(self):
         cmake = CMake(self)

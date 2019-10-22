@@ -31,9 +31,7 @@ struct base32hex_encoding_traits
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1};
 
-  using alphabet_t = char const[32];
-
-  static constexpr alphabet_t alphabet = {
+  static constexpr char const alphabet[32] = {
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
       'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
       'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'};
@@ -49,8 +47,7 @@ struct base32hex_encoding_traits
 };
 
 template <typename T>
-constexpr typename base32hex_encoding_traits<T>::alphabet_t
-    base32hex_encoding_traits<T>::alphabet;
+constexpr char const base32hex_encoding_traits<T>::alphabet[32];
 
 template <typename T>
 constexpr typename base32hex_encoding_traits<T>::lookup_table_t

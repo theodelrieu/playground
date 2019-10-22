@@ -12,7 +12,6 @@ namespace detail
 template <binary_to_base::padding_policy PaddingPolicy>
 struct basic_base64url_encoding_traits
 {
-  using alphabet_t = char const[64];
   using lookup_table_t = int const[256];
 
   static constexpr lookup_table_t lookup_table = {
@@ -32,7 +31,7 @@ struct basic_base64url_encoding_traits
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1};
 
-  static constexpr alphabet_t alphabet = {
+  static constexpr char const alphabet[64] = {
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
       'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
       'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -49,8 +48,8 @@ struct basic_base64url_encoding_traits
 };
 
 template <binary_to_base::padding_policy PaddingPolicy>
-constexpr typename basic_base64url_encoding_traits<PaddingPolicy>::alphabet_t
-    basic_base64url_encoding_traits<PaddingPolicy>::alphabet;
+constexpr char const
+    basic_base64url_encoding_traits<PaddingPolicy>::alphabet[64];
 
 template <binary_to_base::padding_policy PaddingPolicy>
 constexpr char const

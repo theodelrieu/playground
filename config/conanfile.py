@@ -8,7 +8,7 @@ class ConanMgsConfig(ConanFile):
     settings = "os", "build_type", "arch", "compiler", "cppstd"
 
     def build_requirements(self):
-        self.build_requires("mgs_cmake/%s@mgs/testing" % self.version)
+        self.build_requires("mgs_cmake/%s" % self.version)
 
     def build(self):
         cmake = CMake(self)

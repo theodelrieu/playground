@@ -23,7 +23,7 @@ nav_order: 2
 Conan is supported out of the box:
 
 1. `conan remote add theodelrieu https://api.bintray.com/conan/theodelrieu/conan-repo`
-1. Add `mgs/0.1.0@mgs/testing` to your `conanfile.txt`
+1. Add `mgs/0.1.0` to your `conanfile.txt`
 
 This will install the entire library, you can also install specific components, e.g. `mgs_base64`.
 

@@ -1,32 +1,30 @@
 editables:
-  mgs_base16/0.1.0@mgs/testing:
+  mgs_base16/0.1.0:
     path: base16
-  mgs_base32/0.1.0@mgs/testing:
+  mgs_base32/0.1.0:
     path: base32
-  mgs_base32hex/0.1.0@mgs/testing:
+  mgs_base32hex/0.1.0:
     path: base32hex
-  mgs_base64/0.1.0@mgs/testing:
+  mgs_base64/0.1.0:
     path: base64
-  mgs_base64url/0.1.0@mgs/testing:
+  mgs_base64url/0.1.0:
     path: base64url
-  mgs_binary_to_base/0.1.0@mgs/testing:
+  mgs_binary_to_base/0.1.0:
     path: binary_to_base
-  mgs_codecs/0.1.0@mgs/testing:
+  mgs_codecs/0.1.0:
     path: codecs
-  mgs_exceptions/0.1.0@mgs/testing:
+  mgs_exceptions/0.1.0:
     path: exceptions
-  mgs_meta/0.1.0@mgs/testing:
+  mgs_meta/0.1.0:
     path: meta
-  mgs_ranges/0.1.0@mgs/testing:
+  mgs_ranges/0.1.0:
     path: ranges
-  mgs_test_helpers/0.1.0@mgs/testing:
+  mgs_test_helpers/0.1.0:
     path: test_helpers
-  mgs_cmake/0.1.0@mgs/testing:
+  mgs_cmake/0.1.0:
     path: cmake
-  mgs_config/0.1.0@mgs/testing:
+  mgs_config/0.1.0:
     path: config
-  mgs/0.1.0@mgs/testing:
-    path: all
 workspace_generator: cmake
 layout: mgs_layout
-root: mgs/0.1.0@mgs/testing
+root: mgs_base16/0.1.0, mgs_base32/0.1.0, mgs_base32hex/0.1.0, mgs_base64/0.1.0, mgs_base64url/0.1.0

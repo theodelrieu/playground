@@ -32,24 +32,22 @@ struct base16_encoding_traits
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1};
 
-  using alphabet_t = char const[16];
-
-  static constexpr alphabet_t alphabet = {'0',
-                                          '1',
-                                          '2',
-                                          '3',
-                                          '4',
-                                          '5',
-                                          '6',
-                                          '7',
-                                          '8',
-                                          '9',
-                                          'A',
-                                          'B',
-                                          'C',
-                                          'D',
-                                          'E',
-                                          'F'};
+  static constexpr char const alphabet[16] = {'0',
+                                              '1',
+                                              '2',
+                                              '3',
+                                              '4',
+                                              '5',
+                                              '6',
+                                              '7',
+                                              '8',
+                                              '9',
+                                              'A',
+                                              'B',
+                                              'C',
+                                              'D',
+                                              'E',
+                                              'F'};
 
   static int index_of(char c)
   {
@@ -61,8 +59,7 @@ struct base16_encoding_traits
 };
 
 template <typename T>
-constexpr typename base16_encoding_traits<T>::alphabet_t
-    base16_encoding_traits<T>::alphabet;
+constexpr char const base16_encoding_traits<T>::alphabet[16];
 
 template <typename T>
 constexpr typename base16_encoding_traits<T>::lookup_table_t
