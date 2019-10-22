@@ -97,6 +97,6 @@ constexpr auto is_convertible_to_v = is_convertible_to<From, To>::value;
 template <typename From,
           typename To,
           typename = std::enable_if_t<is_convertible_to<From, To>::value>>
-using ConvertibleTo = From;
+using convertible_to = From;
 }
 }
