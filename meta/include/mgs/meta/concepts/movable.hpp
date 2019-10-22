@@ -37,6 +37,6 @@ template <typename T>
 constexpr auto is_movable_v = is_movable<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_movable<T>::value>>
-using Movable = T;
+using movable = T;
 }
 }
