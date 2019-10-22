@@ -4,12 +4,10 @@
 #include <type_traits>
 
 #include <mgs/meta/concepts/complete_type.hpp>
-#include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/concepts/regular.hpp>
+#include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/post_increment.hpp>
-
-// https://en.cppreference.com/w/cpp/experimental/ranges/Incrementable
 
 namespace mgs
 {
@@ -31,9 +29,9 @@ struct is_incrementable
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not Incrementable");
+    static_assert(value, "T is not incrementable");
     static_assert(has_post_increment,
-                  "Invalid or missing operator: 'T operator++(int)'");
+                  "invalid or missing operator: 'T operator++(int)'");
     return 1;
   }
 };
@@ -42,6 +40,6 @@ template <typename T>
 constexpr auto is_incrementable_v = is_incrementable<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_incrementable<T>::value>>
-using Incrementable = T;
+using incrementable = T;
 }
 }

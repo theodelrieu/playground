@@ -55,18 +55,18 @@ struct non_regular
   non_regular operator++(int);
 };
 
-struct incrementable
+struct valid_incrementable
 {
   using difference_type = std::ptrdiff_t;
-  incrementable& operator++();
-  incrementable operator++(int);
+  valid_incrementable& operator++();
+  valid_incrementable operator++(int);
 };
 
-bool operator==(incrementable, incrementable);
-bool operator!=(incrementable, incrementable);
+bool operator==(valid_incrementable, valid_incrementable);
+bool operator!=(valid_incrementable, valid_incrementable);
 }
 
-TEST_CASE("WeaklyIncrementable", "[meta][concepts][iterator]")
+TEST_CASE("WeaklyIncrementable")
 {
   static_assert(is_weakly_incrementable<char*>::value, "");
   static_assert(is_weakly_incrementable<char>::value, "");
@@ -89,11 +89,11 @@ TEST_CASE("WeaklyIncrementable", "[meta][concepts][iterator]")
       is_weakly_incrementable<non_pre_incrementable>>();
 }
 
-TEST_CASE("Incrementable", "[meta][concepts][iterator]")
+TEST_CASE("incrementable")
 {
   static_assert(is_incrementable<char*>::value, "");
   static_assert(is_incrementable<char>::value, "");
-  static_assert(is_incrementable<incrementable>::value, "");
+  static_assert(is_incrementable<valid_incrementable>::value, "");
 
   static_assert(!is_incrementable<non_regular>::value, "");
   static_assert(!is_incrementable<regular_and_weakly_incrementable>::value, "");
