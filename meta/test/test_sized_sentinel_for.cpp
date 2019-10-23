@@ -78,15 +78,4 @@ TEST_CASE("sized_sentinel_for")
 
   static_assert(!is_sized_sentinel_for<void, void>::value, "");
   static_assert(!is_sized_sentinel_for<struct incomplete, incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel_for<pointer_sentinel, char*>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel_for<invalid_difference_type_sized_sentinel, char*>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sized_sentinel_for<non_semiregular, char*>,
-      std::tuple<is_sentinel_for<non_semiregular, char*>,
-                 is_semiregular<non_semiregular>>>();
 }

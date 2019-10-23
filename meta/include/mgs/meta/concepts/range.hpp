@@ -43,23 +43,23 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a range");
+    static_assert(value, "T does not model meta::range");
     static_assert(
         has_begin,
-        "There is not an available 'begin' member/free function for T");
+        "there is no available 'begin' member/free function for T");
     static_assert(has_end,
-                  "There is not an available 'end' member/free function for T");
+                  "there is no available 'end' member/free function for T");
 
     // only trigger if there is a begin function
     static_assert(!has_begin || is_iterator_begin,
-                  "Invalid 'begin' member/free function for T: does not return "
-                  "an input_or_output_iterator");
+                  "invalid 'begin' member/free function for T: does not return "
+                  "a type that models meta::input_or_output_iterator");
 
     // only trigger if there is a begin and an end function.
     static_assert(
         (!has_begin || is_iterator_begin) || !has_end || is_sentinel_end,
-        "Invalid 'end' member/free function for T: does not return "
-        "a Sentinel<input_or_output_iterator>");
+        "invalid 'end' member/free function for T: does not return "
+        "a type that models meta::sentinel_for<meta::iterator_t<T>>");
     return 1;
   }
 };

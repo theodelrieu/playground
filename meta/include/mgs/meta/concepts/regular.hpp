@@ -20,7 +20,7 @@ struct is_regular
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not regular");
+    static_assert(value, "T does not model meta::regular");
     return 1;
   }
 };

@@ -6,11 +6,6 @@
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
 
-// template <typename T>
-// concept common_range =
-//   meta::range<T> &&
-//   meta::same_as<meta::iterator_t<T>, meta::sentinel_t<T>>;
-
 namespace mgs
 {
 namespace meta
@@ -30,7 +25,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a common_range");
+    static_assert(value, "T does not model meta::common_range");
     static_assert(has_same_iterator_sentinel,
                   "iterator and sentinel types must be the same");
     return 1;

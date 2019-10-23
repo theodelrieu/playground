@@ -29,7 +29,7 @@ struct is_copyable
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not Copyable");
+    static_assert(value, "T does not model meta::copyable");
     return 1;
   }
 };

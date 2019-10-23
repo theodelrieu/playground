@@ -105,12 +105,4 @@ TEST_CASE("semiregular")
   static_assert(!is_semiregular<non_move_assignable>::value, "");
   static_assert(!is_semiregular<non_destructible>::value, "");
   static_assert(!is_semiregular<non_swappable>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_semiregular<non_swappable>,
-      std::tuple<is_swappable<non_swappable>>>();
-
-  // other types have a swap overload
-  test_helpers::generate_failed_requirements_tests<
-      is_semiregular<non_destructible>>();
 }

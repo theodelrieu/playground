@@ -35,7 +35,7 @@ struct is_output_iterator
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "I is not an OutputIterator<T>");
+    static_assert(value, "I does not model meta::output_iterator<T>");
     return 1;
   }
 };

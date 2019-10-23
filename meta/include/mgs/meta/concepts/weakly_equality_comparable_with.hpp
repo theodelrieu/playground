@@ -50,7 +50,8 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not weakly_equality_comparable_with<U>");
+    static_assert(value,
+                  "T does not model meta::weakly_equality_comparable_with<U>");
     static_assert(has_equality_t_u,
                   "invalid or missing operator: 'meta::boolean operator==(T "
                   "const&, U const&)'");

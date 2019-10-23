@@ -71,7 +71,7 @@ struct is_writable
   static constexpr int trigger_static_asserts()
   {
     static_assert(value,
-                  "Out does not model Writable<T>. Make sure Out::operator* "
+                  "Out does not model meta::writable<T>. Make sure Out::operator* "
                   "does not return by-value (unless Out is a proxy-type, in "
                   "this case you should provide const/rvalue/lvalue overloads");
     return 1;

@@ -20,7 +20,7 @@ struct is_default_constructible
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not default_constructible");
+    static_assert(value, "T does not model meta::default_constructible");
     return 1;
   }
 };

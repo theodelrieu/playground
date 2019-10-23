@@ -26,7 +26,8 @@ struct is_sentinel_for
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_sentinel_for::value, "T is not a sentinel_for<Iterator>");
+    static_assert(is_sentinel_for::value,
+                  "T does not model meta::sentinel_for<Iterator>");
     return 1;
   }
 };

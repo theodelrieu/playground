@@ -27,7 +27,7 @@ struct is_movable
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not Movable");
+    static_assert(value, "T does not model meta::movable");
     static_assert(std::is_object<T>::value, "T must be an object type");
     return 1;
   }

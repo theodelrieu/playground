@@ -16,7 +16,7 @@ struct is_same_as
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T and U are different types");
+    static_assert(value, "T does not model meta::same_as<U>");
     return 1;
   }
 };

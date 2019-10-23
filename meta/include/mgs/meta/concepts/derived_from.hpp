@@ -8,8 +8,6 @@
 #include <mgs/meta/concepts/complete_type.hpp>
 #include <mgs/meta/concepts/regular.hpp>
 
-// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/derived_from
-
 namespace mgs
 {
 namespace detail
@@ -41,7 +39,8 @@ struct is_derived_from : detail::is_derived_from_impl<Derived, Base>
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_derived_from::value, "Derived is not derived from Base");
+    static_assert(is_derived_from::value,
+                  "Derived does not model meta::derived_from<Base>");
     return 1;
   }
 };

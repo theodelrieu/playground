@@ -136,8 +136,4 @@ TEST_CASE("TransformedInputRange", "[concepts]")
       !is_transformed_input_range<invalid_underlying_sentinel_range>::value,
       "");
   static_assert(!is_transformed_input_range<invalid_iterator_range>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_transformed_input_range<non_semiregular_range>,
-      std::tuple<meta::is_semiregular<non_semiregular_range>>>();
 }

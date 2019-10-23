@@ -48,7 +48,7 @@ struct is_constructible_from
   static constexpr int trigger_static_asserts()
   {
     static_assert(is_constructible_from::value,
-                  "T is not constructible from Args...");
+                  "T does not model meta::constructible_from<Args...>");
     return 1;
   }
 };

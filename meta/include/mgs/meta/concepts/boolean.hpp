@@ -107,36 +107,37 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not boolean");
+    static_assert(value, "T does not model meta::boolean");
     static_assert(is_convertible_to_bool,
-                  "T{} is not convertible_to<bool>, operator bool() must be "
+                  "T{} does not model meta::convertible_to<bool>, operator "
+                  "bool() must be "
                   "const, and not explicit");
     static_assert(is_logical_not_convertible_to_bool,
-                  "!T{} is not convertible_to<bool>");
+                  "!T{} does not model meta:: convertible_to<bool>");
     static_assert(is_logical_and_boolean_bool_same_as_bool,
-                  "T{} && bool{} is not same_as<bool>");
+                  "T{} && bool{} does not model meta::same_as<bool>");
     static_assert(is_logical_or_boolean_bool_same_as_bool,
-                  "T{} || bool{} is not same_as<bool>");
+                  "T{} || bool{} does not model meta::same_as<bool>");
     static_assert(is_logical_and_boolean_boolean_same_as_bool,
-                  "T{} && T{} is not same_as<bool>");
+                  "T{} && T{} does not model meta::same_as<bool>");
     static_assert(is_logical_and_bool_boolean_same_as_bool,
-                  "bool{} && T{} is not same_as<bool>");
+                  "bool{} && T{} does not model meta::same_as<bool>");
     static_assert(is_logical_or_boolean_boolean_same_as_bool,
-                  "T{} || T{} is not same_as<bool>");
+                  "T{} || T{} does not model meta::same_as<bool>");
     static_assert(is_logical_or_bool_boolean_same_as_bool,
-                  "bool{} || T{} is not same_as<bool>");
+                  "bool{} || T{} does not model meta::same_as<bool>");
     static_assert(is_equality_boolean_boolean_convertible_to_bool,
-                  "T{} == T{} is not convertible_to<bool>");
+                  "T{} == T{} does not model meta::convertible_to<bool>");
     static_assert(is_equality_boolean_bool_convertible_to_bool,
-                  "T{} == bool{} is not convertible_to<bool>");
+                  "T{} == bool{} does not model meta::convertible_to<bool>");
     static_assert(is_equality_bool_boolean_convertible_to_bool,
-                  "bool{} == T{} is not convertible_to<bool>");
+                  "bool{} == T{} does not model meta::convertible_to<bool>");
     static_assert(is_inequality_boolean_boolean_convertible_to_bool,
-                  "T{} != T{} is not convertible_to<bool>");
+                  "T{} != T{} does not model meta::convertible_to<bool>");
     static_assert(is_inequality_boolean_bool_convertible_to_bool,
-                  "T{} != bool{} is not convertible_to<bool>");
+                  "T{} != bool{} does not model meta::convertible_to<bool>");
     static_assert(is_inequality_bool_boolean_convertible_to_bool,
-                  "bool{} != T{} is not convertible_to<bool>");
+                  "bool{} != T{} does not model meta::convertible_to<bool>");
     return 1;
   }
 };

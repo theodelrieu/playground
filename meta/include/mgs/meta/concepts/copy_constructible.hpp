@@ -5,8 +5,7 @@
 
 #include <mgs/meta/concepts/constructible_from.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
-#include <mgs/meta/concepts/move_constructible.hpp>
-
+#include <mgs/meta/concepts/move_constructible.hpp> 
 namespace mgs
 {
 namespace meta
@@ -38,7 +37,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not CopyConstructible");
+    static_assert(value, "T does not model meta::copy_constructible");
     return 1;
   }
 };

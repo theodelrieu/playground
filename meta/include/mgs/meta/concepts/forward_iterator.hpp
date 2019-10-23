@@ -34,11 +34,11 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a ForwardIterator");
+    static_assert(value, "T does not model meta::forward_iterator");
 
     static_assert(
         has_correct_category,
-        "Iterator category tag must derive from std::forward_iterator_tag");
+        "iterator category tag must derive from std::forward_iterator_tag");
     return 1;
   }
 };

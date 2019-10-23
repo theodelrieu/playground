@@ -16,7 +16,7 @@ struct is_integral
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not integral");
+    static_assert(value, "T does not model meta::integral");
     return 1;
   }
 };

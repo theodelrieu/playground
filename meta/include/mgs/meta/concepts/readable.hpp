@@ -22,11 +22,11 @@ struct is_readable_impl : std::false_type
   static constexpr int trigger_static_asserts()
   {
     static_assert(meta::is_detected<meta::iter_value_t, T>::value,
-                  "iter_value_t<T> is ill-formed");
+                  "meta::iter_value_t<T> is ill-formed");
     static_assert(meta::is_detected<meta::iter_reference_t, T>::value,
-                  "iter_reference_t<T> is ill-formed");
+                  "meta::iter_reference_t<T> is ill-formed");
     static_assert(meta::is_detected<meta::iter_rvalue_reference_t, T>::value,
-                  "iter_rvalue_reference_t<T> is ill-formed");
+                  "meta::iter_rvalue_reference_t<T> is ill-formed");
     return 1;
   }
 };
@@ -67,7 +67,7 @@ struct is_readable_impl<
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not Readable");
+    static_assert(value, "T does not model meta::readable");
     return 1;
   }
 };

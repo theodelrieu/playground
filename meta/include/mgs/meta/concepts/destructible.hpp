@@ -16,7 +16,7 @@ struct is_destructible
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not destructible");
+    static_assert(value, "T does not model meta::destructible");
     return 1;
   }
 };

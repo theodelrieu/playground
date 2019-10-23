@@ -45,13 +45,13 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not weakly_incrementable");
+    static_assert(value, "T does not model meta::weakly_incrementable");
     static_assert(has_pre_increment,
                   "invalid or missing operator: 'T& operator++()'");
     static_assert(has_post_increment,
                   "invalid or missing operator: '/* any */ operator++(int)'");
     static_assert(has_signed_difference_type,
-                  "iter_difference_t<T> must be meta::signed_integral");
+                  "meta::iter_difference_t<T> must model meta::signed_integral");
     return 1;
   }
 };
@@ -65,9 +65,10 @@ struct is_weakly_incrementable_impl<
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_weakly_incrementable_impl::value,
-                  "T is an insert_iterator, but somehow is not "
-                  "weakly_incrementable... Most likely a bug, please report!");
+    static_assert(
+        is_weakly_incrementable_impl::value,
+        "T is an insert_iterator, but somehow is not "
+        "meta::weakly_incrementable... Most likely a bug, please report!");
     return 1;
   }
 };

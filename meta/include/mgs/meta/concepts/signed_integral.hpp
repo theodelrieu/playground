@@ -19,7 +19,7 @@ struct is_signed_integral
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not signed_integral");
+    static_assert(value, "T does not model meta::signed_integral");
     return 1;
   }
 };

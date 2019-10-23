@@ -5,7 +5,6 @@
 
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
 
-// http://en.cppreference.com/w/cpp/concept/equality_comparable
 namespace mgs
 {
 namespace meta
@@ -17,7 +16,8 @@ struct is_equality_comparable : is_weakly_equality_comparable_with<T, T>
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_equality_comparable::value, "T is not EqualityComparable");
+    static_assert(is_equality_comparable::value,
+                  "T does not model meta::equality_comparable");
     return 1;
   }
 };

@@ -52,29 +52,28 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_totally_ordered::value, "T is not totally_ordered");
-    static_assert(
-        has_less_than,
-        "invalid or missing operator: 'meta::boolean operator<(T const&, T const&)'");
-    static_assert(
-        has_less_or_equal_than,
-        "invalid or missing operator: 'meta::boolean operator<=(T const&, T const&)'");
-    static_assert(
-        has_greater_than,
-        "invalid or missing operator: 'meta::boolean operator>(T const&, T const&)'");
-    static_assert(
-        has_greater_or_equal_than,
-        "invalid or missing operator: 'meta::boolean operator>=(T const&, T const&)'");
+    static_assert(is_totally_ordered::value,
+                  "T does not model meta::totally_ordered");
+    static_assert(has_less_than,
+                  "invalid or missing operator: 'meta::boolean operator<(T "
+                  "const&, T const&)'");
+    static_assert(has_less_or_equal_than,
+                  "invalid or missing operator: 'meta::boolean operator<=(T "
+                  "const&, T const&)'");
+    static_assert(has_greater_than,
+                  "invalid or missing operator: 'meta::boolean operator>(T "
+                  "const&, T const&)'");
+    static_assert(has_greater_or_equal_than,
+                  "invalid or missing operator: 'meta::boolean operator>=(T "
+                  "const&, T const&)'");
     return 1;
   }
 };
 
 template <typename T>
-constexpr auto is_totally_ordered_v =
-    is_totally_ordered<T>::value;
+constexpr auto is_totally_ordered_v = is_totally_ordered<T>::value;
 
-template <typename T,
-          typename = std::enable_if_t<is_totally_ordered<T>::value>>
+template <typename T, typename = std::enable_if_t<is_totally_ordered<T>::value>>
 using TotallyOrdered = T;
 }
 }

@@ -48,7 +48,7 @@ struct is_dereferenceable: detail::is_dereferenceable_impl<T>
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_dereferenceable::value, "T is not dereferenceable");
+    static_assert(is_dereferenceable::value, "T does not model meta::dereferenceable");
     return 1;
   }
 };

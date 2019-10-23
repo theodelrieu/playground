@@ -47,13 +47,16 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
+    static_assert(value, "T does not model meta::common_reference_with<U>");
     static_assert(std::is_same<CommonRefTU, CommonRefUT>::value,
-                  "common_reference_t<T, U> must be the same then "
-                  "common_reference_t<U, T>");
-    static_assert(meta::is_convertible_to<T, CommonRefTU>::value,
-                  "T must be convertible to common_reference_t<T, U>");
-    static_assert(meta::is_convertible_to<U, CommonRefTU>::value,
-                  "U must be convertible to common_reference_t<T, U>");
+                  "meta::common_reference_t<T, U> must be the same type than "
+                  "meta::common_reference_t<U, T>");
+    static_assert(
+        meta::is_convertible_to<T, CommonRefTU>::value,
+        "T must model meta::convertible_to<meta::common_reference_t<T, U>>");
+    static_assert(
+        meta::is_convertible_to<U, CommonRefTU>::value,
+        "U must model meta::convertible_to<meta::common_reference_t<T, U>>");
     return 1;
   }
 };

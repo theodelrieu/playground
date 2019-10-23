@@ -29,7 +29,7 @@ struct is_incrementable
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not incrementable");
+    static_assert(value, "T does not model meta::incrementable");
     static_assert(has_post_increment,
                   "invalid or missing operator: 'T operator++(int)'");
     return 1;

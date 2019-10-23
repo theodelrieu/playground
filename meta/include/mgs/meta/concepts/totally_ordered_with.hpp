@@ -14,7 +14,6 @@
 #include <mgs/meta/detected/operators/less_or_equal_than.hpp>
 #include <mgs/meta/detected/operators/less_than.hpp>
 
-// http://en.cppreference.com/w/cpp/experimental/ranges/concepts/StrictTotallyOrdered
 namespace mgs
 {
 namespace meta
@@ -98,32 +97,32 @@ public:
   static constexpr int trigger_static_asserts()
   {
     static_assert(is_totally_ordered_with::value,
-                  "T is not totally_ordered_with<U>");
+                  "T does not model meta::totally_ordered_with<U>");
 
     static_assert(
         has_less_than_t_u,
-        "Invalid or missing operator: 'meta::boolean operator<(T const&, U const&)'");
+        "invalid or missing operator: 'meta::boolean operator<(T const&, U const&)'");
     static_assert(
         has_less_than_u_t,
-        "Invalid or missing operator: 'meta::boolean operator<(U const&, T const&)'");
+        "invalid or missing operator: 'meta::boolean operator<(U const&, T const&)'");
     static_assert(
         has_less_or_equal_than_t_u,
-        "Invalid or missing operator: 'meta::boolean operator<=(T const&, U const&)'");
+        "invalid or missing operator: 'meta::boolean operator<=(T const&, U const&)'");
     static_assert(
         has_less_or_equal_than_u_t,
-        "Invalid or missing operator: 'meta::boolean operator<=(U const&, T const&)'");
+        "invalid or missing operator: 'meta::boolean operator<=(U const&, T const&)'");
     static_assert(
         has_greater_than_t_u,
-        "Invalid or missing operator: 'meta::boolean operator>(T const&, U const&)'");
+        "invalid or missing operator: 'meta::boolean operator>(T const&, U const&)'");
     static_assert(
         has_greater_than_u_t,
-        "Invalid or missing operator: 'meta::boolean operator>(U const&, T const&)'");
+        "invalid or missing operator: 'meta::boolean operator>(U const&, T const&)'");
     static_assert(
         has_greater_or_equal_than_t_u,
-        "Invalid or missing operator: 'meta::boolean operator>=(T const&, U const&)'");
+        "invalid or missing operator: 'meta::boolean operator>=(T const&, U const&)'");
     static_assert(
         has_greater_or_equal_than_t_u,
-        "Invalid or missing operator: 'meta::boolean operator>=(U const&, T const&)'");
+        "invalid or missing operator: 'meta::boolean operator>=(U const&, T const&)'");
     return 1;
   }
 };

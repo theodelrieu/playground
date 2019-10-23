@@ -6,8 +6,6 @@
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/concepts/common_reference_with.hpp>
 
-// https://en.cppreference.com/w/cpp/concepts/assignable_from
-
 namespace mgs
 {
 namespace detail
@@ -49,7 +47,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "LHS is not assignable from RHS");
+    static_assert(value, "LHS does not model meta::assignable_from<RHS>");
     static_assert(std::is_lvalue_reference<LHS>::value,
                   "LHS must be an lvalue reference");
     static_assert(does_return_same_type, "assignment operator must return LHS");

@@ -22,7 +22,7 @@ struct is_move_constructible
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not MoveConstructible");
+    static_assert(value, "T does not model meta::move_constructible");
     return 1;
   }
 };

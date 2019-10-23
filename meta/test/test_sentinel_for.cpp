@@ -50,7 +50,7 @@ template <typename T>
 bool operator!=(non_semiregular, T*);
 }
 
-TEST_CASE("Sentinel", "[meta][concepts][iterator]")
+TEST_CASE("sentinel_for")
 {
   static_assert(is_sentinel_for<char*, char*>::value, "");
   static_assert(is_sentinel_for<pointer_sentinel, char*>::value, "");
@@ -61,20 +61,4 @@ TEST_CASE("Sentinel", "[meta][concepts][iterator]")
 
   static_assert(!is_sentinel_for<void, void>::value, "");
   static_assert(!is_sentinel_for<struct incomplete, incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sentinel_for<non_weakly_equality_comparable, char*>,
-      std::tuple<
-          is_weakly_equality_comparable_with<non_weakly_equality_comparable,
-                                             char*>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sentinel_for<pointer_sentinel, void*>,
-      std::tuple<is_input_or_output_iterator<void*>,
-                 is_dereferenceable<void*>,
-                 is_weakly_incrementable<void*>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_sentinel_for<non_semiregular, char*>,
-      std::tuple<is_semiregular<non_semiregular>>>();
 }

@@ -85,7 +85,8 @@ struct is_convertible_to : detail::is_convertible_to_impl<From, To>
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_convertible_to::value, "From is not convertible to To");
+    static_assert(is_convertible_to::value,
+                  "From does not model meta::convertible_to<To>");
 
     return detail::is_convertible_to_impl<From, To>::trigger_static_asserts();
   }

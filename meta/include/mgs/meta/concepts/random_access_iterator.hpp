@@ -18,8 +18,6 @@
 #include <mgs/meta/iter_difference_t.hpp>
 #include <mgs/meta/iter_reference_t.hpp>
 
-// https://en.cppreference.com/w/cpp/experimental/ranges/RandomAccessIterator
-
 namespace mgs
 {
 namespace meta
@@ -49,13 +47,14 @@ private:
 
   // for some reason, the following will return T const with MSVC
   static constexpr auto const has_addition_dt_t =
-	  is_detected_exact<T,
-	  detected::operators::addition,
-	  difference_type const,
-	  T const>::value ||
-	  is_detected_exact<T const,
-	  detected::operators::addition,
-	  difference_type const, T const>::value;
+      is_detected_exact<T,
+                        detected::operators::addition,
+                        difference_type const,
+                        T const>::value ||
+      is_detected_exact<T const,
+                        detected::operators::addition,
+                        difference_type const,
+                        T const>::value;
 
   static constexpr auto const has_substraction =
       is_detected_exact<T,
@@ -89,30 +88,30 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a RandomAccessIterator");
+    static_assert(value, "T does not model meta::random_access_iterator");
     static_assert(has_correct_category,
-                  "Iterator category tag must derive from "
+                  "iterator category tag must derive from "
                   "std::random_access_iterator_tag");
     static_assert(has_addition_assignment,
-                  "Invalid or missing operator: 'T& "
-                  "operator+=(std::iter_difference_t<T>)'");
+                  "invalid or missing operator: 'T& "
+                  "operator+=(meta::iter_difference_t<T>)'");
     static_assert(has_addition_t_dt,
-                  "Invalid or missing operator: 'T operator+(T const, "
-                  "std::iter_difference_t<T>)'");
+                  "invalid or missing operator: 'T operator+(T const, "
+                  "meta::iter_difference_t<T>)'");
     static_assert(has_addition_dt_t,
-                  "Invalid or missing operator: 'T "
-                  "operator+(std::iter_difference_t<T>, T "
+                  "invalid or missing operator: 'T "
+                  "operator+(meta::iter_difference_t<T>, T "
                   "const)'");
     static_assert(has_substraction_assignment,
-                  "Invalid or missing operator: 'T "
-                  "operator-=(std::iter_difference_t<T>)'");
+                  "invalid or missing operator: 'T "
+                  "operator-=(meta::iter_difference_t<T>)'");
     static_assert(has_substraction,
-                  "Invalid or missing operator: 'T operator-(T const&, "
-                  "std::iter_difference_t<T>)'");
+                  "invalid or missing operator: 'T operator-(T const&, "
+                  "meta::iter_difference_t<T>)'");
     static_assert(has_array_subscript,
-                  "Invalid or missing operator: "
-                  "'std::iter_reference_t<T> "
-                  "operator[](std::iter_difference_t<T>)'");
+                  "invalid or missing operator: "
+                  "'meta::iter_reference_t<T> "
+                  "operator[](meta::iter_difference_t<T>)'");
     return 1;
   }
 };

@@ -41,8 +41,8 @@ create_meta_tests(
   readable_traits
   regular
   semiregular
-  sentinel
-  sized_sentinel
+  sentinel_for
+  sized_sentinel_for
   totally_ordered
   swappable
   writable

@@ -49,12 +49,4 @@ TEST_CASE("regular")
 
   static_assert(!is_regular<void>::value, "");
   static_assert(!is_regular<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_regular<almost_regular>,
-      std::tuple<is_equality_comparable<almost_regular>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_regular<almost_semiregular>,
-      std::tuple<is_semiregular<almost_semiregular>>>();
 }

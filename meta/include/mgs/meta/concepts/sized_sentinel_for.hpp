@@ -45,14 +45,14 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a sized_sentinel_for<Iterator>");
+    static_assert(value, "T does not model meta::sized_sentinel_for<Iterator>");
     static_assert(has_it_sent_substraction,
-                  "Invalid or missing operator: "
-                  "'std::iter_difference_t<Iterator> "
+                  "invalid or missing operator: "
+                  "'meta::iter_difference_t<Iterator> "
                   "operator-(Iterator const&, T const&)'");
     static_assert(has_sent_it_substraction,
-                  "Invalid or missing operator: "
-                  "'std::iter_difference_t<Iterator> "
+                  "invalid or missing operator: "
+                  "'meta::iter_difference_t<Iterator> "
                   "operator-(T const&, Iterator const&)'");
     return 1;
   }

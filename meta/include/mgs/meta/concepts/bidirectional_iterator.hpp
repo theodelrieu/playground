@@ -40,7 +40,7 @@ struct is_bidirectional_iterator
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a bidirectional_iterator");
+    static_assert(value, "T does not model meta::bidirectional_iterator");
     static_assert(has_correct_category,
                   "iterator category tag must derive from "
                   "std::bidirectional_iterator_tag");
