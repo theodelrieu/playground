@@ -64,6 +64,7 @@ TEST_CASE("boolean")
   static_assert(is_boolean<std::bitset<8>::reference>::value, "");
   static_assert(is_boolean<valid_boolean>::value, "");
 
+  static_assert(!is_boolean<void>::value, "");
   static_assert(!is_boolean<invalid_boolean>::value, "");
   static_assert(!is_boolean<struct incomplete*>::value, "");
   static_assert(!is_boolean<char*>::value, "");

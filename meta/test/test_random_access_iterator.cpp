@@ -505,7 +505,7 @@ bool operator>(invalid_free_substraction_iterator,
 bool operator>=(invalid_free_substraction_iterator,
                 invalid_free_substraction_iterator);
 
-struct non_strict_totally_ordered_iterator
+struct non_totally_ordered_iterator
 {
   using value_type = int;
   using pointer = value_type*;
@@ -513,27 +513,27 @@ struct non_strict_totally_ordered_iterator
   using difference_type = std::ptrdiff_t;
   using iterator_category = std::random_access_iterator_tag;
 
-  non_strict_totally_ordered_iterator& operator++();
-  non_strict_totally_ordered_iterator operator++(int);
-  non_strict_totally_ordered_iterator& operator--();
-  non_strict_totally_ordered_iterator operator--(int);
+  non_totally_ordered_iterator& operator++();
+  non_totally_ordered_iterator operator++(int);
+  non_totally_ordered_iterator& operator--();
+  non_totally_ordered_iterator operator--(int);
 
-  non_strict_totally_ordered_iterator& operator+=(difference_type);
-  non_strict_totally_ordered_iterator& operator-=(difference_type);
+  non_totally_ordered_iterator& operator+=(difference_type);
+  non_totally_ordered_iterator& operator-=(difference_type);
   reference operator[](difference_type) const;
-  non_strict_totally_ordered_iterator operator+(difference_type) const;
-  non_strict_totally_ordered_iterator operator-(difference_type) const;
-  friend non_strict_totally_ordered_iterator operator+(
-      difference_type, non_strict_totally_ordered_iterator);
-  friend difference_type operator-(non_strict_totally_ordered_iterator,
-                                   non_strict_totally_ordered_iterator);
+  non_totally_ordered_iterator operator+(difference_type) const;
+  non_totally_ordered_iterator operator-(difference_type) const;
+  friend non_totally_ordered_iterator operator+(
+      difference_type, non_totally_ordered_iterator);
+  friend difference_type operator-(non_totally_ordered_iterator,
+                                   non_totally_ordered_iterator);
   reference operator*();
 };
 
-bool operator==(non_strict_totally_ordered_iterator,
-                non_strict_totally_ordered_iterator);
-bool operator!=(non_strict_totally_ordered_iterator,
-                non_strict_totally_ordered_iterator);
+bool operator==(non_totally_ordered_iterator,
+                non_totally_ordered_iterator);
+bool operator!=(non_totally_ordered_iterator,
+                non_totally_ordered_iterator);
 
 struct valid_random_access_iterator
 {
@@ -599,7 +599,7 @@ TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
       !is_random_access_iterator<invalid_member_substraction_iterator>::value,
       "");
   static_assert(
-      !is_random_access_iterator<non_strict_totally_ordered_iterator>::value,
+      !is_random_access_iterator<non_totally_ordered_iterator>::value,
       "");
 
   static_assert(!is_random_access_iterator<void>::value, "");
@@ -609,9 +609,9 @@ TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
       is_random_access_iterator<no_array_subscript_iterator>>();
 
   test_helpers::generate_failed_requirements_tests<
-      is_random_access_iterator<non_strict_totally_ordered_iterator>,
+      is_random_access_iterator<non_totally_ordered_iterator>,
       std::tuple<
-          is_strict_totally_ordered<non_strict_totally_ordered_iterator>>>();
+          is_totally_ordered<non_totally_ordered_iterator>>>();
 
   test_helpers::generate_failed_requirements_tests<
       is_random_access_iterator<invalid_free_substraction_iterator>,

@@ -24,7 +24,7 @@ struct is_boolean
 private:
   using unref_T = std::remove_reference_t<T>;
   using uncvref_T = std::remove_cv_t<unref_T>;
-  using B = const unref_T&;
+  using B = std::add_const_t<std::add_lvalue_reference_t<unref_T>>;
 
   static constexpr auto const is_convertible_to_bool =
       is_convertible_to<B, bool>::value;

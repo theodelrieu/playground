@@ -12,7 +12,7 @@
 
 #include <test_helpers/requirements.hpp>
 
-#include <mgs/meta/concepts/strict_totally_ordered.hpp>
+#include <mgs/meta/concepts/totally_ordered.hpp>
 
 using namespace mgs::meta;
 

@@ -52,25 +52,25 @@ struct non_const_function_call
   void operator()();
 };
 
-struct invalid_strict_totally_ordered
+struct invalid_totally_ordered
 {
-  invalid_strict_totally_ordered(int);
+  invalid_totally_ordered(int);
 
-  void operator<(invalid_strict_totally_ordered);
-  void operator>(invalid_strict_totally_ordered);
-  void operator>=(invalid_strict_totally_ordered);
-  void operator<=(invalid_strict_totally_ordered);
+  void operator<(invalid_totally_ordered);
+  void operator>(invalid_totally_ordered);
+  void operator>=(invalid_totally_ordered);
+  void operator<=(invalid_totally_ordered);
 };
 
-struct valid_strict_totally_ordered
+struct valid_totally_ordered
 {
-  valid_strict_totally_ordered(int);
+  valid_totally_ordered(int);
 };
 
-void operator<(valid_strict_totally_ordered, valid_strict_totally_ordered);
-void operator>(valid_strict_totally_ordered, valid_strict_totally_ordered);
-void operator<=(valid_strict_totally_ordered, valid_strict_totally_ordered);
-void operator>=(valid_strict_totally_ordered, valid_strict_totally_ordered);
+void operator<(valid_totally_ordered, valid_totally_ordered);
+void operator>(valid_totally_ordered, valid_totally_ordered);
+void operator<=(valid_totally_ordered, valid_totally_ordered);
+void operator>=(valid_totally_ordered, valid_totally_ordered);
 }
 
 TEST_CASE("Detected idiom", "[meta][detected]")
@@ -203,24 +203,24 @@ TEST_CASE("Detected idiom", "[meta][detected]")
       static_assert(
           is_detected<operators::greater_or_equal_than, int, int>::value, "");
       static_assert(is_detected<operators::greater_or_equal_than,
-                                invalid_strict_totally_ordered,
-                                invalid_strict_totally_ordered>::value,
+                                invalid_totally_ordered,
+                                invalid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::greater_or_equal_than,
-                                invalid_strict_totally_ordered,
+                                invalid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::greater_or_equal_than,
-                                valid_strict_totally_ordered,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::greater_or_equal_than,
-                                valid_strict_totally_ordered,
+                                valid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::greater_or_equal_than,
                                 int,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(
           is_detected<operators::greater_or_equal_than, void*, void*>::value,
@@ -228,7 +228,7 @@ TEST_CASE("Detected idiom", "[meta][detected]")
 
       static_assert(!is_detected<operators::greater_or_equal_than,
                                  int,
-                                 invalid_strict_totally_ordered>::value,
+                                 invalid_totally_ordered>::value,
                     "");
       static_assert(
           !is_detected<operators::greater_or_equal_than, void, void>::value,
@@ -243,31 +243,31 @@ TEST_CASE("Detected idiom", "[meta][detected]")
     {
       static_assert(is_detected<operators::greater_than, int, int>::value, "");
       static_assert(is_detected<operators::greater_than,
-                                invalid_strict_totally_ordered,
-                                invalid_strict_totally_ordered>::value,
+                                invalid_totally_ordered,
+                                invalid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::greater_than,
-                                invalid_strict_totally_ordered,
+                                invalid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::greater_than,
-                                valid_strict_totally_ordered,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::greater_than,
-                                valid_strict_totally_ordered,
+                                valid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::greater_than,
                                 int,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::greater_than, void*, void*>::value,
                     "");
 
       static_assert(!is_detected<operators::greater_than,
                                  int,
-                                 invalid_strict_totally_ordered>::value,
+                                 invalid_totally_ordered>::value,
                     "");
       static_assert(!is_detected<operators::greater_than, void, void>::value,
                     "");
@@ -280,30 +280,30 @@ TEST_CASE("Detected idiom", "[meta][detected]")
     {
       static_assert(is_detected<operators::less_than, int, int>::value, "");
       static_assert(is_detected<operators::less_than,
-                                invalid_strict_totally_ordered,
-                                invalid_strict_totally_ordered>::value,
+                                invalid_totally_ordered,
+                                invalid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_than,
-                                invalid_strict_totally_ordered,
+                                invalid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::less_than,
-                                valid_strict_totally_ordered,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_than,
-                                valid_strict_totally_ordered,
+                                valid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::less_than,
                                 int,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_than, void*, void*>::value, "");
 
       static_assert(!is_detected<operators::less_than,
                                  int,
-                                 invalid_strict_totally_ordered>::value,
+                                 invalid_totally_ordered>::value,
                     "");
       static_assert(!is_detected<operators::less_than, void, void>::value, "");
       static_assert(
@@ -315,30 +315,30 @@ TEST_CASE("Detected idiom", "[meta][detected]")
     {
       static_assert(is_detected<operators::less_or_equal_than, int, int>::value, "");
       static_assert(is_detected<operators::less_or_equal_than,
-                                invalid_strict_totally_ordered,
-                                invalid_strict_totally_ordered>::value,
+                                invalid_totally_ordered,
+                                invalid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_or_equal_than,
-                                invalid_strict_totally_ordered,
+                                invalid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::less_or_equal_than,
-                                valid_strict_totally_ordered,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_or_equal_than,
-                                valid_strict_totally_ordered,
+                                valid_totally_ordered,
                                 int>::value,
                     "");
       static_assert(is_detected<operators::less_or_equal_than,
                                 int,
-                                valid_strict_totally_ordered>::value,
+                                valid_totally_ordered>::value,
                     "");
       static_assert(is_detected<operators::less_or_equal_than, void*, void*>::value, "");
 
       static_assert(!is_detected<operators::less_or_equal_than,
                                  int,
-                                 invalid_strict_totally_ordered>::value,
+                                 invalid_totally_ordered>::value,
                     "");
       static_assert(!is_detected<operators::less_or_equal_than, void, void>::value, "");
       static_assert(!is_detected<operators::less_or_equal_than,

@@ -43,7 +43,7 @@ create_meta_tests(
   semiregular
   sentinel
   sized_sentinel
-  strict_totally_ordered
+  totally_ordered
   swappable
   writable
 )
