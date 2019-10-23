@@ -6,6 +6,7 @@
 
 #include <mgs/meta/concepts/complete_type.hpp>
 #include <mgs/meta/concepts/dereferenceable.hpp>
+#include <mgs/meta/concepts/detail/insert_iterator.hpp>
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/operators/dereference.hpp>
@@ -21,7 +22,8 @@ struct is_input_or_output_iterator
       std::tuple<is_dereferenceable<T>, is_weakly_incrementable<T>>;
 
   static constexpr auto const value =
-      is_weakly_incrementable<T>::value && is_dereferenceable<T>::value;
+      detail::is_insert_iterator<T>::value ||
+      (is_weakly_incrementable<T>::value && is_dereferenceable<T>::value);
 
   static constexpr int trigger_static_asserts()
   {

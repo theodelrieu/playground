@@ -27,12 +27,12 @@ struct non_pre_incrementable
   void operator++(int);
 };
 
-struct weakly_incrementable
+struct valid_weakly_incrementable
 {
   using difference_type = std::ptrdiff_t;
 
-  weakly_incrementable& operator++();
-  weakly_incrementable operator++(int);
+  valid_weakly_incrementable& operator++();
+  valid_weakly_incrementable operator++(int);
 };
 
 struct regular_and_weakly_incrementable
@@ -66,11 +66,11 @@ bool operator==(valid_incrementable, valid_incrementable);
 bool operator!=(valid_incrementable, valid_incrementable);
 }
 
-TEST_CASE("WeaklyIncrementable")
+TEST_CASE("weakly_incrementable")
 {
   static_assert(is_weakly_incrementable<char*>::value, "");
   static_assert(is_weakly_incrementable<char>::value, "");
-  static_assert(is_weakly_incrementable<weakly_incrementable>::value, "");
+  static_assert(is_weakly_incrementable<valid_weakly_incrementable>::value, "");
   static_assert(
       is_weakly_incrementable<regular_and_weakly_incrementable>::value, "");
   static_assert(
