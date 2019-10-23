@@ -17,6 +17,7 @@ endfunction()
 
 create_meta_tests(
   bidirectional_iterator
+  boolean
   common_reference
   complete_type
   convertible_to
