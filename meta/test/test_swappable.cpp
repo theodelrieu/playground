@@ -25,7 +25,7 @@ template <std::size_t N>
 void swap(adl_swappable (&)[N], adl_swappable (&)[N]);
 }
 
-TEST_CASE("Swappable", "[meta][concepts][core]")
+TEST_CASE("swappable", "[meta][concepts][core]")
 {
   static_assert(is_swappable<int>::value, "");
   static_assert(is_swappable<adl_swappable>::value, "");

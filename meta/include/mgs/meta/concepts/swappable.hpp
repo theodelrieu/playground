@@ -8,7 +8,6 @@
 #include <mgs/meta/concepts/complete_type.hpp>
 #include <mgs/meta/detail/call_std/swap.hpp>
 
-// concept Swappable: http://en.cppreference.com/w/cpp/concept/Swappable
 namespace mgs
 {
 namespace detail
@@ -48,7 +47,7 @@ struct is_swappable : detail::is_swappable_impl<std::remove_reference_t<T>>
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(is_swappable::value, "T is not Swappable");
+    static_assert(is_swappable::value, "T is not swappable");
     return 1;
   }
 };
@@ -57,6 +56,6 @@ template <typename T>
 constexpr auto is_swappable_v = is_swappable<T>::value;
 
 template <typename T, typename = std::enable_if_t<is_swappable<T>::value>>
-using Swappable = T;
+using swappable = T;
 }
 }
