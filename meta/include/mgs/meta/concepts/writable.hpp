@@ -84,6 +84,6 @@ constexpr auto is_writable_v = is_writable<Out, T>::value;
 template <typename Out,
           typename T,
           typename = std::enable_if_t<is_writable<Out, T>::value>>
-using Writable = Out;
+using writable = Out;
 }
 }
