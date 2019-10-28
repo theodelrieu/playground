@@ -23,12 +23,12 @@ namespace detail
 // FIXME put detected::make_encoder in codecs/detail
 // put Codec concepts in codecs/concepts
 template <typename CodecTraits, typename T, typename U>
-using encoder = decltype(CodecTraits::make_encoder(std::declval<T>(),
-                                                   std::declval<U>()));
+using encoder =
+    decltype(CodecTraits::make_encoder(std::declval<T>(), std::declval<U>()));
 
 template <typename CodecTraits, typename T, typename U>
-using decoder = decltype(CodecTraits::make_decoder(std::declval<T>(),
-                                                   std::declval<U>()));
+using decoder =
+    decltype(CodecTraits::make_decoder(std::declval<T>(), std::declval<U>()));
 }
 
 namespace codecs
@@ -42,10 +42,12 @@ class basic_codec
 
 public:
   template <typename Iterator, typename Sentinel = Iterator>
-  using encoder = meta::detected_t<detail::encoder, CodecTraits, Iterator, Sentinel>;
+  using encoder =
+      meta::detected_t<detail::encoder, CodecTraits, Iterator, Sentinel>;
 
   template <typename Iterator, typename Sentinel = Iterator>
-  using decoder = meta::detected_t<detail::decoder, CodecTraits, Iterator, Sentinel>;
+  using decoder =
+      meta::detected_t<detail::decoder, CodecTraits, Iterator, Sentinel>;
 
   using default_encoded_output = typename CodecTraits::default_encoded_output;
   using default_decoded_output = typename CodecTraits::default_decoded_output;
@@ -69,7 +71,8 @@ public:
             typename Sentinel,
             typename Encoder =
                 mgs::ranges::TransformedInputRange<encoder<Iterator, Sentinel>>>
-  static mgs::codecs::CodecOutput<T, Encoder> encode(Iterator it, Sentinel sent)
+  static mgs::codecs::codec_output<T, Encoder> encode(Iterator it,
+                                                      Sentinel sent)
   {
     auto enc = CodecTraits::make_encoder(it, sent);
     return output_traits<T>::create(enc);
@@ -83,7 +86,7 @@ public:
                         meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
                 !meta::is_convertible_to<U, char const*>::value>>
-  static mgs::codecs::CodecOutput<T, Encoder> encode(U const& it)
+  static mgs::codecs::codec_output<T, Encoder> encode(U const& it)
   {
     using std::begin;
     using std::end;
@@ -98,7 +101,7 @@ public:
                 encoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
                 !meta::is_convertible_to<U, char const*>::value>>
-  static mgs::codecs::CodecOutput<T, Encoder> encode(U& it)
+  static mgs::codecs::codec_output<T, Encoder> encode(U& it)
   {
     using std::begin;
     using std::end;
@@ -111,7 +114,7 @@ public:
             typename Sentinel,
             typename Decoder =
                 mgs::ranges::TransformedInputRange<decoder<Iterator, Sentinel>>>
-  static mgs::codecs::CodecOutput<T, Decoder> decode(Iterator it, Sentinel sent)
+  static mgs::codecs::codec_output<T, Decoder> decode(Iterator it, Sentinel sent)
   {
     auto dec = CodecTraits::make_decoder(std::move(it), std::move(sent));
     return output_traits<T>::create(dec);
@@ -125,7 +128,7 @@ public:
                         meta::sentinel_t<Range const>>>,
             typename = std::enable_if_t<
                 !meta::is_convertible_to<U, char const*>::value>>
-  static mgs::codecs::CodecOutput<T, Decoder> decode(U const& it)
+  static mgs::codecs::codec_output<T, Decoder> decode(U const& it)
   {
     using std::begin;
     using std::end;
@@ -140,7 +143,7 @@ public:
                 decoder<meta::iterator_t<Range>, meta::sentinel_t<Range>>>,
             typename = std::enable_if_t<
                 !meta::is_convertible_to<U, char const*>::value>>
-  static mgs::codecs::CodecOutput<T, Decoder> decode(U& it)
+  static mgs::codecs::codec_output<T, Decoder> decode(U& it)
   {
     using std::begin;
     using std::end;
@@ -149,13 +152,15 @@ public:
   }
 
   template <typename T = default_decoded_output>
-  static mgs::codecs::CodecOutput<T, decoder<char const*>> decode(char const* s)
+  static mgs::codecs::codec_output<T, decoder<char const*>> decode(
+      char const* s)
   {
     return decode<T>(s, s + std::strlen(s));
   }
 
   template <typename T = default_encoded_output>
-  static mgs::codecs::CodecOutput<T, encoder<char const*>> encode(char const* s)
+  static mgs::codecs::codec_output<T, encoder<char const*>> encode(
+      char const* s)
   {
     return encode<T>(s, s + std::strlen(s));
   }

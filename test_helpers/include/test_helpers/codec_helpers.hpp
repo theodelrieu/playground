@@ -116,8 +116,7 @@ void test_back_and_forth(Range1 const& decoded_input,
 }
 
 template <typename Codec, typename Range1, typename Range2>
-void test_encode_twice(Range1 const& decoded_input,
-                       Range2 const& encoded_input)
+void test_encode_twice(Range1 const& decoded_input, Range2 const& encoded_input)
 {
   using std::begin;
   using std::end;
@@ -142,8 +141,7 @@ template <typename Codec,
           typename DecodedOutput = EncodedOutput,
           typename Range1,
           typename Range2>
-void basic_codec_tests(Range1 const& decoded_input,
-                       Range2 const& encoded_input)
+void basic_codec_tests(Range1 const& decoded_input, Range2 const& encoded_input)
 {
   using std::begin;
   using std::end;
@@ -159,10 +157,7 @@ void basic_codec_tests(Range1 const& decoded_input,
 
 namespace detail
 {
-template <typename Codec,
-          typename Container,
-          typename Range1,
-          typename Range2>
+template <typename Codec, typename Container, typename Range1, typename Range2>
 void test_std_container_input(Range1 const& decoded_input,
                               Range2 const& encoded_input)
 {

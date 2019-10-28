@@ -31,10 +31,10 @@ struct is_byte_type
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(
-        value,
-        "T does not model integral, or does not represent the same number "
-        "of bits as unsigned char");
+    static_assert(value,
+                  "T does not model codecs::byte_type. It does not model "
+                  "meta::integral or does not represent the same number "
+                  "of bits as unsigned char");
     return 1;
   }
 };
