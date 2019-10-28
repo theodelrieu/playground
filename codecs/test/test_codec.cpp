@@ -55,7 +55,7 @@ struct no_encode_char_ptr_codec : mgs::codecs::basic_codec<noop_codec_traits>
 };
 }
 
-TEST_CASE("Codec", "[concepts]")
+TEST_CASE("Codec")
 {
   static_assert(is_codec<noop_codec>::value, "");
   static_assert(is_codec<no_encode_char_ptr_codec>::value, "");

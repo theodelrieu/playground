@@ -73,7 +73,7 @@ void operator<=(valid_totally_ordered, valid_totally_ordered);
 void operator>=(valid_totally_ordered, valid_totally_ordered);
 }
 
-TEST_CASE("Detected idiom", "[meta][detected]")
+TEST_CASE("detected")
 {
   SECTION("operators")
   {

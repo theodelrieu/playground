@@ -29,7 +29,7 @@ static_assert(ranges::is_transformed_input_range<
                   base32hex::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("base32hex", "[base32hex]")
+TEST_CASE("base32hex")
 {
   std::vector<std::string> decoded{"a"s, "ab"s, "abc"s, "abcd"s, "abcde"s};
   std::vector<std::string> encoded{

@@ -62,7 +62,7 @@ struct It2
 };
 }
 
-TEST_CASE("Writable", "[meta][concepts][iterator]")
+TEST_CASE("writable")
 {
   static_assert(!is_writable<void, int>::value, "");
   static_assert(!is_writable<void*, int>::value, "");

@@ -19,7 +19,7 @@ struct derived : base
 };
 }
 
-TEST_CASE("DerivedFrom", "[meta][concepts][core]")
+TEST_CASE("derived_from")
 {
   static_assert(is_derived_from<derived, base>::value, "");
   static_assert(is_derived_from<base, base>::value, "");

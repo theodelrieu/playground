@@ -8,7 +8,7 @@
 
 using namespace mgs::codecs;
 
-TEST_CASE("Byte", "[concepts]")
+TEST_CASE("Byte")
 {
   static_assert(!is_byte<int>::value, "");
   static_assert(!is_byte<void>::value, "");

@@ -194,7 +194,7 @@ struct invalid_buffer_type_transformer
 };
 }
 
-TEST_CASE("InputTransformer", "[concepts]")
+TEST_CASE("InputTransformer")
 {
   static_assert(is_input_transformer<valid_transformer>::value, "");
 

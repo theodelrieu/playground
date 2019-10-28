@@ -28,7 +28,7 @@ using noop_encoder =
     ranges::basic_transformed_input_range<test_helpers::noop_transformer<I, S>>;
 }
 
-TEST_CASE("transformed_input_range_iterator", "[ranges][transformed_input_range_iterator]")
+TEST_CASE("transformed_input_range_iterator")
 {
   std::stringstream ss("abcdefghijklmnopqrstuvwxyz");
   using Iterator = std::istreambuf_iterator<char>;

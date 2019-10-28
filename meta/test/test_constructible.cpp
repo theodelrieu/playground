@@ -107,7 +107,7 @@ TEST_CASE("default_constructible")
   static_assert(!is_default_constructible<non_copy_constructible>::value, "");
 }
 
-TEST_CASE("MoveConstructible", "[meta][concepts][core]")
+TEST_CASE("move_constructible")
 {
   static_assert(is_move_constructible<int>::value, "");
 
@@ -130,7 +130,7 @@ TEST_CASE("copy_constructible")
   static_assert(!is_copy_constructible<struct incomplete>::value, "");
 }
 
-TEST_CASE("Movable", "[meta][concepts][object]")
+TEST_CASE("movable")
 {
   static_assert(is_movable<int>::value, "");
   static_assert(is_movable<std::string>::value, "");
@@ -141,7 +141,7 @@ TEST_CASE("Movable", "[meta][concepts][object]")
   static_assert(!is_movable<void()>::value, "");
 }
 
-TEST_CASE("Copyable", "[meta][concepts][object]")
+TEST_CASE("copyable")
 {
   static_assert(is_copyable<int>::value, "");
   static_assert(is_copyable<std::string>::value, "");

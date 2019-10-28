@@ -27,7 +27,7 @@ struct iterator_traits<invalid_iterator>
 };
 }
 
-TEST_CASE("iter_traits", "[meta]")
+TEST_CASE("iter_traits")
 {
   static_assert(
       std::is_same<iter_traits<char*>, std::iterator_traits<char*>>::value, "");

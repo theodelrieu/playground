@@ -32,7 +32,7 @@ static_assert(ranges::is_transformed_input_range<
                   base64::encoder<std::istreambuf_iterator<char>>>::value,
               "");
 
-TEST_CASE("base64", "[base64]")
+TEST_CASE("base64")
 {
   std::vector<std::string> decoded{"abcd"s, "abcde"s, "abcdef"s};
   std::vector<std::string> encoded{"YWJjZA=="s, "YWJjZGU="s, "YWJjZGVm"s};

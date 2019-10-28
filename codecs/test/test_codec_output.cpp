@@ -54,28 +54,27 @@ struct output_traits<valid>
 }
 }
 
-TEST_CASE("CodecOutput", "[concepts]")
+TEST_CASE("CodecOutput")
 {
-  // static_assert(
-  //     is_codec_output<std::string, noop_range<char const*>>::value,
-  //     "");
-  // static_assert(
-  //     is_codec_output<valid, noop_range<char const*>>::value, "");
-  //
-  // static_assert(
-  //     !is_codec_output<invalid, noop_range<char const*>>::value, "");
-  //
-  // static_assert(
-  //     !is_codec_output<void, noop_range<char const*>>::value,
-  //     "");
-  // static_assert(
-  //     !is_codec_output<void*, noop_range<char const*>>::value,
-  //     "");
-  // static_assert(
-  //     !is_codec_output<struct incomplete, noop_range<char const*>>::value,
-  //     "");
-  // static_assert(
-  //     !is_codec_output<struct incomplete*, noop_range<char const*>>::value,
-  //     "");
-  meta::trigger_static_asserts<is_codec_output<std::string, noop_range<char const*>>>();
+  static_assert(
+      is_codec_output<std::string, noop_range<char const*>>::value,
+      "");
+  static_assert(
+      is_codec_output<valid, noop_range<char const*>>::value, "");
+
+  static_assert(
+      !is_codec_output<invalid, noop_range<char const*>>::value, "");
+
+  static_assert(
+      !is_codec_output<void, noop_range<char const*>>::value,
+      "");
+  static_assert(
+      !is_codec_output<void*, noop_range<char const*>>::value,
+      "");
+  static_assert(
+      !is_codec_output<struct incomplete, noop_range<char const*>>::value,
+      "");
+  static_assert(
+      !is_codec_output<struct incomplete*, noop_range<char const*>>::value,
+      "");
 }

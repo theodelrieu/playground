@@ -35,7 +35,7 @@ struct iterator_traits<invalid_iterator>
 };
 }
 
-TEST_CASE("iter_concept", "[meta]")
+TEST_CASE("iter_concept")
 {
   static_assert(
       std::is_same<iter_concept<char*>, std::random_access_iterator_tag>::value,

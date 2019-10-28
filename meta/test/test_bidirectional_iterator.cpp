@@ -87,7 +87,7 @@ bool operator==(valid_bidirectional_iterator, valid_bidirectional_iterator);
 bool operator!=(valid_bidirectional_iterator, valid_bidirectional_iterator);
 }
 
-TEST_CASE("BidirectionalIterator", "[meta][concepts][iterator]")
+TEST_CASE("bidirectional_iterator")
 {
   static_assert(is_bidirectional_iterator<char*>::value, "");
   static_assert(is_bidirectional_iterator<valid_bidirectional_iterator>::value,

@@ -568,7 +568,7 @@ bool operator>(valid_random_access_iterator, valid_random_access_iterator);
 bool operator>=(valid_random_access_iterator, valid_random_access_iterator);
 }
 
-TEST_CASE("RandomAccessIterator", "[meta][concepts][iterator]")
+TEST_CASE("random_access_iterator")
 {
   static_assert(is_random_access_iterator<valid_random_access_iterator>::value,
                 "");

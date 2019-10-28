@@ -41,7 +41,7 @@ struct iterator_traits<valid_iterator>
 };
 }
 
-TEST_CASE("IteratorTraits", "[meta][concepts][iterator]")
+TEST_CASE("iterator_traits")
 {
   static_assert(is_iterator_traits<std::iterator_traits<char*>>::value, "");
   static_assert(is_iterator_traits<std::iterator_traits<valid_iterator>>::value,

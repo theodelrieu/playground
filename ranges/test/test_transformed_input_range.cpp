@@ -115,7 +115,7 @@ struct invalid_iterator_range
 };
 }
 
-TEST_CASE("TransformedInputRange", "[concepts]")
+TEST_CASE("TransformedInputRange")
 {
   static_assert(is_transformed_input_range<valid_range>::value, "");
 

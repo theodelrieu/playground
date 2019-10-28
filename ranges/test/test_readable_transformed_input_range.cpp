@@ -70,7 +70,7 @@ struct invalid_return_type_range
 };
 }
 
-TEST_CASE("ReadableTransformedInputRange", "[concepts]")
+TEST_CASE("ReadableTransformedInputRange")
 {
   static_assert(is_readable_transformed_input_range<valid_range, char*>::value,
                 "");

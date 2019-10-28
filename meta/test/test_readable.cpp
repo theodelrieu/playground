@@ -11,9 +11,8 @@
 #include <test_helpers/requirements.hpp>
 
 using namespace mgs::meta;
-template <typename T> struct S;
-template <std::size_t N> struct S2;
-TEST_CASE("Readable", "[meta][concepts][iterator]")
+
+TEST_CASE("readable")
 {
   static_assert(!is_readable<void>::value, "");
   static_assert(!is_readable<struct incomplete>::value, "");

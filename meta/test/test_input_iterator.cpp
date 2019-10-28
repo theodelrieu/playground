@@ -57,7 +57,7 @@ struct valid_input_iterator
 };
 }
 
-TEST_CASE("InputIterator", "[meta][concepts][iterator]")
+TEST_CASE("input_iterator")
 {
   static_assert(is_input_iterator<char*>::value, "");
   static_assert(is_input_iterator<std::istreambuf_iterator<char>>::value, "");

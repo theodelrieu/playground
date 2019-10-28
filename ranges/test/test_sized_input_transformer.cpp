@@ -80,7 +80,7 @@ struct non_const_transformer
 };
 }
 
-TEST_CASE("SizedInputTransformer", "[concepts]")
+TEST_CASE("SizedInputTransformer")
 {
   static_assert(is_sized_input_transformer<valid_transformer>::value, "");
 

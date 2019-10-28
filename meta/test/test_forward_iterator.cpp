@@ -55,7 +55,7 @@ bool operator==(valid_forward_iterator, valid_forward_iterator);
 bool operator!=(valid_forward_iterator, valid_forward_iterator);
 }
 
-TEST_CASE("ForwardIterator", "[meta][concepts][iterator]")
+TEST_CASE("forward_iterator")
 {
   static_assert(is_forward_iterator<char*>::value, "");
   static_assert(is_forward_iterator<valid_forward_iterator>::value, "");

@@ -7,7 +7,7 @@
 
 using namespace mgs::meta;
 
-TEST_CASE("CompleteType", "[meta][concepts][core]")
+TEST_CASE("complete_type")
 {
   static_assert(is_complete_type<int>::value, "");
   static_assert(is_complete_type<struct incomplete*>::value, "");

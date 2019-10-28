@@ -28,7 +28,7 @@ struct both
 unsigned int operator-(both, both);
 }
 
-TEST_CASE("incrementable_traits", "[meta]")
+TEST_CASE("incrementable_traits")
 {
   static_assert(!is_detected<iter_difference_t, void>::value, "");
   static_assert(!is_detected<iter_difference_t, struct incomplete>::value, "");

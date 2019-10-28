@@ -28,7 +28,7 @@ bool operator!=(fake_iterator, fake_sentinel);
 bool operator!=(fake_sentinel, fake_iterator);
 }
 
-TEST_CASE("WeaklyEqualityComparableWith", "[meta][concepts][comparison]")
+TEST_CASE("weakly_equality_comparable_with")
 {
   static_assert(is_weakly_equality_comparable_with<int, float>::value, "");
   static_assert(!is_weakly_equality_comparable_with<int, void>::value, "");
@@ -48,7 +48,7 @@ TEST_CASE("WeaklyEqualityComparableWith", "[meta][concepts][comparison]")
       is_weakly_equality_comparable_with<void, void>>();
 }
 
-TEST_CASE("EqualityComparable", "[meta][concepts][comparison]")
+TEST_CASE("equality_comparable")
 {
   static_assert(is_equality_comparable<int>::value, "");
   static_assert(!is_equality_comparable<void>::value, "");
@@ -59,7 +59,7 @@ TEST_CASE("EqualityComparable", "[meta][concepts][comparison]")
       is_equality_comparable<void>>();
 }
 
-TEST_CASE("EqualityComparableWith", "[meta][concepts][comparison]")
+TEST_CASE("equality_comparable_with")
 {
   static_assert(is_equality_comparable_with<int, float>::value, "");
   static_assert(!is_equality_comparable_with<void, float>::value, "");

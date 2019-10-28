@@ -69,7 +69,7 @@ struct invalid_return_type_range
 };
 }
 
-TEST_CASE("SizedTransformedInputRange", "[concepts]")
+TEST_CASE("SizedTransformedInputRange")
 {
   static_assert(is_sized_transformed_input_range<valid_range>::value, "");
 

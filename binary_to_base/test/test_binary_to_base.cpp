@@ -58,7 +58,7 @@ template <typename I, typename S = I>
 using base2_decoder = typename base2::template decoder<I, S>;
 }
 
-TEST_CASE("base2", "[binary_to_base]")
+TEST_CASE("base2")
 {
   SECTION("Common tests")
   {

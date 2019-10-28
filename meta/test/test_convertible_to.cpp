@@ -24,7 +24,7 @@ struct C
 };
 }
 
-TEST_CASE("ConvertibleTo", "[meta][concepts][core]")
+TEST_CASE("convertible_to")
 {
   static_assert(is_convertible_to<void, void>::value, "");
   static_assert(!is_convertible_to<struct incomplete, void>::value, "");

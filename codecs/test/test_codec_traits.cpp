@@ -95,7 +95,7 @@ struct invalid_return_traits
 };
 }
 
-TEST_CASE("CodecTraits", "[concepts]")
+TEST_CASE("CodecTraits")
 {
   static_assert(is_codec_traits<valid_traits>::value, "");
   static_assert(is_codec_traits<valid_traits,

@@ -23,7 +23,7 @@ struct D : B
 };
 }
 
-TEST_CASE("CommonReference", "[meta][concepts][core]")
+TEST_CASE("common_reference_with")
 {
   static_assert(!is_detected<common_reference_t>::value, "");
   static_assert(

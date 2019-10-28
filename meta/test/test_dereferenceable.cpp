@@ -18,7 +18,7 @@ struct invalid
 };
 }
 
-TEST_CASE("Dereferenceable", "[meta][concepts][iterator]")
+TEST_CASE("dereferenceable")
 {
   static_assert(!is_dereferenceable<char>::value, "");
   static_assert(!is_dereferenceable<void>::value, "");
