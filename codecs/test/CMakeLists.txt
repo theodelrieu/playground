@@ -5,6 +5,7 @@ add_executable(test_codecs
   test_codec_output.cpp
   test_codec_traits.cpp
   test_byte_type.cpp
+  test_input_source.cpp
   test_codec.cpp
   $<TARGET_OBJECTS:catch_main>
 )
