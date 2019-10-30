@@ -64,7 +64,10 @@ void basic_transformed_input_range<InputTransformer>::_transform_input()
   using std::begin;
 
   static_cast<InputTransformer&> (*this)(_buffer);
-  _index = 0;
+  if (_buffer_size() == 0)
+    _index = -1;
+  else
+    _index = 0;
 }
 
 template <typename InputTransformer>
