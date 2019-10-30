@@ -8,12 +8,12 @@ namespace detail
 {
 template <typename BasicInputRange>
 basic_input_range_iterator<BasicInputRange>::basic_input_range_iterator(
-    BasicInputRange* e)
+    BasicInputRange const* e)
   : _range(e)
 {
   if (_range)
   {
-    if (_range->read(&_last_read, 1) == 0)
+    if (_range->_input_source->read(&_last_read, 1) == 0)
       _range = nullptr;
   }
 }
@@ -34,7 +34,7 @@ template <typename BasicInputRange>
 auto basic_input_range_iterator<BasicInputRange>::operator++()
     -> basic_input_range_iterator<BasicInputRange>&
 {
-  if (_range->read(&_last_read, 1) == 0)
+  if (_range->_input_source->read(&_last_read, 1) == 0)
     _range = nullptr;
   return *this;
 }

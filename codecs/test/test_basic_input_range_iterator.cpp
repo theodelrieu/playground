@@ -7,17 +7,8 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/codecs/basic_input_range.hpp>
-#include <mgs/meta/concepts/bidirectional_iterator.hpp>
-#include <mgs/meta/concepts/derived_from.hpp>
-#include <mgs/meta/concepts/forward_iterator.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/input_or_output_iterator.hpp>
-#include <mgs/meta/concepts/random_access_iterator.hpp>
-#include <mgs/meta/concepts/sentinel_for.hpp>
-#include <mgs/meta/detected/types/iterator_category.hpp>
-
-#include <mgs/codecs/basic_input_range.hpp>
-// #include <test_helpers/noop_transformer.hpp>
 
 using namespace mgs;
 using namespace std::string_literals;
@@ -34,7 +25,7 @@ public:
   }
 
   template <typename O>
-  int read(O o, int n) const
+  int read(O o, int n)
   {
     auto const to_read = std::min<int>(n, _s.size() - _idx);
     o = std::copy_n(_s.data() + _idx, to_read, o);
@@ -59,7 +50,7 @@ TEST_CASE("transformed_input_range_iterator")
   {
     noop_source source("abcdefghijklmnopqrstuvwxyz");
 
-    codecs::basic_input_range<noop_source> enc(std::move(source));
+    codecs::basic_input_range<noop_source> const enc(source);
     auto current = enc.begin();
     auto end = enc.end();
 
@@ -85,7 +76,7 @@ TEST_CASE("transformed_input_range_iterator")
   {
     noop_source empty_source("");
 
-    codecs::basic_input_range<noop_source> enc(std::move(empty_source));
+    codecs::basic_input_range<noop_source> enc(empty_source);
 
     auto current = enc.begin();
     auto end = enc.end();

@@ -1,3 +1,13 @@
 macros for detected mfun, static mfun etc
 move ssize_t to config
-keep begin const? Find a way to make it work with iterator?
+use trigger_static_asserts instead of static_assert?
+
+remove input_source requirement on basic_input_range?
+take input_source in output_traits::create?
+basic_input_range should only be used to wrap an input_source (and the perf are meh so...)
+only deal with input_sources?
+
+remove the copyable requirement on input_source?
+add make_input_range(input_source)
+
+add view concept?

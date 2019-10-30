@@ -4,7 +4,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
 #include <mgs/meta/range_reference_t.hpp>
 #include <mgs/meta/range_value_t.hpp>
@@ -17,13 +16,11 @@ template <typename BasicInputRange>
 class basic_input_range_iterator
 {
 private:
-  static_assert(
-      codecs::is_input_source<BasicInputRange>::value,
-      "internal bug: BasicInputRange must model codecs::input_source!");
   bool equals(basic_input_range_iterator const&) const;
 
 public:
-  using value_type = typename BasicInputRange::element_type;
+  using value_type =
+      typename BasicInputRange::underlying_input_source::element_type;
   using difference_type = std::streamoff;
 
   using reference = value_type const&;
@@ -36,7 +33,7 @@ public:
   using iterator_concept = std::input_iterator_tag;
 
   basic_input_range_iterator() = default;
-  explicit basic_input_range_iterator(BasicInputRange*);
+  explicit basic_input_range_iterator(BasicInputRange const*);
 
   reference operator*() const;
   pointer operator->() const;
@@ -49,7 +46,7 @@ public:
                          basic_input_range_iterator<T> const&) noexcept;
 
 private:
-  BasicInputRange* _range{nullptr};
+  BasicInputRange const* _range{nullptr};
   value_type _last_read{};
 };
 
