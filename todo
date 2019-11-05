@@ -11,3 +11,5 @@ remove the copyable requirement on input_source?
 add make_input_range(input_source)
 
 add view concept?
+
+should input_source_view be a view? Yes.

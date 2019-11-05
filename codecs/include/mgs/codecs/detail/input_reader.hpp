@@ -19,11 +19,13 @@ struct input_reader
                             OutputIterator out,
                             meta::ssize_t n)
   {
-    while (current != end && n > 0)
+    auto to_read = n;
+    while (current != end && to_read > 0)
     {
       *out = *current++;
-      --n;
+      --to_read;
     }
+    return n - to_read;
   }
 };
 
@@ -39,7 +41,8 @@ struct input_reader<I,
                             meta::ssize_t n)
   {
     auto const to_read = std::min<meta::ssize_t>(end - current, n);
-    current = std::copy_n(current, n, out);
+    std::copy_n(current, to_read, out);
+    current += to_read;
     return to_read;
   }
 };

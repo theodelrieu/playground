@@ -8,6 +8,7 @@ add_executable(test_codecs
   test_input_source.cpp
   test_sized_input_source.cpp
   test_basic_input_range_iterator.cpp
+  test_input_source_view.cpp
   test_codec.cpp
   $<TARGET_OBJECTS:catch_main>
 )
