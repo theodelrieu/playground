@@ -10,7 +10,6 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/static_asserts.hpp>
-#include <mgs/ranges/basic_transformed_input_range.hpp>
 
 #include <test_helpers/noop_transformer.hpp>
 
@@ -19,17 +18,11 @@ using namespace mgs::codecs;
 
 namespace
 {
-template <typename Iterator, typename Sentinel = Iterator>
-class noop_range : public mgs::ranges::basic_transformed_input_range<
-                       test_helpers::noop_transformer<Iterator, Sentinel>>
+struct valid_input_source
 {
-public:
-  using underlying_iterator = Iterator;
-  using underlying_sentinel = Sentinel;
+  using element_type = char;
 
-  using mgs::ranges::basic_transformed_input_range<
-      test_helpers::noop_transformer<Iterator,
-                                     Sentinel>>::basic_transformed_input_range;
+  int read(char*, int);
 };
 
 struct invalid
@@ -56,16 +49,15 @@ struct output_traits<valid>
 
 TEST_CASE("codec_output")
 {
-  static_assert(is_codec_output<std::string, noop_range<char const*>>::value,
+  static_assert(is_codec_output<std::string, valid_input_source>::value, "");
+  static_assert(is_codec_output<valid, valid_input_source>::value, "");
+
+  static_assert(!is_codec_output<invalid, valid_input_source>::value, "");
+
+  static_assert(!is_codec_output<void, valid_input_source>::value, "");
+  static_assert(!is_codec_output<void*, valid_input_source>::value, "");
+  static_assert(!is_codec_output<struct incomplete, valid_input_source>::value,
                 "");
-  static_assert(is_codec_output<valid, noop_range<char const*>>::value, "");
-
-  static_assert(!is_codec_output<invalid, noop_range<char const*>>::value, "");
-
-  static_assert(!is_codec_output<void, noop_range<char const*>>::value, "");
-  static_assert(!is_codec_output<void*, noop_range<char const*>>::value, "");
-  static_assert(
-      !is_codec_output<struct incomplete, noop_range<char const*>>::value, "");
-  static_assert(
-      !is_codec_output<struct incomplete*, noop_range<char const*>>::value, "");
+  static_assert(!is_codec_output<struct incomplete*, valid_input_source>::value,
+                "");
 }

@@ -4,124 +4,106 @@
 #include <type_traits>
 
 #include <mgs/codecs/concepts/codec_output.hpp>
+#include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/codecs/detected/types/default_decoded_output.hpp>
 #include <mgs/codecs/detected/types/default_encoded_output.hpp>
+#include <mgs/codecs/input_source_view.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
-
-// clang-format off
-//
-// template <typename T,
-//           typename A1 = /* see below */, typename A2 = /* see below */,
-//           typename I1 = /* see below */, typename I2 = /* see below */,
-//           typename S1 = /* see below */, typename S2 = /* see below */>
-// concept CodecTraits =
-//   std::InputIterator<I1> &&
-//   std::Sentinel<S1, I1> &&
-//   std::InputIterator<I2> &&
-//   std::Sentinel<S2, I2> &&
-//   requires(I1 i1, S1 s1, I2 i2, S2 s2) {
-//     { T::make_encoder(i1, s1) } -> TransformedInputRange;
-//     { T::make_decoder(i2, s2) } -> TransformedInputRange;
-//     CodecOutput<A1, decltype(T::make_encoder(i1, s1))>;
-//     CodecOutput<A2, decltype(T::make_decoder(i2, s2))>;
-//   };
-//
-// clang-format on
 
 namespace mgs
 {
+namespace detail
+{
+// hard to SFINAE with a class template, ensure input_source_view's requirements
+// are fulfilled before evaluation
+template <typename T,
+          typename D = typename T::default_decoded_output,
+          typename I = meta::detected_t<meta::iterator_t, D>,
+          typename S = meta::detected_t<meta::sentinel_t, D>,
+          typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
+                                      meta::is_sentinel_for<S, I>::value>>
+using input_source_1 = codecs::input_source_view<I, S>;
+
+template <typename T,
+          typename E = typename T::default_encoded_output,
+          typename I = meta::detected_t<meta::iterator_t, E>,
+          typename S = meta::detected_t<meta::sentinel_t, E>,
+          typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
+                                      meta::is_sentinel_for<S, I>::value>>
+using input_source_2 = codecs::input_source_view<I, S>;
+}
+
 namespace codecs
 {
-template <
-    typename T,
-    typename A1 = meta::detected_t<detected::types::default_encoded_output, T>,
-    typename A2 = meta::detected_t<detected::types::default_decoded_output, T>,
-    typename I1 = meta::detected_t<meta::iterator_t, A1>,
-    typename I2 = meta::detected_t<meta::iterator_t, A2>,
-    typename S1 = I1,
-    typename S2 = I2>
+template <typename T,
+          typename IS1 = meta::detected_t<detail::input_source_1, T>,
+          typename IS2 = meta::detected_t<detail::input_source_2, T>>
 struct is_codec_traits
 {
 private:
+  using E = meta::detected_t<detected::types::default_encoded_output, T>;
+  using D = meta::detected_t<detected::types::default_decoded_output, T>;
+
   using Encoder =
       meta::detected_t<detected::static_member_functions::make_encoder,
                        T,
-                       I1,
-                       S1>;
+                       std::add_lvalue_reference_t<IS1>>;
   using Decoder =
       meta::detected_t<detected::static_member_functions::make_decoder,
                        T,
-                       I2,
-                       S2>;
+                       std::add_lvalue_reference_t<IS2>>;
 
   static constexpr auto const is_encoder =
-      ranges::is_transformed_input_range<Encoder>::value;
+      codecs::is_input_source<Encoder>::value;
   static constexpr auto const is_decoder =
-      ranges::is_transformed_input_range<Decoder>::value;
-
-  static constexpr auto const is_encoded_codec_output =
-      is_codec_output<A1, Encoder>::value;
-  static constexpr auto const is_decoded_codec_output =
-      is_codec_output<A2, Encoder>::value;
+      codecs::is_input_source<Decoder>::value;
 
 public:
-  using requirements = std::tuple<meta::is_input_iterator<I1>,
-                                  meta::is_sentinel_for<S1, I1>,
-                                  meta::is_input_iterator<I2>,
-                                  meta::is_sentinel_for<S2, I2>>;
+  using requirements = std::tuple<codecs::is_input_source<IS1>,
+                                  codecs::is_input_source<IS2>,
+                                  codecs::is_codec_output<E, Encoder>,
+                                  codecs::is_codec_output<D, Decoder>>;
 
   static constexpr auto const value =
-      meta::is_input_iterator<I1>::value &&
-      meta::is_sentinel_for<S1, I1>::value && is_encoder &&
-      meta::is_input_iterator<I2>::value &&
-      meta::is_sentinel_for<S2, I2>::value && is_decoder &&
-      is_encoded_codec_output && is_decoded_codec_output;
+      codecs::is_input_source<IS1>::value &&
+      codecs::is_input_source<IS2>::value && is_encoder && is_decoder &&
+      codecs::is_codec_output<E, Encoder>::value &&
+      codecs::is_codec_output<D, Decoder>::value;
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T is not a CodecTraits");
+    static_assert(value, "T does not model codecs::codec_traits");
+    static_assert(std::is_same<meta::nonesuch, IS1>::value,
+                  "IS1 default value is invalid. This is most likely due to "
+                  "T::default_decoded_output not modelling meta::input_range");
+    static_assert(std::is_same<meta::nonesuch, IS2>::value,
+                  "IS2 default value is invalid. This is most likely due to "
+                  "T::default_encoded_output not modelling meta::input_range");
     static_assert(is_encoder,
-                  "T::make_encoder must return a TransformedInputRange");
+                  "invalid or missing function: 'codecs::input_source "
+                  "T::make_encoder(IS1&)'");
     static_assert(is_decoder,
-                  "T::make_decoder must return a TransformedInputRange");
-    static_assert(is_encoded_codec_output,
-                  "T::default_encoded_output is not a CodecOutput");
-    static_assert(is_decoded_codec_output,
-                  "T::default_decoded_output is not a CodecOutput");
+                  "invalid or missing function: 'codecs::input_source "
+                  "T::make_decoder(IS2&)'");
     return 1;
   }
 };
 
-template <
-    typename T,
-    typename A1 = meta::detected_t<detected::types::default_encoded_output, T>,
-    typename A2 = meta::detected_t<detected::types::default_decoded_output, T>,
-    typename I1 = meta::detected_t<meta::iterator_t, A1>,
-    typename I2 = meta::detected_t<meta::iterator_t, A2>,
-    typename S1 = I1,
-    typename S2 = I2>
-constexpr auto is_codec_traits_v =
-    is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value;
+template <typename T,
+          typename IS1 = meta::detected_t<detail::input_source_1, T>,
+          typename IS2 = meta::detected_t<detail::input_source_2, T>>
+constexpr auto is_codec_traits_v = is_codec_traits<T, IS1, IS2>::value;
 
-template <
-    typename T,
-    typename A1 =
-        meta::detected_t<detected::types::default_encoded_output, T>,
-    typename A2 =
-        meta::detected_t<detected::types::default_decoded_output, T>,
-    typename I1 = meta::detected_t<meta::iterator_t, A1>,
-    typename I2 = meta::detected_t<meta::iterator_t, A2>,
-    typename S1 = I1,
-    typename S2 = I2,
-    typename = std::enable_if_t<
-        is_codec_traits<T, A1, A2, I1, I2, S1, S2>::value>>
-using CodecTraits = T;
+template <typename T,
+          typename IS1 = meta::detected_t<detail::input_source_1, T>,
+          typename IS2 = meta::detected_t<detail::input_source_2, T>,
+          typename = std::enable_if_t<is_codec_traits<T, IS1, IS2>::value>>
+using codec_traits = T;
 }
 }

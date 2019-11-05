@@ -9,7 +9,6 @@
 #include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
-#include <mgs/ranges/basic_transformed_input_range.hpp>
 
 #include <test_helpers/noop_transformer.hpp>
 
@@ -18,17 +17,11 @@ using namespace mgs::codecs;
 
 namespace
 {
-template <typename Iterator, typename Sentinel = Iterator>
-class noop_range : public mgs::ranges::basic_transformed_input_range<
-                       test_helpers::noop_transformer<Iterator, Sentinel>>
+struct valid_input_source
 {
-public:
-  using underlying_iterator = Iterator;
-  using underlying_sentinel = Sentinel;
+  using element_type = char;
 
-  using mgs::ranges::basic_transformed_input_range<
-      test_helpers::noop_transformer<Iterator,
-                                     Sentinel>>::basic_transformed_input_range;
+  int read(char*, int);
 };
 
 struct valid_traits
@@ -36,33 +29,45 @@ struct valid_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_encoder(I, S);
+  template <typename IS>
+  static valid_input_source make_encoder(IS&);
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_decoder(I, S);
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
+};
+
+struct valid_traits_custom_default_types
+{
+  using default_encoded_output = int;
+  using default_decoded_output = int;
+
+  template <typename IS>
+  static valid_input_source make_encoder(IS&);
+
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
 };
 
 struct no_encoded_output_traits
 {
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_encoder(I, S);
+  template <typename IS>
+  static valid_input_source make_encoder(IS&);
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_decoder(I, S);
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
 };
 
 struct no_decoded_output_traits
 {
   using default_encoded_output = std::string;
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_encoder(I, S);
+  template <typename IS>
+  static valid_input_source make_encoder(IS&);
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_decoder(I, S);
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
 };
 
 struct no_make_encoder_traits
@@ -70,8 +75,8 @@ struct no_make_encoder_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_decoder(I, S);
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
 };
 
 struct no_make_decoder_traits
@@ -79,8 +84,8 @@ struct no_make_decoder_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_encoder(I, S);
+  template <typename IS>
+  static valid_input_source make_encoder(IS&);
 };
 
 struct invalid_return_traits
@@ -88,27 +93,37 @@ struct invalid_return_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
-  static int make_encoder(I, S);
-  template <typename I, typename S>
-  static noop_range<char const*, char const*> make_decoder(I, S);
+  template <typename IS>
+  static int make_encoder(IS&);
+  template <typename IS>
+  static valid_input_source make_decoder(IS&);
 };
+}
+
+namespace mgs
+{
+namespace codecs
+{
+template <>
+struct output_traits<int>
+{
+  template <typename U>
+  static int create(U);
+};
+}
 }
 
 TEST_CASE("CodecTraits")
 {
+  meta::trigger_static_asserts<is_codec_traits<valid_traits>>();
   static_assert(is_codec_traits<valid_traits>::value, "");
-  static_assert(is_codec_traits<valid_traits,
-                                          std::string,
-                                          std::vector<unsigned char>,
-                                          char*,
-                                          unsigned char*>::value,
+  static_assert(is_codec_traits<valid_traits_custom_default_types,
+                                valid_input_source,
+                                valid_input_source>::value,
                 "");
 
-  static_assert(!is_codec_traits<no_encoded_output_traits>::value,
-                "");
-  static_assert(!is_codec_traits<no_decoded_output_traits>::value,
-                "");
+  static_assert(!is_codec_traits<no_encoded_output_traits>::value, "");
+  static_assert(!is_codec_traits<no_decoded_output_traits>::value, "");
   static_assert(!is_codec_traits<no_make_encoder_traits>::value, "");
   static_assert(!is_codec_traits<no_make_decoder_traits>::value, "");
   static_assert(!is_codec_traits<invalid_return_traits>::value, "");

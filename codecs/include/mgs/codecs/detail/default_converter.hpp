@@ -10,70 +10,73 @@
 
 #include <mgs/config.hpp>
 
+#include <mgs/codecs/basic_input_range.hpp>
+#include <mgs/codecs/concepts/input_source.hpp>
+#include <mgs/codecs/concepts/sized_input_source.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/concepts/constructible_from.hpp>
-#include <mgs/meta/concepts/copy_constructible.hpp>
-#include <mgs/meta/concepts/random_access_iterator.hpp>
+#include <mgs/meta/concepts/copyable.hpp>
+#include <mgs/meta/concepts/default_constructible.hpp>
+#include <mgs/meta/concepts/movable.hpp>
+#include <mgs/meta/concepts/output_iterator.hpp>
+#include <mgs/meta/concepts/output_range.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/member_functions/resize.hpp>
 #include <mgs/meta/detected/types/key_type.hpp>
 #include <mgs/meta/detected/types/size_type.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
-#include <mgs/ranges/concepts/readable_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
 namespace mgs
 {
 namespace detail
 {
-template <typename RandomAccessContainer,
-          typename T,
-          typename = mgs::ranges::ReadableTransformedInputRange<
-              T,
-              meta::iterator_t<RandomAccessContainer>>,
-          typename = mgs::ranges::SizedTransformedInputRange<T>>
-RandomAccessContainer fill_random_access_container(T& range,
-                                                   meta::priority_tag<1>)
+  // TODO resizable output range
+template <typename ResizableOutputRange, typename T>
+ResizableOutputRange fill_resizable_output_range(
+    codecs::sized_input_source<T>& is, meta::priority_tag<1>)
 {
   using std::begin;
+  using size_type = typename ResizableOutputRange::size_type;
 
-  auto const max_size = range.max_transformed_size();
-  if (max_size == -1) 
+  auto const max_size = is.max_remaining_size();
+  if (max_size == -1)
     throw exceptions::unexpected_eof_error("invalid input size");
-  RandomAccessContainer cont(max_size, 0);
+  ResizableOutputRange ret(max_size, 0);
 
-  auto const total_read = range.read(begin(cont), max_size);
-  cont.resize(
-      static_cast<typename RandomAccessContainer::size_type>(total_read));
-  return cont;
+  // TODO refactor
+  auto it = begin(ret);
+  auto total_read = is.read(it, max_size);
+  ret.resize(static_cast<size_type>(total_read));
+
+  for (auto nb_read = is.read(it + total_read, max_size); nb_read != 0;
+       nb_read = is.read(it + total_read, max_size))
+  {
+    total_read += nb_read;
+  }
+  ret.resize(static_cast<size_type>(total_read));
+  return ret;
 }
 
-template <typename RandomAccessContainer, typename T>
-RandomAccessContainer fill_random_access_container(
-    mgs::ranges::ReadableTransformedInputRange<
-        T,
-        meta::iterator_t<RandomAccessContainer>>& range,
-    meta::priority_tag<0>)
+template <typename ResizableOutputRange, typename T>
+ResizableOutputRange fill_resizable_output_range(T& is, meta::priority_tag<0>)
 {
   using std::begin;
-  using size_type = typename RandomAccessContainer::size_type;
+  using size_type = typename ResizableOutputRange::size_type;
 
   constexpr auto block_size = 256;
 
-  RandomAccessContainer cont(block_size, 0);
+  ResizableOutputRange ret(block_size, 0);
 
   meta::ssize_t total_read = 0;
-  for (auto nb_read = range.read(begin(cont) + total_read, block_size);
+  for (auto nb_read = is.read(begin(ret) + total_read, block_size);
        nb_read != 0;
-       nb_read = range.read(begin(cont) + total_read, block_size))
+       nb_read = is.read(begin(ret) + total_read, block_size))
   {
     total_read += nb_read;
-    cont.resize(static_cast<size_type>(total_read + block_size));
+    ret.resize(static_cast<size_type>(total_read + block_size));
   }
-  cont.resize(static_cast<size_type>(total_read));
-  return cont;
+  ret.resize(static_cast<size_type>(total_read));
+  return ret;
 }
 
 template <typename Output, typename = void>
@@ -81,36 +84,32 @@ struct default_converter
 {
 private:
   // Overload for containers which have the following properties:
-  // - DefaultConstructible
-  // - Copy or Move constructible
+  // - meta::default_constructible
+  // - meta::copyable or meta::movable
   // - T::resize(T::size_type)
-  // - begin(T&) -> RandomAccessIterator
   template <typename T,
-            typename R = Output,
+            typename R = meta::output_range<Output, typename T::element_type>,
             typename SizeType = typename R::size_type,
             typename = std::enable_if_t<
-                meta::is_random_access_iterator<meta::iterator_t<R>>::value &&
-                meta::is_constructible_from<R>::value &&
-                // Keep those in C++17 as well, fill_random_access_container
+                meta::is_default_constructible<R>::value &&
+                // Keep those in C++17 as well, fill_resizable_container
                 // relies on NRVO, not on Guaranteed Copy Elision.
-                (meta::is_copy_constructible<R>::value ||
-                 meta::is_move_constructible<R>::value) &&
+                (meta::is_copyable<R>::value || meta::is_movable<R>::value) &&
                 meta::is_detected<meta::detected::member_functions::resize,
                                   R&,
                                   SizeType>::value>>
-  static R create_impl(mgs::ranges::TransformedInputRange<T>& range,
-                       meta::priority_tag<1>)
+  static R create_impl(T& is, meta::priority_tag<1>)
   {
-    return fill_random_access_container<R>(range, meta::priority_tag<1>{});
+    return fill_resizable_output_range<R>(is, meta::priority_tag<1>{});
   }
 
-  // Default overload, non-associative containers which:
+  // Fallback overload, non-associative containers which:
   // - can be constructed with an Iterator range
   // - are copy or move constructible (pre C++17)
   template <typename T,
-            typename = mgs::ranges::TransformedInputRange<T>,
-            typename Iterator = meta::iterator_t<T>,
+            typename = codecs::input_source<T>,
             typename R = Output,
+            typename Iterator = meta::iterator_t<codecs::basic_input_range<T>>,
             typename = std::enable_if_t<
   // Guaranteed copy-elision
 #if MGS_HAS_CPP17
@@ -121,19 +120,18 @@ private:
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
-  static R create_impl(T& range, meta::priority_tag<0>)
+  static R create_impl(T& is, meta::priority_tag<0>)
   {
-    using std::begin;
-    using std::end;
-    return R(begin(range), end(range));
+    auto input_range = make_basic_input_range(is);
+    return R(input_range.begin(), input_range.end());
   }
 
 public:
   template <typename T>
-  static auto create(mgs::ranges::TransformedInputRange<T>& range)
-      -> decltype(create_impl(range, meta::priority_tag<1>{}))
+  static auto create(codecs::input_source<T>& is)
+      -> decltype(create_impl(is, meta::priority_tag<1>{}))
   {
-    return create_impl(range, meta::priority_tag<1>{});
+    return create_impl(is, meta::priority_tag<1>{});
   }
 };
 
@@ -141,15 +139,22 @@ template <typename C, std::size_t N>
 struct default_converter<std::array<C, N>>
 {
   template <typename T>
-  static std::array<C, N> create(
-      mgs::ranges::ReadableTransformedInputRange<T, C*>& range)
+  static std::array<C, N> create(codecs::input_source<T, C*>& is)
   {
     std::array<C, N> ret;
 
-    auto const nb_read = range.read(ret.begin(), N);
-    if (nb_read != N)
-      throw exceptions::unexpected_eof_error("output buffer is too large");
-    if (range.read(ret.begin(), 1) != 0)
+    auto nb_read = is.read(ret.begin(), N);
+    auto to_read = N - nb_read;
+    auto it = ret.begin() + nb_read;
+    while (to_read != 0)
+    {
+      nb_read = is.read(it, to_read);
+      if (nb_read == 0)
+        throw exceptions::unexpected_eof_error("output buffer is too large");
+      to_read -= nb_read;
+      it += nb_read;
+    }
+    if (is.read(ret.begin(), 1) != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }
