@@ -11,7 +11,7 @@ namespace mgs
 namespace detail
 {
 template <typename LHS, typename RHS>
-auto _assignable_from_requirement(LHS lhs, RHS&& rhs)
+auto _assignable_from_requirement(LHS& lhs, RHS&& rhs)
     -> decltype(lhs = std::forward<RHS>(rhs));
 
 template <typename LHS, typename RHS>

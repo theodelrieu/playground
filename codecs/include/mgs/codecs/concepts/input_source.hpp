@@ -5,7 +5,7 @@
 
 #include <mgs/codecs/detected/member_functions/read.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
-#include <mgs/meta/concepts/copyable.hpp>
+#include <mgs/meta/concepts/movable.hpp>
 #include <mgs/meta/concepts/default_constructible.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/concepts/same_as.hpp>
@@ -33,11 +33,11 @@ private:
                               meta::ssize_t>::value;
 
 public:
-  using requirements = std::tuple<meta::is_copyable<T>,
+  using requirements = std::tuple<meta::is_movable<T>,
                                   meta::is_output_iterator<O, element_type>>;
 
   static constexpr auto const value =
-      meta::is_copyable<T>::value &&
+      meta::is_movable<T>::value &&
       meta::is_output_iterator<O, element_type>::value &&
       has_read_member_function &&
       meta::is_default_constructible<element_type>::value;

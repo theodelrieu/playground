@@ -24,14 +24,21 @@ struct valid_input_source
 {
   using element_type = char;
 
+  valid_input_source() = default;
+  valid_input_source(valid_input_source const&) = delete;
+  valid_input_source(valid_input_source&&) = default;
+  valid_input_source& operator=(valid_input_source const&) = delete;
+  valid_input_source& operator=(valid_input_source&&) = default;
+
   int read(char*, int);
 };
 
-struct non_copyable_input_source
+struct non_movable_input_source
 {
   using element_type = char;
 
-  non_copyable_input_source(non_copyable_input_source const&) = delete;
+  non_movable_input_source(non_movable_input_source const&) = default;
+  non_movable_input_source(non_movable_input_source &&) = delete;
 
   int read(char*, int);
 };
@@ -64,7 +71,7 @@ TEST_CASE("input_source")
   static_assert(!is_input_source<void>::value, "");
   static_assert(!is_input_source<void*>::value, "");
 
-  static_assert(!is_input_source<non_copyable_input_source>::value, "");
+  static_assert(!is_input_source<non_movable_input_source>::value, "");
   static_assert(!is_input_source<no_element_type_input_source>::value, "");
   static_assert(
       !is_input_source<invalid_read_input_source>::value, "");

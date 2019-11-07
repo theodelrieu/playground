@@ -42,6 +42,15 @@ struct non_copy_constructible
   non_copy_constructible(non_copy_constructible const&) = delete;
 };
 
+struct non_copyable
+{
+  non_copyable(non_copyable const&) = delete;
+  non_copyable& operator=(non_copyable const&) = delete;
+
+  non_copyable(non_copyable&&) = default;
+  non_copyable& operator=(non_copyable&&) = default;
+};
+
 struct invalid_assignment_return
 {
   invalid_assignment_return operator=(invalid_assignment_return const&);
@@ -73,6 +82,7 @@ TEST_CASE("constructible_from")
 TEST_CASE("assignable_from")
 {
   static_assert(is_assignable_from<int&, int>::value, "");
+  static_assert(is_assignable_from<non_copyable&, non_copyable>::value, "");
 
   static_assert(!is_assignable_from<void, void>::value, "");
   static_assert(
@@ -132,6 +142,7 @@ TEST_CASE("movable")
 {
   static_assert(is_movable<int>::value, "");
   static_assert(is_movable<std::string>::value, "");
+  static_assert(is_movable<non_copyable>::value, "");
 
   static_assert(!is_movable<int&>::value, "");
   static_assert(!is_movable<void>::value, "");
@@ -146,6 +157,7 @@ TEST_CASE("copyable")
 
   static_assert(!is_copyable<int&>::value, "");
   static_assert(!is_copyable<void>::value, "");
+  static_assert(!is_copyable<non_copyable>::value, "");
   static_assert(!is_copyable<struct incomplete>::value, "");
   static_assert(!is_copyable<void()>::value, "");
 }
