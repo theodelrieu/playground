@@ -8,7 +8,7 @@ namespace detail
 {
 template <typename BasicInputRange>
 basic_input_range_iterator<BasicInputRange>::basic_input_range_iterator(
-    BasicInputRange const* e)
+    BasicInputRange* e)
   : _range(e)
 {
   if (_range)

@@ -33,7 +33,7 @@ public:
   using iterator_concept = std::input_iterator_tag;
 
   basic_input_range_iterator() = default;
-  explicit basic_input_range_iterator(BasicInputRange const*);
+  explicit basic_input_range_iterator(BasicInputRange*);
 
   reference operator*() const;
   pointer operator->() const;
@@ -46,7 +46,7 @@ public:
                          basic_input_range_iterator<T> const&) noexcept;
 
 private:
-  BasicInputRange const* _range{nullptr};
+  BasicInputRange* _range{nullptr};
   value_type _last_read{};
 };
 

@@ -10,8 +10,6 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/noop_transformer.hpp>
-
 using namespace mgs;
 using namespace mgs::codecs;
 

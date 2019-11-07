@@ -122,7 +122,7 @@ private:
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
   static R create_impl(T& is, meta::priority_tag<0>)
   {
-    auto input_range = make_basic_input_range(is);
+    auto input_range = make_input_range(is);
     return R(input_range.begin(), input_range.end());
   }
 

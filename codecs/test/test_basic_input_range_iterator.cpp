@@ -37,20 +37,15 @@ private:
   std::string _s;
   int mutable _idx{0};
 };
-
-// FIXME replace
-// template <typename I, typename S>
-// using noop_encoder =
-//     ranges::basic_transformed_input_range<test_helpers::noop_transformer<I, S>>;
 }
 
-TEST_CASE("transformed_input_range_iterator")
+TEST_CASE("basic_input_range_iterator")
 {
   SECTION("regular tests")
   {
     noop_source source("abcdefghijklmnopqrstuvwxyz");
 
-    codecs::basic_input_range<noop_source> const enc(source);
+    auto enc = codecs::make_input_range(source);
     auto current = enc.begin();
     auto end = enc.end();
 
@@ -76,7 +71,7 @@ TEST_CASE("transformed_input_range_iterator")
   {
     noop_source empty_source("");
 
-    codecs::basic_input_range<noop_source> enc(empty_source);
+    auto enc = codecs::make_input_range(empty_source);
 
     auto current = enc.begin();
     auto end = enc.end();

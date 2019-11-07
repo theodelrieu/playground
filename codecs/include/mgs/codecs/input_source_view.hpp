@@ -52,13 +52,18 @@ private:
 
 template <typename I, typename S>
 auto make_input_source_view(meta::input_iterator<I> begin,
-                               meta::sentinel_for<S, I> end)
+                            meta::sentinel_for<S, I> end)
     -> input_source_view<I, S>
 {
   return {std::move(begin), std::move(end)};
 }
 
-template <typename R>
+// For some "fun" reasons, trying to disambiguate the following overloads with
+// priority_tag results in the following warning: ISO C++ says that these are
+// ambiguous, even though the worst conversion for the first is better than the
+// worst conversion for the second.
+
+template <typename R, typename = std::enable_if_t<!std::is_array<R>::value>>
 auto make_input_source_view(meta::input_range<R>& rng)
     -> input_source_view<meta::iterator_t<R>, meta::sentinel_t<R>>
 {
@@ -68,19 +73,28 @@ auto make_input_source_view(meta::input_range<R>& rng)
   return {begin(rng), end(rng)};
 }
 
-// string literals overload
 template <typename CharT,
           std::size_t N,
-          typename = std::enable_if_t<
-              detail::is_string_literal_char_type<CharT>::value>>
+          std::enable_if_t<!detail::is_string_literal_char_type<CharT>::value,
+                           int> = 0>
 auto make_input_source_view(CharT const (&tab)[N])
     -> input_source_view<CharT const*>
 {
-  using std::begin;
-  using std::end;
+  auto const b = std::begin(tab);
+  auto const e = std::end(tab);
 
-  auto const b = begin(tab);
-  auto const e = end(tab);
+  return {b, e};
+}
+
+template <typename CharT,
+          std::size_t N,
+          std::enable_if_t<detail::is_string_literal_char_type<CharT>::value,
+                           int> = 0>
+auto make_input_source_view(CharT const (&tab)[N])
+    -> input_source_view<CharT const*>
+{
+  auto const b = std::begin(tab);
+  auto const e = std::end(tab);
 
   return {b, std::find(b, e, CharT{})};
 }

@@ -13,12 +13,23 @@
 
 namespace test_helpers
 {
+template <class InputIt1, class S1, class InputIt2, class S2, class BinaryPredicate>
+bool equal(InputIt1 first1, S1 last1, InputIt2 first2, S2 last2, BinaryPredicate p)
+{
+  for (; first1 != last1 && first2 != last2; ++first1, ++first2)
+  {
+    if (!p(*first1, *first2))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 template <typename I1, typename S1, typename I2, typename S2>
 void check_equal(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto i = i1 == s1;
-  auto j = i2 == s2;
-  CHECK(std::equal(i1, s1, i2, s2, [](auto l, auto r) {
+  CHECK(test_helpers::equal(i1, s1, i2, s2, [](auto l, auto r) {
     return static_cast<unsigned char>(l) == static_cast<unsigned char>(r);
   }));
 }
@@ -56,14 +67,14 @@ void test_encode(I i, S s, Range const& expected)
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_encoder(I i, S s, Range const& expected)
 {
-  auto encoder = Codec::make_encoder(i, s);
+  auto encoder = Codec::traits::make_encoder(i, s);
   check_equal(encoder, expected);
 }
 
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto encoder = Codec::make_encoder(i1, s1);
+  auto encoder = Codec::traits::make_encoder(i1, s1);
 
   using std::begin;
   using std::end;
@@ -95,7 +106,7 @@ void test_decode(I i, S s, Range const& expected)
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto decoder = Codec::make_decoder(i1, s1);
+  auto decoder = Codec::traits::make_decoder(i1, s1);
 
   using std::begin;
   using std::end;
@@ -121,10 +132,10 @@ void test_encode_twice(Range1 const& decoded_input, Range2 const& encoded_input)
   using std::begin;
   using std::end;
 
-  auto encoder = Codec::make_encoder(begin(decoded_input), end(decoded_input));
+  auto encoder = Codec::traits::make_encoder(begin(decoded_input), end(decoded_input));
   auto const encoded_twice = Codec::encode(begin(encoder), end(encoder));
   check_equal(encoded_twice, encoded_input);
-  auto decoder = Codec::make_decoder(begin(encoded_twice), end(encoded_twice));
+  auto decoder = Codec::traits::make_decoder(begin(encoded_twice), end(encoded_twice));
   auto const decoded = Codec::decode(begin(decoder), end(decoder));
   check_equal(decoded, decoded_input);
 }
@@ -132,7 +143,7 @@ void test_encode_twice(Range1 const& decoded_input, Range2 const& encoded_input)
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_decoder(I i, S s, Range const& expected)
 {
-  auto decoder = Codec::make_decoder(i, s);
+  auto decoder = Codec::traits::make_decoder(i, s);
   check_equal(decoder, expected);
 }
 

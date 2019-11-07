@@ -6,73 +6,57 @@
 
 #include <catch2/catch.hpp>
 
-#include <mgs/codecs/basic_codec.hpp>
 #include <mgs/codecs/concepts/codec.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
-#include <mgs/ranges/basic_transformed_input_range.hpp>
-
-#include <test_helpers/noop_transformer.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
 
 namespace
 {
-template <typename Iterator, typename Sentinel = Iterator>
-class noop_range : public mgs::ranges::basic_transformed_input_range<
-                       test_helpers::noop_transformer<Iterator, Sentinel>>
+struct valid_input_source
 {
-public:
-  using underlying_iterator = Iterator;
-  using underlying_sentinel = Sentinel;
+  using element_type = char;
 
-  using mgs::ranges::basic_transformed_input_range<
-      test_helpers::noop_transformer<Iterator,
-                                     Sentinel>>::basic_transformed_input_range;
+  int read(char*, int);
 };
 
-struct noop_codec_traits
+struct valid_traits
 {
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename Iterator, typename Sentinel>
-  static noop_range<Iterator, Sentinel> make_encoder(Iterator begin, Sentinel end);
+  template <typename IS>
+  static IS make_encoder(IS&);
 
-  template <typename Iterator, typename Sentinel>
-  static noop_range<Iterator, Sentinel> make_decoder(Iterator begin, Sentinel end);
+  template <typename IS>
+  static IS make_decoder(IS&);
 };
 
-using noop_codec = mgs::codecs::basic_codec<noop_codec_traits>;
-
-struct no_encode_char_ptr_codec : mgs::codecs::basic_codec<noop_codec_traits>
+struct valid_codec
 {
-  using mgs::codecs::basic_codec<noop_codec_traits>::basic_codec;
+  using traits = valid_traits;
 
-  using mgs::codecs::basic_codec<noop_codec_traits>::encode;
-  static mgs::codecs::basic_codec<noop_codec_traits>::default_encoded_output encode(char const*, char const*) = delete;
+  template <typename T = traits::default_encoded_output, typename IS>
+  static T encode(IS&);
+
+  template <typename T = traits::default_decoded_output, typename IS>
+  static T decode(IS&);
 };
 }
 
-TEST_CASE("Codec")
+TEST_CASE("codecs::codec")
 {
-  static_assert(is_codec<noop_codec>::value, "");
-  static_assert(is_codec<no_encode_char_ptr_codec>::value, "");
-  static_assert(is_codec<no_encode_char_ptr_codec,
-                                   unsigned char const(&)[1]>::value,
-                "");
-  static_assert(is_codec<noop_codec,
-                                   std::string,
-                                   std::vector<char>,
-                                   std::string,
-                                   std::string,
-                                   std::istreambuf_iterator<char>,
-                                   char*>::value,
-                "");
-  static_assert(
-      !is_codec<no_encode_char_ptr_codec, char const(&)[1]>::value,
-      "");
+  static_assert(is_codec<valid_codec>::value, "");
 
-  static_assert(is_codec<noop_codec>::value, "");
+  static_assert(!is_codec<void>::value, "");
+  static_assert(!is_codec<struct incomplete*>::value, "");
+
+  static_assert(is_codec<valid_codec,
+                         std::string,
+                         std::string,
+                         valid_input_source,
+                         valid_input_source>::value,
+                "");
 }

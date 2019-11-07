@@ -15,10 +15,8 @@
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/static_asserts.hpp>
-#include <mgs/ranges/basic_transformed_input_range.hpp>
 
 #include <test_helpers/codec_helpers.hpp>
-#include <test_helpers/noop_transformer.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -55,36 +53,51 @@ struct valid_type
   }
 };
 
-template <typename Iterator, typename Sentinel>
-class noop_range : public mgs::ranges::basic_transformed_input_range<
-                       test_helpers::noop_transformer<Iterator, Sentinel>>
-{
-public:
-  using underlying_iterator = Iterator;
-  using underlying_sentinel = Sentinel;
-
-  using mgs::ranges::basic_transformed_input_range<
-      test_helpers::noop_transformer<Iterator,
-                                     Sentinel>>::basic_transformed_input_range;
-};
-
-struct noop_codec_traits
+struct valid_codec_traits
 {
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename Iterator, typename Sentinel>
-  static auto make_encoder(Iterator begin, Sentinel end){
-    return noop_range<Iterator, Sentinel>(std::move(begin), std::move(end));
+  template <typename I, typename S>
+  // only works thanks to input_source_view being copyable
+  static auto make_encoder(input_source_view<I, S>& is)
+  {
+    return is;
   }
 
-  template <typename Iterator, typename Sentinel>
-  static auto make_decoder(Iterator begin, Sentinel end){
-    return noop_range<Iterator, Sentinel>(std::move(begin), std::move(end));
+  template <typename I, typename S>
+  static auto make_decoder(input_source_view<I, S>& is)
+  {
+    return is;
   }
+
+  template <typename I, typename S>
+  static input_source_view<I, S> make_encoder(I i, S s)
+  {
+    return make_input_source_view(i, s);
+  }
+
+  template <typename I, typename S>
+  static input_source_view<I, S> make_decoder(I i, S s)
+  {
+    return make_input_source_view(i, s);
+  }
+
+  template <typename R>
+  static auto make_encoder(R& r)
+  {
+    return make_input_source_view(r);
+  }
+
+  template <typename R>
+  static auto make_decoder(R& r)
+  {
+    return make_input_source_view(r);
+  }
+  // FIXME remove test_helpers and put everything in codecs
 };
 
-using noop_codec = mgs::codecs::basic_codec<noop_codec_traits>;
+using valid_codec = codecs::basic_codec<valid_codec_traits>;
 }
 
 namespace mgs
@@ -113,7 +126,7 @@ struct output_traits<std::vector<T>>
 }
 }
 
-static_assert(is_codec<noop_codec>::value, "");
+// auto _ = meta::trigger_static_asserts<is_codec<valid_codec>>();
 
 TEST_CASE("codecs")
 {
@@ -121,8 +134,8 @@ TEST_CASE("codecs")
   {
     std::array<char, 4> const input{'t', 'e', 's', 't'};
 
-    noop_codec::decode<std::list<char>>(input);
-    using Encoder = decltype(noop_codec::make_encoder(input.begin(), input.end()));
+    using Encoder = decltype(valid_codec::traits::make_encoder(
+        std::declval<input_source_view<decltype(input.begin())>&>()));
 
     static_assert(!is_codec_output<invalid_type, Encoder>::value, "");
     static_assert(is_codec_output<valid_type, Encoder>::value, "");
@@ -135,59 +148,55 @@ TEST_CASE("codecs")
 
       SECTION("encode")
       {
-        auto const v = noop_codec::encode(tab);
-        auto const v2 = noop_codec::encode(tab2);
-        auto const v3 = noop_codec::encode(tab3);
-        auto const v4 = noop_codec::encode(static_cast<char*>(tab3));
-        auto const v5 = noop_codec::encode("abcdefghi");
+        auto const v = valid_codec::encode(tab);
+        auto const v2 = valid_codec::encode(tab2);
+        auto const v3 = valid_codec::encode(tab3);
+        auto const v5 = valid_codec::encode("abcdefghi");
 
         CHECK(v.size() == 10);
         CHECK(v2.size() == 0);
         CHECK(v3.size() == 9);
-        CHECK(v4.size() == 9);
         CHECK(v5.size() == 9);
       }
 
       SECTION("decode")
       {
-        auto const v = noop_codec::decode(tab);
-        auto const v2 = noop_codec::decode(tab2);
-        auto const v3 = noop_codec::decode(tab3);
-        auto const v4 = noop_codec::decode(static_cast<char*>(tab3));
-        auto const v5 = noop_codec::decode("abcdefghi");
+        auto const v = valid_codec::decode(tab);
+        auto const v2 = valid_codec::decode(tab2);
+        auto const v3 = valid_codec::decode(tab3);
+        auto const v5 = valid_codec::decode("abcdefghi");
 
         CHECK(v.size() == 10);
         CHECK(v2.size() == 0);
         CHECK(v3.size() == 9);
-        CHECK(v4.size() == 9);
         CHECK(v5.size() == 9);
       }
     }
 
     SECTION("User-defined types")
     {
-      test_helpers::basic_codec_tests<noop_codec, valid_type>(input, input);
+      test_helpers::basic_codec_tests<valid_codec, valid_type>(input, input);
     }
 
     SECTION("Common tests")
     {
-      test_helpers::basic_codec_tests<noop_codec>(input, input);
+      test_helpers::basic_codec_tests<valid_codec>(input, input);
 
-      test_helpers::test_std_containers<noop_codec>(input, input);
-      test_helpers::test_input_streams<noop_codec>(input, input);
-      test_helpers::test_back_and_forth<noop_codec>(input, input);
-      test_helpers::test_encode_twice<noop_codec>(input, input);
+      test_helpers::test_std_containers<valid_codec>(input, input);
+      test_helpers::test_input_streams<valid_codec>(input, input);
+      test_helpers::test_back_and_forth<valid_codec>(input, input);
+      test_helpers::test_encode_twice<valid_codec>(input, input);
     }
 
     SECTION("Array conversion")
     {
-      CHECK_THROWS_AS((noop_codec::encode<std::array<char, 3>>(input)),
+      CHECK_THROWS_AS((valid_codec::encode<std::array<char, 3>>(input)),
                       mgs::exceptions::unexpected_eof_error);
-      CHECK_THROWS_AS((noop_codec::encode<std::array<char, 5>>(input)),
+      CHECK_THROWS_AS((valid_codec::encode<std::array<char, 5>>(input)),
                       mgs::exceptions::unexpected_eof_error);
-      CHECK_THROWS_AS((noop_codec::decode<std::array<char, 3>>(input)),
+      CHECK_THROWS_AS((valid_codec::decode<std::array<char, 3>>(input)),
                       mgs::exceptions::unexpected_eof_error);
-      CHECK_THROWS_AS((noop_codec::decode<std::array<char, 5>>(input)),
+      CHECK_THROWS_AS((valid_codec::decode<std::array<char, 5>>(input)),
                       mgs::exceptions::unexpected_eof_error);
     }
   }

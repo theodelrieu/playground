@@ -11,8 +11,6 @@
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/noop_transformer.hpp>
-
 using namespace mgs;
 using namespace mgs::codecs;
 

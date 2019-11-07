@@ -5,6 +5,7 @@
 
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/concepts/input_source.hpp>
+#include <mgs/codecs/detail/detect_input_sources.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/codecs/detected/types/default_decoded_output.hpp>
@@ -18,27 +19,6 @@
 
 namespace mgs
 {
-namespace detail
-{
-// hard to SFINAE with a class template, ensure input_source_view's requirements
-// are fulfilled before evaluation
-template <typename T,
-          typename D = typename T::default_decoded_output,
-          typename I = meta::detected_t<meta::iterator_t, D>,
-          typename S = meta::detected_t<meta::sentinel_t, D>,
-          typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
-                                      meta::is_sentinel_for<S, I>::value>>
-using input_source_1 = codecs::input_source_view<I, S>;
-
-template <typename T,
-          typename E = typename T::default_encoded_output,
-          typename I = meta::detected_t<meta::iterator_t, E>,
-          typename S = meta::detected_t<meta::sentinel_t, E>,
-          typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
-                                      meta::is_sentinel_for<S, I>::value>>
-using input_source_2 = codecs::input_source_view<I, S>;
-}
-
 namespace codecs
 {
 template <typename T,
@@ -79,10 +59,10 @@ public:
   static constexpr int trigger_static_asserts()
   {
     static_assert(value, "T does not model codecs::codec_traits");
-    static_assert(std::is_same<meta::nonesuch, IS1>::value,
+    static_assert(!std::is_same<meta::nonesuch, IS1>::value,
                   "IS1 default value is invalid. This is most likely due to "
                   "T::default_decoded_output not modelling meta::input_range");
-    static_assert(std::is_same<meta::nonesuch, IS2>::value,
+    static_assert(!std::is_same<meta::nonesuch, IS2>::value,
                   "IS2 default value is invalid. This is most likely due to "
                   "T::default_encoded_output not modelling meta::input_range");
     static_assert(is_encoder,
