@@ -8,8 +8,6 @@
 #include <mgs/meta/incrementable_traits.hpp>
 #include <mgs/meta/iter_difference_t.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace

@@ -10,8 +10,6 @@
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/readable_traits.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 TEST_CASE("readable_traits")

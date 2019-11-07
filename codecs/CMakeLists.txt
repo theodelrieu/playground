@@ -11,7 +11,7 @@ target_include_directories(codecs INTERFACE
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(codecs INTERFACE CONAN_PKG::mgs_ranges CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta CONAN_PKG::mgs_config)
+target_link_libraries(codecs INTERFACE CONAN_PKG::mgs_exceptions CONAN_PKG::mgs_meta CONAN_PKG::mgs_config)
 
 include(CTest)
 

@@ -7,8 +7,6 @@
 #include <mgs/meta/iterator_traits.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 using namespace mgs::detail;
 
@@ -68,6 +66,4 @@ TEST_CASE("iterator_traits")
   static_assert(
       !is_iterator_traits<std::iterator_traits<struct incomplete>>::value, "");
   static_assert(!is_iterator_traits<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<is_iterator_traits<int>>();
 }

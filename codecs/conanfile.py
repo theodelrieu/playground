@@ -15,7 +15,6 @@ class ConanMgsCodecsBase(ConanFile):
     def requirements(self):
         self.requires("mgs_meta/%s" % self.version)
         self.requires("mgs_exceptions/%s" % self.version)
-        self.requires("mgs_ranges/%s" % self.version)
         self.requires("mgs_config/%s" % self.version)
 
     def build(self):

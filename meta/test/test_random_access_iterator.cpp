@@ -7,8 +7,6 @@
 #include <mgs/meta/concepts/random_access_iterator.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace
@@ -604,17 +602,4 @@ TEST_CASE("random_access_iterator")
 
   static_assert(!is_random_access_iterator<void>::value, "");
   static_assert(!is_random_access_iterator<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_random_access_iterator<no_array_subscript_iterator>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_random_access_iterator<non_totally_ordered_iterator>,
-      std::tuple<
-          is_totally_ordered<non_totally_ordered_iterator>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_random_access_iterator<invalid_free_substraction_iterator>,
-      std::tuple<is_sized_sentinel_for<invalid_free_substraction_iterator,
-                                   invalid_free_substraction_iterator>>>();
 }

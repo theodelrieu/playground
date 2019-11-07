@@ -8,8 +8,6 @@
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace

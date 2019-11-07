@@ -11,8 +11,6 @@
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace
@@ -69,23 +67,4 @@ TEST_CASE("input_iterator")
   static_assert(!is_input_iterator<invalid_reference_iterator>::value, "");
   static_assert(!is_input_iterator<void>::value, "");
   static_assert(!is_input_iterator<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_input_iterator<int>,
-      std::tuple<is_input_or_output_iterator<int>,
-                 is_dereferenceable<int>,
-                 is_readable<int>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_input_iterator<invalid_reference_iterator>,
-      std::tuple<is_readable<invalid_reference_iterator>,
-                 has_common_reference_with<std::string&&, int&>,
-                 has_common_reference_with<std::string&&, int const&>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_input_iterator<void*>,
-      std::tuple<is_input_or_output_iterator<void*>,
-                 is_dereferenceable<void*>,
-                 is_weakly_incrementable<void*>,
-                 is_readable<void*>>>();
 }

@@ -8,8 +8,6 @@
 #include <mgs/meta/concepts/readable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 TEST_CASE("readable")

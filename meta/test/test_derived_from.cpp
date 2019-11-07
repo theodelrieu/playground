@@ -4,8 +4,6 @@
 
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace
@@ -30,6 +28,4 @@ TEST_CASE("derived_from")
   static_assert(!is_derived_from<int, int>::value, "");
   static_assert(!is_derived_from<derived, void>::value, "");
   static_assert(!is_derived_from<void, base>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<is_derived_from<int, int>>();
 }

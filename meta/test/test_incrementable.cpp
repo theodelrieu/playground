@@ -9,8 +9,6 @@
 #include <mgs/meta/concepts/regular.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace
@@ -81,12 +79,6 @@ TEST_CASE("weakly_incrementable")
   static_assert(!is_weakly_incrementable<struct incomplete>::value, "");
   static_assert(!is_weakly_incrementable<non_post_incrementable>::value, "");
   static_assert(!is_weakly_incrementable<non_pre_incrementable>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_weakly_incrementable<non_post_incrementable>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_weakly_incrementable<non_pre_incrementable>>();
 }
 
 TEST_CASE("incrementable")
@@ -103,18 +95,4 @@ TEST_CASE("incrementable")
   static_assert(!is_incrementable<non_pre_incrementable>::value, "");
   static_assert(!is_incrementable<void*>::value, "");
   static_assert(!is_incrementable<int (*)()>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_incrementable<non_regular>,
-      std::tuple<is_regular<non_regular>,
-                 is_equality_comparable<non_regular>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_incrementable<non_post_incrementable>,
-      std::tuple<is_regular<non_post_incrementable>,
-                 is_equality_comparable<non_post_incrementable>,
-                 is_weakly_incrementable<non_post_incrementable>>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_incrementable<regular_and_weakly_incrementable>>();
 }

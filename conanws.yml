@@ -17,8 +17,6 @@ editables:
     path: exceptions
   mgs_meta/0.1.0:
     path: meta
-  mgs_ranges/0.1.0:
-    path: ranges
   mgs_cmake/0.1.0:
     path: cmake
   mgs_config/0.1.0:

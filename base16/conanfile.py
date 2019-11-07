@@ -17,7 +17,6 @@ class ConanMgsBase16(ConanFile):
         self.requires("mgs_binary_to_base/%s" % self.version)
         self.requires("mgs_codecs/%s" % self.version)
         self.requires("mgs_config/%s" % self.version)
-        self.requires("mgs_ranges/%s" % self.version)
 
     def build(self):
         cmake = CMake(self)

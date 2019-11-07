@@ -8,8 +8,6 @@
 #include <mgs/meta/concepts/incrementable.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 namespace
@@ -103,10 +101,4 @@ TEST_CASE("bidirectional_iterator")
 
   static_assert(!is_bidirectional_iterator<void>::value, "");
   static_assert(!is_bidirectional_iterator<struct incomplete>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<
-      is_bidirectional_iterator<invalid_post_decrement_iterator>>();
-
-  test_helpers::generate_failed_requirements_tests<
-      is_bidirectional_iterator<std::forward_list<char>::iterator>>();
 }

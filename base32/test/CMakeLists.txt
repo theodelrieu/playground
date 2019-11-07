@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
-add_executable(test_base32 test_base32.cpp $<TARGET_OBJECTS:catch_main>)
+add_executable(test_base32 test_base32.cpp $<TARGET_OBJECTS:codec_tests_main>)
 target_link_libraries(test_base32 base32 CONAN_PKG::mgs_meta mgs_test_helpers)
 
 include(ExternalData)

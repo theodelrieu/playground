@@ -3,8 +3,6 @@
 #include <mgs/meta/concepts/complete_type.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::meta;
 
 TEST_CASE("complete_type")
@@ -13,6 +11,4 @@ TEST_CASE("complete_type")
   static_assert(is_complete_type<struct incomplete*>::value, "");
   static_assert(!is_complete_type<struct incomplete>::value, "");
   static_assert(!is_complete_type<void>::value, "");
-
-  test_helpers::generate_failed_requirements_tests<is_complete_type<void>>();
 }

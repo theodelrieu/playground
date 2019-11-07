@@ -8,9 +8,9 @@ function(create_meta_tests)
 
   add_executable(test_meta
     ${filenames}
-    $<TARGET_OBJECTS:catch_main>
+    main.cpp
   )
-  target_link_libraries(test_meta meta CONAN_PKG::Catch2 mgs_test_helpers)
+  target_link_libraries(test_meta meta CONAN_PKG::Catch2)
 
   add_test(NAME test_meta COMMAND test_meta)
 endfunction()
