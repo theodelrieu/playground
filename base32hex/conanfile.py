@@ -14,7 +14,7 @@ class ConanMgsBase32hex(ConanFile):
             self.build_requires("mgs_meta/%s" % self.version)
 
     def requirements(self):
-        self.requires("mgs_binary_to_base/%s" % self.version)
+        self.requires("mgs_base_n/%s" % self.version)
         self.requires("mgs_codecs/%s" % self.version)
         self.requires("mgs_config/%s" % self.version)
 

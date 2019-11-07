@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
-class ConanMgsBase64Url(ConanFile):
-    name = "mgs_base64url"
+class ConanMgsBinaryToText(ConanFile):
+    name = "mgs_base_n"
     version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt", "test/*"
@@ -11,10 +11,10 @@ class ConanMgsBase64Url(ConanFile):
         self.build_requires("mgs_cmake/%s" % self.version)
         if self.develop:
             self.build_requires("Catch2/2.7.2@catchorg/stable")
-            self.build_requires("mgs_meta/%s" % self.version)
 
     def requirements(self):
-        self.requires("mgs_base_n/%s" % self.version)
+        self.requires("mgs_meta/%s" % self.version)
+        self.requires("mgs_exceptions/%s" % self.version)
         self.requires("mgs_codecs/%s" % self.version)
         self.requires("mgs_config/%s" % self.version)
 

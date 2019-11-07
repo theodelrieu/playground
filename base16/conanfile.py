@@ -14,7 +14,7 @@ class ConanMgsBase16(ConanFile):
             self.build_requires("Catch2/2.7.2@catchorg/stable")
 
     def requirements(self):
-        self.requires("mgs_binary_to_base/%s" % self.version)
+        self.requires("mgs_base_n/%s" % self.version)
         self.requires("mgs_codecs/%s" % self.version)
         self.requires("mgs_config/%s" % self.version)
 

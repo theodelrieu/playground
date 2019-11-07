@@ -9,8 +9,8 @@ editables:
     path: base64
   mgs_base64url/0.1.0:
     path: base64url
-  mgs_binary_to_base/0.1.0:
-    path: binary_to_base
+  mgs_base_n/0.1.0:
+    path: base_n
   mgs_codecs/0.1.0:
     path: codecs
   mgs_exceptions/0.1.0:

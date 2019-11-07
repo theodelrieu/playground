@@ -3,13 +3,13 @@
 #include <algorithm>
 #include <cstddef>
 
-#include <mgs/binary_to_base/padding_policy.hpp>
+#include <mgs/base_n/padding_policy.hpp>
 
 namespace mgs
 {
 namespace detail
 {
-template <binary_to_base::padding_policy PaddingPolicy>
+template <base_n::padding_policy PaddingPolicy>
 struct basic_base64url_encoding_traits
 {
   using lookup_table_t = int const[256];
@@ -47,15 +47,15 @@ struct basic_base64url_encoding_traits
   }
 };
 
-template <binary_to_base::padding_policy PaddingPolicy>
+template <base_n::padding_policy PaddingPolicy>
 constexpr char const
     basic_base64url_encoding_traits<PaddingPolicy>::alphabet[64];
 
-template <binary_to_base::padding_policy PaddingPolicy>
+template <base_n::padding_policy PaddingPolicy>
 constexpr char const
     basic_base64url_encoding_traits<PaddingPolicy>::padding_character;
 
-template <binary_to_base::padding_policy PaddingPolicy>
+template <base_n::padding_policy PaddingPolicy>
 constexpr
     typename basic_base64url_encoding_traits<PaddingPolicy>::lookup_table_t
         basic_base64url_encoding_traits<PaddingPolicy>::lookup_table;

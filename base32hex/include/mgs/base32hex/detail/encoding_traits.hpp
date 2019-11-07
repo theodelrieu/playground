@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include <mgs/binary_to_base/padding_policy.hpp>
+#include <mgs/base_n/padding_policy.hpp>
 
 namespace mgs
 {
@@ -38,7 +38,7 @@ struct base32hex_encoding_traits
 
   static constexpr char const padding_character = '=';
   static constexpr auto const padding_policy =
-      binary_to_base::padding_policy::required;
+      base_n::padding_policy::required;
 
   static int index_of(char c)
   {

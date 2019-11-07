@@ -10,7 +10,7 @@ target_include_directories(base32hex INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(base32hex INTERFACE CONAN_PKG::mgs_binary_to_base CONAN_PKG::mgs_codecs CONAN_PKG::mgs_config)
+target_link_libraries(base32hex INTERFACE CONAN_PKG::mgs_base_n CONAN_PKG::mgs_codecs CONAN_PKG::mgs_config)
 
 include(CTest)
 
