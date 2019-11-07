@@ -19,8 +19,6 @@ editables:
     path: meta
   mgs_ranges/0.1.0:
     path: ranges
-  mgs_test_helpers/0.1.0:
-    path: test_helpers
   mgs_cmake/0.1.0:
     path: cmake
   mgs_config/0.1.0:

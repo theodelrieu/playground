@@ -10,7 +10,6 @@ class ConanMgsBase32hex(ConanFile):
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s" % self.version)
         if self.develop:
-            self.build_requires("mgs_test_helpers/%s" % self.version)
             self.build_requires("Catch2/2.7.2@catchorg/stable")
             self.build_requires("mgs_meta/%s" % self.version)
 

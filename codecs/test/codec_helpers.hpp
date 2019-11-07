@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <mgs/codecs/input_source_view.hpp>
+
 #include <catch2/catch.hpp>
 
 namespace test_helpers
@@ -67,14 +69,16 @@ void test_encode(I i, S s, Range const& expected)
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_encoder(I i, S s, Range const& expected)
 {
-  auto encoder = Codec::traits::make_encoder(i, s);
+  auto is = mgs::codecs::make_input_source_view(i, s);
+  auto encoder = Codec::traits::make_encoder(is);
   check_equal(encoder, expected);
 }
 
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto encoder = Codec::traits::make_encoder(i1, s1);
+  auto is = mgs::codecs::make_input_source_view(i1, s1);
+  auto encoder = Codec::traits::make_encoder(is);
 
   using std::begin;
   using std::end;
@@ -106,7 +110,8 @@ void test_decode(I i, S s, Range const& expected)
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto decoder = Codec::traits::make_decoder(i1, s1);
+  auto is = mgs::codecs::make_input_source_view(i1, s1);
+  auto decoder = Codec::traits::make_decoder(is);
 
   using std::begin;
   using std::end;
@@ -129,21 +134,21 @@ void test_back_and_forth(Range1 const& decoded_input,
 template <typename Codec, typename Range1, typename Range2>
 void test_encode_twice(Range1 const& decoded_input, Range2 const& encoded_input)
 {
-  using std::begin;
-  using std::end;
-
-  auto encoder = Codec::traits::make_encoder(begin(decoded_input), end(decoded_input));
-  auto const encoded_twice = Codec::encode(begin(encoder), end(encoder));
+  auto is1 = mgs::codecs::make_input_source_view(decoded_input);
+  auto encoder = Codec::traits::make_encoder(is1);
+  auto const encoded_twice = Codec::encode(encoder);
   check_equal(encoded_twice, encoded_input);
-  auto decoder = Codec::traits::make_decoder(begin(encoded_twice), end(encoded_twice));
-  auto const decoded = Codec::decode(begin(decoder), end(decoder));
+  auto is2 = mgs::codecs::make_input_source_view(encoded_twice);
+  auto decoder = Codec::traits::make_decoder(is2);
+  auto const decoded = Codec::decode(decoder);
   check_equal(decoded, decoded_input);
 }
 
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_decoder(I i, S s, Range const& expected)
 {
-  auto decoder = Codec::traits::make_decoder(i, s);
+  auto is = mgs::codecs::make_input_source_view(i, s);
+  auto decoder = Codec::traits::make_decoder(is);
   check_equal(decoder, expected);
 }
 

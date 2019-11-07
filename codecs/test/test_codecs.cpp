@@ -16,7 +16,7 @@
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/static_asserts.hpp>
 
-#include <test_helpers/codec_helpers.hpp>
+#include "codec_helpers.hpp"
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -70,31 +70,6 @@ struct valid_codec_traits
   {
     return is;
   }
-
-  template <typename I, typename S>
-  static input_source_view<I, S> make_encoder(I i, S s)
-  {
-    return make_input_source_view(i, s);
-  }
-
-  template <typename I, typename S>
-  static input_source_view<I, S> make_decoder(I i, S s)
-  {
-    return make_input_source_view(i, s);
-  }
-
-  template <typename R>
-  static auto make_encoder(R& r)
-  {
-    return make_input_source_view(r);
-  }
-
-  template <typename R>
-  static auto make_decoder(R& r)
-  {
-    return make_input_source_view(r);
-  }
-  // FIXME remove test_helpers and put everything in codecs
 };
 
 using valid_codec = codecs::basic_codec<valid_codec_traits>;

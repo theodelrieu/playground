@@ -9,6 +9,6 @@ add_executable(test_ranges
   test_transformed_input_range_iterator.cpp
   $<TARGET_OBJECTS:catch_main>)
 
-target_link_libraries(test_ranges ranges CONAN_PKG::mgs_test_helpers CONAN_PKG::mgs_meta)
+target_link_libraries(test_ranges ranges mgs_test_helpers CONAN_PKG::mgs_meta)
 
 add_test(NAME test_ranges COMMAND test_ranges)

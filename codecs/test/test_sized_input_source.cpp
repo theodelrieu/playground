@@ -3,8 +3,6 @@
 #include <mgs/meta/ssize_t.hpp>
 #include <mgs/codecs/concepts/sized_input_source.hpp>
 
-#include <test_helpers/requirements.hpp>
-
 using namespace mgs::codecs;
 
 namespace
