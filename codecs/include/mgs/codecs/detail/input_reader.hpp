@@ -26,7 +26,7 @@ struct input_reader
       *out++ = *current++;
       --to_read;
     }
-    return std::make_pair(std::move(out), to_read);
+    return std::make_pair(std::move(out), n - to_read);
   }
 };
 

@@ -13,6 +13,7 @@
 
 #include "codec_helpers.hpp"
 #include "noop_iterator.hpp"
+
 using namespace std::string_literals;
 using namespace mgs;
 
@@ -58,7 +59,7 @@ TEST_CASE("base64")
 
     auto decoder = base64::traits::make_decoder(
         codecs::make_input_source_view(iterator(b64_random_data), iterator()));
-    auto dec_range = codecs::make_input_range(decoder);
+    auto dec_range = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
         dec_range.begin(), dec_range.end(), iterator{random_data}, iterator());
   }
@@ -129,7 +130,6 @@ TEST_CASE("base64")
             codecs::make_input_source_view(encoded));
         CHECK(dec.max_remaining_size() == 10002);
 
-        // FIXME read should return the output iterator so it can be modified internally
         detail::read_at_most(dec, test_helpers::noop_iterator{}, 9984);
         CHECK(dec.max_remaining_size() == 18);
       }
