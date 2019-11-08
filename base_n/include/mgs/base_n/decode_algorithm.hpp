@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 #include <algorithm>
 #include <bitset>
@@ -57,8 +58,11 @@ public:
   template <typename T = IS, typename = codecs::sized_input_source<T>>
   meta::ssize_t max_remaining_size() const
   {
-    return detail::max_decoded_size<Traits>{}(
-        _input_source.max_remaining_size());
+    auto const s =
+        detail::max_decoded_size<Traits>{}(_input_source.max_remaining_size());
+    if (s == -1)
+      return -1;
+    return (_buffer.size() - _index) + s;
   }
 
   template <typename O>
@@ -69,23 +73,12 @@ public:
       read_input_source();
       _index = 0;
     }
-    else if (_index == -1)
-    {
-      unsigned char dummy;
-      // input left, but we found padding last time => invalid input
-      if (_input_source.read(&dummy, 1) != 0)
-      {
-        throw exceptions::invalid_input_error{
-            "more input was found after padding"};
-      }
-      _index = 0;
-      return 0;
-    }
     auto const to_read = std::min<meta::ssize_t>(_buffer.size() - _index, n);
     std::copy_n(_buffer.data() + _index, to_read, o);
     _index += to_read;
     return to_read;
   }
+
 private:
   auto read_input_source_impl()
   {
@@ -97,8 +90,13 @@ private:
     auto const sanitized_size = detail::input_sanitizer<Traits>::sanitize(ret);
     if (sanitized_size != ret.size())
     {
-      // Found padded input, keep track of it if there is more input to read
-      _index = -1;
+      unsigned char dummy;
+      // input left, but we found padding last time => invalid input
+      if (_input_source.read(&dummy, 1) != 0)
+      {
+        throw exceptions::invalid_input_error{
+            "more input was found after padding"};
+      }
     }
     ret.resize(sanitized_size);
     return ret;
