@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 #include <algorithm>
 #include <bitset>
@@ -20,6 +19,7 @@
 #include <mgs/base_n/padding_policy.hpp>
 #include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/concepts/sized_input_source.hpp>
+#include <mgs/codecs/detail/read_at_most.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/sized_sentinel_for.hpp>
@@ -66,7 +66,8 @@ public:
   }
 
   template <typename O>
-  meta::ssize_t read(meta::output_iterator<O, element_type> o, meta::ssize_t n)
+  std::pair<O, meta::ssize_t> read(meta::output_iterator<O, element_type> o,
+                                   meta::ssize_t n)
   {
     if (_buffer.size() == _index)
     {
@@ -74,9 +75,9 @@ public:
       _index = 0;
     }
     auto const to_read = std::min<meta::ssize_t>(_buffer.size() - _index, n);
-    std::copy_n(_buffer.data() + _index, to_read, o);
+    o = std::copy_n(_buffer.data() + _index, to_read, o);
     _index += to_read;
-    return to_read;
+    return std::make_pair(std::move(o), to_read);
   }
 
 private:
@@ -85,14 +86,15 @@ private:
     detail::static_vector<unsigned char, nb_bytes_to_read> ret;
     ret.resize(nb_bytes_to_read);
     // FIXME helper method to read while not eof
-    auto nb_read = _input_source.read(ret.data(), nb_bytes_to_read);
-    ret.resize(nb_read);
+    auto const res =
+        detail::read_at_most(_input_source, ret.data(), nb_bytes_to_read);
+    ret.resize(res.second);
     auto const sanitized_size = detail::input_sanitizer<Traits>::sanitize(ret);
     if (sanitized_size != ret.size())
     {
       unsigned char dummy;
       // input left, but we found padding last time => invalid input
-      if (_input_source.read(&dummy, 1) != 0)
+      if (_input_source.read(&dummy, 1).second != 0)
       {
         throw exceptions::invalid_input_error{
             "more input was found after padding"};

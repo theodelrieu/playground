@@ -17,6 +17,7 @@
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
 #include <mgs/meta/sentinel_t.hpp>
+#include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
 {
@@ -25,33 +26,26 @@ namespace codecs
 template <typename CodecTraits>
 class basic_codec
 {
-  static_assert(is_codec_traits<CodecTraits>::value, "");
-
 public:
   using traits = CodecTraits;
 
-  using default_encoded_output = typename CodecTraits::default_encoded_output;
-  using default_decoded_output = typename CodecTraits::default_decoded_output;
+  using default_encoded_output = typename traits::default_encoded_output;
+  using default_decoded_output = typename traits::default_decoded_output;
 
 private:
   template <typename IS>
-  using encoder =
-      meta::detected_t<detected::static_member_functions::make_encoder,
-                       traits,
-                       std::add_lvalue_reference_t<IS>>;
+  using encoder = meta::
+      detected_t<detected::static_member_functions::make_encoder, traits, IS>;
 
   template <typename IS>
-  using decoder =
-      meta::detected_t<detected::static_member_functions::make_decoder,
-                       traits,
-                       std::add_lvalue_reference_t<IS>>;
+  using decoder = meta::
+      detected_t<detected::static_member_functions::make_decoder, traits, IS>;
 
   template <typename T = default_encoded_output, typename IS>
   static codecs::codec_output<T, encoder<IS>> encode_impl(
-      codecs::input_source<IS>& is, meta::priority_tag<2>)
+      codecs::input_source<IS> is, meta::priority_tag<2>)
   {
-    auto enc = traits::make_encoder(is);
-    return output_traits<T>::create(enc);
+    return output_traits<T>::create(traits::make_encoder(std::move(is)));
   }
 
   template <typename T = default_encoded_output,
@@ -63,9 +57,8 @@ private:
           input_source_view<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
   encode_impl(U& it, meta::priority_tag<1>)
   {
-    auto is = make_input_source_view(it);
-    auto enc = traits::make_encoder(is);
-    return output_traits<T>::create(enc);
+    return output_traits<T>::create(
+        traits::make_encoder(make_input_source_view(it)));
   }
 
   template <typename T = default_encoded_output,
@@ -77,17 +70,15 @@ private:
                                 meta::sentinel_t<Range const>>>>
   encode_impl(U const& it, meta::priority_tag<0>)
   {
-    auto is = make_input_source_view(it);
-    auto enc = traits::make_encoder(is);
-    return output_traits<T>::create(enc);
+    return output_traits<T>::create(
+        traits::make_encoder(make_input_source_view(it)));
   }
 
   template <typename T = default_decoded_output, typename IS>
   static codecs::codec_output<T, decoder<IS>> decode_impl(
-      codecs::input_source<IS>& is, meta::priority_tag<2>)
+      codecs::input_source<IS> is, meta::priority_tag<2>)
   {
-    auto dec = CodecTraits::make_decoder(is);
-    return output_traits<T>::create(dec);
+    return output_traits<T>::create(traits::make_decoder(std::move(is)));
   }
 
   template <typename T = default_decoded_output,
@@ -99,9 +90,8 @@ private:
           input_source_view<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
   decode_impl(U& it, meta::priority_tag<1>)
   {
-    auto is = make_input_source_view(it);
-    auto dec = traits::make_decoder(is);
-    return output_traits<T>::create(dec);
+    return output_traits<T>::create(
+        traits::make_decoder(make_input_source_view(it)));
   }
 
   template <typename T = default_decoded_output,
@@ -113,9 +103,8 @@ private:
                                 meta::sentinel_t<Range const>>>>
   decode_impl(U const& it, meta::priority_tag<0>)
   {
-    auto is = make_input_source_view(it);
-    auto dec = traits::make_decoder(is);
-    return output_traits<T>::create(dec);
+    return output_traits<T>::create(
+        traits::make_decoder(make_input_source_view(it)));
   }
 
   public:
@@ -131,9 +120,8 @@ private:
     static mgs::codecs::codec_output<T, encoder<input_source_view<I, S>>>
     encode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
     {
-      auto is = make_input_source_view(std::move(it), std::move(sent));
-      auto enc = traits::make_encoder(is);
-      return output_traits<T>::create(enc);
+      return output_traits<T>::create(traits::make_encoder(
+          make_input_source_view(std::move(it), std::move(sent))));
     }
 
     template <typename T = default_decoded_output, typename U>
@@ -148,9 +136,8 @@ private:
     static mgs::codecs::codec_output<T, decoder<input_source_view<I, S>>>
     decode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
     {
-      auto is = make_input_source_view(std::move(it), std::move(sent));
-      auto dec = traits::make_decoder(is);
-      return output_traits<T>::create(dec);
+      return output_traits<T>::create(traits::make_decoder(
+          make_input_source_view(std::move(it), std::move(sent))));
     }
 };
 }

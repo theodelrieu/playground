@@ -19,6 +19,8 @@ namespace detail
 template <typename EncodingTraits, typename DecodingTraits>
 struct basic_codec_traits
 {
+  // TODO inherit from a codecs::basic_codec_traits and only override
+  // input_source overload
   template <typename IS,
             typename = codecs::byte_type<
                 meta::detected_t<meta::detected::types::element_type, IS>>>

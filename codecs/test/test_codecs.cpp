@@ -119,6 +119,7 @@ TEST_CASE("codecs")
       char tab2[10] = {};
       char tab3[10] = "abcdefghi";
 
+      valid_codec::encode(""s);
       SECTION("encode")
       {
         auto const v = valid_codec::encode(tab);

@@ -77,7 +77,7 @@ void test_make_encoder(I i, S s, Range&& expected)
 {
   auto is = mgs::codecs::make_input_source_view(i, s);
   auto encoder = Codec::traits::make_encoder(is);
-  check_equal(mgs::codecs::make_input_range(encoder), expected);
+  check_equal(mgs::codecs::make_input_range(std::move(encoder)), expected);
 }
 
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
@@ -85,7 +85,7 @@ void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
   auto is = mgs::codecs::make_input_source_view(i1, s1);
   auto encoder = Codec::traits::make_encoder(is);
-  auto range = mgs::codecs::make_input_range(encoder);
+  auto range = mgs::codecs::make_input_range(std::move(encoder));
   CHECK(std::equal(range.begin(), range.end(), i2, s2));
 }
 
@@ -115,7 +115,7 @@ void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
   auto is = mgs::codecs::make_input_source_view(i1, s1);
   auto decoder = Codec::traits::make_decoder(is);
-  auto range = mgs::codecs::make_input_range(decoder);
+  auto range = mgs::codecs::make_input_range(std::move(decoder));
 
   CHECK(std::equal(range.begin(), range.end(), i2, s2));
 }
@@ -136,11 +136,11 @@ void test_encode_twice(Range1&& decoded_input, Range2&& encoded_input)
 {
   auto is1 = mgs::codecs::make_input_source_view(decoded_input);
   auto encoder = Codec::traits::make_encoder(is1);
-  auto const encoded_twice = Codec::encode(encoder);
+  auto const encoded_twice = Codec::encode(std::move(encoder));
   check_equal(encoded_twice, encoded_input);
   auto is2 = mgs::codecs::make_input_source_view(encoded_twice);
   auto decoder = Codec::traits::make_decoder(is2);
-  auto const decoded = Codec::decode(decoder);
+  auto const decoded = Codec::decode(std::move(decoder));
   check_equal(decoded, decoded_input);
 }
 
@@ -149,7 +149,7 @@ void test_make_decoder(I i, S s, Range&& expected)
 {
   auto is = mgs::codecs::make_input_source_view(i, s);
   auto decoder = Codec::traits::make_decoder(is);
-  check_equal(mgs::codecs::make_input_range(decoder), expected);
+  check_equal(mgs::codecs::make_input_range(std::move(decoder)), expected);
 }
 
 template <typename Codec,
