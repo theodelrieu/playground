@@ -25,8 +25,7 @@ class basic_codec
 public:
   using base::decode;
   using base::encode;
-  using base::make_decoder;
-  using base::make_encoder;
+  using typename base::traits;
 
   static constexpr meta::ssize_t encoded_size(meta::ssize_t decoded_size)
   {

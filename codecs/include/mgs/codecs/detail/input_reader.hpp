@@ -22,7 +22,7 @@ struct input_reader
     auto to_read = n;
     while (current != end && to_read > 0)
     {
-      *out = *current++;
+      *out++ = *current++;
       --to_read;
     }
     return n - to_read;

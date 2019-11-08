@@ -26,4 +26,4 @@ rename input_source_view to iterator_input_source?
 input_source_view is a good name for basic_input_range
 
 
-an input source must be movable, stop taking it by lvalue ref, it is a sink argument
+helper method to read up to N bytes automatically

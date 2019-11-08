@@ -24,8 +24,8 @@ template <typename ForwardIterator>
 template <typename EncodingTraits, typename Input>
 auto find_invalid_byte(Input const& input)
 {
-  // Input could be a detail::span, which can return a SizedSentinel
-  // STL algorithms do not work with Sentinels (yet).
+  // Input could be a detail::span, which can return a sized_sentinel_for
+  // STL algorithms do not work with sentinels (yet).
   auto current = input.begin();
   auto const end = input.end();
 
@@ -87,7 +87,7 @@ class input_sanitizer<EncodingTraits, base_n::padding_policy::none>
 {
 public:
   template <typename Input>
-  static meta::ssize_t sanitize(Input const& input, bool)
+  static meta::ssize_t sanitize(Input const& input)
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -105,15 +105,13 @@ class input_sanitizer<EncodingTraits, base_n::padding_policy::optional>
 {
 public:
   template <typename Input>
-  static meta::ssize_t sanitize(Input const& input, bool end_of_input)
+  static meta::ssize_t sanitize(Input const& input)
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
     auto const invalid_byte_it = find_invalid_byte<EncodingTraits>(input);
     if (invalid_byte_it != input.end())
     {
-      if (!end_of_input)
-        throw_invalid_input(invalid_byte_it);
       sanitize_invalid_input<EncodingTraits>(input, invalid_byte_it);
       return invalid_byte_it - input.begin();
     }
@@ -132,7 +130,7 @@ class input_sanitizer<EncodingTraits, base_n::padding_policy::required>
 
 public:
   template <typename Input>
-  static meta::ssize_t sanitize(Input const& input, bool end_of_input)
+  static meta::ssize_t sanitize(Input const& input)
   {
     if (input.size() % BitshiftTraits::nb_encoded_bytes != 0)
       throw exceptions::unexpected_eof_error{"unexpected end of encoded input"};
@@ -140,8 +138,6 @@ public:
     auto const invalid_byte_it = find_invalid_byte<EncodingTraits>(input);
     if (invalid_byte_it != input.end())
     {
-      if (!end_of_input)
-        throw_invalid_input(invalid_byte_it);
       sanitize_invalid_input<EncodingTraits>(input, invalid_byte_it);
       return invalid_byte_it - input.begin();
     }

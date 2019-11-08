@@ -13,13 +13,13 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/base_n/basic_codec.hpp>
-#include <mgs/base_n/basic_decoder.hpp>
-#include <mgs/base_n/basic_encoder.hpp>
+#include <mgs/base_n/decode_algorithm.hpp>
+#include <mgs/base_n/encode_algorithm.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/derived_from.hpp>
 
-#include <test_helpers/codec_helpers.hpp>
+#include "codec_helpers.hpp"
 
 using namespace std::string_literals;
 using namespace mgs;
@@ -50,12 +50,6 @@ struct base2_encoding_traits
 constexpr base2_encoding_traits::alphabet_t base2_encoding_traits::alphabet;
 
 using base2 = base_n::basic_codec<base2_encoding_traits>;
-
-template <typename I, typename S = I>
-using base2_encoder = typename base2::template encoder<I, S>;
-
-template <typename I, typename S = I>
-using base2_decoder = typename base2::template decoder<I, S>;
 }
 
 TEST_CASE("base2")
@@ -118,7 +112,7 @@ TEST_CASE("base2")
     {
       auto const str = "abcd"s;
       auto const encoded_str = "01100001011000100110001101100100"s;
-      auto enc = base2::make_encoder(str.begin(), str.end());
+      auto enc = base2::traits::make_encoder(codecs::make_input_source_view(str));
 
       std::string encoded;
       auto nb_read = enc.read(std::back_inserter(encoded), 2);
