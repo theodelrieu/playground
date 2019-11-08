@@ -17,7 +17,7 @@ Ret read_all(input_source_view<I, S>& src)
 {
   Ret ret;
 
-  while (src.read(std::back_inserter(ret), 4096))
+  while (src.read(std::back_inserter(ret), 4096).second)
     ;
   return ret;
 }

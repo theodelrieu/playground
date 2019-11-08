@@ -19,7 +19,7 @@ struct valid_input_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int>  read(char*, int);
 };
 
 struct valid_traits
@@ -28,10 +28,10 @@ struct valid_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static IS make_encoder(IS&);
+  static IS make_encoder(IS);
 
   template <typename IS>
-  static IS make_decoder(IS&);
+  static IS make_decoder(IS);
 };
 
 struct valid_codec
@@ -39,10 +39,10 @@ struct valid_codec
   using traits = valid_traits;
 
   template <typename T = traits::default_encoded_output, typename IS>
-  static T encode(IS&);
+  static T encode(IS);
 
   template <typename T = traits::default_decoded_output, typename IS>
-  static T decode(IS&);
+  static T decode(IS);
 };
 }
 

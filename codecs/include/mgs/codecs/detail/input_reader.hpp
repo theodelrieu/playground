@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <type_traits>
+#include <utility>
 
 #include <mgs/meta/concepts/sized_sentinel_for.hpp>
 #include <mgs/meta/ssize_t.hpp>
@@ -14,10 +15,10 @@ template <typename I, typename S, typename = void>
 struct input_reader
 {
   template <typename OutputIterator>
-  static meta::ssize_t read(I& current,
-                            S end,
-                            OutputIterator out,
-                            meta::ssize_t n)
+  static std::pair<OutputIterator, meta::ssize_t> read(I& current,
+                                                       S end,
+                                                       OutputIterator out,
+                                                       meta::ssize_t n)
   {
     auto to_read = n;
     while (current != end && to_read > 0)
@@ -25,7 +26,7 @@ struct input_reader
       *out++ = *current++;
       --to_read;
     }
-    return n - to_read;
+    return std::make_pair(std::move(out), to_read);
   }
 };
 
@@ -35,15 +36,15 @@ struct input_reader<I,
                     std::enable_if_t<meta::is_sized_sentinel_for<S, I>::value>>
 {
   template <typename OutputIterator>
-  static meta::ssize_t read(I& current,
-                            S end,
-                            OutputIterator out,
-                            meta::ssize_t n)
+  static std::pair<OutputIterator, meta::ssize_t> read(I& current,
+                                                       S end,
+                                                       OutputIterator out,
+                                                       meta::ssize_t n)
   {
     auto const to_read = std::min<meta::ssize_t>(end - current, n);
-    std::copy_n(current, to_read, out);
+    out = std::copy_n(current, to_read, std::move(out));
     current += to_read;
-    return to_read;
+    return std::make_pair(std::move(out), to_read);
   }
 };
 }

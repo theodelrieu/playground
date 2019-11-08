@@ -25,12 +25,12 @@ public:
   }
 
   template <typename O>
-  int read(O o, int n)
+  std::pair<O, int> read(O o, int n)
   {
     auto const to_read = std::min<int>(n, _s.size() - _idx);
     o = std::copy_n(_s.data() + _idx, to_read, o);
     _idx += to_read;
-    return to_read;
+    return std::make_pair(std::move(o), to_read);
   }
 
 private:

@@ -31,13 +31,9 @@ private:
   using D = meta::detected_t<detected::types::default_decoded_output, T>;
 
   using Encoder =
-      meta::detected_t<detected::static_member_functions::make_encoder,
-                       T,
-                       std::add_lvalue_reference_t<IS1>>;
+      meta::detected_t<detected::static_member_functions::make_encoder, T, IS1>;
   using Decoder =
-      meta::detected_t<detected::static_member_functions::make_decoder,
-                       T,
-                       std::add_lvalue_reference_t<IS2>>;
+      meta::detected_t<detected::static_member_functions::make_decoder, T, IS2>;
 
   static constexpr auto const is_encoder =
       codecs::is_input_source<Encoder>::value;
@@ -67,10 +63,10 @@ public:
                   "T::default_encoded_output not modelling meta::input_range");
     static_assert(is_encoder,
                   "invalid or missing function: 'codecs::input_source "
-                  "T::make_encoder(IS1&)'");
+                  "T::make_encoder(IS1)'");
     static_assert(is_decoder,
                   "invalid or missing function: 'codecs::input_source "
-                  "T::make_decoder(IS2&)'");
+                  "T::make_decoder(IS2)'");
     return 1;
   }
 };

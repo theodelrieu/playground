@@ -58,17 +58,17 @@ struct valid_codec_traits
   using default_encoded_output = std::string;
   using default_decoded_output = std::string;
 
-  template <typename I, typename S>
+  template <typename IS>
   // only works thanks to input_source_view being copyable
-  static auto make_encoder(input_source_view<I, S>& is)
+  static auto make_encoder(IS is)
   {
-    return is;
+    return std::move(is);
   }
 
-  template <typename I, typename S>
-  static auto make_decoder(input_source_view<I, S>& is)
+  template <typename IS>
+  static auto make_decoder(IS is)
   {
-    return is;
+    return std::move(is);
   }
 };
 
@@ -82,26 +82,24 @@ namespace codecs
 template <>
 struct output_traits<valid_type>
 {
-  template <typename InputRange>
-  static valid_type create(InputRange& range)
+  template <typename IS>
+  static valid_type create(IS is)
   {
-    return {{range.begin(), range.end()}};
+    return {{is.begin(), is.end()}};
   }
 };
 
 template <typename T>
 struct output_traits<std::vector<T>>
 {
-  template <typename InputRange>
-  static std::vector<T> create(InputRange& range)
+  template <typename IS>
+  static std::vector<T> create(IS is)
   {
-    return {range.begin(), range.end()};
+    return {is.begin(), is.end()};
   }
 };
 }
 }
-
-// auto _ = meta::trigger_static_asserts<is_codec<valid_codec>>();
 
 TEST_CASE("codecs")
 {

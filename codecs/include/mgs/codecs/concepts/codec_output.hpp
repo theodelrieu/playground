@@ -20,7 +20,7 @@ private:
       meta::is_detected_exact<T,
                               detected::static_member_functions::create,
                               meta::detected_t<codecs::output_traits, T>,
-                              std::add_lvalue_reference_t<IS>>::value;
+                              IS>::value;
 
 public:
   using requirements = std::tuple<codecs::is_input_source<IS>>;
@@ -33,7 +33,7 @@ public:
     static_assert(value, "T does not model codecs::codec_output");
     static_assert(has_create_method,
                   "invalid or missing static member function: 'T "
-                  "mgs::codecs::output_traits<T>::create(IS&)'");
+                  "mgs::codecs::output_traits<T>::create(IS)'");
     return 1;
   }
 };

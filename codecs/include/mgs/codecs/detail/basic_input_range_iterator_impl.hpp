@@ -13,7 +13,8 @@ basic_input_range_iterator<BasicInputRange>::basic_input_range_iterator(
 {
   if (_range)
   {
-    if (_range->_input_source->read(&_last_read, 1) == 0)
+    auto res = _range->_input_source.read(&_last_read, 1);
+    if (res.second == 0)
       _range = nullptr;
   }
 }
@@ -34,7 +35,8 @@ template <typename BasicInputRange>
 auto basic_input_range_iterator<BasicInputRange>::operator++()
     -> basic_input_range_iterator<BasicInputRange>&
 {
-  if (_range->_input_source->read(&_last_read, 1) == 0)
+  auto res = _range->_input_source.read(&_last_read, 1);
+  if (res.second == 0)
     _range = nullptr;
   return *this;
 }

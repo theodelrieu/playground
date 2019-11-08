@@ -20,18 +20,18 @@ class basic_input_range
   using iterator = detail::basic_input_range_iterator<basic_input_range>;
 
 public:
-  explicit basic_input_range(InputSource&);
+  explicit basic_input_range(InputSource);
 
   iterator begin();
   iterator end();
 
 private:
-  InputSource* _input_source;
+  InputSource _input_source;
 };
 
 template <typename InputSource,
           typename = std::enable_if_t<is_input_source<InputSource>::value>>
-basic_input_range<InputSource> make_input_range(InputSource&);
+basic_input_range<InputSource> make_input_range(InputSource);
 }
 }
 

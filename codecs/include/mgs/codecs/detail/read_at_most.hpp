@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include <mgs/meta/ssize_t.hpp>
 
 namespace mgs
@@ -7,18 +9,19 @@ namespace mgs
 namespace detail
 {
 template <typename IS, typename O>
-meta::ssize_t read_at_most(IS& is, O o, meta::ssize_t n)
+std::pair<O, meta::ssize_t> read_at_most(IS& is, O o, meta::ssize_t n)
 {
   auto total_read = 0;
   while (n != 0)
   {
-    auto const nb_read = is.read(o, n);
-    if (nb_read == 0)
+    auto const res = is.read(o, n);
+    o = res.first;
+    if (res.second == 0)
       break;
-    total_read += nb_read;
-    n -= nb_read;
+    total_read += res.second;
+    n -= res.second;
   }
-  return total_read;
+  return {o, total_read};
 }
 }
 }

@@ -28,8 +28,8 @@ S input_source_view<I, S>::end() const
 
 template <typename I, typename S>
 template <typename OutputIterator, typename SFINAE>
-meta::ssize_t input_source_view<I, S>::read(OutputIterator out,
-                                               meta::ssize_t n)
+std::pair<OutputIterator, meta::ssize_t> input_source_view<I, S>::read(
+    OutputIterator out, meta::ssize_t n)
 {
   return detail::input_reader<I, S>::read(_current, _end, out, n);
 }

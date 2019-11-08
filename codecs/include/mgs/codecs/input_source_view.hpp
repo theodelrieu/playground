@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <type_traits>
+#include <utility>
 
 #include <mgs/codecs/detail/string_literal_char_type.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
@@ -38,7 +39,8 @@ public:
   template <typename OutputIterator,
             typename = std::enable_if_t<
                 meta::is_output_iterator<OutputIterator, element_type>::value>>
-  meta::ssize_t read(OutputIterator out, meta::ssize_t n);
+  std::pair<OutputIterator, meta::ssize_t> read(OutputIterator out,
+                                                meta::ssize_t n);
 
   template <
       typename S2 = S,

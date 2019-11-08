@@ -20,7 +20,7 @@ struct valid_input_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int> read(char*, int);
 };
 
 struct invalid

@@ -13,6 +13,7 @@
 #include <mgs/codecs/basic_input_range.hpp>
 #include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/concepts/sized_input_source.hpp>
+#include <mgs/codecs/detail/read_at_most.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
 #include <mgs/meta/concepts/copyable.hpp>
 #include <mgs/meta/concepts/default_constructible.hpp>
@@ -120,7 +121,7 @@ private:
                 // Associative containers' iterator-range constructors are not
                 // SFINAE-friendly...
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
-  static R create_impl(T& is, meta::priority_tag<0>)
+  static R create_impl(T is, meta::priority_tag<0>)
   {
     auto input_range = make_input_range(is);
     return R(input_range.begin(), input_range.end());
@@ -128,8 +129,8 @@ private:
 
 public:
   template <typename T>
-  static auto create(codecs::input_source<T>& is)
-      -> decltype(create_impl(is, meta::priority_tag<1>{}))
+  static auto create(codecs::input_source<T> is)
+      -> decltype(create_impl(std::move(is), meta::priority_tag<1>{}))
   {
     return create_impl(is, meta::priority_tag<1>{});
   }
@@ -139,22 +140,14 @@ template <typename C, std::size_t N>
 struct default_converter<std::array<C, N>>
 {
   template <typename T>
-  static std::array<C, N> create(codecs::input_source<T, C*>& is)
+  static std::array<C, N> create(codecs::input_source<T, C*> is)
   {
     std::array<C, N> ret;
 
-    auto nb_read = is.read(ret.begin(), N);
-    auto to_read = N - nb_read;
-    auto it = ret.begin() + nb_read;
-    while (to_read != 0)
-    {
-      nb_read = is.read(it, to_read);
-      if (nb_read == 0)
-        throw exceptions::unexpected_eof_error("output buffer is too large");
-      to_read -= nb_read;
-      it += nb_read;
-    }
-    if (is.read(ret.begin(), 1) != 0)
+    auto const res = detail::read_at_most(is, ret.data(), N);
+    if (res.second < N)
+      throw exceptions::unexpected_eof_error("output buffer is too large");
+    if (detail::read_at_most(is, ret.data(), 1).second != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");
     return ret;
   }

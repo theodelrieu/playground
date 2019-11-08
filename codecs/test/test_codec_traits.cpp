@@ -19,7 +19,7 @@ struct valid_input_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int>  read(char*, int);
 };
 
 struct valid_traits
@@ -28,10 +28,10 @@ struct valid_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static valid_input_source make_encoder(IS&);
+  static valid_input_source make_encoder(IS);
 
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 
 struct valid_traits_custom_default_types
@@ -40,10 +40,10 @@ struct valid_traits_custom_default_types
   using default_decoded_output = int;
 
   template <typename IS>
-  static valid_input_source make_encoder(IS&);
+  static valid_input_source make_encoder(IS);
 
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 
 struct no_encoded_output_traits
@@ -51,10 +51,10 @@ struct no_encoded_output_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static valid_input_source make_encoder(IS&);
+  static valid_input_source make_encoder(IS);
 
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 
 struct no_decoded_output_traits
@@ -62,10 +62,10 @@ struct no_decoded_output_traits
   using default_encoded_output = std::string;
 
   template <typename IS>
-  static valid_input_source make_encoder(IS&);
+  static valid_input_source make_encoder(IS);
 
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 
 struct no_make_encoder_traits
@@ -74,7 +74,7 @@ struct no_make_encoder_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 
 struct no_make_decoder_traits
@@ -83,7 +83,7 @@ struct no_make_decoder_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static valid_input_source make_encoder(IS&);
+  static valid_input_source make_encoder(IS);
 };
 
 struct invalid_return_traits
@@ -92,9 +92,9 @@ struct invalid_return_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  static int make_encoder(IS&);
+  static int make_encoder(IS);
   template <typename IS>
-  static valid_input_source make_decoder(IS&);
+  static valid_input_source make_decoder(IS);
 };
 }
 

@@ -30,7 +30,7 @@ struct valid_input_source
   valid_input_source& operator=(valid_input_source const&) = delete;
   valid_input_source& operator=(valid_input_source&&) = default;
 
-  int read(char*, int);
+  std::pair<char*, int> read(char*, int);
 };
 
 struct non_movable_input_source
@@ -40,12 +40,12 @@ struct non_movable_input_source
   non_movable_input_source(non_movable_input_source const&) = default;
   non_movable_input_source(non_movable_input_source &&) = delete;
 
-  int read(char*, int);
+  std::pair<char*, int>read(char*, int);
 };
 
 struct no_element_type_input_source
 {
-  int read(char*, int);
+  std::pair<char*, int> read(char*, int);
 };
 
 struct invalid_read_input_source
@@ -59,7 +59,7 @@ struct invalid_element_type_input_source
 {
   using element_type = double;
 
-  std::string read(char*, int);
+  std::pair<char*, int>  read(char*, int);
 };
 }
 

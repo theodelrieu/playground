@@ -7,8 +7,8 @@ namespace mgs
 namespace codecs
 {
 template <typename InputSource>
-basic_input_range<InputSource>::basic_input_range(InputSource& input_source)
-  : _input_source(std::addressof(input_source))
+basic_input_range<InputSource>::basic_input_range(InputSource input_source)
+  : _input_source(std::move(input_source))
 {
 }
 
@@ -25,9 +25,9 @@ auto basic_input_range<InputSource>::end() -> iterator
 }
 
 template <typename InputSource, typename SFINAE>
-basic_input_range<InputSource> make_input_range(InputSource& is)
+basic_input_range<InputSource> make_input_range(InputSource is)
 {
-  return basic_input_range<InputSource>{is};
+  return basic_input_range<InputSource>{std::move(is)};
 }
 }
 }

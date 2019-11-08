@@ -11,7 +11,7 @@ struct valid_sized_input_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int>  read(char*, int);
   int max_remaining_size() const;
 };
 
@@ -19,14 +19,14 @@ struct no_max_remaining_size_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int>  read(char*, int);
 };
 
 struct invalid_return_type_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int>  read(char*, int);
   char* max_remaining_size() const;
 };
 
@@ -34,7 +34,7 @@ struct non_const_source
 {
   using element_type = char;
 
-  int read(char*, int);
+  std::pair<char*, int> read(char*, int);
   int max_remaining_size();
 };
 }

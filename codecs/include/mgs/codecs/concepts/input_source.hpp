@@ -2,6 +2,7 @@
 
 #include <tuple>
 #include <type_traits>
+#include <utility>
 
 #include <mgs/codecs/detected/member_functions/read.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
@@ -30,7 +31,7 @@ private:
                                                std::add_lvalue_reference_t<T>,
                                                O,
                                                meta::ssize_t>,
-                              meta::ssize_t>::value;
+                              std::pair<O, meta::ssize_t>>::value;
 
 public:
   using requirements = std::tuple<meta::is_movable<T>,
@@ -49,10 +50,10 @@ public:
                   "T::element_type does not exist");
     static_assert(meta::is_default_constructible<element_type>::value,
                   "T::element_type does not model meta::default_constructible");
-    static_assert(
-        has_read_member_function,
-        "invalid or missing member function: "
-        "'meta::convertible_to<mgs::ssize_t> T::read(O, mgs::ssize_t)''");
+    static_assert(has_read_member_function,
+                  "invalid or missing member function: "
+                  "'meta::convertible_to<std::pair<O, mgs::ssize_t>> "
+                  "T::read(O, mgs::ssize_t)''");
     return 1;
   }
 };
