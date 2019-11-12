@@ -5,42 +5,17 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/base64url.hpp>
+#include <mgs/codecs/detail/read_at_most.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/ranges/concepts/sized_transformed_input_range.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
-#include <test_helpers/codec_helpers.hpp>
-#include <test_helpers/noop_iterator.hpp>
+#include "codec_helpers.hpp"
+#include "noop_iterator.hpp"
 
 using namespace std::string_literals;
 using namespace mgs;
 
 extern std::vector<std::string> testFilePaths;
-
-static_assert(
-    ranges::is_transformed_input_range<base64url::encoder<char*>>::value, "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::encoder<std::list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::encoder<std::forward_list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::encoder<std::istreambuf_iterator<char>>>::value,
-              "");
-
-static_assert(
-    ranges::is_transformed_input_range<base64url::decoder<char*>>::value, "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::decoder<std::list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::decoder<std::forward_list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base64url::decoder<std::istreambuf_iterator<char>>>::value,
-              "");
 
 TEST_CASE("base64url")
 {
@@ -71,17 +46,21 @@ TEST_CASE("base64url")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder = base64url::make_encoder(iterator(random_data), iterator());
+    auto is = codecs::make_input_source_view(iterator(random_data), iterator());
+    auto encoder = base64url::traits::make_encoder(is);
+    auto range = codecs::make_input_range(std::move(encoder));
     test_helpers::check_equal(
-        encoder.begin(), encoder.end(), iterator(b64_random_data), iterator());
+        range.begin(), range.end(), iterator(b64_random_data), iterator());
 
     random_data.seekg(0);
     b64_random_data.seekg(0);
 
-    auto decoder =
-        base64url::make_decoder(iterator(b64_random_data), iterator());
+    auto is2 =
+        codecs::make_input_source_view(iterator(b64_random_data), iterator());
+    auto decoder = base64url::traits::make_decoder(is2);
+    auto range2 = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
-        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
+        range.begin(), range.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
@@ -103,53 +82,40 @@ TEST_CASE("base64url")
     }
   }
 
-  SECTION("max_transformed_size")
+  SECTION("max_remaining_size")
   {
     SECTION("encoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base64url::encoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base64url::encoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base64url::make_encoder(decoded.begin(), decoded.end());
+        auto is = codecs::make_input_source_view(decoded);
+        auto enc = base64url::traits::make_encoder(is);
 
-        CHECK(enc.max_transformed_size() == 20);
+        CHECK(enc.max_remaining_size() == 20);
       }
 
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc = base64url::make_encoder(huge_str.begin(), huge_str.end());
+        auto is = codecs::make_input_source_view(huge_str);
+        auto enc = base64url::traits::make_encoder(is);
 
-        CHECK(enc.max_transformed_size() == 13336);
+        CHECK(enc.max_remaining_size() == 13336);
       }
     }
 
     SECTION("decoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base64url::decoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base64url::decoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const encoded = "WVdKalpHVT0="s;
 
-        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 9);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
-        CHECK(dec.max_transformed_size() == 3);
+        CHECK(dec.max_remaining_size() == 3);
       }
 
       SECTION("Huge string")
@@ -157,13 +123,14 @@ TEST_CASE("base64url")
         auto const encoded =
             base64url::encode<std::string>(std::string(10000, 0));
 
-        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 10002);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == 10002);
 
         // trigger last decode operation, padding is removed, exact size is
         // returned
-        dec.read(test_helpers::noop_iterator{}, 9984);
-        CHECK(dec.max_transformed_size() == 16);
+        detail::read_at_most(dec, test_helpers::noop_iterator{}, 9984);
+        CHECK(dec.max_remaining_size() == 18);
       }
 
       SECTION("Invalid size")
@@ -171,8 +138,9 @@ TEST_CASE("base64url")
         auto encoded = base64url::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base64url::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == -1);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }
@@ -258,56 +226,40 @@ TEST_CASE("base64url_nopad", "[base64url]")
     }
   }
 
-  SECTION("max_transformed_size")
+  SECTION("max_remaining_size")
   {
     SECTION("encoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base64url_nopad::encoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base64url_nopad::encoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc =
-            base64url_nopad::make_encoder(decoded.begin(), decoded.end());
+        auto is = codecs::make_input_source_view(decoded);
+        auto enc = base64url_nopad::traits::make_encoder(is);
 
-        CHECK(enc.max_transformed_size() == 18);
+        CHECK(enc.max_remaining_size() == 18);
       }
 
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc =
-            base64url_nopad::make_encoder(huge_str.begin(), huge_str.end());
+        auto is = codecs::make_input_source_view(huge_str);
+        auto enc = base64url_nopad::traits::make_encoder(is);
 
-        CHECK(enc.max_transformed_size() == 13334);
+        CHECK(enc.max_remaining_size() == 13334);
       }
     }
 
     SECTION("decoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base64url_nopad::decoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base64url_nopad::decoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const encoded = "WVdKalpHVT0="s;
 
-        auto dec =
-            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 9);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url_nopad::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
-        CHECK(dec.max_transformed_size() == 3);
+        CHECK(dec.max_remaining_size() == 3);
       }
 
       SECTION("Huge string")
@@ -315,14 +267,14 @@ TEST_CASE("base64url_nopad", "[base64url]")
         auto const encoded =
             base64url_nopad::encode<std::string>(std::string(10000, 0));
 
-        auto dec =
-            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 10000);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url_nopad::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == 10000);
 
         // trigger last decode operation, padding is removed, exact size is
         // returned
-        dec.read(test_helpers::noop_iterator{}, 9984);
-        CHECK(dec.max_transformed_size() == 16);
+        detail::read_at_most(dec, test_helpers::noop_iterator{}, 9984);
+        CHECK(dec.max_remaining_size() == 16);
       }
 
       SECTION("Invalid size")
@@ -331,9 +283,9 @@ TEST_CASE("base64url_nopad", "[base64url]")
             base64url_nopad::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec =
-            base64url_nopad::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == -1);
+        auto is = codecs::make_input_source_view(encoded);
+        auto dec = base64url_nopad::traits::make_decoder(is);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }
