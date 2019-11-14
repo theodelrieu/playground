@@ -75,6 +75,16 @@ auto make_input_source_view(meta::input_range<R>& rng)
   return {begin(rng), end(rng)};
 }
 
+template <typename R, typename = std::enable_if_t<!std::is_array<R>::value>>
+auto make_input_source_view(meta::input_range<R const> & rng)
+    -> input_source_view<meta::iterator_t<R const>, meta::sentinel_t<R const>>
+{
+  using std::begin;
+  using std::end;
+
+  return {begin(rng), end(rng)};
+}
+
 template <typename CharT,
           std::size_t N,
           std::enable_if_t<!detail::is_string_literal_char_type<CharT>::value,

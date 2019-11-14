@@ -8,7 +8,6 @@ use type alias traits in codec
 
 macros for detected mfun, static mfun etc
 move ssize_t to config
-convenience overloads in basic_codec_traits?
 
 rename input_source_view to iterator_input_source?
 input_source_view is a good name for basic_input_range

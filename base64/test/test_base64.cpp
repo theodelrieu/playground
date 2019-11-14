@@ -48,17 +48,17 @@ TEST_CASE("base64")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder = base64::traits::make_encoder(
-        codecs::make_input_source_view(iterator(random_data), iterator()));
-    auto enc_range = codecs::make_input_range(encoder);
+    auto encoder =
+        base64::traits::make_encoder(iterator(random_data), iterator());
+    auto enc_range = codecs::make_input_range(std::move(encoder));
     test_helpers::check_equal(
         enc_range.begin(), enc_range.end(), iterator(b64_random_data), iterator());
 
     random_data.seekg(0);
     b64_random_data.seekg(0);
 
-    auto decoder = base64::traits::make_decoder(
-        codecs::make_input_source_view(iterator(b64_random_data), iterator()));
+    auto decoder =
+        base64::traits::make_decoder(iterator(b64_random_data), iterator());
     auto dec_range = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
         dec_range.begin(), dec_range.end(), iterator{random_data}, iterator());
@@ -93,8 +93,7 @@ TEST_CASE("base64")
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base64::traits::make_encoder(
-            codecs::make_input_source_view(decoded));
+        auto enc = base64::traits::make_encoder(decoded);
 
         CHECK(enc.max_remaining_size() == 20);
       }
@@ -102,8 +101,7 @@ TEST_CASE("base64")
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc = base64::traits::make_encoder(
-            codecs::make_input_source_view(huge_str));
+        auto enc = base64::traits::make_encoder(huge_str);
 
         CHECK(enc.max_remaining_size() == 13336);
       }
@@ -115,8 +113,7 @@ TEST_CASE("base64")
       {
         auto const encoded = "WVdKalpHVT0="s;
 
-        auto dec = base64::traits::make_decoder(
-            codecs::make_input_source_view(encoded));
+        auto dec = base64::traits::make_decoder(encoded);
         CHECK(dec.max_remaining_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_remaining_size() == 3);
@@ -126,8 +123,7 @@ TEST_CASE("base64")
       {
         auto const encoded = base64::encode<std::string>(std::string(10000, '0'));
 
-        auto dec = base64::traits::make_decoder(
-            codecs::make_input_source_view(encoded));
+        auto dec = base64::traits::make_decoder(encoded);
         CHECK(dec.max_remaining_size() == 10002);
 
         detail::read_at_most(dec, test_helpers::noop_iterator{}, 9984);
@@ -139,8 +135,7 @@ TEST_CASE("base64")
         auto encoded = base64::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base64::traits::make_decoder(
-            codecs::make_input_source_view(encoded));
+        auto dec = base64::traits::make_decoder(encoded);
         CHECK(dec.max_remaining_size() == -1);
       }
     }
