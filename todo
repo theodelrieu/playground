@@ -5,7 +5,6 @@ adapt doc to code
 code:
 
 macros for detected mfun, static mfun etc
-move ssize_t to config
 
 rename input_source_view to iterator_input_source?
 input_source_view is a good name for basic_input_range

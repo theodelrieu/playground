@@ -12,7 +12,7 @@
 #include <mgs/meta/concepts/same_as.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/element_type.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -30,8 +30,8 @@ private:
       meta::is_convertible_to<meta::detected_t<detected::member_functions::read,
                                                std::add_lvalue_reference_t<T>,
                                                O,
-                                               meta::ssize_t>,
-                              std::pair<O, meta::ssize_t>>::value;
+                                               mgs::ssize_t>,
+                              std::pair<O, mgs::ssize_t>>::value;
 
 public:
   using requirements = std::tuple<meta::is_movable<T>,

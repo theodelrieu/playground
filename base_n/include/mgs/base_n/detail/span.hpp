@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -16,7 +16,7 @@ public:
   {
   }
 
-  auto& operator[](meta::ssize_t n)
+  auto& operator[](mgs::ssize_t n)
   {
     return _begin[n];
   }
@@ -41,12 +41,12 @@ public:
     return _end;
   }
 
-  meta::ssize_t size() const
+  mgs::ssize_t size() const
   {
     return _end - _begin;
   }
 
-  auto const& operator[](meta::ssize_t n) const
+  auto const& operator[](mgs::ssize_t n) const
   {
     return _begin[n];
   }

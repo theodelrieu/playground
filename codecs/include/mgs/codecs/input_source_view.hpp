@@ -13,7 +13,7 @@
 #include <mgs/meta/iter_value_t.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/sentinel_t.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -39,13 +39,13 @@ public:
   template <typename OutputIterator,
             typename = std::enable_if_t<
                 meta::is_output_iterator<OutputIterator, element_type>::value>>
-  std::pair<OutputIterator, meta::ssize_t> read(OutputIterator out,
-                                                meta::ssize_t n);
+  std::pair<OutputIterator, mgs::ssize_t> read(OutputIterator out,
+                                                mgs::ssize_t n);
 
   template <
       typename S2 = S,
       typename = std::enable_if_t<meta::is_sized_sentinel_for<S2, I>::value>>
-  meta::ssize_t max_remaining_size() const;
+  mgs::ssize_t max_remaining_size() const;
 
 private:
   I _current{};

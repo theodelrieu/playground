@@ -5,7 +5,7 @@
 
 #include <mgs/base_n/detail/bitshift_traits.hpp>
 #include <mgs/base_n/detail/math.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -20,7 +20,7 @@ struct output_encoder
   static void encode(
       std::bitset<BitshiftTraits::nb_decoded_bits> const& decoded_bits,
       OutputIterator out,
-      meta::ssize_t n)
+      mgs::ssize_t n)
   {
     constexpr std::bitset<BitshiftTraits::nb_decoded_bits> mask(
         pow<2, BitshiftTraits::nb_index_bits>() - 1);

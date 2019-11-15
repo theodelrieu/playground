@@ -8,7 +8,7 @@
 #include <mgs/codecs/detected/member_functions/max_remaining_size.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
 #include <mgs/meta/detected.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -22,7 +22,7 @@ private:
       meta::is_convertible_to<
           meta::detected_t<detected::member_functions::max_remaining_size,
                            std::add_lvalue_reference_t<std::add_const_t<T>>>,
-          meta::ssize_t>::value;
+          mgs::ssize_t>::value;
 
 public:
   using requirements = std::tuple<is_input_source<T>>;

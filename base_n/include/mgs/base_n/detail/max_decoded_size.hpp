@@ -5,7 +5,7 @@
 #include <mgs/base_n/detail/bitshift_traits.hpp>
 #include <mgs/base_n/detail/input_sanitizer.hpp>
 #include <mgs/base_n/padding_policy.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -15,7 +15,7 @@ template <typename EncodingTraits,
           base_n::padding_policy = EncodingTraits::padding_policy>
 struct max_decoded_size
 {
-  constexpr meta::ssize_t operator()(meta::ssize_t encoded_size) const
+  constexpr mgs::ssize_t operator()(mgs::ssize_t encoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 
@@ -33,7 +33,7 @@ template <typename EncodingTraits>
 struct max_decoded_size<EncodingTraits,
                         base_n::padding_policy::required>
 {
-  constexpr meta::ssize_t operator()(meta::ssize_t encoded_size) const
+  constexpr mgs::ssize_t operator()(mgs::ssize_t encoded_size) const
   {
     using BitshiftTraits = bitshift_traits<EncodingTraits>;
 

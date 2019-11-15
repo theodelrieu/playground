@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <type_traits>
 
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -24,28 +24,28 @@ public:
 
   void push_back(T c)
   {
-    assert(_index + 1 <= static_cast<meta::ssize_t>(N));
+    assert(_index + 1 <= static_cast<mgs::ssize_t>(N));
     _array[static_cast<std::size_t>(_index++)] = c;
   }
 
-  meta::ssize_t size() const
+  mgs::ssize_t size() const
   {
     return _index;
   }
 
-  void resize(meta::ssize_t n)
+  void resize(mgs::ssize_t n)
   {
-    assert(n >= 0 && n <= static_cast<meta::ssize_t>(N));
+    assert(n >= 0 && n <= static_cast<mgs::ssize_t>(N));
     _index = n;
   }
 
-  T& operator[](meta::ssize_t n)
+  T& operator[](mgs::ssize_t n)
   {
     assert(n >= 0 && n <= _index);
     return _array[static_cast<std::size_t>(n)];
   }
 
-  T const& operator[](meta::ssize_t n) const
+  T const& operator[](mgs::ssize_t n) const
   {
     assert(n <= _index);
     return _array[static_cast<std::size_t>(n)];
@@ -83,7 +83,7 @@ public:
 
 private:
   std::array<T, N> _array;
-  meta::ssize_t _index{0};
+  mgs::ssize_t _index{0};
 };
 }
 }

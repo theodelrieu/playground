@@ -6,7 +6,7 @@
 #include <mgs/base_n/detail/max_decoded_size.hpp>
 #include <mgs/base_n/padding_policy.hpp>
 #include <mgs/codecs/basic_codec.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -25,12 +25,12 @@ public:
   using base::encode;
   using typename base::traits;
 
-  static constexpr meta::ssize_t encoded_size(meta::ssize_t decoded_size)
+  static constexpr mgs::ssize_t encoded_size(mgs::ssize_t decoded_size)
   {
     return detail::encoded_size<EncodingTraits>{}(decoded_size);
   }
 
-  static constexpr meta::ssize_t max_decoded_size(meta::ssize_t encoded_size)
+  static constexpr mgs::ssize_t max_decoded_size(mgs::ssize_t encoded_size)
   {
     return detail::max_decoded_size<DecodingTraits>{}(encoded_size);
   }

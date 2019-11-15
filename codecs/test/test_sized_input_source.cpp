@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 #include <mgs/codecs/concepts/sized_input_source.hpp>
 
 using namespace mgs::codecs;

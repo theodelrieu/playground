@@ -4,14 +4,14 @@
 #include <cstddef>
 
 #include <mgs/base_n/detail/bitshift_traits.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
 namespace detail
 {
 template <typename BitshiftTraits, typename RandomAccessIterator>
-auto decoded_to_bitset(RandomAccessIterator it, meta::ssize_t n)
+auto decoded_to_bitset(RandomAccessIterator it, mgs::ssize_t n)
 {
   std::bitset<BitshiftTraits::nb_decoded_bits> input_bits;
 
@@ -25,7 +25,7 @@ auto decoded_to_bitset(RandomAccessIterator it, meta::ssize_t n)
 }
 
 template <typename EncodingTraits, typename RandomAccessIterator>
-auto indices_to_bitset(RandomAccessIterator it, meta::ssize_t n)
+auto indices_to_bitset(RandomAccessIterator it, mgs::ssize_t n)
 {
   using BitshiftTraits = bitshift_traits<EncodingTraits>;
   std::bitset<BitshiftTraits::nb_decoded_bits> input_bits;

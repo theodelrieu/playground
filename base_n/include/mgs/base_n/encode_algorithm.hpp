@@ -25,7 +25,7 @@
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/sized_sentinel_for.hpp>
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -48,7 +48,7 @@ private:
   static_assert(BitshiftTraits::nb_encoded_bytes < 256,
                 "nb_encoded_bytes must be lower than 256");
 
-  // FIXME meta::ssize_t?
+  // FIXME mgs::ssize_t?
   static constexpr std::size_t nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_decoded_bytes;
@@ -64,22 +64,22 @@ public:
   }
 
   template <typename T = IS, typename = codecs::sized_input_source<T>>
-  meta::ssize_t max_remaining_size() const
+  mgs::ssize_t max_remaining_size() const
   {
     return (_buffer.size() - _index) +
            detail::encoded_size<Traits>{}(_input_source.max_remaining_size());
   }
 
   template <typename O>
-  std::pair<O, meta::ssize_t> read(meta::output_iterator<O, element_type> o,
-                                   meta::ssize_t n)
+  std::pair<O, mgs::ssize_t> read(meta::output_iterator<O, element_type> o,
+                                   mgs::ssize_t n)
   {
     if (_buffer.size() == _index)
     {
       read_input_source();
       _index = 0;
     }
-    auto const to_read = std::min<meta::ssize_t>(_buffer.size() - _index, n);
+    auto const to_read = std::min<mgs::ssize_t>(_buffer.size() - _index, n);
     o = std::copy_n(_buffer.data() + _index, to_read, o);
     _index += to_read;
     return std::make_pair(std::move(o), to_read);
@@ -140,7 +140,7 @@ private:
 
   IS _input_source;
   buffer_type _buffer;
-  meta::ssize_t _index{};
+  mgs::ssize_t _index{};
 };
 
 template <typename Traits, typename IS>

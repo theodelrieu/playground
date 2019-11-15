@@ -2,14 +2,14 @@
 
 #include <utility>
 
-#include <mgs/meta/ssize_t.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
 namespace detail
 {
 template <typename IS, typename O>
-std::pair<O, meta::ssize_t> read_at_most(IS& is, O o, meta::ssize_t n)
+std::pair<O, mgs::ssize_t> read_at_most(IS& is, O o, mgs::ssize_t n)
 {
   auto total_read = 0;
   while (n != 0)

@@ -68,7 +68,7 @@ ResizableOutputRange fill_resizable_output_range(T& is, meta::priority_tag<0>)
 
   ResizableOutputRange ret(block_size, 0);
 
-  meta::ssize_t total_read = 0;
+  mgs::ssize_t total_read = 0;
   for (auto nb_read = is.read(begin(ret) + total_read, block_size);
        nb_read != 0;
        nb_read = is.read(begin(ret) + total_read, block_size))
