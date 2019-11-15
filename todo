@@ -4,8 +4,6 @@ adapt doc to code
 
 code:
 
-use type alias traits in codec
-
 macros for detected mfun, static mfun etc
 move ssize_t to config
 
