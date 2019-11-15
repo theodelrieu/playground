@@ -10,7 +10,7 @@
 #include <mgs/codecs/detected/static_member_functions/make_encoder.hpp>
 #include <mgs/codecs/detected/types/default_decoded_output.hpp>
 #include <mgs/codecs/detected/types/default_encoded_output.hpp>
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>

@@ -21,7 +21,7 @@
 #include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/concepts/sized_input_source.hpp>
 #include <mgs/codecs/detail/read_at_most.hpp>
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/sized_sentinel_for.hpp>

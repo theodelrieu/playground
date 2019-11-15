@@ -8,7 +8,7 @@
 #include <mgs/base_n/encode_algorithm.hpp>
 #include <mgs/codecs/concepts/byte_type.hpp>
 #include <mgs/codecs/concepts/input_source.hpp>
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 #include <mgs/meta/detected.hpp>
 #include <mgs/meta/detected/types/element_type.hpp>
 #include <mgs/meta/iter_value_t.hpp>
@@ -35,9 +35,9 @@ private:
   static auto make_encoder_impl(meta::priority_tag<0>, Args&&... args)
       -> base_n::encode_algorithm<
           EncodingTraits,
-          decltype(codecs::make_input_source_view(std::forward<Args>(args)...))>
+          decltype(codecs::make_iterator_sentinel_source(std::forward<Args>(args)...))>
   {
-    auto is = codecs::make_input_source_view(std::forward<Args>(args)...);
+    auto is = codecs::make_iterator_sentinel_source(std::forward<Args>(args)...);
     return base_n::encode_algorithm<EncodingTraits, decltype(is)>(is);
   }
 
@@ -54,9 +54,9 @@ private:
   static auto make_decoder_impl(meta::priority_tag<0>, Args&&... args)
       -> base_n::decode_algorithm<
           DecodingTraits,
-          decltype(codecs::make_input_source_view(std::forward<Args>(args)...))>
+          decltype(codecs::make_iterator_sentinel_source(std::forward<Args>(args)...))>
   {
-    auto is = codecs::make_input_source_view(std::forward<Args>(args)...);
+    auto is = codecs::make_iterator_sentinel_source(std::forward<Args>(args)...);
     return base_n::decode_algorithm<DecodingTraits, decltype(is)>(is);
   }
 

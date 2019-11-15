@@ -8,7 +8,7 @@
 #include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_decoder.hpp>
 #include <mgs/codecs/detected/static_member_functions/make_encoder.hpp>
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/range.hpp>
@@ -54,11 +54,11 @@ private:
   static mgs::codecs::codec_output<
       T,
       encoder<
-          input_source_view<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
+          iterator_sentinel_source<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
   encode_impl(U& it, meta::priority_tag<1>)
   {
     return output_traits<T>::create(
-        traits::make_encoder(make_input_source_view(it)));
+        traits::make_encoder(make_iterator_sentinel_source(it)));
   }
 
   template <typename T = default_encoded_output,
@@ -66,12 +66,12 @@ private:
             typename Range = mgs::meta::input_range<U>>
   static mgs::codecs::codec_output<
       T,
-      encoder<input_source_view<meta::iterator_t<Range const>,
+      encoder<iterator_sentinel_source<meta::iterator_t<Range const>,
                                 meta::sentinel_t<Range const>>>>
   encode_impl(U const& it, meta::priority_tag<0>)
   {
     return output_traits<T>::create(
-        traits::make_encoder(make_input_source_view(it)));
+        traits::make_encoder(make_iterator_sentinel_source(it)));
   }
 
   template <typename T = default_decoded_output, typename IS>
@@ -87,11 +87,11 @@ private:
   static mgs::codecs::codec_output<
       T,
       decoder<
-          input_source_view<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
+          iterator_sentinel_source<meta::iterator_t<Range>, meta::sentinel_t<Range>>>>
   decode_impl(U& it, meta::priority_tag<1>)
   {
     return output_traits<T>::create(
-        traits::make_decoder(make_input_source_view(it)));
+        traits::make_decoder(make_iterator_sentinel_source(it)));
   }
 
   template <typename T = default_decoded_output,
@@ -99,12 +99,12 @@ private:
             typename Range = mgs::meta::input_range<U>>
   static mgs::codecs::codec_output<
       T,
-      decoder<input_source_view<meta::iterator_t<Range const>,
+      decoder<iterator_sentinel_source<meta::iterator_t<Range const>,
                                 meta::sentinel_t<Range const>>>>
   decode_impl(U const& it, meta::priority_tag<0>)
   {
     return output_traits<T>::create(
-        traits::make_decoder(make_input_source_view(it)));
+        traits::make_decoder(make_iterator_sentinel_source(it)));
   }
 
   public:
@@ -117,11 +117,11 @@ private:
     }
 
     template <typename T = default_decoded_output, typename I, typename S>
-    static mgs::codecs::codec_output<T, encoder<input_source_view<I, S>>>
+    static mgs::codecs::codec_output<T, encoder<iterator_sentinel_source<I, S>>>
     encode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
     {
       return output_traits<T>::create(traits::make_encoder(
-          make_input_source_view(std::move(it), std::move(sent))));
+          make_iterator_sentinel_source(std::move(it), std::move(sent))));
     }
 
     template <typename T = default_decoded_output, typename U>
@@ -133,11 +133,11 @@ private:
     }
 
     template <typename T = default_decoded_output, typename I, typename S>
-    static mgs::codecs::codec_output<T, decoder<input_source_view<I, S>>>
+    static mgs::codecs::codec_output<T, decoder<iterator_sentinel_source<I, S>>>
     decode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
     {
       return output_traits<T>::create(traits::make_decoder(
-          make_input_source_view(std::move(it), std::move(sent))));
+          make_iterator_sentinel_source(std::move(it), std::move(sent))));
     }
 };
 }

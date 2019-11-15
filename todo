@@ -4,5 +4,5 @@ adapt doc to code
 
 code:
 
-rename input_source_view to iterator_input_source?
-input_source_view is a good name for basic_input_range
+test cmake install/consume
+need out of sources recipes? would duplicate stuff ?

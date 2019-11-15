@@ -20,7 +20,7 @@ namespace mgs
 namespace codecs
 {
 template <typename I, typename S = I>
-class input_source_view
+class iterator_sentinel_source
 {
   static_assert(meta::is_input_iterator<I>::value,
                 "I does not model meta::input_iterator");
@@ -30,8 +30,8 @@ class input_source_view
 public:
   using element_type = meta::iter_value_t<I>;
 
-  input_source_view() = default;
-  input_source_view(I begin, S end);
+  iterator_sentinel_source() = default;
+  iterator_sentinel_source(I begin, S end);
 
   I begin() const;
   S end() const;
@@ -53,9 +53,9 @@ private:
 };
 
 template <typename I, typename S>
-auto make_input_source_view(meta::input_iterator<I> begin,
+auto make_iterator_sentinel_source(meta::input_iterator<I> begin,
                             meta::sentinel_for<S, I> end)
-    -> input_source_view<I, S>
+    -> iterator_sentinel_source<I, S>
 {
   return {std::move(begin), std::move(end)};
 }
@@ -66,8 +66,8 @@ auto make_input_source_view(meta::input_iterator<I> begin,
 // worst conversion for the second.
 
 template <typename R, typename = std::enable_if_t<!std::is_array<R>::value>>
-auto make_input_source_view(meta::input_range<R>& rng)
-    -> input_source_view<meta::iterator_t<R>, meta::sentinel_t<R>>
+auto make_iterator_sentinel_source(meta::input_range<R>& rng)
+    -> iterator_sentinel_source<meta::iterator_t<R>, meta::sentinel_t<R>>
 {
   using std::begin;
   using std::end;
@@ -76,8 +76,8 @@ auto make_input_source_view(meta::input_range<R>& rng)
 }
 
 template <typename R, typename = std::enable_if_t<!std::is_array<R>::value>>
-auto make_input_source_view(meta::input_range<R const> & rng)
-    -> input_source_view<meta::iterator_t<R const>, meta::sentinel_t<R const>>
+auto make_iterator_sentinel_source(meta::input_range<R const> & rng)
+    -> iterator_sentinel_source<meta::iterator_t<R const>, meta::sentinel_t<R const>>
 {
   using std::begin;
   using std::end;
@@ -89,8 +89,8 @@ template <typename CharT,
           std::size_t N,
           std::enable_if_t<!detail::is_string_literal_char_type<CharT>::value,
                            int> = 0>
-auto make_input_source_view(CharT const (&tab)[N])
-    -> input_source_view<CharT const*>
+auto make_iterator_sentinel_source(CharT const (&tab)[N])
+    -> iterator_sentinel_source<CharT const*>
 {
   auto const b = std::begin(tab);
   auto const e = std::end(tab);
@@ -102,8 +102,8 @@ template <typename CharT,
           std::size_t N,
           std::enable_if_t<detail::is_string_literal_char_type<CharT>::value,
                            int> = 0>
-auto make_input_source_view(CharT const (&tab)[N])
-    -> input_source_view<CharT const*>
+auto make_iterator_sentinel_source(CharT const (&tab)[N])
+    -> iterator_sentinel_source<CharT const*>
 {
   auto const b = std::begin(tab);
   auto const e = std::end(tab);
@@ -113,4 +113,4 @@ auto make_input_source_view(CharT const (&tab)[N])
 }
 }
 
-#include <mgs/codecs/detail/input_source_view_impl.hpp>
+#include <mgs/codecs/detail/iterator_sentinel_source_impl.hpp>

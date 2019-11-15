@@ -10,7 +10,7 @@
 #include <vector>
 
 #include <mgs/codecs/basic_input_range.hpp>
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 
 #include <catch2/catch.hpp>
 
@@ -75,7 +75,7 @@ void test_encode(I i, S s, Range&& expected)
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_encoder(I i, S s, Range&& expected)
 {
-  auto is = mgs::codecs::make_input_source_view(i, s);
+  auto is = mgs::codecs::make_iterator_sentinel_source(i, s);
   auto encoder = Codec::traits::make_encoder(is);
   check_equal(mgs::codecs::make_input_range(std::move(encoder)), expected);
 }
@@ -83,7 +83,7 @@ void test_make_encoder(I i, S s, Range&& expected)
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_encoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto is = mgs::codecs::make_input_source_view(i1, s1);
+  auto is = mgs::codecs::make_iterator_sentinel_source(i1, s1);
   auto encoder = Codec::traits::make_encoder(is);
   auto range = mgs::codecs::make_input_range(std::move(encoder));
   CHECK(std::equal(range.begin(), range.end(), i2, s2));
@@ -113,7 +113,7 @@ void test_decode(I i, S s, Range&& expected)
 template <typename Codec, typename I1, typename S1, typename I2, typename S2>
 void test_make_decoder(I1 i1, S1 s1, I2 i2, S2 s2)
 {
-  auto is = mgs::codecs::make_input_source_view(i1, s1);
+  auto is = mgs::codecs::make_iterator_sentinel_source(i1, s1);
   auto decoder = Codec::traits::make_decoder(is);
   auto range = mgs::codecs::make_input_range(std::move(decoder));
 
@@ -134,11 +134,11 @@ void test_back_and_forth(Range1&& decoded_input, Range2&& encoded_input)
 template <typename Codec, typename Range1, typename Range2>
 void test_encode_twice(Range1&& decoded_input, Range2&& encoded_input)
 {
-  auto is1 = mgs::codecs::make_input_source_view(decoded_input);
+  auto is1 = mgs::codecs::make_iterator_sentinel_source(decoded_input);
   auto encoder = Codec::traits::make_encoder(is1);
   auto const encoded_twice = Codec::encode(std::move(encoder));
   check_equal(encoded_twice, encoded_input);
-  auto is2 = mgs::codecs::make_input_source_view(encoded_twice);
+  auto is2 = mgs::codecs::make_iterator_sentinel_source(encoded_twice);
   auto decoder = Codec::traits::make_decoder(is2);
   auto const decoded = Codec::decode(std::move(decoder));
   check_equal(decoded, decoded_input);
@@ -147,7 +147,7 @@ void test_encode_twice(Range1&& decoded_input, Range2&& encoded_input)
 template <typename Codec, typename I, typename S, typename Range>
 void test_make_decoder(I i, S s, Range&& expected)
 {
-  auto is = mgs::codecs::make_input_source_view(i, s);
+  auto is = mgs::codecs::make_iterator_sentinel_source(i, s);
   auto decoder = Codec::traits::make_decoder(is);
   check_equal(mgs::codecs::make_input_range(std::move(decoder)), expected);
 }

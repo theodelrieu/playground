@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mgs/codecs/input_source_view.hpp>
+#include <mgs/codecs/iterator_sentinel_source.hpp>
 #include <mgs/meta/concepts/input_iterator.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/detected.hpp>
@@ -11,7 +11,7 @@ namespace mgs
 {
 namespace detail
 {
-// hard to SFINAE with a class template, ensure input_source_view's requirements
+// hard to SFINAE with a class template, ensure iterator_sentinel_source's requirements
 // are fulfilled before evaluation
 template <typename T,
           typename D = typename T::default_decoded_output,
@@ -19,7 +19,7 @@ template <typename T,
           typename S = meta::detected_t<meta::sentinel_t, D>,
           typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
                                       meta::is_sentinel_for<S, I>::value>>
-using input_source_1 = codecs::input_source_view<I, S>;
+using input_source_1 = codecs::iterator_sentinel_source<I, S>;
 
 template <typename T,
           typename E = typename T::default_encoded_output,
@@ -27,6 +27,6 @@ template <typename T,
           typename S = meta::detected_t<meta::sentinel_t, E>,
           typename = std::enable_if_t<meta::is_input_iterator<I>::value &&
                                       meta::is_sentinel_for<S, I>::value>>
-using input_source_2 = codecs::input_source_view<I, S>;
+using input_source_2 = codecs::iterator_sentinel_source<I, S>;
 }
 }

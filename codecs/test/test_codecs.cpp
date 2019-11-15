@@ -59,7 +59,7 @@ struct valid_codec_traits
   using default_decoded_output = std::string;
 
   template <typename IS>
-  // only works thanks to input_source_view being copyable
+  // only works thanks to iterator_sentinel_source being copyable
   static auto make_encoder(IS is)
   {
     return std::move(is);
@@ -108,7 +108,7 @@ TEST_CASE("codecs")
     std::array<char, 4> const input{'t', 'e', 's', 't'};
 
     using Encoder = decltype(valid_codec::traits::make_encoder(
-        std::declval<input_source_view<decltype(input.begin())>&>()));
+        std::declval<iterator_sentinel_source<decltype(input.begin())>&>()));
 
     static_assert(!is_codec_output<invalid_type, Encoder>::value, "");
     static_assert(is_codec_output<valid_type, Encoder>::value, "");
