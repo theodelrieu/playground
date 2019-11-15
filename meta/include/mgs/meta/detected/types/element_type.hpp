@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mgs/meta/detected/macros.hpp>
+
 namespace mgs
 {
 namespace meta
@@ -8,8 +10,7 @@ namespace detected
 {
 namespace types
 {
-template <typename T>
-using element_type = typename T::element_type;
+MGS_META_DETECTED_TYPE(element_type);
 }
 }
 }

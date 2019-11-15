@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mgs/meta/detected/macros.hpp>
+
 namespace mgs
 {
 namespace meta
@@ -8,8 +10,7 @@ namespace detected
 {
 namespace types
 {
-template <typename T>
-using iterator_category = typename T::iterator_category;
+MGS_META_DETECTED_TYPE(iterator_category);
 }
 }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <type_traits>
+#include <mgs/meta/detected/macros.hpp>
 
 namespace mgs
 {
@@ -10,9 +10,7 @@ namespace detected
 {
 namespace member_functions
 {
-template <typename T, typename... Args>
-using max_remaining_size =
-    decltype(std::declval<T>().max_remaining_size(std::declval<Args>()...));
+MGS_META_DETECTED_MEMBER_FUNCTION(max_remaining_size);
 }
 }
 }

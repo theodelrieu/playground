@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mgs/meta/detected/macros.hpp>
+
 namespace mgs
 {
 namespace meta
@@ -8,8 +10,7 @@ namespace detected
 {
 namespace types
 {
-template <typename T>
-using difference_type = typename T::difference_type;
+MGS_META_DETECTED_TYPE(difference_type);
 }
 }
 }

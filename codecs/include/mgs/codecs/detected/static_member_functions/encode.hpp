@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility>
+#include <mgs/meta/detected/macros.hpp>
 
 namespace mgs
 {
@@ -10,8 +10,7 @@ namespace detected
 {
 namespace static_member_functions
 {
-template <typename T, typename... Args>
-using encode = decltype(T::encode(std::declval<Args>()...));
+MGS_META_DETECTED_STATIC_MEMBER_FUNCTION(encode);
 
 template <typename T, typename Ret, typename... Args>
 using encode_tpl = decltype(T::template encode<Ret>(std::declval<Args>()...));

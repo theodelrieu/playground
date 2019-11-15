@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility>
+#include <mgs/meta/detected/macros.hpp>
 
 namespace mgs
 {
@@ -10,8 +10,7 @@ namespace detected
 {
 namespace member_functions
 {
-template <typename T, typename... Args>
-using resize = decltype(std::declval<T>().resize(std::declval<Args>()...));
+MGS_META_DETECTED_MEMBER_FUNCTION(resize);
 }
 }
 }
