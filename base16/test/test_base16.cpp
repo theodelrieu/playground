@@ -8,27 +8,14 @@
 #include <mgs/base16.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/ranges/concepts/transformed_input_range.hpp>
 
-#include <test_helpers/codec_helpers.hpp>
-#include <test_helpers/noop_iterator.hpp>
+#include "codec_helpers.hpp"
+#include "noop_iterator.hpp"
 
 using namespace std::string_literals;
 using namespace mgs;
 
 extern std::vector<std::string> testFilePaths;
-
-static_assert(ranges::is_transformed_input_range<base16::encoder<char*>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base16::encoder<std::list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base16::encoder<std::forward_list<char>::iterator>>::value,
-              "");
-static_assert(ranges::is_transformed_input_range<
-                  base16::encoder<std::istreambuf_iterator<char>>>::value,
-              "");
 
 TEST_CASE("base16")
 {
@@ -67,15 +54,20 @@ TEST_CASE("base16")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder = base16::make_encoder(iterator(random_data), iterator());
-    CHECK(std::equal(encoder.begin(), encoder.end(), iterator(b16_random_data), iterator()));
+    auto encoder =
+        base16::traits::make_encoder(iterator(random_data), iterator());
+    auto range = codecs::make_input_range(std::move(encoder));
+    test_helpers::check_equal(
+        range.begin(), range.end(), iterator(b16_random_data), iterator());
 
     random_data.seekg(0);
     b16_random_data.seekg(0);
 
-    auto decoder = base16::make_decoder(iterator(b16_random_data), iterator());
+    auto decoder = base16::traits::make_decoder(iterator(b16_random_data), iterator());
+    auto range2 = codecs::make_input_range(std::move(decoder));
+
     test_helpers::check_equal(
-        decoder.begin(), decoder.end(), iterator{random_data}, iterator());
+        range2.begin(), range2.end(), iterator{random_data}, iterator());
   }
 
   SECTION("invalid input")
@@ -96,61 +88,45 @@ TEST_CASE("base16")
     }
   }
 
-  SECTION("max_transformed_size")
+  SECTION("max_remaining_size")
   {
     SECTION("encoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base16::encoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base16::encoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base16::make_encoder(decoded.begin(), decoded.end());
+        auto enc = base16::traits::make_encoder(decoded.begin(), decoded.end());
 
-        CHECK(enc.max_transformed_size() == 26);
+        CHECK(enc.max_remaining_size() == 26);
       }
 
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc = base16::make_encoder(huge_str.begin(), huge_str.end());
+        auto enc = base16::traits::make_encoder(huge_str.begin(), huge_str.end());
 
-        CHECK(enc.max_transformed_size() == 20000);
+        CHECK(enc.max_remaining_size() == 20000);
       }
     }
 
     SECTION("decoder")
     {
-      static_assert(ranges::is_sized_transformed_input_range<
-                        base16::decoder<char const*>>::value,
-                    "");
-      static_assert(
-          !ranges::is_sized_transformed_input_range<
-              base16::decoder<std::list<char>::const_iterator>>::value,
-          "");
-
       SECTION("Small string")
       {
         auto const encoded = "666F6F62"s;
 
-        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 4);
+        auto dec = base16::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == 4);
         dec.read(test_helpers::noop_iterator{}, 2);
-        CHECK(dec.max_transformed_size() == 2);
+        CHECK(dec.max_remaining_size() == 2);
       }
 
       SECTION("Huge string")
       {
         auto const encoded = base16::encode<std::string>(std::string(10000, 0));
 
-        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == 10000);
+        auto dec = base16::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == 10000);
       }
 
       SECTION("Invalid size")
@@ -158,8 +134,8 @@ TEST_CASE("base16")
         auto encoded = base16::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base16::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_transformed_size() == -1);
+        auto dec = base16::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }
