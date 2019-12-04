@@ -5,7 +5,7 @@ class ConanMgsBase64(ConanFile):
     version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt", "test/*"
-    settings = "os", "arch", "build_type", "compiler", "cppstd"
+    settings = "os", "arch", "build_type", "compiler"
 
     # only useful for local dev (tests)
     def build_requirements(self):

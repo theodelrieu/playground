@@ -128,12 +128,20 @@ TEST_CASE("base32")
         CHECK(dec.max_remaining_size() == 10000);
       }
 
-      SECTION("Invalid size")
+      SECTION("Rounded size")
       {
         auto encoded = base32::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
         auto dec = base32::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == 9995);
+      }
+
+      SECTION("Invalid size")
+      {
+        std::string invalid(4, 0);
+
+        auto dec = base32::traits::make_decoder(invalid.begin(), invalid.end());
         CHECK(dec.max_remaining_size() == -1);
       }
     }

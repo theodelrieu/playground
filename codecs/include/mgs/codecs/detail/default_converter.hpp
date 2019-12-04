@@ -46,15 +46,15 @@ ResizableOutputRange fill_resizable_output_range(
 
   // TODO refactor
   auto it = begin(ret);
-  auto total_read = is.read(it, max_size);
-  ret.resize(static_cast<size_type>(total_read));
+  auto total_read = size_type{0};
 
-  for (auto nb_read = is.read(it + total_read, max_size); nb_read != 0;
-       nb_read = is.read(it + total_read, max_size))
+  for (auto res = is.read(it, max_size); res.second != 0;
+       res = is.read(it, max_size))
   {
-    total_read += nb_read;
+    it = std::move(res.first);
+    total_read += res.second;
   }
-  ret.resize(static_cast<size_type>(total_read));
+  ret.resize(total_read);
   return ret;
 }
 
@@ -68,15 +68,16 @@ ResizableOutputRange fill_resizable_output_range(T& is, meta::priority_tag<0>)
 
   ResizableOutputRange ret(block_size, 0);
 
-  mgs::ssize_t total_read = 0;
-  for (auto nb_read = is.read(begin(ret) + total_read, block_size);
-       nb_read != 0;
-       nb_read = is.read(begin(ret) + total_read, block_size))
+  auto total_read = size_type{0};
+  auto it = begin(ret);
+  for (auto res = is.read(it, block_size); res.second != 0;
+       res = is.read(it, block_size))
   {
-    total_read += nb_read;
-    ret.resize(static_cast<size_type>(total_read + block_size));
+    it = std::move(res.first);
+    total_read += res.second;
+    ret.resize(total_read + block_size);
   }
-  ret.resize(static_cast<size_type>(total_read));
+  ret.resize(total_read);
   return ret;
 }
 

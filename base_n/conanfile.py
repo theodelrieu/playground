@@ -5,7 +5,7 @@ class ConanMgsBinaryToText(ConanFile):
     version = "0.1.0"
     generators = "cmake"
     exports_sources = "include/*", "CMakeLists.txt", "test/*"
-    settings = "os", "arch", "build_type", "compiler", "cppstd"
+    settings = "os", "arch", "build_type", "compiler"
 
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s" % self.version)

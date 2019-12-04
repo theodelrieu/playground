@@ -6,11 +6,10 @@ from conans.client.command import main as main_conan
 PACKAGES = [
     "cmake",
     "config",
-    "test_helpers",
     "meta",
     "exceptions",
-    "ranges",
     "codecs",
+    "config",
     "base_n",
     "base16",
     "base32",
@@ -30,8 +29,8 @@ def run_conan(*args):
 
 def main():
     for pkg in PACKAGES:
-        run_conan("create", pkg, "mgs/testing", "--build", "mgs_%s" % pkg, "-s", "cppstd=14")
-    run_conan("create", "all", "mgs/testing", "--build", "mgs", "-s", "cppstd=14")
+        run_conan("create", pkg, "--build", "mgs_%s" % pkg, "-s", "compiler.cppstd=14")
+    run_conan("create", "all", "--build", "mgs", "-s", "compiler.cppstd=14")
 
 
 if __name__ == "__main__":

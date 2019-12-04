@@ -58,10 +58,18 @@ public:
   template <typename T = IS, typename = codecs::sized_input_source<T>>
   mgs::ssize_t max_remaining_size() const
   {
-    auto const s =
-        detail::max_decoded_size<Traits>{}(_input_source.max_remaining_size());
-    if (s == -1)
+    auto const max_remaining = _input_source.max_remaining_size();
+    if (max_remaining == -1 ||
+        (max_remaining > 0 && max_remaining < BitshiftTraits::nb_encoded_bytes))
+    {
       return -1;
+    }
+    // we must round, since this is a maximum, and not the exact size
+    // not doing so would return -1 in some cases.
+    // e.g. when decoding a decoder
+    auto const rounded =
+        max_remaining - (max_remaining % BitshiftTraits::nb_encoded_bytes);
+    auto const s = detail::max_decoded_size<Traits>{}(rounded);
     return (_buffer.size() - _index) + s;
   }
 

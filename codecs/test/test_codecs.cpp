@@ -17,6 +17,7 @@
 #include <mgs/meta/static_asserts.hpp>
 
 #include "codec_helpers.hpp"
+#include <mgs/meta/concepts/output_range.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;

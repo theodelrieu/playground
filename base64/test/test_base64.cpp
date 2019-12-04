@@ -5,7 +5,9 @@
 #include <vector>
 
 #include <catch2/catch.hpp>
+#include <mgs/meta/concepts/output_range.hpp>
 
+#include <mgs/meta/static_asserts.hpp>
 #include <mgs/base64.hpp>
 #include <mgs/codecs/detail/read_at_most.hpp>
 #include <mgs/exceptions/invalid_input_error.hpp>
