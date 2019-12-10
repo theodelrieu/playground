@@ -132,13 +132,21 @@ TEST_CASE("base64")
         CHECK(dec.max_remaining_size() == 18);
       }
 
-      SECTION("Invalid size")
+      SECTION("Rounded size")
       {
         auto encoded = base64::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base64::traits::make_decoder(encoded);
-        CHECK(dec.max_remaining_size() == -1);
+        auto dec =
+            base64::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == 9999);
+      }
+
+      SECTION("Invalid size")
+      {
+        std::string invalid(3, 0);
+        auto dec = base64::traits::make_decoder(invalid);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

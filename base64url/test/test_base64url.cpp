@@ -143,7 +143,7 @@ TEST_CASE("base64url")
       {
         std::string invalid(3, 0);
         auto dec = base64url::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }
@@ -280,7 +280,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
       {
         std::string invalid(1, 0);
         auto dec = base64url_nopad::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

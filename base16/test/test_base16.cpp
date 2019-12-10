@@ -129,13 +129,21 @@ TEST_CASE("base16")
         CHECK(dec.max_remaining_size() == 10000);
       }
 
-      SECTION("Invalid size")
+      SECTION("Rounded size")
       {
         auto encoded = base16::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
         auto dec = base16::traits::make_decoder(encoded.begin(), encoded.end());
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 9999);
+      }
+
+      SECTION("Invalid size")
+      {
+        std::string invalid(1, 0);
+
+        auto dec = base16::traits::make_decoder(invalid);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

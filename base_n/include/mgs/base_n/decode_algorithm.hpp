@@ -59,11 +59,6 @@ public:
   mgs::ssize_t max_remaining_size() const
   {
     auto const max_remaining = _input_source.max_remaining_size();
-    if (max_remaining == -1 ||
-        (max_remaining > 0 && max_remaining < BitshiftTraits::nb_encoded_bytes))
-    {
-      return -1;
-    }
     auto s = detail::max_decoded_size<Traits>{}(max_remaining);
     if (s == -1)
     {
