@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -128,12 +129,20 @@ TEST_CASE("base64url")
         CHECK(dec.max_remaining_size() == 18);
       }
 
-      SECTION("Invalid size")
+      SECTION("Rounded size")
       {
         auto encoded = base64url::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base64url::traits::make_decoder(encoded);
+        auto dec =
+            base64url::traits::make_decoder(encoded.begin(), encoded.end());
+        CHECK(dec.max_remaining_size() == 9999);
+      }
+
+      SECTION("Invalid size")
+      {
+        std::string invalid(3, 0);
+        auto dec = base64url::traits::make_decoder(invalid);
         CHECK(dec.max_remaining_size() == -1);
       }
     }
@@ -269,11 +278,8 @@ TEST_CASE("base64url_nopad", "[base64url]")
 
       SECTION("Invalid size")
       {
-        auto encoded =
-            base64url_nopad::encode<std::string>(std::string(10000, 0));
-        encoded.pop_back();
-
-        auto dec = base64url_nopad::traits::make_decoder(encoded);
+        std::string invalid(1, 0);
+        auto dec = base64url_nopad::traits::make_decoder(invalid);
         CHECK(dec.max_remaining_size() == -1);
       }
     }

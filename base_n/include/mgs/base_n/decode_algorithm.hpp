@@ -64,12 +64,16 @@ public:
     {
       return -1;
     }
-    // we must round, since this is a maximum, and not the exact size
-    // not doing so would return -1 in some cases.
-    // e.g. when decoding a decoder
-    auto const rounded =
-        max_remaining - (max_remaining % BitshiftTraits::nb_encoded_bytes);
-    auto const s = detail::max_decoded_size<Traits>{}(rounded);
+    auto s = detail::max_decoded_size<Traits>{}(max_remaining);
+    if (s == -1)
+    {
+      // we must round, since this is a maximum, and not the exact size
+      // not doing so would return -1 in some cases.
+      // e.g. when decoding a decoder
+      auto const rounded =
+          max_remaining - (max_remaining % BitshiftTraits::nb_encoded_bytes);
+      s = detail::max_decoded_size<Traits>{}(rounded);
+    }
     return (_buffer.size() - _index) + s;
   }
 
