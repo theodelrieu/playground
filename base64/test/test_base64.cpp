@@ -29,6 +29,8 @@ TEST_CASE("base64")
 
   SECTION("Common tests")
   {
+    CHECK(base64::encode<std::string>("") == "");
+    CHECK(base64::decode<std::string>("") == "");
     for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base64>(decoded[i], encoded[i]);
@@ -146,7 +148,7 @@ TEST_CASE("base64")
       {
         std::string invalid(3, 0);
         auto dec = base64::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == 0);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }

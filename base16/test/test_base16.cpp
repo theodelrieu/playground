@@ -34,6 +34,8 @@ TEST_CASE("base16")
 
   SECTION("Common tests")
   {
+    CHECK(base16::encode<std::string>("") == "");
+    CHECK(base16::decode<std::string>("") == "");
     for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base16>(decoded[i], encoded[i]);
@@ -143,7 +145,7 @@ TEST_CASE("base16")
         std::string invalid(1, 0);
 
         auto dec = base16::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == 0);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }

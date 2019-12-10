@@ -26,6 +26,8 @@ TEST_CASE("base64url")
 
   SECTION("Common tests")
   {
+    CHECK(base64url::encode<std::string>("") == "");
+    CHECK(base64url::decode<std::string>("") == "");
     for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base64url>(decoded[i], encoded[i]);
@@ -143,7 +145,7 @@ TEST_CASE("base64url")
       {
         std::string invalid(3, 0);
         auto dec = base64url::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == 0);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }
@@ -280,7 +282,7 @@ TEST_CASE("base64url_nopad", "[base64url]")
       {
         std::string invalid(1, 0);
         auto dec = base64url_nopad::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == 0);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }

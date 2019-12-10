@@ -25,6 +25,8 @@ TEST_CASE("base32hex")
 
   SECTION("Common tests")
   {
+    CHECK(base32hex::encode<std::string>("") == "");
+    CHECK(base32hex::decode<std::string>("") == "");
     for (auto i = 0u; i < encoded.size(); ++i)
     {
       test_helpers::basic_codec_tests<base32hex>(decoded[i], encoded[i]);
@@ -146,7 +148,7 @@ TEST_CASE("base32hex")
         std::string invalid(4, 0);
 
         auto dec = base32hex::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == 0);
+        CHECK(dec.max_remaining_size() == -1);
       }
     }
   }
