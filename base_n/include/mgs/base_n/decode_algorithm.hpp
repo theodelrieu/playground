@@ -59,16 +59,11 @@ public:
   mgs::ssize_t max_remaining_size() const
   {
     auto const max_remaining = _input_source.max_remaining_size();
-    if (max_remaining == -1 ||
-        (max_remaining > 0 && max_remaining < BitshiftTraits::nb_encoded_bytes))
-    {
-      return -1;
-    }
     auto s = detail::max_decoded_size<Traits>{}(max_remaining);
     if (s == -1)
     {
       // we must round, since this is a maximum, and not the exact size
-      // not doing so would return -1 in some cases.
+      // not doing so would result in a failure in some cases
       // e.g. when decoding a decoder
       auto const rounded =
           max_remaining - (max_remaining % BitshiftTraits::nb_encoded_bytes);
@@ -79,7 +74,7 @@ public:
 
   template <typename O>
   std::pair<O, mgs::ssize_t> read(meta::output_iterator<O, element_type> o,
-                                   mgs::ssize_t n)
+                                  mgs::ssize_t n)
   {
     if (_buffer.size() == _index)
     {

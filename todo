@@ -6,4 +6,3 @@ code:
 
 test cmake install/consume
 need out of sources recipes? would duplicate stuff ?
-fix max_remaining_size everywhere but base32

@@ -39,21 +39,21 @@ ResizableOutputRange fill_resizable_output_range(
   using std::begin;
   using size_type = typename ResizableOutputRange::size_type;
 
+  // use max to force a read when max_remaining_size returns 0
   auto const max_size = is.max_remaining_size();
-  if (max_size == -1)
-    throw exceptions::unexpected_eof_error("invalid input size");
   ResizableOutputRange ret(max_size, 0);
 
-  // TODO refactor
+  auto to_read = std::max<mgs::ssize_t>(max_size, 1);
   auto it = begin(ret);
   auto total_read = size_type{0};
 
-  for (auto res = is.read(it, max_size); res.second != 0;
-       res = is.read(it, max_size))
+  for (auto res = is.read(it, to_read); res.second != 0;
+       res = is.read(it, to_read))
   {
     it = std::move(res.first);
     total_read += res.second;
   }
+
   ret.resize(total_read);
   return ret;
 }

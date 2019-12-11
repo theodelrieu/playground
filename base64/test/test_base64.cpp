@@ -148,7 +148,7 @@ TEST_CASE("base64")
       {
         std::string invalid(3, 0);
         auto dec = base64::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

@@ -145,7 +145,7 @@ TEST_CASE("base16")
         std::string invalid(1, 0);
 
         auto dec = base16::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

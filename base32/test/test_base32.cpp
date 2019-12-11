@@ -144,7 +144,7 @@ TEST_CASE("base32")
         std::string invalid(4, 0);
 
         auto dec = base32::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
       }
     }
   }

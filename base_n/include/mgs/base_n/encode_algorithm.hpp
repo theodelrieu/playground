@@ -66,8 +66,9 @@ public:
   template <typename T = IS, typename = codecs::sized_input_source<T>>
   mgs::ssize_t max_remaining_size() const
   {
+    auto const max_remaining = _input_source.max_remaining_size();
     return (_buffer.size() - _index) +
-           detail::encoded_size<Traits>{}(_input_source.max_remaining_size());
+           detail::encoded_size<Traits>{}(max_remaining);
   }
 
   template <typename O>

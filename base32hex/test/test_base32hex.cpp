@@ -94,8 +94,7 @@ TEST_CASE("base32hex")
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc =
-            base32hex::traits::make_encoder(decoded.begin(), decoded.end());
+        auto enc = base32hex::traits::make_encoder(decoded);
 
         CHECK(enc.max_remaining_size() == 24);
       }
@@ -107,6 +106,13 @@ TEST_CASE("base32hex")
             base32hex::traits::make_encoder(huge_str.begin(), huge_str.end());
 
         CHECK(enc.max_remaining_size() == 16000);
+      }
+
+      SECTION("Input source's max_remaining_size returning a rounded value")
+      {
+        auto dec = base32hex::traits::make_decoder("round to 8");
+        auto enc = base32hex::traits::make_encoder(std::move(dec));
+        CHECK(enc.max_remaining_size() == 8);
       }
     }
 
@@ -148,7 +154,14 @@ TEST_CASE("base32hex")
         std::string invalid(4, 0);
 
         auto dec = base32hex::traits::make_decoder(invalid);
-        CHECK(dec.max_remaining_size() == -1);
+        CHECK(dec.max_remaining_size() == 0);
+      }
+
+      SECTION("Input source's max_remaining_size returning a rounded value")
+      {
+        auto dec = base32hex::traits::make_decoder("it will round to 16");
+        auto dec2 = base32hex::traits::make_decoder(std::move(dec));
+        CHECK(dec2.max_remaining_size() == 5);
       }
     }
   }
