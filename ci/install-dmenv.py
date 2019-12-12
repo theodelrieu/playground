@@ -4,7 +4,7 @@ import sys
 import urllib.request
 
 
-DMENV_VERSION = "0.14.0"
+DMENV_VERSION = "0.20.0"
 DMENV_URL = "https://github.com/TankerHQ/dmenv/"
 
 
