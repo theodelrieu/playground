@@ -119,18 +119,18 @@ private:
 
     if (nb_loop_iterations.rem)
     {
-      auto const nb_non_padded_bytes =
-          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_index_bits) + 1;
-      auto const nb_padded_bytes =
-          BitshiftTraits::nb_encoded_bytes - nb_non_padded_bytes;
+      auto const nb_non_padded_bytes = static_cast<mgs::ssize_t>(
+          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_index_bits) + 1);
+      auto const nb_padded_bytes = static_cast<mgs::ssize_t>(
+          BitshiftTraits::nb_encoded_bytes - nb_non_padded_bytes);
 
       auto const input_bits = detail::decoded_to_bitset<BitshiftTraits>(
           input.begin() +
               (nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes),
-          nb_loop_iterations.rem);
+          static_cast<mgs::ssize_t>(nb_loop_iterations.rem));
 
       auto const old_size = _buffer.size();
-      _buffer.resize(_buffer.size() + nb_non_padded_bytes);
+      _buffer.resize(old_size + nb_non_padded_bytes);
       detail::output_encoder<Traits>::encode(
           input_bits, _buffer.begin() + old_size, nb_non_padded_bytes);
       detail::padding_writer<Traits>::write(std::back_inserter(_buffer),
