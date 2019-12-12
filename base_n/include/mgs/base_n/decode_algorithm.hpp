@@ -139,7 +139,7 @@ private:
       auto const indices_bits = detail::indices_to_bitset<Traits>(
           input.begin() +
               (nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes),
-          nb_loop_iterations.rem);
+          static_cast<mgs::ssize_t>(nb_loop_iterations.rem));
 
       detail::output_decoder<Traits>::decode(
           indices_bits, _buffer.begin() + old_size, nb_last_bytes_to_decode);
