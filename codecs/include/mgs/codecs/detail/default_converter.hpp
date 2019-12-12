@@ -31,7 +31,6 @@ namespace mgs
 {
 namespace detail
 {
-  // TODO resizable output range
 template <typename ResizableOutputRange, typename T>
 ResizableOutputRange fill_resizable_output_range(
     codecs::sized_input_source<T>& is, meta::priority_tag<1>)

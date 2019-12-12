@@ -92,7 +92,6 @@ private:
   {
     detail::static_vector<unsigned char, nb_bytes_to_read> ret;
     ret.resize(nb_bytes_to_read);
-    // FIXME helper method to read while not eof
     auto const res =
         detail::read_at_most(_input_source, ret.data(), nb_bytes_to_read);
     ret.resize(res.second);

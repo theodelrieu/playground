@@ -48,8 +48,7 @@ private:
   static_assert(BitshiftTraits::nb_encoded_bytes < 256,
                 "nb_encoded_bytes must be lower than 256");
 
-  // FIXME mgs::ssize_t?
-  static constexpr std::size_t nb_bytes_to_read =
+  static constexpr mgs::ssize_t nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_decoded_bytes;
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_decoded_bytes == 0, "");
@@ -145,6 +144,6 @@ private:
 };
 
 template <typename Traits, typename IS>
-constexpr std::size_t encode_algorithm<Traits, IS>::nb_bytes_to_read;
+constexpr mgs::ssize_t encode_algorithm<Traits, IS>::nb_bytes_to_read;
 }
 }
