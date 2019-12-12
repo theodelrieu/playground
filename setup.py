@@ -17,7 +17,7 @@ setup(
     # py_modules=["<module>"],
     install_requires=[
         # Insert common dependencies here:
-        "conan==1.14.3",
+        "conan==1.21.0",
         "path.py",
     ],
     extras_require={
