@@ -1,5 +1,4 @@
 set(_supported_components
-  ranges
   base16
   base32
   base32hex
@@ -7,6 +6,7 @@ set(_supported_components
   base64url
   base_n
   codecs
+  config
   exceptions
   meta
 )
