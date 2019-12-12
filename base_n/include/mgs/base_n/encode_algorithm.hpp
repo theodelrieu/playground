@@ -105,7 +105,8 @@ private:
 
     auto const nb_loop_iterations =
         std::lldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
-    _buffer.resize(nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes);
+    _buffer.resize(static_cast<mgs::ssize_t>(nb_loop_iterations.quot *
+                                             BitshiftTraits::nb_encoded_bytes));
 
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)
     {

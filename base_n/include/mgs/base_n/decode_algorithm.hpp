@@ -117,7 +117,8 @@ private:
     auto const nb_loop_iterations =
         std::lldiv(input.size(), BitshiftTraits::nb_encoded_bytes);
 
-    _buffer.resize(nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes);
+    _buffer.resize(static_cast<mgs::ssize_t>(nb_loop_iterations.quot *
+                                             BitshiftTraits::nb_decoded_bytes));
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)
     {
       auto const indices_bits = detail::indices_to_bitset<Traits>(
@@ -130,8 +131,8 @@ private:
     }
     if (nb_loop_iterations.rem)
     {
-      auto const nb_last_bytes_to_decode =
-          (nb_loop_iterations.rem * BitshiftTraits::nb_index_bits) / 8;
+      auto const nb_last_bytes_to_decode = static_cast<mgs::ssize_t>(
+          (nb_loop_iterations.rem * BitshiftTraits::nb_index_bits) / 8);
       auto const old_size = _buffer.size();
       _buffer.resize(old_size + nb_last_bytes_to_decode);
 
