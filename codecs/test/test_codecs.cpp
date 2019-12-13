@@ -1,5 +1,4 @@
 #include <catch2/catch.hpp>
-#include <iostream>
 
 #include <algorithm>
 #include <cstdint>
@@ -14,10 +13,8 @@
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/exceptions/unexpected_eof_error.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 #include "codec_helpers.hpp"
-#include <mgs/meta/concepts/output_range.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;

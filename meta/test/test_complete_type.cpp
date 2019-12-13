@@ -1,7 +1,6 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/complete_type.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

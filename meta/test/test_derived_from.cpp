@@ -2,8 +2,6 @@
 
 #include <mgs/meta/concepts/derived_from.hpp>
 
-#include <mgs/meta/static_asserts.hpp>
-
 using namespace mgs::meta;
 
 namespace

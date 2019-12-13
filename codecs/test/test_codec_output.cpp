@@ -9,7 +9,6 @@
 #include <mgs/codecs/concepts/codec_output.hpp>
 #include <mgs/codecs/output_traits.hpp>
 #include <mgs/meta/concepts/range.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;

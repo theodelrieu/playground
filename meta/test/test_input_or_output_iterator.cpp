@@ -7,7 +7,6 @@
 #include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/concepts/input_or_output_iterator.hpp>
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

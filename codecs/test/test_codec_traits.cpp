@@ -8,7 +8,6 @@
 
 #include <mgs/codecs/concepts/codec_traits.hpp>
 #include <mgs/codecs/output_traits.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs;
 using namespace mgs::codecs;
@@ -93,6 +92,7 @@ struct invalid_return_traits
 
   template <typename IS>
   static int make_encoder(IS);
+
   template <typename IS>
   static valid_input_source make_decoder(IS);
 };
@@ -113,7 +113,6 @@ struct output_traits<int>
 
 TEST_CASE("CodecTraits")
 {
-  meta::trigger_static_asserts<is_codec_traits<valid_traits>>();
   static_assert(is_codec_traits<valid_traits>::value, "");
   static_assert(is_codec_traits<valid_traits_custom_default_types,
                                 valid_input_source,
