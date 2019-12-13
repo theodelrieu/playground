@@ -57,6 +57,14 @@ jobs:
       run: python $GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $GITHUB_WORKSPACE/ci/conan-profiles/macos10.15
   build-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        compiler: [g++, cl]
+        include:
+          - compiler: cl
+            profile: vs2017-x64
+          - compiler: g++
+            profile: mingw
     steps:
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
@@ -67,4 +75,7 @@ jobs:
     - name: Install build tools
       run: cinst ninja -y
     - name: Build and test
-      run: python $env:GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $env:GITHUB_WORKSPACE/ci/conan-profiles/vs2017-x64
+      run: |
+        $env:CXX = "${{ matrix.compiler }}.exe"
+        "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\vcvarsall.bat"
+        python $env:GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $env:GITHUB_WORKSPACE/ci/conan-profiles/${{ matrix.profile }}
