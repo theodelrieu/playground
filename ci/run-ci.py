@@ -48,7 +48,7 @@ def main():
 
     build_and_test_parser = subparsers.add_parser("build-and-test")
     build_and_test_parser.add_argument("--profile", required=True)
-    build_and_test_parser.add_argument("--cppstd", type=int, default=14)
+    build_and_test_parser.add_argument("--cppstd", type=int, default=14, nargs="?")
     args = parser.parse_args()
 
     if args.command == "build-and-test":
