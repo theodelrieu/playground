@@ -28,7 +28,7 @@ jobs:
       run: pip install conan==$CONAN_VERSION path==$PATH_VERSION --user
     - name: Install C++ compiler and build tools
       run: | 
-        sudo apt update
-        sudo apt install ${{ matrix.compiler }} ninja-build
+        sudo apt-get update
+        sudo apt-get install ${{ matrix.compiler }} ninja-build
     - name: Build and test
       run: CXX=${{ matrix.compiler }} python $GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $GITHUB_WORKSPACE/ci/conan-profiles/${{ matrix.compiler }} $CMDLINE_CXX17
