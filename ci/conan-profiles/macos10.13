@@ -1,4 +1,0 @@
-include(macos)
-[settings]
-os.version=10.13
-compiler.version=9.1
