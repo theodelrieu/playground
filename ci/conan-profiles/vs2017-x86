@@ -1,3 +1,0 @@
-include(vs2017)
-[settings]
-arch=x86

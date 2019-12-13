@@ -59,12 +59,15 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        compiler: [g++, cl]
+        compiler: [vs2017, vs2019]
         include:
-          - compiler: cl
-            profile: vs2017-x64
-          - compiler: g++
-            profile: mingw
+          - os: windows-latest
+            compiler: vs2017
+            vcvars_cmd: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat
+          - os: windows-latest
+            compiler: vs2019
+            vcvars_cmd: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat
+
     steps:
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
@@ -75,7 +78,8 @@ jobs:
     - name: Install build tools
       run: cinst ninja -y
     - name: Build and test
+      shell: cmd
       run: |
-        $env:CXX = "${{ matrix.compiler }}.exe"
-        "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\vcvarsall.bat"
-        python $env:GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $env:GITHUB_WORKSPACE/ci/conan-profiles/${{ matrix.profile }}
+        call "${{ matrix.vcvars_cmd }}"
+        set CXX=cl
+        python %GITHUB_WORKSPACE%/ci/run-ci.py build-and-test --profile %GITHUB_WORKSPACE%/ci/conan-profiles/${{ matrix.compiler }}
