@@ -37,7 +37,7 @@ def build_and_test(profile, cxx17):
 
     with build_path:
         install_conan_workspace(profile)
-        run_cmake("-GNinja", "..", "-DCMAKE_CXX_STANDARD=%s" % "17" if cxx17 else "14")
+        run_cmake("-GNinja", "..", "-DCMAKE_CXX_STANDARD=%s" % ("17" if cxx17 else "14"))
         run_cmake("--build", ".")
         run_cmake("--build", ".", "--target", "test")
 
