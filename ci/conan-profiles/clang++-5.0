@@ -1,3 +1,3 @@
-include(clang)
+include(clang++)
 [settings]
 compiler.version=5.0
