@@ -59,14 +59,12 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        compiler: [vs2017, vs2019]
+        compiler: [vs2019]
         include:
-          - os: windows-latest
-            compiler: vs2017
-            vcvars_cmd: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat
           - os: windows-latest
             compiler: vs2019
             vcvars_cmd: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat
+            vcvars_args: x64 10.0.18362.0
 
     steps:
     - name: Setup Python environment
@@ -80,6 +78,5 @@ jobs:
     - name: Build and test
       shell: cmd
       run: |
-        call "${{ matrix.vcvars_cmd }}"
         set CXX=cl
-        python %GITHUB_WORKSPACE%/ci/run-ci.py build-and-test --profile %GITHUB_WORKSPACE%/ci/conan-profiles/${{ matrix.compiler }}
+        "${{ matrix.vcvars_cmd }}" ${{ matrix.vcvars_args }} && python %GITHUB_WORKSPACE%/ci/run-ci.py build-and-test --profile %GITHUB_WORKSPACE%/ci/conan-profiles/${{ matrix.compiler }}
