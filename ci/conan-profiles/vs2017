@@ -1,3 +1,4 @@
+include(base)
 [settings]
 os=Windows
 os_build=Windows
