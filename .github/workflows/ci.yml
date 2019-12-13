@@ -17,7 +17,7 @@ jobs:
           - os: ubuntu-18.04
             compiler: g++-8
             env:
-              CPPSTD: 17
+              CMDLINE_CXX17: --cxx17
           
     steps:
     - name: Setup Python environment
@@ -29,4 +29,4 @@ jobs:
     - name: Install C++ compiler and build tools
       run: sudo apt install ${{ matrix.compiler }} ninja-build
     - name: Build and test
-      run: CXX=${{ matrix.compiler }} python $GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $GITHUB_WORKSPACE/ci/conan-profiles/${{ matrix.compiler }} --cppstd $CPPSTD
+      run: CXX=${{ matrix.compiler }} python $GITHUB_WORKSPACE/ci/run-ci.py build-and-test --profile $GITHUB_WORKSPACE/ci/conan-profiles/${{ matrix.compiler }} $CMDLINE_CXX17
