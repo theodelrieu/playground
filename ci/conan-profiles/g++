@@ -1,4 +1,3 @@
-include(base)
 [settings]
 os=Linux
 os_build=Linux

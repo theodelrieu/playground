@@ -1,3 +1,5 @@
 include(clang)
 [settings]
 compiler.version=5.0
+[env]
+CXX=clang++-5.0

@@ -1,3 +1,5 @@
 include(g++)
 [settings]
 compiler.version=5
+[env]
+CXX=g++-5

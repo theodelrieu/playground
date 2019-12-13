@@ -1,3 +1,5 @@
 include(clang)
 [settings]
 compiler.version=6.0
+[env]
+CXX=clang++-6.0
