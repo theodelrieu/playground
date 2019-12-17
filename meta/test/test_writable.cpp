@@ -6,7 +6,6 @@
 #include <catch2/catch.hpp>
 
 #include <mgs/meta/concepts/writable.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 using namespace mgs;

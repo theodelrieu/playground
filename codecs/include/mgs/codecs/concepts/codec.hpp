@@ -21,9 +21,6 @@ namespace mgs
 {
 namespace codecs
 {
-  template <typename T>
-    struct S;
-// FIXME doc: put back default types, add codec_output requirement on R1/R2
 template <typename T,
           typename R1 =
               meta::detected_t<detected::types::default_encoded_output,

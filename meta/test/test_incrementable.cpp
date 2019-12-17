@@ -7,7 +7,6 @@
 #include <mgs/meta/concepts/incrementable.hpp>
 #include <mgs/meta/concepts/weakly_incrementable.hpp>
 #include <mgs/meta/concepts/regular.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

@@ -48,8 +48,7 @@ private:
   static_assert(BitshiftTraits::nb_encoded_bytes < 256,
                 "nb_encoded_bytes must be lower than 256");
 
-  // FIXME mgs::ssize_t?
-  static constexpr std::size_t nb_bytes_to_read =
+  static constexpr mgs::ssize_t nb_bytes_to_read =
       (256 / BitshiftTraits::nb_encoded_bytes) *
       BitshiftTraits::nb_decoded_bytes;
   static_assert(nb_bytes_to_read % BitshiftTraits::nb_decoded_bytes == 0, "");
@@ -106,7 +105,8 @@ private:
 
     auto const nb_loop_iterations =
         std::lldiv(input.size(), BitshiftTraits::nb_decoded_bytes);
-    _buffer.resize(nb_loop_iterations.quot * BitshiftTraits::nb_encoded_bytes);
+    _buffer.resize(static_cast<mgs::ssize_t>(nb_loop_iterations.quot *
+                                             BitshiftTraits::nb_encoded_bytes));
 
     for (auto i = 0; i < nb_loop_iterations.quot; ++i)
     {
@@ -120,18 +120,18 @@ private:
 
     if (nb_loop_iterations.rem)
     {
-      auto const nb_non_padded_bytes =
-          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_index_bits) + 1;
-      auto const nb_padded_bytes =
-          BitshiftTraits::nb_encoded_bytes - nb_non_padded_bytes;
+      auto const nb_non_padded_bytes = static_cast<mgs::ssize_t>(
+          ((8 * (nb_loop_iterations.rem)) / BitshiftTraits::nb_index_bits) + 1);
+      auto const nb_padded_bytes = static_cast<mgs::ssize_t>(
+          BitshiftTraits::nb_encoded_bytes - nb_non_padded_bytes);
 
       auto const input_bits = detail::decoded_to_bitset<BitshiftTraits>(
           input.begin() +
               (nb_loop_iterations.quot * BitshiftTraits::nb_decoded_bytes),
-          nb_loop_iterations.rem);
+          static_cast<mgs::ssize_t>(nb_loop_iterations.rem));
 
       auto const old_size = _buffer.size();
-      _buffer.resize(_buffer.size() + nb_non_padded_bytes);
+      _buffer.resize(old_size + nb_non_padded_bytes);
       detail::output_encoder<Traits>::encode(
           input_bits, _buffer.begin() + old_size, nb_non_padded_bytes);
       detail::padding_writer<Traits>::write(std::back_inserter(_buffer),
@@ -145,6 +145,6 @@ private:
 };
 
 template <typename Traits, typename IS>
-constexpr std::size_t encode_algorithm<Traits, IS>::nb_bytes_to_read;
+constexpr mgs::ssize_t encode_algorithm<Traits, IS>::nb_bytes_to_read;
 }
 }

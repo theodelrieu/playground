@@ -5,7 +5,6 @@
 
 #include <mgs/meta/concepts/detail/iterator_traits.hpp>
 #include <mgs/meta/iterator_traits.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 using namespace mgs::detail;

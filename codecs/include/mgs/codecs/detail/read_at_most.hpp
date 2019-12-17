@@ -11,7 +11,7 @@ namespace detail
 template <typename IS, typename O>
 std::pair<O, mgs::ssize_t> read_at_most(IS& is, O o, mgs::ssize_t n)
 {
-  auto total_read = 0;
+  auto total_read = static_cast<mgs::ssize_t>(0);
   while (n != 0)
   {
     auto const res = is.read(o, n);

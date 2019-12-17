@@ -4,8 +4,6 @@
 
 #include <mgs/meta/concepts/dereferenceable.hpp>
 
-#include <mgs/meta/static_asserts.hpp>
-
 using namespace mgs::meta;
 
 namespace

@@ -9,7 +9,6 @@
 #include <mgs/meta/concepts/semiregular.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/sized_sentinel_for.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

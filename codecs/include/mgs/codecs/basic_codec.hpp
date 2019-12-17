@@ -17,7 +17,6 @@
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
 #include <mgs/meta/sentinel_t.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 namespace mgs
 {

@@ -5,7 +5,6 @@
 #include <mgs/meta/concepts/equality_comparable.hpp>
 #include <mgs/meta/concepts/totally_ordered.hpp>
 #include <mgs/meta/concepts/totally_ordered_with.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

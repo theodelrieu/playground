@@ -6,7 +6,6 @@
 #include <mgs/meta/concepts/swappable.hpp>
 #include <mgs/meta/concepts/regular.hpp>
 #include <mgs/meta/concepts/semiregular.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

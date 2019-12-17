@@ -25,9 +25,9 @@ public:
   }
 
   template <typename O>
-  std::pair<O, int> read(O o, int n)
+  std::pair<O, mgs::ssize_t> read(O o, mgs::ssize_t n)
   {
-    auto const to_read = std::min<int>(n, _s.size() - _idx);
+    auto const to_read = std::min<mgs::ssize_t>(n, _s.size() - _idx);
     o = std::copy_n(_s.data() + _idx, to_read, o);
     _idx += to_read;
     return std::make_pair(std::move(o), to_read);
@@ -35,7 +35,7 @@ public:
 
 private:
   std::string _s;
-  int mutable _idx{0};
+  mgs::ssize_t mutable _idx{0};
 };
 }
 

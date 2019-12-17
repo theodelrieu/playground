@@ -23,7 +23,7 @@ struct is_byte_type
 
   static constexpr auto const value =
 #if MGS_HAS_CPP17
-      meta::same_as<std::byte, T>::value ||
+      meta::is_same_as<std::byte, T>::value ||
 #endif
       (meta::is_integral<T>::value &&
        std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed ==

@@ -15,7 +15,6 @@
 #include <mgs/meta/concepts/range.hpp>
 #include <mgs/meta/concepts/sentinel_for.hpp>
 #include <mgs/meta/concepts/weakly_equality_comparable_with.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

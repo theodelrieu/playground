@@ -10,7 +10,6 @@
 #include <mgs/meta/concepts/destructible.hpp>
 #include <mgs/meta/concepts/movable.hpp>
 #include <mgs/meta/concepts/move_constructible.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

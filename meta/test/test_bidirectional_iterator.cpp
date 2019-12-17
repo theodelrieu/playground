@@ -6,7 +6,6 @@
 
 #include <mgs/meta/concepts/bidirectional_iterator.hpp>
 #include <mgs/meta/concepts/incrementable.hpp>
-#include <mgs/meta/static_asserts.hpp>
 
 using namespace mgs::meta;
 

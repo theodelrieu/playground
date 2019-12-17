@@ -1,8 +1,0 @@
-doc:
-
-adapt doc to code
-
-code:
-
-test cmake install/consume
-need out of sources recipes? would duplicate stuff ?
