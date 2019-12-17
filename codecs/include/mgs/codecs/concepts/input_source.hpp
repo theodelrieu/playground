@@ -58,10 +58,15 @@ public:
   }
 };
 
-template <typename T>
-constexpr auto is_input_source_v = is_input_source<T>::value;
+template <typename T,
+          typename O =
+              meta::detected_t<meta::detected::types::element_type, T>*>
+constexpr auto is_input_source_v = is_input_source<T, O>::value;
 
-template <typename T, typename = std::enable_if_t<is_input_source<T>::value>>
+template <typename T,
+          typename O =
+              meta::detected_t<meta::detected::types::element_type, T>*,
+          typename = std::enable_if_t<is_input_source<T, O>::value>>
 using input_source = T;
 }
 }
