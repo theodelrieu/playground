@@ -43,6 +43,6 @@ template <typename T>
 using dereference = typename detail::
     dereference<T, std::remove_cv_t<std::remove_reference_t<T>>>::type;
 }
-};
+}
 }
 }

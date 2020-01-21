@@ -26,6 +26,7 @@
 #include <mgs/meta/detected/types/size_type.hpp>
 #include <mgs/meta/iterator_t.hpp>
 #include <mgs/meta/priority_tag.hpp>
+#include <mgs/ssize_t.hpp>
 
 namespace mgs
 {
@@ -145,7 +146,7 @@ struct default_converter<std::array<C, N>>
     std::array<C, N> ret;
 
     auto const res = detail::read_at_most(is, ret.data(), N);
-    if (res.second < N)
+    if (res.second < static_cast<mgs::ssize_t>(N))
       throw exceptions::unexpected_eof_error("output buffer is too large");
     if (detail::read_at_most(is, ret.data(), 1).second != 0)
       throw exceptions::unexpected_eof_error("output buffer is too small");

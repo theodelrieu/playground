@@ -40,7 +40,7 @@ public:
             typename = std::enable_if_t<
                 meta::is_output_iterator<OutputIterator, element_type>::value>>
   std::pair<OutputIterator, mgs::ssize_t> read(OutputIterator out,
-                                                mgs::ssize_t n);
+                                               mgs::ssize_t n);
 
   template <
       typename S2 = S,
@@ -54,7 +54,7 @@ private:
 
 template <typename I, typename S>
 auto make_iterator_sentinel_source(meta::input_iterator<I> begin,
-                            meta::sentinel_for<S, I> end)
+                                   meta::sentinel_for<S, I> end)
     -> iterator_sentinel_source<I, S>
 {
   return {std::move(begin), std::move(end)};
