@@ -48,8 +48,7 @@ TEST_CASE("base32hex")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder =
-        base32hex::traits::make_encoder(iterator(random_data), iterator());
+    auto encoder = base32hex::make_encoder(iterator(random_data), iterator());
     auto range = codecs::make_input_range(std::move(encoder));
     test_helpers::check_equal(
         range.begin(), range.end(), iterator(b32hex_random_data), iterator());
@@ -58,7 +57,7 @@ TEST_CASE("base32hex")
     b32hex_random_data.seekg(0);
 
     auto decoder =
-        base32hex::traits::make_decoder(iterator(b32hex_random_data), iterator());
+        base32hex::make_decoder(iterator(b32hex_random_data), iterator());
     auto range2 = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
         range2.begin(), range2.end(), iterator{random_data}, iterator());
@@ -94,7 +93,7 @@ TEST_CASE("base32hex")
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base32hex::traits::make_encoder(decoded);
+        auto enc = base32hex::make_encoder(decoded);
 
         CHECK(enc.max_remaining_size() == 24);
       }
@@ -102,16 +101,15 @@ TEST_CASE("base32hex")
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc =
-            base32hex::traits::make_encoder(huge_str.begin(), huge_str.end());
+        auto enc = base32hex::make_encoder(huge_str.begin(), huge_str.end());
 
         CHECK(enc.max_remaining_size() == 16000);
       }
 
       SECTION("Input source's max_remaining_size returning a rounded value")
       {
-        auto dec = base32hex::traits::make_decoder("round to 8");
-        auto enc = base32hex::traits::make_encoder(std::move(dec));
+        auto dec = base32hex::make_decoder("round to 8");
+        auto enc = base32hex::make_encoder(std::move(dec));
         CHECK(enc.max_remaining_size() == 8);
       }
     }
@@ -122,8 +120,7 @@ TEST_CASE("base32hex")
       {
         auto const encoded = "C5H66P0="s;
 
-        auto dec =
-            base32hex::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 5);
         dec.read(test_helpers::noop_iterator{}, 2);
         CHECK(dec.max_remaining_size() == 2);
@@ -134,8 +131,7 @@ TEST_CASE("base32hex")
         auto const encoded =
             base32hex::encode<std::string>(std::string(10000, 0));
 
-        auto dec =
-            base32hex::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 10000);
       }
 
@@ -144,8 +140,7 @@ TEST_CASE("base32hex")
         auto encoded = base32hex::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec =
-            base32hex::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32hex::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 9995);
       }
 
@@ -153,14 +148,14 @@ TEST_CASE("base32hex")
       {
         std::string invalid(4, 0);
 
-        auto dec = base32hex::traits::make_decoder(invalid);
+        auto dec = base32hex::make_decoder(invalid);
         CHECK(dec.max_remaining_size() == 0);
       }
 
       SECTION("Input source's max_remaining_size returning a rounded value")
       {
-        auto dec = base32hex::traits::make_decoder("it will round to 16");
-        auto dec2 = base32hex::traits::make_decoder(std::move(dec));
+        auto dec = base32hex::make_decoder("it will round to 16");
+        auto dec2 = base32hex::make_decoder(std::move(dec));
         CHECK(dec2.max_remaining_size() == 5);
       }
     }

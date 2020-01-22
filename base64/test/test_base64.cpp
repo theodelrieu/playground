@@ -50,17 +50,17 @@ TEST_CASE("base64")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder =
-        base64::traits::make_encoder(iterator(random_data), iterator());
+    auto encoder = base64::make_encoder(iterator(random_data), iterator());
     auto enc_range = codecs::make_input_range(std::move(encoder));
-    test_helpers::check_equal(
-        enc_range.begin(), enc_range.end(), iterator(b64_random_data), iterator());
+    test_helpers::check_equal(enc_range.begin(),
+                              enc_range.end(),
+                              iterator(b64_random_data),
+                              iterator());
 
     random_data.seekg(0);
     b64_random_data.seekg(0);
 
-    auto decoder =
-        base64::traits::make_decoder(iterator(b64_random_data), iterator());
+    auto decoder = base64::make_decoder(iterator(b64_random_data), iterator());
     auto dec_range = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
         dec_range.begin(), dec_range.end(), iterator{random_data}, iterator());
@@ -71,8 +71,14 @@ TEST_CASE("base64")
     std::string corner_case(256, 'A');
     corner_case.back() = '=';
     corner_case.push_back('A');
-    std::vector<std::string> invalid_chars{
-        "===="s, "*AAA"s, "Y==="s, "ZA==YWJj"s, "YW=j"s, "ZA===AAA"s, "ZAW@"s, corner_case};
+    std::vector<std::string> invalid_chars{"===="s,
+                                           "*AAA"s,
+                                           "Y==="s,
+                                           "ZA==YWJj"s,
+                                           "YW=j"s,
+                                           "ZA===AAA"s,
+                                           "ZAW@"s,
+                                           corner_case};
     std::vector<std::string> invalid_eof{"YWJ"s, "YWJjZ"s};
 
     for (auto const& elem : invalid_chars)
@@ -95,7 +101,7 @@ TEST_CASE("base64")
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base64::traits::make_encoder(decoded);
+        auto enc = base64::make_encoder(decoded);
 
         CHECK(enc.max_remaining_size() == 20);
       }
@@ -103,7 +109,7 @@ TEST_CASE("base64")
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc = base64::traits::make_encoder(huge_str);
+        auto enc = base64::make_encoder(huge_str);
 
         CHECK(enc.max_remaining_size() == 13336);
       }
@@ -115,7 +121,7 @@ TEST_CASE("base64")
       {
         auto const encoded = "WVdKalpHVT0="s;
 
-        auto dec = base64::traits::make_decoder(encoded);
+        auto dec = base64::make_decoder(encoded);
         CHECK(dec.max_remaining_size() == 9);
         dec.read(test_helpers::noop_iterator{}, 5);
         CHECK(dec.max_remaining_size() == 3);
@@ -123,9 +129,10 @@ TEST_CASE("base64")
 
       SECTION("Huge string")
       {
-        auto const encoded = base64::encode<std::string>(std::string(10000, '0'));
+        auto const encoded =
+            base64::encode<std::string>(std::string(10000, '0'));
 
-        auto dec = base64::traits::make_decoder(encoded);
+        auto dec = base64::make_decoder(encoded);
         CHECK(dec.max_remaining_size() == 10002);
 
         detail::read_at_most(dec, test_helpers::noop_iterator{}, 9984);
@@ -137,15 +144,14 @@ TEST_CASE("base64")
         auto encoded = base64::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec =
-            base64::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base64::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 9999);
       }
 
       SECTION("Invalid size")
       {
         std::string invalid(3, 0);
-        auto dec = base64::traits::make_decoder(invalid);
+        auto dec = base64::make_decoder(invalid);
         CHECK(dec.max_remaining_size() == 0);
       }
     }

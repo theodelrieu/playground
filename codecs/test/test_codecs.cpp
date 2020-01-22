@@ -105,7 +105,7 @@ TEST_CASE("codecs")
   {
     std::array<char, 4> const input{'t', 'e', 's', 't'};
 
-    using Encoder = decltype(valid_codec::traits::make_encoder(
+    using Encoder = decltype(valid_codec::make_encoder(
         std::declval<iterator_sentinel_source<decltype(input.begin())>&>()));
 
     static_assert(!is_codec_output<invalid_type, Encoder>::value, "");

@@ -23,6 +23,8 @@ class basic_codec
 public:
   using base::decode;
   using base::encode;
+  using base::make_decoder;
+  using base::make_encoder;
   using typename base::traits;
 
   static constexpr mgs::ssize_t encoded_size(mgs::ssize_t decoded_size)

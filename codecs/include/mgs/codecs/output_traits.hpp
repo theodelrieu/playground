@@ -3,10 +3,10 @@
 #include <type_traits>
 #include <utility>
 
+#include <mgs/codecs/concepts/input_source.hpp>
 #include <mgs/codecs/detail/default_converter.hpp>
 #include <mgs/codecs/output_traits_fwd.hpp>
 #include <mgs/meta/detected.hpp>
-#include <mgs/codecs/concepts/input_source.hpp>
 
 namespace mgs
 {

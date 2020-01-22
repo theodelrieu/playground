@@ -33,108 +33,110 @@ public:
 
 private:
   template <typename IS>
-  using encoder = meta::
-      detected_t<detected::static_member_functions::make_encoder, traits, IS>;
+  static auto make_encoder_impl(codecs::input_source<IS> is,
+                                meta::priority_tag<3>)
+      -> decltype(traits::make_encoder(std::move(is)))
+  {
+    return traits::make_encoder(std::move(is));
+  }
+
+  template <typename I, typename S>
+  static auto make_encoder_impl(meta::input_iterator<I> i,
+                                meta::sentinel_for<S, I> s,
+                                meta::priority_tag<2>)
+      -> decltype(
+          traits::make_encoder(std::declval<iterator_sentinel_source<I, S>>()))
+  {
+    auto is = codecs::make_iterator_sentinel_source(std::move(i), std::move(s));
+    return traits::make_encoder(std::move(is));
+  }
+
+  template <typename InputRange>
+  static auto make_encoder_impl(meta::input_range<InputRange>& r,
+                                meta::priority_tag<1>)
+      -> decltype(traits::make_encoder(make_iterator_sentinel_source(r)))
+  {
+    return traits::make_encoder(make_iterator_sentinel_source(r));
+  }
+
+  template <typename InputRange>
+  static auto make_encoder_impl(meta::input_range<InputRange> const& r,
+                                meta::priority_tag<0>)
+      -> decltype(traits::make_encoder(make_iterator_sentinel_source(r)))
+  {
+    return traits::make_encoder(make_iterator_sentinel_source(r));
+  }
 
   template <typename IS>
-  using decoder = meta::
-      detected_t<detected::static_member_functions::make_decoder, traits, IS>;
-
-  template <typename T = default_encoded_output, typename IS>
-  static codecs::codec_output<T, encoder<IS>> encode_impl(
-      codecs::input_source<IS> is, meta::priority_tag<2>)
+  static auto make_decoder_impl(codecs::input_source<IS> is,
+                                meta::priority_tag<3>)
+      -> decltype(traits::make_decoder(std::move(is)))
   {
-    return output_traits<T>::create(traits::make_encoder(std::move(is)));
+    return traits::make_decoder(std::move(is));
   }
 
-  template <typename T = default_encoded_output,
-            typename U,
-            typename Range = mgs::meta::input_range<U>>
-  static mgs::codecs::codec_output<
-      T,
-      encoder<iterator_sentinel_source<meta::iterator_t<Range>,
-                                       meta::sentinel_t<Range>>>>
-  encode_impl(U& it, meta::priority_tag<1>)
+  template <typename I, typename S>
+  static auto make_decoder_impl(meta::input_iterator<I> i,
+                                meta::sentinel_for<S, I> s,
+                                meta::priority_tag<2>)
+      -> decltype(
+          traits::make_decoder(std::declval<iterator_sentinel_source<I, S>>()))
   {
-    return output_traits<T>::create(
-        traits::make_encoder(make_iterator_sentinel_source(it)));
+    auto is = codecs::make_iterator_sentinel_source(std::move(i), std::move(s));
+    return traits::make_decoder(std::move(is));
   }
 
-  template <typename T = default_encoded_output,
-            typename U,
-            typename Range = mgs::meta::input_range<U>>
-  static mgs::codecs::codec_output<
-      T,
-      encoder<iterator_sentinel_source<meta::iterator_t<Range const>,
-                                       meta::sentinel_t<Range const>>>>
-  encode_impl(U const& it, meta::priority_tag<0>)
+  template <typename InputRange>
+  static auto make_decoder_impl(meta::input_range<InputRange>& r,
+                                meta::priority_tag<1>)
+      -> decltype(traits::make_decoder(make_iterator_sentinel_source(r)))
   {
-    return output_traits<T>::create(
-        traits::make_encoder(make_iterator_sentinel_source(it)));
+    return traits::make_decoder(make_iterator_sentinel_source(r));
   }
 
-  template <typename T = default_decoded_output, typename IS>
-  static codecs::codec_output<T, decoder<IS>> decode_impl(
-      codecs::input_source<IS> is, meta::priority_tag<2>)
+  template <typename InputRange>
+  static auto make_decoder_impl(meta::input_range<InputRange> const& r,
+                                meta::priority_tag<0>)
+      -> decltype(traits::make_decoder(make_iterator_sentinel_source(r)))
   {
-    return output_traits<T>::create(traits::make_decoder(std::move(is)));
-  }
-
-  template <typename T = default_decoded_output,
-            typename U,
-            typename Range = mgs::meta::input_range<U>>
-  static mgs::codecs::codec_output<
-      T,
-      decoder<iterator_sentinel_source<meta::iterator_t<Range>,
-                                       meta::sentinel_t<Range>>>>
-  decode_impl(U& it, meta::priority_tag<1>)
-  {
-    return output_traits<T>::create(
-        traits::make_decoder(make_iterator_sentinel_source(it)));
-  }
-
-  template <typename T = default_decoded_output,
-            typename U,
-            typename Range = mgs::meta::input_range<U>>
-  static mgs::codecs::codec_output<
-      T,
-      decoder<iterator_sentinel_source<meta::iterator_t<Range const>,
-                                       meta::sentinel_t<Range const>>>>
-  decode_impl(U const& it, meta::priority_tag<0>)
-  {
-    return output_traits<T>::create(
-        traits::make_decoder(make_iterator_sentinel_source(it)));
+    return traits::make_decoder(make_iterator_sentinel_source(r));
   }
 
 public:
-  template <typename T = default_encoded_output, typename U>
-  static auto encode(U&& val)
-      -> decltype(encode_impl<T>(std::forward<U>(val), meta::priority_tag<2>{}))
+  template <typename... Args>
+  static auto make_encoder(Args&&... args)
+      -> decltype(make_encoder_impl(std::forward<Args>(args)...,
+                                    meta::priority_tag<4>{}))
   {
-    return encode_impl<T>(std::forward<U>(val), meta::priority_tag<2>{});
+    return make_encoder_impl(std::forward<Args>(args)...,
+                             meta::priority_tag<4>{});
   }
 
-  template <typename T = default_encoded_output, typename I, typename S>
-  static mgs::codecs::codec_output<T, encoder<iterator_sentinel_source<I, S>>>
-  encode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
+  template <typename... Args>
+  static auto make_decoder(Args&&... args)
+      -> decltype(make_decoder_impl(std::forward<Args>(args)...,
+                                    meta::priority_tag<4>{}))
   {
-    return output_traits<T>::create(traits::make_encoder(
-        make_iterator_sentinel_source(std::move(it), std::move(sent))));
+    return make_decoder_impl(std::forward<Args>(args)...,
+                             meta::priority_tag<4>{});
   }
 
-  template <typename T = default_decoded_output, typename U>
-  static auto decode(U&& val)
-      -> decltype(decode_impl<T>(std::forward<U>(val), meta::priority_tag<2>{}))
+  template <typename T = default_encoded_output, typename... Args>
+  static auto encode(Args&&... args) -> codecs::codec_output<
+      decltype(
+          output_traits<T>::create(make_encoder(std::forward<Args>(args)...))),
+      decltype(make_encoder(std::forward<Args>(args)...))>
   {
-    return decode_impl<T>(std::forward<U>(val), meta::priority_tag<2>{});
+    return output_traits<T>::create(make_encoder(std::forward<Args>(args)...));
   }
 
-  template <typename T = default_decoded_output, typename I, typename S>
-  static mgs::codecs::codec_output<T, decoder<iterator_sentinel_source<I, S>>>
-  decode(meta::input_iterator<I> it, meta::sentinel_for<S, I> sent)
+  template <typename T = default_decoded_output, typename... Args>
+  static auto decode(Args&&... args) -> codecs::codec_output<
+      decltype(
+          output_traits<T>::create(make_decoder(std::forward<Args>(args)...))),
+      decltype(make_decoder(std::forward<Args>(args)...))>
   {
-    return output_traits<T>::create(traits::make_decoder(
-        make_iterator_sentinel_source(std::move(it), std::move(sent))));
+    return output_traits<T>::create(make_decoder(std::forward<Args>(args)...));
   }
 };
 }

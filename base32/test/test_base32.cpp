@@ -49,8 +49,7 @@ TEST_CASE("base32")
 
     using iterator = std::istreambuf_iterator<char>;
 
-    auto encoder =
-        base32::traits::make_encoder(iterator(random_data), iterator());
+    auto encoder = base32::make_encoder(iterator(random_data), iterator());
     auto range = codecs::make_input_range(std::move(encoder));
     test_helpers::check_equal(
         range.begin(), range.end(), iterator(b32_random_data), iterator());
@@ -58,8 +57,7 @@ TEST_CASE("base32")
     random_data.seekg(0);
     b32_random_data.seekg(0);
 
-    auto decoder =
-        base32::traits::make_decoder(iterator(b32_random_data), iterator());
+    auto decoder = base32::make_decoder(iterator(b32_random_data), iterator());
     auto range2 = codecs::make_input_range(std::move(decoder));
     test_helpers::check_equal(
         range2.begin(), range2.end(), iterator{random_data}, iterator());
@@ -95,7 +93,7 @@ TEST_CASE("base32")
       SECTION("Small string")
       {
         auto const decoded = "abcdefghijklm"s;
-        auto enc = base32::traits::make_encoder(decoded.begin(), decoded.end());
+        auto enc = base32::make_encoder(decoded.begin(), decoded.end());
 
         CHECK(enc.max_remaining_size() == 24);
       }
@@ -103,8 +101,7 @@ TEST_CASE("base32")
       SECTION("Huge string")
       {
         std::string huge_str(10000, 0);
-        auto enc =
-            base32::traits::make_encoder(huge_str.begin(), huge_str.end());
+        auto enc = base32::make_encoder(huge_str.begin(), huge_str.end());
 
         CHECK(enc.max_remaining_size() == 16000);
       }
@@ -116,7 +113,7 @@ TEST_CASE("base32")
       {
         auto const encoded = "MFRGGZA="s;
 
-        auto dec = base32::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 5);
         dec.read(test_helpers::noop_iterator{}, 2);
         CHECK(dec.max_remaining_size() == 2);
@@ -126,7 +123,7 @@ TEST_CASE("base32")
       {
         auto const encoded = base32::encode<std::string>(std::string(10000, 0));
 
-        auto dec = base32::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 10000);
       }
 
@@ -135,7 +132,7 @@ TEST_CASE("base32")
         auto encoded = base32::encode<std::string>(std::string(10000, 0));
         encoded.pop_back();
 
-        auto dec = base32::traits::make_decoder(encoded.begin(), encoded.end());
+        auto dec = base32::make_decoder(encoded.begin(), encoded.end());
         CHECK(dec.max_remaining_size() == 9995);
       }
 
@@ -143,7 +140,7 @@ TEST_CASE("base32")
       {
         std::string invalid(4, 0);
 
-        auto dec = base32::traits::make_decoder(invalid);
+        auto dec = base32::make_decoder(invalid);
         CHECK(dec.max_remaining_size() == 0);
       }
     }

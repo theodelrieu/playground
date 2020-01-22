@@ -33,8 +33,7 @@ struct base2_encoding_traits
 
   static constexpr alphabet_t alphabet = {'0', '1'};
 
-  static constexpr auto const padding_policy =
-      base_n::padding_policy::none;
+  static constexpr auto const padding_policy = base_n::padding_policy::none;
 
   static int index_of(char c)
   {
@@ -112,7 +111,7 @@ TEST_CASE("base2")
     {
       auto const str = "abcd"s;
       auto const encoded_str = "01100001011000100110001101100100"s;
-      auto enc = base2::traits::make_encoder(str);
+      auto enc = base2::make_encoder(str);
 
       std::string encoded;
       auto res = enc.read(std::back_inserter(encoded), 2);
