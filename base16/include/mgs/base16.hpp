@@ -9,8 +9,5 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 using base16 = base_n::basic_codec<detail::base16_encoding_traits<>>;
-}
 }

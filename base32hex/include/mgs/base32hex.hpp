@@ -9,9 +9,5 @@
 
 namespace mgs
 {
-inline namespace v1
-{
-using base32hex =
-    base_n::basic_codec<detail::base32hex_encoding_traits<>>;
-}
+using base32hex = base_n::basic_codec<detail::base32hex_encoding_traits<>>;
 }

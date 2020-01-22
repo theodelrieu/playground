@@ -9,8 +9,5 @@
 
 namespace mgs
 {
-inline namespace v1
-{
 using base64 = base_n::basic_codec<detail::base64_encoding_traits<>>;
-}
 }
