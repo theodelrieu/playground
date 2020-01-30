@@ -34,7 +34,8 @@ namespace detail
 {
 template <typename ResizableOutputRange, typename T>
 ResizableOutputRange fill_resizable_output_range(
-    codecs::sized_input_source<T>& is, meta::priority_tag<1>)
+    codecs::sized_input_source<T, meta::iterator_t<ResizableOutputRange>>& is,
+    meta::priority_tag<1>)
 {
   using std::begin;
   using size_type = typename ResizableOutputRange::size_type;
@@ -59,7 +60,9 @@ ResizableOutputRange fill_resizable_output_range(
 }
 
 template <typename ResizableOutputRange, typename T>
-ResizableOutputRange fill_resizable_output_range(T& is, meta::priority_tag<0>)
+ResizableOutputRange fill_resizable_output_range(
+    codecs::input_source<T, meta::iterator_t<ResizableOutputRange>>& is,
+    meta::priority_tag<0>)
 {
   using std::begin;
   using size_type = typename ResizableOutputRange::size_type;
@@ -88,7 +91,7 @@ private:
   // Overload for containers which have the following properties:
   // - meta::default_constructible
   // - meta::copyable or meta::movable
-  // - T::resize(T::size_type)
+  // - Output::resize(Output::size_type)
   template <typename T,
             typename R = meta::output_range<Output, typename T::element_type>,
             typename SizeType = typename R::size_type,
@@ -124,7 +127,7 @@ private:
                 !meta::is_detected<meta::detected::types::key_type, R>::value>>
   static R create_impl(T is, meta::priority_tag<0>)
   {
-    auto input_range = make_input_range(is);
+    auto input_range = codecs::make_input_range(is);
     return R(input_range.begin(), input_range.end());
   }
 

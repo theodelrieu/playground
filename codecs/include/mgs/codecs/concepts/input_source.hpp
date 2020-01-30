@@ -6,8 +6,8 @@
 
 #include <mgs/codecs/detected/member_functions/read.hpp>
 #include <mgs/meta/concepts/convertible_to.hpp>
-#include <mgs/meta/concepts/movable.hpp>
 #include <mgs/meta/concepts/default_constructible.hpp>
+#include <mgs/meta/concepts/movable.hpp>
 #include <mgs/meta/concepts/output_iterator.hpp>
 #include <mgs/meta/concepts/same_as.hpp>
 #include <mgs/meta/detected.hpp>
@@ -45,7 +45,7 @@ public:
 
   static constexpr int trigger_static_asserts()
   {
-    static_assert(value, "T does not model codecs::input_source");
+    static_assert(value, "T does not model codecs::input_source<O>");
     static_assert(!meta::is_same_as<O, meta::nonesuch*>::value,
                   "T::element_type does not exist");
     static_assert(meta::is_default_constructible<element_type>::value,
