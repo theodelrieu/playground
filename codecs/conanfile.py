@@ -10,7 +10,7 @@ class ConanMgsCodecsBase(ConanFile):
     def build_requirements(self):
         self.build_requires("mgs_cmake/%s" % self.version)
         if self.develop:
-            self.build_requires("Catch2/2.7.2@catchorg/stable")
+            self.build_requires("catch2/2.11.0")
 
     def requirements(self):
         self.requires("mgs_meta/%s" % self.version)

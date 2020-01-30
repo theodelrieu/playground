@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 
 add_library(codec_tests_main OBJECT catch_main.cpp)
-get_target_property(CATCH2_INC_DIR CONAN_PKG::Catch2 INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(CATCH2_INC_DIR CONAN_PKG::catch2 INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(codec_tests_main PRIVATE ${CATCH2_INC_DIR})
 
 install(TARGETS codec_tests_main
@@ -29,6 +29,6 @@ target_include_directories(mgs_codec_helpers INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
-target_link_libraries(test_codecs codecs CONAN_PKG::Catch2 mgs_codec_helpers)
+target_link_libraries(test_codecs codecs CONAN_PKG::catch2 mgs_codec_helpers)
 
 add_test(NAME test_codecs COMMAND test_codecs)

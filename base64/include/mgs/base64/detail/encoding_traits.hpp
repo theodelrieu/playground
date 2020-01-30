@@ -39,8 +39,7 @@ struct base64_encoding_traits
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
   static constexpr char const padding_character = '=';
-  static constexpr auto const padding_policy =
-      base_n::padding_policy::required;
+  static constexpr auto const padding_policy = base_n::padding_policy::required;
 
   static constexpr auto index_of(char c)
   {
