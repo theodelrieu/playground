@@ -18,7 +18,7 @@ namespace mgs
 {
 namespace base_n
 {
-template <typename EncodingTraits, typename DecodingTraits>
+template <typename EncodingTraits, typename DecodingTraits = EncodingTraits>
 class basic_codec_traits
 {
 public:
