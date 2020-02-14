@@ -16,7 +16,7 @@
 
 namespace mgs
 {
-namespace detail
+namespace base_n
 {
 template <typename EncodingTraits, typename DecodingTraits>
 class basic_codec_traits
@@ -25,7 +25,7 @@ public:
   template <typename IS,
             typename = codecs::byte_type<
                 meta::detected_t<meta::detected::types::element_type, IS>>>
-  static base_n::encode_algorithm<EncodingTraits, IS> make_encoder(
+  static encode_algorithm<EncodingTraits, IS> make_encoder(
       codecs::input_source<IS> is)
   {
     return base_n::encode_algorithm<EncodingTraits, IS>(std::move(is));
@@ -34,7 +34,7 @@ public:
   template <typename IS,
             typename = codecs::byte_type<
                 meta::detected_t<meta::detected::types::element_type, IS>>>
-  static base_n::decode_algorithm<DecodingTraits, IS> make_decoder(
+  static decode_algorithm<DecodingTraits, IS> make_decoder(
       codecs::input_source<IS> is)
   {
     return base_n::decode_algorithm<DecodingTraits, IS>(std::move(is));
