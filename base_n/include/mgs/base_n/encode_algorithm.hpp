@@ -72,7 +72,7 @@ public:
 
   template <typename O>
   std::pair<O, mgs::ssize_t> read(meta::output_iterator<O, element_type> o,
-                                   mgs::ssize_t n)
+                                  mgs::ssize_t n)
   {
     if (_buffer.size() == _index)
     {
